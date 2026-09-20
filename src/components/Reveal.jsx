@@ -1,33 +1,40 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { createElement, useEffect, useRef } from "react";
 
 /**
- * One orchestrated fade + slide-up reveal per section, triggered once when it
- * enters the viewport. Children animate together (not staggered element-by-
- * element) to keep the effect deliberate rather than scattered.
+ * One fade + rise per block, once, when it first enters the viewport. CSS-driven
+ * (see .reveal in index.css); under prefers-reduced-motion it simply shows.
  */
 export default function Reveal({ as = "div", delay = 0, className = "", children, ...rest }) {
-  const prefersReducedMotion = useReducedMotion();
-  const Component = motion[as] ?? motion.div;
+  const ref = useRef(null);
 
-  if (prefersReducedMotion) {
-    const Static = as;
-    return (
-      <Static className={className} {...rest}>
-        {children}
-      </Static>
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.classList.add("is-in");
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("is-in");
+          io.disconnect();
+        }
+      },
+      { threshold: 0.25 }
     );
-  }
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
-  return (
-    <Component
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      {...rest}
-    >
-      {children}
-    </Component>
+  return createElement(
+    as,
+    {
+      ref,
+      className: `reveal ${className}`,
+      style: delay ? { "--reveal-delay": `${delay}s` } : undefined,
+      ...rest,
+    },
+    children
   );
 }

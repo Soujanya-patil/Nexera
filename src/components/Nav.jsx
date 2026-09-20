@@ -50,7 +50,7 @@ export default function Nav() {
         </ul>
         <Link
           to="/become-a-partner"
-          className="hidden md:inline-flex items-center rounded-md bg-signal px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:bg-signal/90 hover:shadow-[0_0_20px_2px_rgba(0,167,142,0.4)]"
+          className="hidden md:inline-flex items-center rounded-md bg-signal px-4 py-2 text-sm font-medium text-ink transition-all duration-300 hover:bg-signal/90 hover:shadow-[0_0_20px_2px_rgba(0,167,142,0.4)]"
         >
           Become a Distributor
         </Link>
@@ -88,7 +88,7 @@ export default function Nav() {
           <Link
             to="/become-a-partner"
             onClick={() => setOpen(false)}
-            className="mt-5 inline-flex w-full items-center justify-center rounded-md bg-signal px-4 py-3 text-sm font-medium text-white hover:bg-signal/90 transition-colors"
+            className="mt-5 inline-flex w-full items-center justify-center rounded-md bg-signal px-4 py-3 text-sm font-medium text-ink hover:bg-signal/90 transition-colors"
           >
             Become a Distributor
           </Link>
