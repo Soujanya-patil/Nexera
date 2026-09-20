@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  /* Color system — derived from the Nexera brand, not a generic default */
+  --color-ink: #0B1A2E;         /* headlines, primary text, dark sections */
+  --color-steel: #0066CC;       /* primary actions, trust, links */
+  --color-signal: #00A78E;      /* growth accent, secondary actions */
+  --color-ice: #EAF2FB;         /* light section backgrounds */
+  --color-paper: #F7FAFC;       /* base page background */
+  --color-graphite: #5A7286;    /* muted / secondary text */
+  --color-line: #D8E4F0;        /* hairline dividers, borders */
+
+  /* Type — IBM Plex: an engineering-documentation typeface family,
+     a deliberate fit for a technical hardware brand, not a generic pairing */
+  --font-serif: "IBM Plex Serif", "Georgia", serif;
+  --font-sans: "IBM Plex Sans", "Segoe UI", sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+  }
+  /* Respect reduced-motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Slow-drifting aurora glow — built from the two accent tokens only.
+     Two radial gradients cross-fade position over a long cycle so it reads
+     as ambient light, not a moving graphic. */
+  .bg-aurora {
+    background-image:
+      radial-gradient(44rem 32rem at 12% 15%, color-mix(in srgb, var(--color-steel) 55%, transparent), transparent 68%),
+      radial-gradient(40rem 36rem at 88% 80%, color-mix(in srgb, var(--color-signal) 45%, transparent), transparent 68%);
+    background-repeat: no-repeat;
+    animation: aurora-drift 22s ease-in-out infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-aurora {
+      animation: none;
+    }
+  }
+
+  @keyframes aurora-drift {
+    0% {
+      background-position: 0% 0%, 100% 100%;
+    }
+    100% {
+      background-position: 8% 6%, 92% 90%;
+    }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 3.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-glow-pulse {
+      animation: none;
+      opacity: 0.85;
+    }
+  }
+}
