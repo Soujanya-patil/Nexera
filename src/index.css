@@ -41,32 +41,6 @@
 }
 
 @layer utilities {
-  /* Slow-drifting aurora glow — built from the two accent tokens only.
-     Two radial gradients cross-fade position over a long cycle so it reads
-     as ambient light, not a moving graphic. */
-  .bg-aurora {
-    background-image:
-      radial-gradient(44rem 32rem at 12% 15%, color-mix(in srgb, var(--color-steel) 55%, transparent), transparent 68%),
-      radial-gradient(40rem 36rem at 88% 80%, color-mix(in srgb, var(--color-signal) 45%, transparent), transparent 68%);
-    background-repeat: no-repeat;
-    animation: aurora-drift 22s ease-in-out infinite alternate;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .bg-aurora {
-      animation: none;
-    }
-  }
-
-  @keyframes aurora-drift {
-    0% {
-      background-position: 0% 0%, 100% 100%;
-    }
-    100% {
-      background-position: 8% 6%, 92% 90%;
-    }
-  }
-
   @keyframes glow-pulse {
     0%, 100% { opacity: 0.55; }
     50% { opacity: 1; }

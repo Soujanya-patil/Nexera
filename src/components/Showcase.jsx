@@ -1,5 +1,8 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
-import Reveal from "./Reveal";
+import { motion, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
+import useMediaQuery from "../hooks/useMediaQuery";
+import useScrollProgress from "../hooks/useScrollProgress";
 
 const segments = [
   {
@@ -46,15 +49,89 @@ const segments = [
   },
 ];
 
+const EASE = [0.16, 1, 0.3, 1];
+
+/**
+ * One card's arrival. Desktop: scroll-linked — x/y/scale/opacity are driven by a window
+ * of the section's scroll progress, so cards stagger by window and reverse on scroll-up.
+ * Mobile (no `progress`): a cheap viewport-triggered stagger. Reduced motion: end state.
+ */
+function Arrive({ progress, range, from, delay = 0, className = "", children }) {
+  const reducedMotion = useReducedMotion();
+  const fallback = useMotionValue(1);
+  const p = progress ?? fallback;
+  const [a, b] = range;
+  const opacity = useTransform(p, [a, a + (b - a) * 0.55], [0, 1]);
+  const x = useTransform(p, range, [from.x, 0]);
+  const y = useTransform(p, range, [from.y, 0]);
+  const scale = useTransform(p, range, [from.scale ?? 1, 1]);
+
+  if (reducedMotion) return <div className={className}>{children}</div>;
+
+  if (!progress) {
+    return (
+      <motion.div
+        className={className}
+        initial={{ opacity: 0, y: 32 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.25 }}
+        transition={{ duration: 0.6, delay, ease: EASE }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div className={`${className} will-change-transform`} style={{ opacity, x, y, scale }}>
+      {children}
+    </motion.div>
+  );
+}
+
 export default function Showcase() {
+  const ref = useRef(null);
+  const reducedMotion = useReducedMotion();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const scrollYProgress = useScrollProgress(ref, ["start 88%", "start 38%"]);
+  const progress = isDesktop && !reducedMotion ? scrollYProgress : null;
+
+  // Weight: the featured card travels furthest and lands last-to-settle, then its glow blooms
+  const bloom = useTransform(scrollYProgress, [0.35, 0.6], [0, 1]);
+
   return (
     <section className="bg-paper">
-      <Reveal as="div" className="mx-auto max-w-6xl px-6 py-20 grid md:grid-cols-5 gap-8">
+      <div ref={ref} className="mx-auto max-w-6xl px-6 py-20 grid md:grid-cols-5 gap-8">
         {/* Featured, larger — the real conversion goal, deliberately not sized like the others */}
+        <Arrive
+          progress={progress}
+          range={[0, 0.6]}
+          from={{ x: -110, y: 28, scale: 0.94 }}
+          className="md:col-span-2 flex"
+        >
         <Link
           to="/become-a-partner"
-          className="group relative md:col-span-2 flex flex-col justify-between overflow-hidden rounded-lg bg-ink text-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-16px_rgba(0,167,142,0.35)]"
+          className="group relative flex w-full flex-col justify-between overflow-hidden rounded-lg bg-ink text-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-16px_rgba(0,167,142,0.35)]"
         >
+          <div
+            className="pointer-events-none absolute inset-0 rounded-lg"
+            style={{
+              background:
+                "radial-gradient(90% 70% at 100% 100%, color-mix(in srgb, var(--color-steel) 26%, transparent), transparent 65%)",
+            }}
+            aria-hidden="true"
+          />
+          {progress && (
+            <motion.div
+              className="pointer-events-none absolute inset-0 rounded-lg"
+              style={{
+                opacity: bloom,
+                background:
+                  "radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--color-signal) 20%, transparent), transparent 60%)",
+              }}
+              aria-hidden="true"
+            />
+          )}
           <div
             className="pointer-events-none absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             style={{
@@ -64,9 +141,9 @@ export default function Showcase() {
             aria-hidden="true"
           />
           <div className="relative">
-            <h3 className="font-serif text-2xl font-semibold leading-snug transition-transform duration-300 group-hover:translate-x-0.5">
+            <h2 className="font-serif text-2xl font-semibold leading-snug transition-transform duration-300 group-hover:translate-x-0.5">
               Run an EPC business?
-            </h3>
+            </h2>
             <p className="mt-3 text-ice/75 leading-relaxed">
               Add battery storage without building a supply chain from scratch.
               Authorized access, training, and after-sales support included.
@@ -84,30 +161,40 @@ export default function Showcase() {
             </svg>
           </span>
         </Link>
+        </Arrive>
 
-        {/* Three segments — quieter, equal weight to each other, secondary to the featured block */}
+        {/* Three segments — quieter, equal weight to each other, secondary to the featured block.
+            They arrive from the right, one after another, after the featured card has committed. */}
         <div className="md:col-span-3 grid sm:grid-cols-3 gap-6">
-          {segments.map((seg) => (
-            <Link
+          {segments.map((seg, i) => (
+            <Arrive
               key={seg.name}
-              to="/solutions"
-              className="group relative flex flex-col rounded-lg border border-line bg-white/60 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-signal/50 hover:shadow-[0_18px_40px_-18px_rgba(0,167,142,0.4)]"
+              progress={progress}
+              range={[0.22 + i * 0.12, 0.7 + i * 0.1]}
+              from={{ x: 56, y: 44 }}
+              delay={i * 0.12}
+              className="flex"
             >
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-ice text-steel transition-transform duration-300 group-hover:scale-110 group-hover:text-signal">
-                <svg viewBox="0 0 24 24" className="h-5 w-5">
-                  {seg.icon}
-                </svg>
-              </span>
-              <h4 className="mt-4 font-serif text-lg font-semibold text-ink transition-transform duration-300 group-hover:translate-x-0.5">
-                {seg.name}
-              </h4>
-              <p className="mt-2 text-sm text-graphite leading-relaxed">
-                {seg.copy}
-              </p>
-            </Link>
+              <Link
+                to="/solutions"
+                className="group relative flex w-full flex-col rounded-lg border border-line bg-white/60 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-signal/50 hover:shadow-[0_18px_40px_-18px_rgba(0,167,142,0.4)]"
+              >
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-md bg-ice text-steel transition-transform duration-300 group-hover:scale-110 group-hover:text-signal">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5">
+                    {seg.icon}
+                  </svg>
+                </span>
+                <h3 className="mt-4 font-serif text-lg font-semibold text-ink transition-transform duration-300 group-hover:translate-x-0.5">
+                  {seg.name}
+                </h3>
+                <p className="mt-2 text-sm text-graphite leading-relaxed">
+                  {seg.copy}
+                </p>
+              </Link>
+            </Arrive>
           ))}
         </div>
-      </Reveal>
+      </div>
     </section>
   );
 }
