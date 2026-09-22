@@ -1,19 +1,21 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MotionContext, useMotionMode, useReveal } from "../lib/motion";
 import Hero from "../components/Hero";
-import Storage from "../components/Storage";
 import ScaleStory from "../components/ScaleStory";
-import Technology from "../components/Technology";
+import ProductShowcase from "../components/ProductShowcase";
 import Credibility from "../components/Credibility";
-import FinalCta from "../components/FinalCta";
+import WhyNexera from "../components/WhyNexera";
+import Enquire from "../components/Enquire";
 
-// Below the fold and carries a ~4.6MB video asset — code-split so it's only fetched when needed.
+// Carries a ~4.6MB video asset — code-split so it's only fetched when needed.
 const CabinetAnatomy = lazy(() => import("../components/CabinetAnatomy"));
 
 /**
- * One continuous dark scene sequence: ENERGY (Hero) -> STORAGE -> SCALE -> TECHNOLOGY ->
- * CONFIDENCE -> ENQUIRE. `mode` (cinematic / light / static) is decided once here; changing it
- * (resize, reduced-motion toggle) remounts the sequence so no scroll state is left behind.
+ * One continuous dark scene sequence, following the Show -> Interact -> Explore -> Trust -> Enquire
+ * journey: HERO -> ANATOMY (scroll-scrubbed product video) -> CATEGORIES (Residential/C&I/Utility)
+ * -> SHOWCASE (real products) -> PARTNERS (TCL/Hithium/CLOU) -> WHY NEXERA -> ENQUIRE.
+ * `mode` (cinematic / light / static) is decided once here; changing it (resize, reduced-motion
+ * toggle) remounts the sequence so no scroll state is left behind.
  */
 function Scenes({ mode }) {
   const wrap = useRef(null);
@@ -21,14 +23,14 @@ function Scenes({ mode }) {
   return (
     <div ref={wrap} data-motion={mode} className="overflow-x-clip bg-night">
       <Hero />
-      <Storage />
-      <ScaleStory />
-      <Technology />
       <Suspense fallback={null}>
         <CabinetAnatomy />
       </Suspense>
+      <ScaleStory />
+      <ProductShowcase />
       <Credibility />
-      <FinalCta />
+      <WhyNexera />
+      <Enquire />
     </div>
   );
 }

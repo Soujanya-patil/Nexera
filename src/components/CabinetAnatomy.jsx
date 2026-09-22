@@ -3,11 +3,10 @@ import { useMotion, useScrollScene } from "../lib/motion";
 import videoSrc from "../assets/products/nexera-battery-cabinet-scroll.mp4";
 
 /**
- * Scene 4.5 — ANATOMY. Sits between Technology ("Why Hithium": liquid cooling, safety certs) and
- * Credibility (partner trust): after establishing the certifications, this scene shows the actual
- * engineered safety systems those certifications cover, via a scroll-scrubbed video of one real
- * cabinet — closed -> door opens -> exploded view — with a live, always-accurate component list
- * (real text, not baked into the video) highlighting in sequence as the exploded view resolves.
+ * Scene 2 — ANATOMY. Sits directly after Hero: the page's first close look at the product itself,
+ * via a scroll-scrubbed video of one real cabinet — closed -> door opens -> exploded view — with a
+ * live, always-accurate component list (real text, not baked into the video) highlighting in
+ * sequence as the exploded view resolves. No heading copy over the video by design: product-first.
  *
  * Unlike the other scenes, this one keeps its scroll-scrub on mobile/tablet too (per its own
  * brief) rather than falling back to plain in-flow reveals — only `prefers-reduced-motion`
@@ -17,8 +16,8 @@ import videoSrc from "../assets/products/nexera-battery-cabinet-scroll.mp4";
  * scrub: true for an exact — not eased/lagged — mirror of scroll position), pinned via CSS
  * `position: sticky` on the inner frame. video.currentTime is tweened 0 -> duration across the
  * timeline's own STORY fraction (0..STORY of local time == 0..1 of scroll progress through that
- * fraction); the remaining tail is held (matching every other scene's convention) so Credibility's
- * existing `-mt-[100vh]` rise-over has an inert tail to land on without clipping live content.
+ * fraction); the remaining tail is held (matching every other scene's convention) so the next
+ * scene's `-mt-[100vh]` rise-over has an inert tail to land on without clipping live content.
  */
 const COMPONENTS = [
   "Smoke Detector",
@@ -178,8 +177,7 @@ export default function CabinetAnatomy() {
             <video ref={staticVideoRef} muted playsInline preload="metadata" src={videoSrc} className="h-full w-full object-cover" />
           </div>
           <div className="lg:w-[22rem]">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Cabinet Safety Systems</p>
-            <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm lg:grid-cols-1 lg:gap-y-3">
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm lg:grid-cols-1 lg:gap-y-3">
               {COMPONENTS.map((name) => (
                 <li key={name} className="flex items-center gap-2 text-bone/85">
                   <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-signal" />
@@ -242,8 +240,7 @@ export default function CabinetAnatomy() {
 
         {/* Component list panel */}
         <div className="relative z-10 flex flex-col justify-center border-t border-bone/10 bg-night/70 px-6 py-6 lg:w-[22rem] lg:border-l lg:border-t-0 lg:px-8 lg:py-0">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Cabinet Safety Systems</p>
-          <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:text-sm lg:mt-6 lg:grid-cols-1 lg:gap-y-3">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs sm:text-sm lg:grid-cols-1 lg:gap-y-3">
             {COMPONENTS.map((name) => (
               <li key={name} data-a="comp-item" className="flex items-center gap-2 text-bone/55 will-change-transform">
                 <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-signal" />

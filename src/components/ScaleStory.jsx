@@ -4,11 +4,12 @@ import { FEATHER, useMotion, useScrollScene } from "../lib/motion";
 import SceneImg from "./SceneImg";
 
 /**
- * Scene 3 — SCALE. One pinned stage, three chapters, escalating rather than tabbed:
+ * Scene 3 — PRODUCT CATEGORIES. One pinned stage, three chapters, escalating rather than tabbed:
  *  - subject: a single home -> an industrial site -> a grid-scale yard (the photography itself widens)
  *  - typography: headline size steps up each chapter
  *  - camera: each incoming chapter starts pushed-in and pulls back to its wide frame
  * Copy is the approved Solutions copy; no capacity figures beyond what that copy already states.
+ * Anchor target for the Hero's "Explore Our Systems" CTA (`id="systems"`).
  */
 const chapters = [
   {
@@ -18,6 +19,7 @@ const chapters = [
     headline: "Home Battery Storage — Powered by TCL BlueArk",
     copy: "Backup power, load-shifting, and EV-ready storage for Indian homes.",
     points: ["Backup during outages", "Load-shifting to cut evening costs", "EV-ready configurations"],
+    cta: "Explore Residential",
     // TODO(india-imagery): src/assets/scenes/res-house-{800,1500}.webp is a CGI render of a generic non-Indian house; replace with an Indian home, update `alt`.
     img: "res-house",
     alt: "Rendering of a home at night with rooftop solar and a wall-mounted TCL battery beside the garage",
@@ -34,6 +36,7 @@ const chapters = [
     headline: "C&I Battery Storage for Bangalore & South India",
     copy: "Cut demand charges. Add resilience. Own your load curve.",
     points: ["Peak shaving", "Demand charge reduction", "Backup for critical loads", "Pairs with rooftop solar"],
+    cta: "Explore C&I",
     // TODO(india-imagery): review. src/assets/scenes/ci-industrial-{800,1500,1895}.webp is a generic industrial site (no signage) that is not identifiably Indian.
     img: "ci-industrial",
     alt: "TCL floor-standing battery cabinets and inverter beside an industrial building",
@@ -50,6 +53,7 @@ const chapters = [
     headline: "Grid-Scale Storage, Delivered and Commissioned",
     copy: "Hithium 5MWh/6.25MWh DC blocks for grid balancing and renewable firming.",
     points: ["Grid balancing", "Renewable firming", "DISCOM-scale project support"],
+    cta: "Explore Utility",
     // TODO(india-imagery): src/assets/scenes/utility-yard-{800,1280,1920}.webp shows Chinese-language signage on a plant gantry; replace with an Indian utility-scale site, update `alt`.
     img: "utility-yard",
     alt: "Aerial view of rows of Hithium battery storage containers at a large site",
@@ -61,7 +65,7 @@ const chapters = [
   },
 ];
 
-const STORY = 210 / 310; // share of the 310vh pin used by this scene's own story; the last 100vh is the Technology scene rising over it
+const STORY = 210 / 310; // share of the 310vh pin used by this scene's own story; the last 100vh is Product Showcase rising over it
 
 export default function ScaleStory() {
   const { mode } = useMotion();
@@ -114,7 +118,7 @@ export default function ScaleStory() {
   );
 
   return (
-    <section ref={root} className={cine ? "relative z-10 -mt-[100vh] h-[410vh]" : "relative"}>
+    <section id="systems" ref={root} className={cine ? "relative z-10 -mt-[100vh] h-[410vh] scroll-mt-16" : "relative scroll-mt-16"}>
       <div
         className={cine ? "sticky top-0 h-screen overflow-hidden bg-night text-bone" : "relative bg-night text-bone"}
         style={cine ? FEATHER : undefined}
@@ -156,17 +160,15 @@ export default function ScaleStory() {
                     </li>
                   ))}
                 </ul>
-                {i === chapters.length - 1 && (
-                  <Link
-                    to="/solutions"
-                    className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-colors hover:text-bone"
-                  >
-                    Solutions
-                    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M3 8h9M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </Link>
-                )}
+                <Link
+                  to={`/solutions#${c.id}`}
+                  className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-colors hover:text-bone"
+                >
+                  {c.cta}
+                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h9M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
               </div>
             </div>
           </article>

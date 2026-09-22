@@ -1,11 +1,21 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { FEATHER, useMotion, useScrollScene } from "../lib/motion";
 import SceneImg from "./SceneImg";
+import tclLogo from "../assets/partners/tcl-logo.png";
+import hithiumLogo from "../assets/partners/hithium-logo.png";
+import clouLogo from "../assets/partners/clou-logo.png";
 
 /**
- * Scene 5 — CONFIDENCE. The two authorized partners, full-bleed and side by side, drifting in
- * opposite directions as the scene passes. Names and the CLOU line are the approved partner
- * copy; CLOU stays a text mention only (no logo, no photo, no partner badge) until its agreement is signed.
+ * Scene 5 — TECHNOLOGY PARTNERS. NEXERA as solution provider, TCL and Hithium as the two
+ * authorized partners, full-bleed and side by side, drifting in opposite directions as the scene
+ * passes. Official logos (extracted from each partner's own brochure/product artwork — see the
+ * source notes on each import below) sit alongside the existing names, never implying NEXERA
+ * manufactures the partner product. CLOU gets a lighter-weight mention with its own logo, sized
+ * down from TCL/Hithium's full treatment since there's no CLOU site photography to fill a full
+ * column (matches the prior text-only CLOU direction in spirit, just upgraded with a real mark
+ * now that one's available).
  */
 export default function Credibility() {
   const { mode } = useMotion();
@@ -35,13 +45,16 @@ export default function Credibility() {
   );
 
   return (
-    <section
-      ref={root}
-      className={`relative overflow-hidden bg-night text-bone ${cine ? "z-10 -mt-[100vh]" : ""}`}
-      style={cine ? FEATHER : undefined}
-    >
-      <div className="relative grid md:min-h-[100svh] md:grid-cols-2 md:grid-rows-1">
-        <div className="relative min-h-[62svh] overflow-hidden">
+    <section ref={root} className="relative overflow-hidden bg-night text-bone" style={cine ? FEATHER : undefined}>
+      <div className="relative z-10 px-6 pt-14 text-center md:pt-20">
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">NEXERA — Solution Provider</p>
+        <h2 className="mt-3 font-serif text-2xl font-semibold text-bone md:text-3xl">
+          Technology Partners — TCL &middot; Hithium &middot; CLOU
+        </h2>
+      </div>
+
+      <div className="relative mt-10 grid md:min-h-[82svh] md:grid-cols-2 md:grid-rows-1">
+        <div className="relative min-h-[58svh] overflow-hidden">
           {/* TODO(india-imagery): partner HQ, may be intentional. src/assets/scenes/partner-tcl-{640,1000}.webp is TCL's tower in China; keep or replace, update `alt`. */}
           <SceneImg
             data-a="bg-tcl"
@@ -53,15 +66,23 @@ export default function Credibility() {
           />
           <div aria-hidden="true" className="absolute inset-0 bg-night/20" />
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/25 to-night/45" />
-          <div className="relative z-10 flex h-full min-h-[62svh] flex-col justify-end px-6 pb-24 md:min-h-[100svh] md:px-12 md:pb-32">
+          <div className="relative z-10 flex h-full min-h-[58svh] flex-col justify-end px-6 pb-16 md:min-h-[82svh] md:px-12 md:pb-20">
             <div data-a="rise" data-reveal>
               <span className="rounded-full bg-signal/15 px-3 py-1 text-xs font-medium text-signal">Authorized Partner</span>
-              <h2 className="mt-4 font-serif text-[clamp(2.25rem,4.6vw,4.5rem)] font-semibold leading-none text-bone">TCL BlueArk</h2>
+              <img src={tclLogo} alt="TCL" className="mt-5 h-8 w-auto" />
+              <p className="mt-4 max-w-xs text-sm text-bone/75">Residential &amp; C&amp;I BESS, from TCL's global manufacturing.</p>
+              <Link
+                to="/brands"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-colors hover:text-bone"
+              >
+                View TCL products
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="relative min-h-[62svh] overflow-hidden">
+        <div className="relative min-h-[58svh] overflow-hidden">
           {/* TODO(india-imagery): partner HQ, may be intentional. src/assets/scenes/partner-hithium-{640,1000}.webp shows Chinese-character signage on Hithium's HQ; keep or replace, update `alt`. */}
           <SceneImg
             data-a="bg-hithium"
@@ -73,25 +94,34 @@ export default function Credibility() {
           />
           <div aria-hidden="true" className="absolute inset-0 bg-night/20" />
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/25 to-night/45" />
-          <div className="relative z-10 flex h-full min-h-[62svh] flex-col justify-end px-6 pb-24 md:min-h-[100svh] md:px-12 md:pb-32">
+          <div className="relative z-10 flex h-full min-h-[58svh] flex-col justify-end px-6 pb-16 md:min-h-[82svh] md:px-12 md:pb-20">
             <div data-a="rise" data-reveal style={{ "--reveal-delay": "0.1s" }}>
               <span className="rounded-full bg-signal/15 px-3 py-1 text-xs font-medium text-signal">Authorized Partner</span>
-              <h2 className="mt-4 font-serif text-[clamp(2.25rem,4.6vw,4.5rem)] font-semibold leading-none text-bone">Hithium</h2>
+              <img src={hithiumLogo} alt="Hithium" className="mt-5 h-8 w-auto" />
+              <p className="mt-4 max-w-xs text-sm text-bone/75">Liquid-cooled C&amp;I and utility-scale BESS.</p>
+              <Link
+                to="/brands"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-colors hover:text-bone"
+              >
+                View Hithium products
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
+      </div>
 
-        <p className="pointer-events-none absolute inset-x-0 top-10 z-10 px-6 text-center text-sm text-bone/70 md:top-16">
-          In partnership with
-        </p>
-        <div className="relative z-10 px-6 py-8 text-center md:absolute md:inset-x-0 md:bottom-0 md:pb-12 md:pt-0">
-          <p data-a="rise" data-reveal className="text-sm text-bone/70">
-            + select global technologies including CLOU for utility-scale
-          </p>
-          <p data-a="rise" data-reveal className="mt-2 text-sm text-bone/70">
-            Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)
-          </p>
+      <div className="relative z-10 border-t border-bone/10 px-6 py-8 text-center">
+        <div data-a="rise" data-reveal className="inline-flex flex-col items-center gap-2">
+          <img src={clouLogo} alt="CLOU" className="h-6 w-auto opacity-90" />
+          <p className="text-sm text-bone/70">+ select global technologies including CLOU for utility-scale</p>
+          <Link to="/brands" className="text-xs font-medium text-signal transition-colors hover:text-bone">
+            Learn more
+          </Link>
         </div>
+        <p data-a="rise" data-reveal className="mt-6 text-sm text-bone/50">
+          Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)
+        </p>
       </div>
     </section>
   );

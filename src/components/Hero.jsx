@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import { useMotion, useScrollScene } from "../lib/motion";
 import { formatCount, parseCount } from "../lib/count";
 import Count from "./Count";
@@ -13,13 +12,13 @@ const stats = [
 ];
 
 /**
- * Scene 1 — ENERGY. Also carries the stat band and hands off to the Storage scene.
+ * Scene 1 — ENERGY. Also carries the stat band and hands off to the Anatomy scene (the
+ * scroll-scrubbed product video).
  *
  * Cinematic: a 300vh runway with a CSS-sticky 100vh panel (sticky, not a JS pin: no pin-spacer,
  * no jitter). One scrubbed timeline drives everything for the 200vh the panel is held:
  * headline recedes, stat band rises and counts, background/aurora/cabinet move at different
- * rates (depth), and a tone overlay darkens toward the product environment. The Storage scene
- * overlaps the last 100vh of this runway, so it rises over the still-pinned hero.
+ * rates (depth), and a tone overlay darkens toward the product environment.
  * Light / static: the same content in normal flow at its final state.
  */
 export default function Hero() {
@@ -147,26 +146,25 @@ export default function Hero() {
         <div className={grid}>
           <div data-a="copy" className={`${cine ? "col-span-3" : "md:col-span-3"} origin-left will-change-transform`}>
             <h1 className="font-serif text-4xl font-semibold leading-tight text-balance lg:text-5xl">
-              Battery Energy Storage Systems for India's Commercial &amp; Industrial Sector
+              Energy Storage, Built to Scale.
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-bone/80">
-              Nexera Powertech brings TCL and Hithium battery storage systems to EPCs
-              across Bangalore, South India, and beyond — backed by local design,
-              commissioning, and hands-on technician training.
+              Advanced Battery Energy Storage Systems for reliable, scalable power
+              across residential, commercial and utility applications.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Link
-                to="/become-a-partner"
+              <a
+                href="#systems"
                 className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_rgba(0,167,142,0.5)] transition-all duration-300 hover:bg-signal/90 hover:shadow-[0_0_28px_4px_rgba(0,167,142,0.45)]"
               >
-                Become a Distributor
-              </Link>
-              <Link
-                to="/brands"
+                Explore Our Systems
+              </a>
+              <a
+                href="#enquire"
                 className="inline-flex items-center rounded-md border border-white/30 px-6 py-3 text-sm font-medium text-white transition-colors duration-300 hover:border-white/60 hover:bg-white/5"
               >
-                Explore Our Brands
-              </Link>
+                Contact NEXERA
+              </a>
             </div>
             <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4 border-t border-white/15 pt-5 text-sm">
               <div>
