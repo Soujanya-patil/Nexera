@@ -1,6 +1,8 @@
 import PageHeader from "../components/PageHeader";
 import Reveal from "../components/Reveal";
 import tclLineup from "../assets/products/tcl-product-lineup.jpg";
+// TODO(india-imagery): src/assets/products/hithium-containers-deployed.jpg (Hithium_photos.zip, 966x563) is a
+// non-Indian site; replace with an Indian Hithium installation. tcl-product-lineup.jpg is a neutral studio shot.
 import hithiumDeployed from "../assets/products/hithium-containers-deployed.jpg";
 
 function Spec({ label, children }) {
@@ -27,7 +29,7 @@ export default function OurBrands() {
           <div className="md:col-span-2">
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="font-serif text-2xl font-semibold text-ink">TCL BlueArk</h2>
-              <span className="rounded-full bg-signal/10 text-signal text-xs font-medium px-3 py-1">
+              <span className="rounded-full bg-signal/10 text-ink text-xs font-medium px-3 py-1">
                 Authorized Partner
               </span>
             </div>
@@ -72,7 +74,7 @@ export default function OurBrands() {
           <div className="md:col-span-2 order-1 md:order-2">
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="font-serif text-2xl font-semibold text-ink">Hithium</h2>
-              <span className="rounded-full bg-signal/10 text-signal text-xs font-medium px-3 py-1">
+              <span className="rounded-full bg-signal/10 text-ink text-xs font-medium px-3 py-1">
                 Authorized Partner
               </span>
             </div>

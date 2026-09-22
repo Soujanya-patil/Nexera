@@ -38,6 +38,7 @@ export default function FinalCta() {
   return (
     <section ref={root} className="relative overflow-hidden bg-night text-bone">
       <div className="relative flex min-h-[92svh] items-center">
+        {/* TODO(india-imagery): src/assets/scenes/cta-desert-{1280,1920}.webp is a desert render from Hithium's EU brochure; replace with an Indian installation, update `alt`. */}
         <SceneImg
           data-a="bg"
           name="cta-desert"

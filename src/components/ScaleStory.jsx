@@ -18,6 +18,7 @@ const chapters = [
     headline: "Home Battery Storage — Powered by TCL BlueArk",
     copy: "Backup power, load-shifting, and EV-ready storage for Indian homes.",
     points: ["Backup during outages", "Load-shifting to cut evening costs", "EV-ready configurations"],
+    // TODO(india-imagery): src/assets/scenes/res-house-{800,1500}.webp is a CGI render of a generic non-Indian house; replace with an Indian home, update `alt`.
     img: "res-house",
     alt: "Rendering of a home at night with rooftop solar and a wall-mounted TCL battery beside the garage",
     position: "50% 62%",
@@ -33,6 +34,7 @@ const chapters = [
     headline: "C&I Battery Storage for Bangalore & South India",
     copy: "Cut demand charges. Add resilience. Own your load curve.",
     points: ["Peak shaving", "Demand charge reduction", "Backup for critical loads", "Pairs with rooftop solar"],
+    // TODO(india-imagery): review. src/assets/scenes/ci-industrial-{800,1500,1895}.webp is a generic industrial site (no signage) that is not identifiably Indian.
     img: "ci-industrial",
     alt: "TCL floor-standing battery cabinets and inverter beside an industrial building",
     position: "50% 55%",
@@ -48,6 +50,7 @@ const chapters = [
     headline: "Grid-Scale Storage, Delivered and Commissioned",
     copy: "Hithium 5MWh/6.25MWh DC blocks for grid balancing and renewable firming.",
     points: ["Grid balancing", "Renewable firming", "DISCOM-scale project support"],
+    // TODO(india-imagery): src/assets/scenes/utility-yard-{800,1280,1920}.webp shows Chinese-language signage on a plant gantry; replace with an Indian utility-scale site, update `alt`.
     img: "utility-yard",
     alt: "Aerial view of rows of Hithium battery storage containers at a large site",
     position: "50% 60%",

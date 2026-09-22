@@ -70,7 +70,7 @@ export default function BecomePartner() {
           <div className="mt-8 grid md:grid-cols-5 gap-6">
             {journey.map((j) => (
               <div key={j.step}>
-                <p className="font-serif text-2xl text-steel/40">{j.step}</p>
+                <p className="font-serif text-2xl text-steel/80">{j.step}</p>
                 <h3 className="mt-2 font-medium text-ink text-sm">{j.title}</h3>
                 <p className="mt-1.5 text-xs text-graphite leading-relaxed">{j.copy}</p>
               </div>
@@ -98,10 +98,11 @@ export default function BecomePartner() {
               <Field label="Region" name="region" required />
               <Field label="Current EPC experience" name="experience" as="textarea" />
               <div>
-                <label className="block text-sm font-medium text-ink mb-1.5">
+                <label htmlFor="segment" className="block text-sm font-medium text-ink mb-1.5">
                   Segment of interest
                 </label>
                 <select
+                  id="segment"
                   name="segment"
                   className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-steel/40"
                 >
@@ -113,7 +114,7 @@ export default function BecomePartner() {
               <Field label="Expected volume" name="volume" />
               <button
                 type="submit"
-                className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-white hover:bg-signal/90 transition-colors"
+                className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink hover:bg-signal/90 transition-colors"
               >
                 Submit Application
               </button>

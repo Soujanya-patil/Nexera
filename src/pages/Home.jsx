@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MotionContext, useMotionMode, useReveal } from "../lib/motion";
 import Hero from "../components/Hero";
 import Storage from "../components/Storage";
@@ -6,6 +6,9 @@ import ScaleStory from "../components/ScaleStory";
 import Technology from "../components/Technology";
 import Credibility from "../components/Credibility";
 import FinalCta from "../components/FinalCta";
+
+// Below the fold and carries a ~4.6MB video asset — code-split so it's only fetched when needed.
+const CabinetAnatomy = lazy(() => import("../components/CabinetAnatomy"));
 
 /**
  * One continuous dark scene sequence: ENERGY (Hero) -> STORAGE -> SCALE -> TECHNOLOGY ->
@@ -21,6 +24,9 @@ function Scenes({ mode }) {
       <Storage />
       <ScaleStory />
       <Technology />
+      <Suspense fallback={null}>
+        <CabinetAnatomy />
+      </Suspense>
       <Credibility />
       <FinalCta />
     </div>

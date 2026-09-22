@@ -97,7 +97,7 @@ function FileComplaint() {
           <Field label="What's wrong" name="issue" as="textarea" />
           <button
             type="submit"
-            className="inline-flex items-center rounded-md bg-signal px-5 py-2.5 text-sm font-medium text-white hover:bg-signal/90 transition-colors"
+            className="inline-flex items-center rounded-md bg-signal px-5 py-2.5 text-sm font-medium text-ink hover:bg-signal/90 transition-colors"
           >
             Submit
           </button>

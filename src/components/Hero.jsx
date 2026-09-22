@@ -107,6 +107,7 @@ export default function Hero() {
   return (
     <section ref={root} className={cine ? "relative h-[300vh]" : "relative"}>
       <div className={panel}>
+        {/* TODO(india-imagery): src/assets/scenes/energy-night-{1280,1920}.webp is a cityscape not identified as Indian; replace with an Indian city at night (decorative, alt is empty). */}
         {mode !== "light" && (
           <SceneImg
             data-a="city"

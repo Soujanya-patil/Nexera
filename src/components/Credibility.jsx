@@ -42,6 +42,7 @@ export default function Credibility() {
     >
       <div className="relative grid md:min-h-[100svh] md:grid-cols-2 md:grid-rows-1">
         <div className="relative min-h-[62svh] overflow-hidden">
+          {/* TODO(india-imagery): partner HQ, may be intentional. src/assets/scenes/partner-tcl-{640,1000}.webp is TCL's tower in China; keep or replace, update `alt`. */}
           <SceneImg
             data-a="bg-tcl"
             name="partner-tcl"
@@ -61,6 +62,7 @@ export default function Credibility() {
         </div>
 
         <div className="relative min-h-[62svh] overflow-hidden">
+          {/* TODO(india-imagery): partner HQ, may be intentional. src/assets/scenes/partner-hithium-{640,1000}.webp shows Chinese-character signage on Hithium's HQ; keep or replace, update `alt`. */}
           <SceneImg
             data-a="bg-hithium"
             name="partner-hithium"

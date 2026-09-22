@@ -1,0 +1,6 @@
+# TODO: replace todo-production-domain.example with the production domain (also in sitemap.xml).
+# The Sitemap directive must be an absolute URL, and no domain is configured in this repo yet.
+User-agent: *
+Allow: /
+
+Sitemap: https://todo-production-domain.example/sitemap.xml

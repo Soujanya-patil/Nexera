@@ -25,7 +25,7 @@ export default function HowItWorks() {
           <div className="mt-10 space-y-8">
             {journey.map((j) => (
               <div key={j.step} className="flex gap-6 items-baseline border-b border-line pb-8 last:border-0">
-                <span className="font-serif text-3xl text-steel/40 w-12 shrink-0">{j.step}</span>
+                <span className="font-serif text-3xl text-steel/80 w-12 shrink-0">{j.step}</span>
                 <div>
                   <h3 className="font-medium text-ink">{j.title}</h3>
                   <p className="mt-1 text-sm text-graphite leading-relaxed">{j.copy}</p>
@@ -55,7 +55,7 @@ export default function HowItWorks() {
         <div className="mx-auto max-w-6xl px-6 py-14 text-center">
           <Link
             to="/become-a-partner"
-            className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-white hover:bg-signal/90 transition-colors"
+            className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink hover:bg-signal/90 transition-colors"
           >
             Start Your Application
           </Link>
