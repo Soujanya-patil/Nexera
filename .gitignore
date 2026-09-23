@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+build/
+
+# Vite / tooling caches
+.vite/
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment / secrets — never commit these.
+# Commit a .env.example instead if the project ever needs documented variables.
+.env
+.env.*
+!.env.example
+
+# Local-only overrides
+*.local
+
+# Test / coverage output
+coverage/
+.nyc_output/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Reference material — not part of the site.
+# webplan2.mp4 is a 26MB screen recording of a third-party site, kept only as design
+# reference. Nothing imports it and it must never ship. Matched by name in any directory
+# because it has already lived in two places (src/assets/products/, then public/).
+#
+# WARNING: it currently sits in public/, and Vite copies public/ into dist/ VERBATIM — so a
+# build WILL publish it to the live site. Ignoring it keeps it out of git, but not out of the
+# bundle. It should be moved outside the repo entirely.
+webplan2.mp4
