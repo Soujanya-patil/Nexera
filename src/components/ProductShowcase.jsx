@@ -1,19 +1,25 @@
 import { ArrowRight } from "lucide-react";
-import { FEATHER } from "../lib/motion";
 import Reveal from "./Reveal";
 import tclLineup from "../assets/products/tcl-product-lineup.jpg";
 import hithiumDeployed from "../assets/products/hithium-containers-deployed.jpg";
 
 /**
- * Scene 4 — SHOWCASE. Catalogue, not card-grid: one real product family per row, full-width
+ * Scene 5 — SHOWCASE. Catalogue, not card-grid: one real product family per row, full-width
  * image, generous whitespace. Hierarchy is image -> name -> application -> overview ->
  * capabilities -> specs -> enquire, per brief. Hithium's capabilities fold in the certification
  * points that used to live in the standalone Technology scene (now retired from Home) — nothing
  * invented, same copy, different home.
  *
- * Rises over ScaleStory's held tail the same way Technology used to (`-mt-[100vh]` + FEATHER);
- * everything below here is normal flow with IntersectionObserver reveals, not a pinned scene —
- * motion priority for this section is "tertiary" per brief, so it doesn't need a GSAP timeline.
+ * Normal flow with IntersectionObserver reveals, not a pinned scene — motion priority for this
+ * section is "tertiary" per brief, so it doesn't need a GSAP timeline. No `-mt-[100vh]` rise-over
+ * here: that now belongs to WhoWeAre, which sits directly after ScaleStory's held tail. Pulling
+ * this section up over WhoWeAre's real content would clip it — same reasoning as Credibility
+ * losing its own rise-over when ProductShowcase was first inserted before it.
+ *
+ * Top padding is lighter than the bottom (`pt-16 md:pt-20` vs `pb-24 md:pb-32`) on purpose: it
+ * meets WhoWeAre's own reduced bottom padding, which is the other half of closing the gap that
+ * used to sit between the two sections. Symmetric `py-24 md:py-32` on both stacked 256px of dead
+ * space at that one seam.
  */
 const products = [
   {
@@ -42,8 +48,8 @@ const products = [
 
 export default function ProductShowcase() {
   return (
-    <section className="relative z-10 -mt-[100vh] bg-night text-bone" style={FEATHER}>
-      <div className="mx-auto max-w-6xl px-6 py-24 md:py-32">
+    <section className="relative bg-night text-bone">
+      <div className="mx-auto max-w-6xl px-6 pt-16 pb-24 md:pt-20 md:pb-32">
         <Reveal>
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Product Showcase</p>
           <h2 className="mt-3 font-serif text-3xl font-semibold text-bone md:text-4xl">Real systems, ready to deploy</h2>
@@ -53,7 +59,7 @@ export default function ProductShowcase() {
           {products.map((p, i) => (
             <Reveal key={p.id} className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
               <figure
-                className={`overflow-hidden rounded-lg bg-charcoal ring-1 ring-bone/10 ${
+                className={`group overflow-hidden rounded-lg bg-charcoal ring-1 ring-bone/10 transition-[box-shadow] duration-300 hover:ring-signal/50 ${
                   i % 2 === 1 ? "md:order-2" : ""
                 }`}
               >
@@ -64,7 +70,7 @@ export default function ProductShowcase() {
                   loading="lazy"
                   decoding="async"
                   alt={p.alt}
-                  className="block h-auto w-full object-cover"
+                  className="block h-auto w-full object-cover transition-transform duration-500 ease-out will-change-transform group-hover:scale-[1.025]"
                 />
               </figure>
               <div>

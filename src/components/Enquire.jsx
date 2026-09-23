@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 import Reveal from "./Reveal";
+import { useMagnetic } from "../lib/magnetic";
 
 /**
  * Scene 7 — ENQUIRE. The page's single close: one focused buyer form, not the multi-path
@@ -10,6 +11,7 @@ import Reveal from "./Reveal";
  */
 export default function Enquire() {
   const [submitted, setSubmitted] = useState(false);
+  const magneticRef = useMagnetic();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -18,7 +20,7 @@ export default function Enquire() {
 
   return (
     <section id="enquire" className="relative bg-night text-bone">
-      <div className="mx-auto max-w-3xl px-6 py-24 md:py-28">
+      <div className="mx-auto max-w-3xl px-6 pt-16 pb-24 md:pt-20 md:pb-28">
         <Reveal className="text-center">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Enquire</p>
           <h2 className="mt-3 font-serif text-3xl font-semibold text-bone md:text-4xl">
@@ -63,6 +65,7 @@ export default function Enquire() {
               </div>
               <Field label="Message" name="message" as="textarea" />
               <button
+                ref={magneticRef}
                 type="submit"
                 className="inline-flex items-center gap-2 rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-signal/90"
               >

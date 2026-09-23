@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Wordmark from "./Wordmark";
 
 const links = [
   { label: "About Us", href: "/about" },
@@ -33,8 +34,8 @@ export default function Nav() {
           scrolled ? "h-14" : "h-16"
         }`}
       >
-        <Link to="/" className="font-serif text-lg font-semibold text-white tracking-tight">
-          Nexera Powertech
+        <Link to="/" className="text-white">
+          <Wordmark className="text-lg" />
         </Link>
         <ul className="hidden md:flex items-center gap-8">
           {links.map((link) => (

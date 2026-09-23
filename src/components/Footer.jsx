@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Wordmark from "./Wordmark";
 
 const links = [
   { label: "About", href: "/about" },
@@ -16,10 +17,8 @@ export default function Footer() {
     <footer className="bg-ink text-ice/70">
       <div className="mx-auto max-w-6xl px-6 py-14 grid md:grid-cols-2 gap-10">
         <div>
-          <p className="font-serif text-lg font-semibold text-white">
-            Nexera Powertech Pvt. Ltd.
-          </p>
-          <p className="mt-2 text-sm">Bangalore, Karnataka</p>
+          <Wordmark className="text-lg text-white" />
+          <p className="mt-3 text-sm">Bangalore, Karnataka</p>
           <p className="mt-1 text-sm">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
         </div>
         <div>

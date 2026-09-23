@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { FEATHER, useMotion, useScrollScene } from "../lib/motion";
+import { useMotion, useScrollScene } from "../lib/motion";
 import SceneImg from "./SceneImg";
 import tclLogo from "../assets/partners/tcl-logo.png";
 import hithiumLogo from "../assets/partners/hithium-logo.png";
@@ -16,6 +16,14 @@ import clouLogo from "../assets/partners/clou-logo.png";
  * down from TCL/Hithium's full treatment since there's no CLOU site photography to fill a full
  * column (matches the prior text-only CLOU direction in spirit, just upgraded with a real mark
  * now that one's available).
+ *
+ * No FEATHER here. FEATHER exists to dissolve the top edge of a scene that rises over a PINNED
+ * previous scene's held tail (see lib/motion.js), and this section lost its `-mt-[100vh]` rise-over
+ * when ProductShowcase was inserted above it — but kept the mask. With ProductShowcase sitting in
+ * normal flow directly above, the mask had nothing to dissolve into except an identically coloured
+ * background, and its 20vh ramp was taller than this section's `pt-14 md:pt-20` (80px), so it was
+ * quietly rendering this section's own eyebrow and h2 at partial opacity at every desktop viewport.
+ * Same defect that was clipping WhoWeAre's heading; found while auditing that one.
  */
 export default function Credibility() {
   const { mode } = useMotion();
@@ -45,7 +53,7 @@ export default function Credibility() {
   );
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-night text-bone" style={cine ? FEATHER : undefined}>
+    <section ref={root} className="relative overflow-hidden bg-night text-bone">
       <div className="relative z-10 px-6 pt-14 text-center md:pt-20">
         <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">NEXERA — Solution Provider</p>
         <h2 className="mt-3 font-serif text-2xl font-semibold text-bone md:text-3xl">
