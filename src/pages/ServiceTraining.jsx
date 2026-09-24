@@ -11,7 +11,7 @@ export default function ServiceTraining() {
 
       <section className="bg-paper border-b border-line">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
             Design & Commissioning Support
           </h2>
           <p className="mt-3 text-graphite max-w-2xl leading-relaxed">
@@ -23,7 +23,7 @@ export default function ServiceTraining() {
 
       <section className="bg-ice border-b border-line">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
             After-Sales & Warranty
           </h2>
           <p className="mt-3 text-graphite max-w-2xl leading-relaxed">
@@ -36,7 +36,7 @@ export default function ServiceTraining() {
 
       <section className="bg-paper">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
             Kalaburagi Technician Training Center
           </h2>
           <p className="mt-1 text-sm text-graphite">
@@ -47,9 +47,9 @@ export default function ServiceTraining() {
             manuals and PDFs.
           </p>
           <ul className="mt-6 space-y-2 text-graphite">
-            <li className="flex gap-3"><span className="text-signal">✓</span> Hands-on installation and commissioning practice</li>
-            <li className="flex gap-3"><span className="text-signal">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
-            <li className="flex gap-3"><span className="text-signal">✓</span> Certification path for field-ready technicians</li>
+            <li className="flex gap-3"><span className="text-forest">✓</span> Hands-on installation and commissioning practice</li>
+            <li className="flex gap-3"><span className="text-forest">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
+            <li className="flex gap-3"><span className="text-forest">✓</span> Certification path for field-ready technicians</li>
           </ul>
         </div>
       </section>
@@ -97,7 +97,7 @@ function FileComplaint() {
           <Field label="What's wrong" name="issue" as="textarea" />
           <button
             type="submit"
-            className="inline-flex items-center rounded-md bg-signal px-5 py-2.5 text-sm font-medium text-ink hover:bg-signal/90 transition-colors"
+            className="inline-flex items-center rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-forest hover:bg-signal/90 transition-colors"
           >
             Submit
           </button>

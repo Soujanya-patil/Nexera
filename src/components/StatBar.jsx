@@ -17,11 +17,32 @@ const STATS = [
   { type: "static", label: "Response times", text: "Quick" },
 ];
 
+// The two figures confirmed for the Home stat bar (approved mockup v2). ~10x and the tagline
+// column from the mockup are deliberately left out: only verified figures, no filler column.
+export const HOME_STATS = [
+  { type: "range", prefix: "~", lo: 30, hi: 33, suffix: "%", label: "Projected CAGR, India BESS market (2026–2031)", text: "~30–33%" },
+  { type: "count", value: 400, suffix: "+ GWh", label: "Storage capacity India needs by 2031⁠–⁠32 (CEA estimate)", text: "400+ GWh" },
+];
+
 function format(stat, t) {
-  if (stat.type === "count") return `${Math.round(stat.value * t)}${stat.suffix}`;
-  if (stat.type === "range") return `${Math.round(stat.lo * t)}–${Math.round(stat.hi * t)}${stat.suffix}`;
+  const prefix = stat.prefix ?? "";
+  if (stat.type === "count") return `${prefix}${Math.round(stat.value * t)}${stat.suffix}`;
+  if (stat.type === "range") return `${prefix}${Math.round(stat.lo * t)}–${Math.round(stat.hi * t)}${stat.suffix}`;
   return stat.text;
 }
+
+const TONES = {
+  dark: {
+    grid: "divide-bone/15 border-y border-bone/15 py-8",
+    value: "font-serif text-3xl text-bone sm:text-4xl",
+    label: "text-bone/60",
+  },
+  light: {
+    grid: "divide-line py-2",
+    value: "font-sans text-3xl text-forest sm:text-4xl",
+    label: "text-graphite",
+  },
+};
 
 function StatValue({ stat, play, reduced }) {
   const [display, setDisplay] = useState(stat.type === "static" || reduced ? stat.text : format(stat, 0));
@@ -56,7 +77,7 @@ function StatValue({ stat, play, reduced }) {
  * disconnects after the first trigger — never re-plays on subsequent scrolls). Reduced-motion
  * shows the final values immediately, no animation frames run at all.
  */
-export default function StatBar() {
+export default function StatBar({ stats = STATS, tone = "dark", className = "" }) {
   const ref = useRef(null);
   const [play, setPlay] = useState(false);
   const reducedRef = useRef(false);
@@ -83,13 +104,17 @@ export default function StatBar() {
   }, []);
 
   return (
-    <div ref={ref} className="grid grid-cols-3 divide-x divide-bone/15 border-y border-bone/15 py-8">
-      {STATS.map((s) => (
-        <div key={s.label} className="px-4 text-center first:pl-0 sm:px-6">
-          <p className="whitespace-nowrap font-serif text-3xl font-semibold text-bone sm:text-4xl">
+    <div
+      ref={ref}
+      className={`grid divide-x ${TONES[tone].grid} ${className}`}
+      style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
+    >
+      {stats.map((s) => (
+        <div key={s.label} className="px-4 text-center sm:px-6">
+          <p className={`whitespace-nowrap font-semibold ${TONES[tone].value}`}>
             <StatValue stat={s} play={play} reduced={reducedRef.current} />
           </p>
-          <p className="mt-1 text-sm text-bone/60">{s.label}</p>
+          <p className={`mx-auto mt-1 max-w-[16rem] text-sm leading-snug ${TONES[tone].label}`}>{s.label}</p>
         </div>
       ))}
     </div>

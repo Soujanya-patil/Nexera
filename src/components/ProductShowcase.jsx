@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import DisplayHeading from "./DisplayHeading";
 import Reveal from "./Reveal";
 import tclLineup from "../assets/products/tcl-product-lineup.jpg";
 import hithiumDeployed from "../assets/products/hithium-containers-deployed.jpg";
@@ -50,10 +51,9 @@ export default function ProductShowcase() {
   return (
     <section className="relative bg-night text-bone">
       <div className="mx-auto max-w-6xl px-6 pt-16 pb-24 md:pt-20 md:pb-32">
-        <Reveal>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Product Showcase</p>
-          <h2 className="mt-3 font-serif text-3xl font-semibold text-bone md:text-4xl">Real systems, ready to deploy</h2>
-        </Reveal>
+        <DisplayHeading eyebrow="Product Showcase" className="max-w-3xl">
+          Real systems, ready to deploy
+        </DisplayHeading>
 
         <div className="mt-16 space-y-24 md:space-y-32">
           {products.map((p, i) => (

@@ -1,4 +1,5 @@
 import { FEATHER, useMotion } from "../lib/motion";
+import DisplayHeading from "./DisplayHeading";
 import Reveal from "./Reveal";
 
 /**
@@ -58,11 +59,10 @@ export default function WhoWeAre() {
       <div
         className={`mx-auto max-w-6xl px-6 pb-16 md:pb-20 ${cine ? "pt-[28vh]" : "pt-24 md:pt-28"}`}
       >
-        <Reveal>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Who We Are</p>
-          <h2 className="mt-3 max-w-2xl font-serif text-3xl font-semibold text-bone md:text-4xl">
-            Built by an EPC, for EPCs
-          </h2>
+        <DisplayHeading eyebrow="Who We Are" className="max-w-3xl">
+          Built by an EPC, for EPCs
+        </DisplayHeading>
+        <Reveal delay={0.08}>
           <p className="mt-6 max-w-2xl leading-relaxed text-bone/75">
             Nexera Powertech was founded to solve a problem we lived ourselves as a solar EPC:
             getting reliable battery storage into Indian projects, backed by service that

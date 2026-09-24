@@ -43,7 +43,7 @@ export default function Solutions() {
           <div className="mx-auto max-w-6xl px-6 py-16 grid md:grid-cols-5 gap-10">
             <div className="md:col-span-2">
               <p className="text-sm text-graphite">{sol.name}</p>
-              <h2 className="mt-2 font-serif text-2xl font-semibold text-ink leading-snug">
+              <h2 className="mt-2 font-sans text-2xl font-semibold text-ink leading-snug">
                 {sol.headline}
               </h2>
               <p className="mt-3 text-graphite leading-relaxed">{sol.copy}</p>

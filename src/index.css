@@ -52,17 +52,22 @@
 }
 
 @theme {
-  /* Color system — derived from the Nexera brand, not a generic default */
-  --color-ink: #0B1A2E;         /* headlines, primary text, dark sections */
-  --color-steel: #0066CC;       /* primary actions, trust, links */
-  --color-signal: #00A78E;      /* growth accent, secondary actions */
-  --color-ice: #EAF2FB;         /* light section backgrounds */
-  --color-paper: #F7FAFC;       /* base page background */
-  --color-graphite: #5A7286;    /* muted / secondary text */
-  --color-line: #D8E4F0;        /* hairline dividers, borders */
+  /* Color system — sampled from the approved Home mockup (home-mockup-v2-approved.png).
+     `signal` is a fill / text-on-dark color only: on white it is ~1.7:1, so any green text on a
+     light surface uses `forest` instead. */
+  --color-ink: #071621;         /* header navy; headlines and primary text on light */
+  --color-signal: #90D988;      /* accent green: buttons, icons, highlight text on dark */
+  --color-forest: #092F27;      /* dark green: stat figures, labels on green buttons, green text on light */
+  --color-steel: #354A47;       /* links and focus rings on light */
+  --color-sage: #63726F;        /* eyebrow labels on light */
+  --color-ice: #F5F7F9;         /* light section backgrounds */
+  --color-paper: #FFFFFF;       /* base page background, cards */
+  --color-graphite: #545658;    /* body / secondary text on light */
+  --color-line: #EEEEEE;        /* hairline dividers, borders */
+  --color-deep: #02110D;        /* final CTA band and footer */
 
-  /* Cinematic scene palette — extends the tokens above, replaces none of them */
-  --color-night: #060D16;       /* near-black scene ground */
+  /* Dark scene palette — extends the tokens above, replaces none of them */
+  --color-night: #0A1822;       /* hero ground */
   --color-charcoal: #0F1A27;    /* raised surfaces inside dark scenes */
   --color-bone: #F2F0EA;        /* warm off-white for type and light bands on dark */
   --color-amber: #E3A23B;       /* energy accent — sparing: progress line, sunrise glow only */
@@ -84,7 +89,7 @@
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
   }
   /* Respect reduced-motion preference */
   @media (prefers-reduced-motion: reduce) {

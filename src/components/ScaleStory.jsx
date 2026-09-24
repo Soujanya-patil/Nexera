@@ -67,10 +67,29 @@ const chapters = [
 
 const STORY = 210 / 310; // share of the 310vh pin used by this scene's own story; the last 100vh is Product Showcase rising over it
 
+// Local-timeline fraction (of STORY) at which each chapter is fully settled — the same `at` values
+// the hand-off timeline below uses, offset past the transition so a jump lands on a composed frame
+// rather than mid-dissolve. Used only by the clickable rail.
+const CHAPTER_AT = [0, 0.42, 0.76];
+
 export default function ScaleStory() {
   const { mode } = useMotion();
   const cine = mode === "cinematic";
   const root = useRef(null);
+
+  // Jump to a chapter by converting its timeline position into a document scroll offset. The pin
+  // is CSS `position: sticky` (no pin-spacer), so the section's own box IS the scroll range: the
+  // timeline spans from the section top to `height - viewport`, and a chapter at local fraction f
+  // sits that far into it. Lets the rail double as navigation without disturbing the scrub — it
+  // just moves the scroll position the scrub already reads.
+  const goToChapter = (i) => {
+    const el = root.current;
+    if (!el || !cine) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const range = el.offsetHeight - window.innerHeight;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: Math.round(top + range * STORY * CHAPTER_AT[i]), behavior: reduced ? "auto" : "smooth" });
+  };
 
   useScrollScene(
     root,
@@ -174,20 +193,31 @@ export default function ScaleStory() {
           </article>
         ))}
 
+        {/* Chapter rail — also the category selector. The scroll sequence still drives the story;
+            these just let a visitor go straight to the scale they care about instead of scrolling
+            through the other two. Real buttons, so it's keyboard-operable. */}
         {cine && (
-            <div data-a="rail" aria-hidden="true" className="pointer-events-none absolute right-6 top-1/2 z-20 hidden -translate-y-1/2 xl:block">
+            <nav aria-label="Product categories" data-a="rail" className="absolute right-6 top-1/2 z-20 hidden -translate-y-1/2 xl:block">
               <div className="relative rounded-md bg-night/40 py-3 pl-4 pr-5 text-right [text-shadow:0_1px_10px_rgba(6,13,22,0.9)]">
-                <div className="absolute right-0 top-0 h-full w-px bg-bone/20" />
-                <div data-a="rail-fill" className="absolute right-0 top-0 h-full w-px origin-top bg-amber" />
+                <div aria-hidden="true" className="absolute right-0 top-0 h-full w-px bg-bone/20" />
+                <div data-a="rail-fill" aria-hidden="true" className="absolute right-0 top-0 h-full w-px origin-top bg-amber" />
                 <ul className="space-y-9 text-xs">
                   {chapters.map((c, i) => (
-                    <li key={c.id} data-a="tick" style={{ color: i === 0 ? "#F2F0EA" : "rgba(242,240,234,0.4)" }}>
-                      {c.rail}
+                    <li key={c.id}>
+                      <button
+                        type="button"
+                        onClick={() => goToChapter(i)}
+                        data-a="tick"
+                        style={{ color: i === 0 ? "#F2F0EA" : "rgba(242,240,234,0.4)" }}
+                        className="cursor-pointer transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+                      >
+                        {c.rail}
+                      </button>
                     </li>
                   ))}
                 </ul>
               </div>
-            </div>
+            </nav>
         )}
       </div>
     </section>

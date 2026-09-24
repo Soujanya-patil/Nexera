@@ -25,7 +25,7 @@ export default function WhereWeOperate() {
                 className="flex items-start justify-between border-b border-line pb-6 last:border-0"
               >
                 <div>
-                  <h2 className="font-serif text-lg font-semibold text-ink">{o.city}</h2>
+                  <h2 className="font-sans text-lg font-semibold text-ink">{o.city}</h2>
                   <p className="text-sm text-graphite mt-1">{o.role}</p>
                   {o.detail && <p className="text-sm text-graphite">{o.detail}</p>}
                 </div>
@@ -49,7 +49,7 @@ export default function WhereWeOperate() {
             </p>
             <Link
               to="/become-a-partner"
-              className="mt-4 inline-flex items-center rounded-md bg-signal px-5 py-2.5 text-sm font-medium text-ink hover:bg-signal/90 transition-colors"
+              className="mt-4 inline-flex items-center rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-forest hover:bg-signal/90 transition-colors"
             >
               Become a Partner
             </Link>

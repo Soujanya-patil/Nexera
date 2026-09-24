@@ -169,7 +169,7 @@ export default function Hero() {
             <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4 border-t border-white/15 pt-5 text-sm">
               <div>
                 <dt className="text-bone/60">Authorized Partner</dt>
-                <dd className="mt-0.5 text-bone/90">TCL, Hithium</dd>
+                <dd className="mt-0.5 text-bone/90">TCL, Hithium, CLOU</dd>
               </div>
               <div>
                 <dt className="text-bone/60">Founding team</dt>

@@ -1,59 +1,31 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { MotionContext, useMotionMode, useReveal } from "../lib/motion";
-import CabinetAnatomy from "../components/CabinetAnatomy";
-import ScaleStory from "../components/ScaleStory";
-import WhoWeAre from "../components/WhoWeAre";
-import ProductShowcase from "../components/ProductShowcase";
-import Credibility from "../components/Credibility";
-import WhyNexera from "../components/WhyNexera";
-import Enquire from "../components/Enquire";
+import StatBar, { HOME_STATS } from "../components/StatBar";
+import HomeHero from "../components/HomeHero";
+import HomeSolutions from "../components/HomeSolutions";
+import HomePartners from "../components/HomePartners";
+import HomeWhyNow from "../components/HomeWhyNow";
+import HomeCta from "../components/HomeCta";
 
 /**
- * One continuous dark scene sequence, following the Show -> Interact -> Explore -> Trust -> Enquire
- * journey: ANATOMY (merged Hero + scroll-scrubbed product video, the page's opening moment) ->
- * CATEGORIES (Residential/C&I/Utility) -> WHO WE ARE (Nexera's own identity, before any partner
- * content) -> SHOWCASE (real products) -> PARTNERS (TCL/Hithium/CLOU) -> WHY NEXERA -> ENQUIRE.
- * WhoWeAre sits before Showcase/Partners deliberately: two consecutive partner-centric sections
- * with no Nexera identity in between read as a partner catalog. `Hero.jsx` is kept as a file (this
- * project's convention for retired scenes — see Storage/Technology/FinalCta) but no longer mounted
- * here; its headline/subcopy/CTAs now live inside CabinetAnatomy's opening-copy overlay. Not lazy:
- * this is the first thing on the page, so code-splitting it would only add a blank-page delay
- * before the opening moment renders. `mode` (cinematic / light / static) is decided once here;
- * changing it (resize, reduced-motion toggle) remounts the sequence so no scroll state is left
- * behind.
+ * Home, per the approved mockup (home-mockup-v2-approved.png): Hero -> stat bar -> Solutions ->
+ * Technology Partners -> Why Now -> final CTA (the site Footer follows from Layout).
+ *
+ * This replaces the continuous cinematic scroll sequence. Its scenes (CabinetAnatomy, ScaleStory,
+ * WhoWeAre, ProductShowcase, Credibility, WhyNexera, Enquire, JourneyRail — and the earlier Hero,
+ * Storage, Technology, FinalCta) stay in the codebase unmounted, per this project's convention.
  */
-function Scenes({ mode }) {
-  const wrap = useRef(null);
-  useReveal(wrap, mode === "light");
-  return (
-    <div ref={wrap} data-motion={mode} className="overflow-x-clip bg-night">
-      <CabinetAnatomy />
-      <ScaleStory />
-      <WhoWeAre />
-      <ProductShowcase />
-      <Credibility />
-      <WhyNexera />
-      <Enquire />
-    </div>
-  );
-}
-
 export default function Home() {
-  // The Home sequence is one dark scene: ground the page (and the translucent nav above it) in night while mounted
-  useEffect(() => {
-    document.body.classList.add("bg-night");
-    return () => document.body.classList.remove("bg-night");
-  }, []);
-
-  const detected = useMotionMode();
-  const [failed, setFailed] = useState(false);
-  const fail = useCallback(() => setFailed(true), []);
-  const mode = failed ? "static" : detected;
-  const value = useMemo(() => ({ mode, fail }), [mode, fail]);
-
   return (
-    <MotionContext.Provider value={value}>
-      <Scenes key={mode} mode={mode} />
-    </MotionContext.Provider>
+    <>
+      <HomeHero />
+      <section aria-label="Market outlook" className="bg-paper">
+        <div className="mx-auto max-w-4xl px-6 py-10">
+          <StatBar stats={HOME_STATS} tone="light" />
+        </div>
+      </section>
+      <HomeSolutions />
+      <HomePartners />
+      <HomeWhyNow />
+      <HomeCta />
+    </>
   );
 }

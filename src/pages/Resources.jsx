@@ -30,7 +30,7 @@ export default function Resources() {
 
       <section className="bg-paper border-b border-line">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
             Datasheets & Brochures
           </h2>
           <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -43,7 +43,7 @@ export default function Resources() {
 
       <section className="bg-ice border-b border-line">
         <div className="mx-auto max-w-3xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">FAQs</h2>
+          <h2 className="font-sans text-2xl font-semibold text-ink">FAQs</h2>
           <div className="mt-6 space-y-3">
             {faqs.map((f) => (
               <FaqItem key={f.q} {...f} />
@@ -54,7 +54,7 @@ export default function Resources() {
 
       <section className="bg-paper">
         <div className="mx-auto max-w-3xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">News & Insights</h2>
+          <h2 className="font-sans text-2xl font-semibold text-ink">News & Insights</h2>
           <ul className="mt-6 space-y-4">
             {articles.map((a) => (
               <li key={a} className="text-graphite border-b border-line pb-4 last:border-0">
@@ -81,7 +81,7 @@ function GatedDownload({ title }) {
     <div className="rounded-lg border border-line bg-white p-5">
       <p className="font-medium text-ink text-sm">{title}</p>
       {unlocked ? (
-        <p className="mt-3 text-sm text-signal">Download link sent to {email}</p>
+        <p className="mt-3 text-sm text-forest">Download link sent to {email}</p>
       ) : (
         <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
           <input

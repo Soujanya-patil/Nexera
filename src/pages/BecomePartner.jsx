@@ -4,7 +4,7 @@ import PageHeader from "../components/PageHeader";
 const reasons = [
   {
     title: "Authorized access, no vetting risk",
-    copy: "Direct, authorized access to TCL and Hithium — no separate brand negotiation on your side.",
+    copy: "Direct, authorized access to TCL, Hithium and CLOU — no separate brand negotiation on your side.",
   },
   {
     title: "Trained on design, sizing, and commissioning",
@@ -47,7 +47,7 @@ export default function BecomePartner() {
       {/* Why partner */}
       <section className="bg-paper">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
             Why Partner With Nexera
           </h2>
           <div className="mt-8 grid md:grid-cols-2 gap-8">
@@ -64,13 +64,13 @@ export default function BecomePartner() {
       {/* Journey — a real sequence, numbering earns its place here */}
       <section className="bg-ice border-y border-line">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
             How It Works
           </h2>
           <div className="mt-8 grid md:grid-cols-5 gap-6">
             {journey.map((j) => (
               <div key={j.step}>
-                <p className="font-serif text-2xl text-steel/80">{j.step}</p>
+                <p className="font-sans text-2xl text-steel/80">{j.step}</p>
                 <h3 className="mt-2 font-medium text-ink text-sm">{j.title}</h3>
                 <p className="mt-1.5 text-xs text-graphite leading-relaxed">{j.copy}</p>
               </div>
@@ -82,7 +82,7 @@ export default function BecomePartner() {
       {/* Application form */}
       <section className="bg-paper">
         <div className="mx-auto max-w-2xl px-6 py-16">
-          <h2 className="font-serif text-2xl font-semibold text-ink">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
             Apply to Become a Distributor
           </h2>
           {submitted ? (
@@ -114,7 +114,7 @@ export default function BecomePartner() {
               <Field label="Expected volume" name="volume" />
               <button
                 type="submit"
-                className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink hover:bg-signal/90 transition-colors"
+                className="inline-flex items-center rounded-full bg-signal px-6 py-3 text-sm font-semibold text-forest hover:bg-signal/90 transition-colors"
               >
                 Submit Application
               </button>

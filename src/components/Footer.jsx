@@ -14,7 +14,7 @@ const links = [
 
 export default function Footer() {
   return (
-    <footer className="bg-ink text-ice/70">
+    <footer className="border-t border-white/10 bg-deep text-ice/70">
       <div className="mx-auto max-w-6xl px-6 py-14 grid md:grid-cols-2 gap-10">
         <div>
           <Wordmark className="text-lg text-white" />
@@ -26,7 +26,7 @@ export default function Footer() {
           <ul className="mt-3 grid grid-cols-2 gap-2 text-sm">
             {links.map((l) => (
               <li key={l.label}>
-                <Link to={l.href} className="hover:text-white transition-colors">
+                <Link to={l.href} className="transition-colors hover:text-signal">
                   {l.label}
                 </Link>
               </li>
