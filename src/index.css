@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* "stage": wide AND tall enough, with motion allowed — where scroll-driven sections (For EPCs journey
+   and project story) stick to the viewport. Everywhere else they read in normal flow. */
+@custom-variant stage (@media (min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference));
+
 /* Self-hosted IBM Plex (Latin subset). font-display: swap keeps text visible while faces load;
    the two above-the-fold faces are preloaded in index.html. */
 @font-face {
@@ -82,6 +86,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+  }
+  /* While Lenis runs it does the smoothing; native smooth scrolling on top of it (Lenis's own
+     recommended rule) would keep animating through programmatic jumps, e.g. a route change. */
+  html.lenis {
+    scroll-behavior: auto;
   }
   body {
     font-family: var(--font-sans);
@@ -219,6 +228,53 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-accent-sheen:hover {
     background-position: 100% 0;
+  }
+}
+
+/* Scroll reveals (lib/scrollReveal.js) and hero entrances (lib/intro.js): parts wait hidden only
+   until GSAP has taken them over. */
+[data-sr-state="pending"] [data-sr] {
+  opacity: 0;
+}
+
+/* Slow ambient light behind hero products (transform only; off for reduced motion). */
+@keyframes ambient-drift {
+  from { transform: translate3d(-5%, -4%, 0) scale(1); }
+  to { transform: translate3d(5%, 4%, 0) scale(1.06); }
+}
+.ambient-drift {
+  animation: ambient-drift 16s ease-in-out infinite alternate;
+}
+
+/* Swapped detail content (For EPCs journey panel, partner panel, network card) settles in. */
+@keyframes detail-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: none; }
+}
+.journey-detail {
+  animation: detail-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Card -> product page View Transition: the product image morphs, everything else cross-fades. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 280ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-group(*) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-drift,
+  .journey-detail {
+    animation: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
 

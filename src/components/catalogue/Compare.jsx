@@ -45,10 +45,11 @@ export function CompareTray({ ids, onRemove, onClear, onOpen }) {
             onClick={onOpen}
             disabled={ids.length < 2}
             tabIndex={ids.length ? 0 : -1}
-            className="inline-flex items-center gap-2 rounded-full bg-signal px-4 py-2 text-xs font-semibold text-forest transition-colors hover:bg-[#a4e39d] disabled:cursor-not-allowed disabled:opacity-40"
+            className="group/cmp inline-flex items-center gap-2 rounded-full bg-signal px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-forest transition-[background-color,scale] duration-300 hover:bg-[#a4e39d] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <GitCompareArrows aria-hidden="true" className="h-4 w-4" />
-            Compare {ids.length}
+            Compare {ids.length} {ids.length === 1 ? "system" : "systems"}
+            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover/cmp:translate-x-1" />
           </button>
         </div>
       </div>
