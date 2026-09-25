@@ -52,31 +52,82 @@ function Segmented({ options, value, onChange, label }) {
   );
 }
 
-/** Real partner products, smallest to largest — the range the page covers. Captioned by partner. */
-function HeroLineup() {
-  const x1 = getProduct("tcl-blueark-x1");
-  const x5 = getProduct("tcl-blueark-x5");
-  const big = getProduct("hithium-power-625");
-  const shadow = "absolute bottom-[-3%] left-[8%] right-[8%] h-[7%] rounded-[100%] bg-black/55 blur-md";
+/**
+ * Pointer depth for the hero (desktop, motion allowed): writes the pointer position as --mx/--my
+ * (-1…1) on the section, at most once per frame; layers read them in CSS and ease via transitions,
+ * so nothing runs while the pointer is still. Same approach as the Home hero.
+ */
+function usePointerDepth(ref) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || reducedMotion() || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    let raf = 0;
+    let nx = 0;
+    let ny = 0;
+    const apply = () => {
+      raf = 0;
+      el.style.setProperty("--mx", nx.toFixed(3));
+      el.style.setProperty("--my", ny.toFixed(3));
+    };
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      nx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width) * 2 - 1));
+      ny = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height) * 2 - 1));
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    const onLeave = () => {
+      nx = 0;
+      ny = 0;
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    el.addEventListener("pointermove", onMove, { passive: true });
+    el.addEventListener("pointerleave", onLeave);
+    return () => {
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", onLeave);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [ref]);
+}
+
+const depth = (px, py) => ({
+  transform: `translate3d(calc(var(--mx, 0) * ${px}px), calc(var(--my, 0) * ${py}px), 0)`,
+  transition: "transform 900ms cubic-bezier(0.22, 1, 0.36, 1)",
+});
+
+/**
+ * One real product as the hero's visual anchor: Hithium ∞Power 6.25 MWh (the catalogue's cutout of
+ * Hithium's own datasheet render), shown whole at its native proportions with object-contain. A soft
+ * green glow and a contact shadow separate it from the ground; the caption is the catalogue's
+ * confirmed product name.
+ */
+function HeroProduct() {
+  const product = getProduct("hithium-power-625");
   return (
     <figure className="relative">
-      <div className="relative mx-auto aspect-[16/10] w-full max-w-xl lg:max-w-none">
-        <div aria-hidden="true" className="absolute -inset-[10%]" style={{ background: "radial-gradient(50% 50% at 55% 60%, rgba(144,217,136,0.10), rgba(144,217,136,0.03) 45%, transparent 72%)" }} />
-        <div className="absolute bottom-[16%] right-0 w-[64%]">
-          <span aria-hidden="true" className={shadow} />
-          <img src={big.image} alt={big.imageAlt} className="relative w-full" />
-        </div>
-        <div className="absolute bottom-[8%] left-[27%] h-[72%]">
-          <span aria-hidden="true" className={shadow} />
-          <img src={x5.image} alt={x5.imageAlt} className="relative h-full w-auto" />
-        </div>
-        <div className="absolute bottom-[6%] left-[4%] h-[42%]">
-          <span aria-hidden="true" className={shadow} />
-          <img src={x1.image} alt={x1.imageAlt} className="relative h-full w-auto" />
+      <div className="group/product relative mx-auto w-full max-w-xl lg:max-w-none">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-[14%]"
+          style={{ ...depth(-2, -1.5), background: "radial-gradient(48% 46% at 50% 55%, rgba(144,217,136,0.11), rgba(144,217,136,0.035) 45%, transparent 72%)" }}
+        />
+        <div style={depth(5, 4)}>
+          <div className="relative aspect-[1404/800] transition-[scale] duration-700 ease-out group-hover/product:scale-[1.015]">
+            <span aria-hidden="true" className="absolute inset-x-[10%] bottom-[3%] h-[9%] rounded-[100%] bg-black/55 blur-xl" />
+            <img
+              src={product.image}
+              alt={product.imageAlt}
+              width="1404"
+              height="800"
+              fetchPriority="high"
+              decoding="async"
+              className="relative h-full w-full object-contain"
+            />
+          </div>
         </div>
       </div>
-      <figcaption className="mt-4 text-center text-[0.6875rem] uppercase tracking-[0.16em] text-ice/50 lg:text-right">
-        TCL BlueArk X1 · TCL BlueArk X5 · Hithium ∞Power 6.25 MWh
+      <figcaption className="mt-5 text-center text-[0.6875rem] tracking-[0.16em] text-ice/50 lg:text-right">
+        <span className="uppercase">Hithium ∞Power</span> 6.25 MWh
       </figcaption>
     </figure>
   );
@@ -146,6 +197,9 @@ export default function Products() {
     });
   }, [app, partner]);
 
+  const hero = useRef(null);
+  usePointerDepth(hero);
+
   // --- Comparison ------------------------------------------------------------------------------
   const [compare, setCompare] = useState([]);
   const [comparing, setComparing] = useState(false);
@@ -155,7 +209,9 @@ export default function Products() {
   return (
     <div className={compare.length ? "pb-24" : undefined}>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-night text-white">
+      <section ref={hero} className="relative overflow-hidden bg-night text-white">
+        {/* Ground layers drift a touch against the product for depth (smaller than the product). */}
+        <div aria-hidden="true" className="pointer-events-none absolute -inset-3" style={depth(-2, -1.5)}>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(55% 60% at 8% 0%, rgba(244,247,244,0.05), transparent 70%), linear-gradient(to bottom, transparent 60%, var(--color-deep))" }} />
         <div
           aria-hidden="true"
@@ -167,6 +223,7 @@ export default function Products() {
             WebkitMaskImage: "radial-gradient(70% 80% at 70% 50%, #000, transparent 75%)",
           }}
         />
+        </div>
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-6 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:py-16">
           <Reveal>
             <p className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">Energy Storage Systems</p>
@@ -179,7 +236,7 @@ export default function Products() {
             </p>
           </Reveal>
           <Reveal delay={0.1}>
-            <HeroLineup />
+            <HeroProduct />
           </Reveal>
         </div>
       </section>
