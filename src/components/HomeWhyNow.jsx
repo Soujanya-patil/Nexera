@@ -2,6 +2,7 @@ import { Database, Leaf, ShieldCheck, Sun } from "lucide-react";
 import PillLink from "./PillLink";
 import Reveal from "./Reveal";
 import SceneImg from "./SceneImg";
+import ParallaxMedia from "./ui/ParallaxMedia";
 
 const benefits = [
   { icon: Sun, label: "Integrate More Renewable Energy" },
@@ -15,7 +16,9 @@ export default function HomeWhyNow() {
     <section className="relative overflow-hidden bg-night text-white">
       {/* Closest existing asset to the mockup's sunset skyline (no new imagery for now).
           TODO(india-imagery): energy-night is a cityscape not identified as Indian. */}
-      <SceneImg name="energy-night" className="absolute inset-0 h-full w-full object-cover object-[50%_60%]" />
+      <ParallaxMedia amount={6}>
+        <SceneImg name="energy-night" className="h-full w-full object-cover object-[50%_60%]" />
+      </ParallaxMedia>
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-night/95 via-night/75 to-night/30" />
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/80 to-transparent" />
 

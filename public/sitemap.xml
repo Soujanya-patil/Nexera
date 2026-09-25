@@ -3,7 +3,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://todo-production-domain.example/</loc></url>
   <url><loc>https://todo-production-domain.example/about</loc></url>
-  <url><loc>https://todo-production-domain.example/brands</loc></url>
+  <url><loc>https://todo-production-domain.example/products</loc></url>
+  <url><loc>https://todo-production-domain.example/products/tcl-blueark-x1</loc></url>
+  <url><loc>https://todo-production-domain.example/products/tcl-blueark-x5</loc></url>
+  <url><loc>https://todo-production-domain.example/products/tcl-blueark-w10</loc></url>
+  <url><loc>https://todo-production-domain.example/products/hithium-block-261</loc></url>
+  <url><loc>https://todo-production-domain.example/products/hithium-power-cabinet-1022</loc></url>
+  <url><loc>https://todo-production-domain.example/products/hithium-power-625</loc></url>
+  <url><loc>https://todo-production-domain.example/products/clou-aqua-c25s</loc></url>
   <url><loc>https://todo-production-domain.example/solutions</loc></url>
   <url><loc>https://todo-production-domain.example/become-a-partner</loc></url>
   <url><loc>https://todo-production-domain.example/how-it-works</loc></url>

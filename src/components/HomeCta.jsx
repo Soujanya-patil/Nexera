@@ -1,4 +1,4 @@
-import PillLink from "./PillLink";
+import MagneticButton from "./ui/MagneticButton";
 import Reveal from "./Reveal";
 
 /** Closing band: near-black green with the mockup's faint green light streaks along the bottom. */
@@ -37,12 +37,12 @@ export default function HomeCta() {
           </p>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-4">
-          <PillLink to="/contact" arrow>
+          <MagneticButton to="/contact" arrow>
             Get in Touch
-          </PillLink>
-          <PillLink to="/become-a-partner" variant="outline">
+          </MagneticButton>
+          <MagneticButton to="/become-a-partner" variant="outline">
             Become a Partner
-          </PillLink>
+          </MagneticButton>
         </div>
       </Reveal>
     </section>

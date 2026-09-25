@@ -1,15 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ChartNoAxesColumnIncreasing, Leaf, Zap } from "lucide-react";
-import PillLink from "./PillLink";
+import HomeHeroCopy from "./HomeHeroCopy";
 import videoSrc from "../assets/products/nexera-hero-cabinet.mp4";
 import closeSrc from "../assets/products/nexera-hero-cabinet-close.mp4";
 import posterSrc from "../assets/products/nexera-hero-cabinet-poster.webp";
-
-const trust = [
-  { icon: Zap, lines: ["Cleaner Energy", "Round the Clock"] },
-  { icon: ChartNoAxesColumnIncreasing, lines: ["Lower Costs", "Higher Reliability"] },
-  { icon: Leaf, lines: ["A Stronger,", "Greener India"] },
-];
 
 /*
  * Callouts for the held final (open-cabinet) frame of nexera-hero-cabinet.mp4, using the exact
@@ -543,42 +536,7 @@ export default function HomeHero() {
       </div>
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-6 py-14 lg:min-h-[max(34rem,calc(100svh-4rem))] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 lg:py-16">
-        <div className="max-w-xl lg:max-w-none">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">Battery Energy Storage Systems</p>
-          <h1 className="mt-5 text-[clamp(2.1rem,3.9vw,3.2rem)] font-semibold leading-[1.1] tracking-tight">
-            Powering India&rsquo;s Transition&nbsp;to{" "}
-            <span className="block text-signal">Smart Energy Storage</span>
-          </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-ice/80">
-            Bridging world-class BESS technology with India&rsquo;s solar ecosystem through distribution, design,
-            training and service.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <PillLink to="/solutions" arrow>
-              Explore Solutions
-            </PillLink>
-            <PillLink to="/become-a-partner" variant="outline">
-              Partner with Us
-            </PillLink>
-          </div>
-          <ul className="mt-10 grid max-w-xl grid-cols-3 divide-x divide-white/15">
-            {trust.map(({ icon: Icon, lines }) => (
-              <li
-                key={lines[0]}
-                className="flex flex-col items-start gap-2 px-3 first:pl-0 sm:flex-row sm:items-center sm:gap-3 sm:px-4 lg:flex-col lg:items-start lg:gap-2 xl:flex-row xl:items-center xl:gap-3"
-              >
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-signal/70 text-signal">
-                  <Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
-                </span>
-                <span className="whitespace-nowrap text-xs leading-snug text-ice/85">
-                  {lines[0]}
-                  <br />
-                  {lines[1]}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <HomeHeroCopy parallax={parallax} subdued={phase === "scan" || phase === "open"} />
 
         {/* Product: parallax layer -> lifted frame (light behind, contact shadow under) -> stage. */}
         <div style={parallax ? drift(6, 5) : undefined}>

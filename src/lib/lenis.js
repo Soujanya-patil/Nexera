@@ -18,6 +18,20 @@ import { loadGsap } from "./motion";
  * Returns a cleanup function; safe to call once from a component that stays mounted for the life
  * of the app (Layout does, via nested routes).
  */
+let active = null;
+
+/** The live Lenis instance, or null (reduced motion, not yet loaded, or torn down). */
+export const getLenis = () => active;
+
+/**
+ * Jump to a scroll position without easing. Goes through Lenis when it is running, so its internal
+ * target can't pull the page back toward a previous position; plain window.scrollTo otherwise.
+ */
+export function jumpTo(top) {
+  if (active) active.scrollTo(top, { immediate: true, force: true });
+  else window.scrollTo({ top, behavior: "instant" });
+}
+
 export function initSmoothScroll() {
   if (typeof window === "undefined" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     return () => {};
@@ -29,8 +43,11 @@ export function initSmoothScroll() {
   let onTick;
 
   Promise.all([loadGsap(), import("lenis")]).then(([{ gsap, ScrollTrigger }, { default: Lenis }]) => {
-    if (cancelled) return;
+    // Guard against a second instance (StrictMode re-runs effects; the first run is cancelled).
+    if (cancelled || active) return;
+    // Wheel inside [data-lenis-prevent] (modals, horizontally scrolling rows) scrolls natively.
     lenis = new Lenis();
+    active = lenis;
     gsapRef = gsap;
     lenis.on("scroll", ScrollTrigger.update);
     onTick = (time) => lenis.raf(time * 1000);
@@ -41,6 +58,7 @@ export function initSmoothScroll() {
   return () => {
     cancelled = true;
     if (onTick && gsapRef) gsapRef.ticker.remove(onTick);
+    if (active === lenis) active = null;
     lenis?.destroy();
   };
 }

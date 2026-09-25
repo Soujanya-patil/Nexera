@@ -2,19 +2,15 @@ import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Nav from "./Nav";
 import Footer from "./Footer";
-import { initSmoothScroll } from "../lib/lenis";
+import { initSmoothScroll, jumpTo } from "../lib/lenis";
 
 /** On navigation: jump to the #hash target if there is one (e.g. /solutions#ci), otherwise to the top. */
 function useScrollOnNavigate() {
   const { pathname, hash } = useLocation();
   useEffect(() => {
     const target = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
-    if (target) {
-      // Clear the sticky nav (h-16)
-      window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 64, behavior: "instant" });
-    } else {
-      window.scrollTo({ top: 0, behavior: "instant" });
-    }
+    // Clear the sticky nav (h-16) when landing on a section
+    jumpTo(target ? target.getBoundingClientRect().top + window.scrollY - 64 : 0);
   }, [pathname, hash]);
 }
 

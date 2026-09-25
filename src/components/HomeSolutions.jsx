@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import Reveal from "./Reveal";
 import SceneImg from "./SceneImg";
+import AnimatedText from "./ui/AnimatedText";
+import ParallaxMedia from "./ui/ParallaxMedia";
 
 // Imagery and alt text reused from ScaleStory (same three segments); copy from the approved mockup.
 // Each card links to its segment's section on the Solutions page.
@@ -39,17 +41,17 @@ export default function HomeSolutions() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Our Solutions</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Energy Storage for Every Need</h2>
+            <AnimatedText className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">Energy Storage for Every Need</AnimatedText>
             <p className="mt-3 max-w-2xl text-graphite">
               From homes to industries to the grid — Nexera brings the right storage solution for every application.
             </p>
           </div>
           <Link
             to="/solutions"
-            className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-forest transition-colors hover:text-steel"
+            className="group/all inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-forest transition-colors hover:text-steel"
           >
             View All Solutions
-            <ArrowRight aria-hidden="true" className="h-4 w-4" />
+            <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/all:translate-x-1" />
           </Link>
         </div>
 
@@ -61,13 +63,15 @@ export default function HomeSolutions() {
               delay={i * 0.08}
               className="group relative flex flex-col overflow-hidden rounded-xl bg-paper shadow-[0_1px_2px_rgba(7,22,33,0.06),0_12px_28px_-16px_rgba(7,22,33,0.22)] transition-shadow duration-300 hover:shadow-[0_1px_2px_rgba(7,22,33,0.06),0_20px_36px_-16px_rgba(7,22,33,0.3)]"
             >
-              <div className="aspect-[16/10] overflow-hidden">
-                <SceneImg
-                  name={c.img}
-                  alt={c.alt}
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                />
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <ParallaxMedia amount={5}>
+                  <SceneImg
+                    name={c.img}
+                    alt={c.alt}
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="h-full w-full object-cover transition-[scale] duration-700 ease-out group-hover:scale-[1.04]"
+                  />
+                </ParallaxMedia>
               </div>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="text-lg font-semibold text-ink">{c.title}</h3>
@@ -79,7 +83,7 @@ export default function HomeSolutions() {
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-forest after:absolute after:inset-0 group-hover:text-steel focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
                 >
                   Learn More
-                  <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </div>
             </Reveal>

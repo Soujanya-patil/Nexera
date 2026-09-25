@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { loadGsap } from "./motion";
 
-const RADIUS = 70; // px — small pull radius, not the whole button's hit area and beyond
+const RADIUS = 60; // px beyond the button's edge where the pull starts
 const MAX_OFFSET = 8; // px — "a few px max," reads as premium, not bouncy
 
 /**
@@ -28,18 +28,22 @@ export function useMagnetic() {
       const yTo = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3" });
 
       const onMove = (e) => {
+        // Measured from the button's edge, not its centre, so wide pills engage as the cursor
+        // approaches; the pull fades out to nothing RADIUS px away.
         const rect = el.getBoundingClientRect();
-        const dx = e.clientX - (rect.left + rect.width / 2);
-        const dy = e.clientY - (rect.top + rect.height / 2);
-        const dist = Math.hypot(dx, dy);
-        if (dist > RADIUS) {
+        const hw = rect.width / 2;
+        const hh = rect.height / 2;
+        const dx = e.clientX - (rect.left + hw);
+        const dy = e.clientY - (rect.top + hh);
+        const edge = Math.hypot(Math.max(Math.abs(dx) - hw, 0), Math.max(Math.abs(dy) - hh, 0));
+        if (edge > RADIUS) {
           xTo(0);
           yTo(0);
           return;
         }
-        const pull = (1 - dist / RADIUS) * MAX_OFFSET;
-        xTo((dx / (dist || 1)) * pull);
-        yTo((dy / (dist || 1)) * pull);
+        const fade = 1 - edge / RADIUS;
+        xTo((dx / (hw + RADIUS)) * MAX_OFFSET * fade);
+        yTo((dy / (hh + RADIUS)) * MAX_OFFSET * fade);
       };
       const onLeave = () => {
         xTo(0);

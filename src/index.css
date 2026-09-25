@@ -52,22 +52,23 @@
 }
 
 @theme {
-  /* Color system — sampled from the approved Home mockup (home-mockup-v2-approved.png).
+  /* Color system — accents sampled from the approved Home mockup (home-mockup-v2-approved.png);
+     grounds and surface from the NEXERA green/graphite palette (#071A17 / #03100D / #F4F7F4).
      `signal` is a fill / text-on-dark color only: on white it is ~1.7:1, so any green text on a
      light surface uses `forest` instead. */
-  --color-ink: #071621;         /* header navy; headlines and primary text on light */
+  --color-ink: #071A17;         /* header ground (continuous with the hero); headlines and primary text on light */
   --color-signal: #90D988;      /* accent green: buttons, icons, highlight text on dark */
   --color-forest: #092F27;      /* dark green: stat figures, labels on green buttons, green text on light */
   --color-steel: #354A47;       /* links and focus rings on light */
   --color-sage: #63726F;        /* eyebrow labels on light */
-  --color-ice: #F5F7F9;         /* light section backgrounds */
+  --color-ice: #F4F7F4;         /* light section backgrounds (surface) */
   --color-paper: #FFFFFF;       /* base page background, cards */
   --color-graphite: #545658;    /* body / secondary text on light */
   --color-line: #EEEEEE;        /* hairline dividers, borders */
-  --color-deep: #02110D;        /* final CTA band and footer */
+  --color-deep: #03100D;        /* deep ground: hero fall-off, final CTA band, footer */
 
   /* Dark scene palette — extends the tokens above, replaces none of them */
-  --color-night: #0A1822;       /* hero ground */
+  --color-night: #071A17;       /* hero ground: deep green-graphite */
   --color-charcoal: #0F1A27;    /* raised surfaces inside dark scenes */
   --color-bone: #F2F0EA;        /* warm off-white for type and light bands on dark */
   --color-amber: #E3A23B;       /* energy accent — sparing: progress line, sunrise glow only */
@@ -135,10 +136,101 @@
     animation: glow-pulse 3.4s ease-in-out infinite;
   }
 
+  /* Home hero hotspots: a slow breathing ring behind each anchor dot. */
+  @keyframes hotspot-pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    70%, 100% { transform: scale(2.8); opacity: 0; }
+  }
+  .animate-hotspot-pulse {
+    animation: hotspot-pulse 2.4s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+
+  /* Home hero: one soft light band crossing the cabinet as it settles open (runs once). */
+  @keyframes scan-sweep {
+    0% { transform: translateX(-100%); opacity: 0; }
+    15%, 80% { opacity: 1; }
+    100% { transform: translateX(460%); opacity: 0; }
+  }
+  .animate-scan-sweep {
+    animation: scan-sweep 1.2s cubic-bezier(0.45, 0, 0.25, 1) both;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate-glow-pulse {
       animation: none;
       opacity: 0.85;
     }
+    .animate-hotspot-pulse,
+    .animate-scan-sweep {
+      animation: none;
+      opacity: 0;
+    }
+  }
+}
+
+/* Registry components (Magic UI / SmoothUI / Unlumen UI, installed with the shadcn CLI) style
+   themselves with shadcn's semantic colour names. Map those names onto NEXERA's own tokens so every
+   installed component inherits the NEXERA palette — no library theme (SmoothUI's `tokens` theme
+   and its pink brand colour were removed on install). */
+@theme inline {
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-muted: var(--color-ice);
+  --color-muted-foreground: var(--color-sage);
+  --color-border: var(--color-line);
+  --color-ring: var(--color-signal);
+  --color-brand: var(--color-signal);
+
+  /* Magic UI Marquee */
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100% - var(--gap))); }
+  }
+  @keyframes marquee-vertical {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(-100% - var(--gap))); }
+  }
+}
+
+/* Home hero copy: animated parts wait (hidden) only until the GSAP entrance timeline exists; from
+   then on GSAP's inline styles own them. */
+[data-intro="pending"] [data-a],
+[data-intro="pending"] [data-word] {
+  opacity: 0;
+}
+
+/* Home hero: "Smart Energy Storage" — one highlight sweep across the phrase on hover (none at rest,
+   no looping). The gradient is solid accent at both ends, so returning without a transition is
+   invisible. */
+.hero-accent-sheen {
+  background-image: linear-gradient(110deg, var(--color-signal) 0%, var(--color-signal) 42%, #e6f8e2 50%, var(--color-signal) 58%, var(--color-signal) 100%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-accent-sheen:hover {
+  background-position: 0% 0;
+  transition: background-position 1.1s cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease-out, translate 0.5s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-accent-sheen:hover {
+    background-position: 100% 0;
+  }
+}
+
+/* Product detail: specification rows settle in when a tab opens (transform/opacity only). */
+@keyframes spec-row {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-vertical {
+    animation: none;
   }
 }

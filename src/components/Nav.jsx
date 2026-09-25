@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Wordmark from "./Wordmark";
 
-// "Products" and "For EPCs" have no pages of their own: they map to the existing Our Brands and
-// Become a Partner routes (confirmed direction), so the nav matches the mockup without placeholders.
+// "For EPCs" has no page of its own: it maps to the existing Become a Partner route (confirmed
+// direction), so the nav matches the mockup without placeholders.
 const links = [
   { label: "Home", href: "/", end: true },
   { label: "Solutions", href: "/solutions" },
-  { label: "Products", href: "/brands" },
+  { label: "Products", href: "/products" },
   { label: "For EPCs", href: "/become-a-partner" },
   { label: "About", href: "/about" },
   { label: "Resources", href: "/resources" },

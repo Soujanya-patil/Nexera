@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
+import { applicationLabel, getProduct, productLabel } from "../data/products";
 
 const paths = [
   { id: "general", label: "I'm a customer looking for a BESS system" },
@@ -10,6 +11,17 @@ const paths = [
 export default function Contact() {
   const [path, setPath] = useState("general");
   const [submitted, setSubmitted] = useState(false);
+  // Arriving from the catalogue: /contact?product=<id> (and/or &intent=quote) pre-fills the
+  // customer form with the system and its application, so the enquiry is routed with context.
+  const [params] = useSearchParams();
+  const product = getProduct(params.get("product"));
+  const quote = params.get("intent") === "quote";
+  const name = product ? productLabel(product) : null;
+  const starter = quote
+    ? `I'd like a quote${name ? ` for the ${name}` : ""}.`
+    : name
+      ? `I'd like to know more about the ${name}.`
+      : undefined;
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -76,6 +88,18 @@ export default function Contact() {
 
               {path === "general" && (
                 <>
+                  {(product || quote) && (
+                    <p className="rounded-lg bg-ice px-4 py-3 text-sm text-ink">
+                      <span className="font-semibold">{quote ? "Quote request" : "Product enquiry"}</span>
+                      {name && <> &middot; {name}</>}
+                    </p>
+                  )}
+                  {product && (
+                    <div className="grid sm:grid-cols-2 gap-5">
+                      <Field label="Product" name="product" defaultValue={name} />
+                      <Field label="Application" name="application" defaultValue={product.applications.map(applicationLabel).join(", ")} />
+                    </div>
+                  )}
                   <p className="text-xs text-graphite">
                     Sharing a few site details lets our team plan a visit if one's needed.
                   </p>
@@ -84,7 +108,7 @@ export default function Contact() {
                     <Field label="Purpose" name="purpose" />
                     <Field label="Scale" name="scale" />
                   </div>
-                  <Field label="Message" name="message" as="textarea" />
+                  <Field label="Message" name="message" as="textarea" defaultValue={starter} />
                 </>
               )}
 
@@ -116,7 +140,7 @@ export default function Contact() {
   );
 }
 
-function Field({ label, name, required, type = "text", as }) {
+function Field({ label, name, required, type = "text", as, defaultValue }) {
   const Tag = as || "input";
   return (
     <div>
@@ -128,6 +152,7 @@ function Field({ label, name, required, type = "text", as }) {
         name={name}
         type={as ? undefined : type}
         required={required}
+        defaultValue={defaultValue}
         rows={as === "textarea" ? 4 : undefined}
         className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-steel/40"
       />
