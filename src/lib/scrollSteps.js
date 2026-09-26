@@ -20,10 +20,13 @@ export function useMediaQuery(query) {
  * (for scrubbed CSS transforms and fills, no React render per frame) and turned into the active step
  * index, which is returned — React only re-renders when the step actually changes.
  *
+ * `toStep(progress)` replaces the default equal split (floor(progress × count)) when the steps are
+ * not evenly spaced — e.g. with holds at either end. Pass a stable (module-level) function.
+ *
  * Pass `enabled: false` (e.g. reduced motion, or a layout that is not on screen) and nothing is
  * created: the step stays at 0 and --progress is unset. The trigger is reverted on unmount.
  */
-export function useScrollSteps(ref, count, { start = "top top", end = "bottom bottom", enabled = true } = {}) {
+export function useScrollSteps(ref, count, { start = "top top", end = "bottom bottom", enabled = true, toStep } = {}) {
   const [step, setStep] = useState(0);
   useEffect(() => {
     const el = ref.current;
@@ -34,7 +37,7 @@ export function useScrollSteps(ref, count, { start = "top top", end = "bottom bo
       if (cancelled || !ref.current) return;
       const sync = (self) => {
         el.style.setProperty("--progress", self.progress.toFixed(4));
-        setStep(Math.min(count - 1, Math.floor(self.progress * count)));
+        setStep(toStep ? toStep(self.progress) : Math.min(count - 1, Math.floor(self.progress * count)));
       };
       ctx = gsap.context(() => {
         ScrollTrigger.create({ trigger: el, start, end, onUpdate: sync, onRefresh: sync });
@@ -45,6 +48,6 @@ export function useScrollSteps(ref, count, { start = "top top", end = "bottom bo
       ctx?.revert();
       el.style.removeProperty("--progress");
     };
-  }, [ref, count, start, end, enabled]);
+  }, [ref, count, start, end, enabled, toStep]);
   return step;
 }

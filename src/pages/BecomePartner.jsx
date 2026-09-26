@@ -13,8 +13,9 @@ import PartnerForm from "../components/epc/PartnerForm";
 /**
  * For EPCs (/become-a-partner) — answers one question: why should an EPC work with NEXERA?
  *
- * Hero → why partner (lifecycle) → partnership journey → support capabilities → technology partners
- * → project story → applications → network → why EPCs → partner CTA → partner enquiry form.
+ * Hero → why partner → partnership journey (the project lifecycle, pinned and scroll-driven) →
+ * what NEXERA brings (horizontal capability showcase) → technology partners → project story →
+ * applications → network → why EPCs → partner CTA → partner enquiry form.
  *
  * Content rule: every statement restates something the site already establishes (sources listed in
  * components/epc/content.js). NEXERA is positioned as the authorized partner and solution provider;

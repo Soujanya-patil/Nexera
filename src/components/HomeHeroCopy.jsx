@@ -128,7 +128,7 @@ export default function HomeHeroCopy({ parallax, subdued }) {
       : undefined;
 
   return (
-    <div ref={column} data-intro={intro} className="max-w-xl origin-left lg:max-w-none">
+    <div ref={column} data-intro={intro} className="relative z-10 max-w-xl origin-left lg:max-w-none">
       <div className={`transition-opacity duration-700 ease-out ${subdued ? "lg:opacity-75" : "opacity-100"}`}>
         <p data-a="eyebrow" className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
           Battery Energy Storage Systems

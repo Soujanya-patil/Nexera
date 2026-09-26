@@ -37,8 +37,10 @@ export default function PartnerForm() {
     };
     const loaded = document.readyState === "complete" ? Promise.resolve() : new Promise((r) => window.addEventListener("load", r, { once: true }));
     Promise.all([document.fonts?.ready, loaded]).then(() => requestAnimationFrame(realign));
+    const late = setTimeout(realign, 1500);
     return () => {
       live = false;
+      clearTimeout(late);
     };
   }, [hash]);
   const application = PROJECT_APPLICATIONS.some((a) => a.id === params.get("application")) ? params.get("application") : "";

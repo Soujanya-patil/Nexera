@@ -13,8 +13,13 @@ export const scrollToId = (id, { offset = -64 } = {}) => (e) => {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lenis = getLenis();
   // Content above can still settle while the glide runs (lazy images, heading reveals), so the landing
-  // is checked once and corrected with a short second glide if it drifted.
-  const settle = () => Math.abs(target.getBoundingClientRect().top + offset) > 2 && lenis.scrollTo(target, { offset, duration: 0.4 });
+  // is checked and corrected with a short second glide if it drifted.
+  const drifted = () => Math.abs(target.getBoundingClientRect().top + offset) > 2;
+  const settle = () => {
+    if (drifted()) lenis.scrollTo(target, { offset, duration: 0.4 });
+    // A heading revealed during the glide can re-wrap for a moment after it; check once more.
+    setTimeout(() => drifted() && lenis.scrollTo(target, { offset, duration: 0.4 }), 1000);
+  };
   if (lenis) lenis.scrollTo(target, { offset, duration: 1.2, onComplete: settle });
   else window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY + offset, behavior: reduce ? "auto" : "smooth" });
   if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");

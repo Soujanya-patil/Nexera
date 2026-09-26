@@ -42,8 +42,9 @@ export const LIFECYCLE = [
 ];
 
 /**
- * Partnership journey. `image` is a scene photo (lib/scenes) or a catalogue cutout (`cutout`), shown
- * as the stage's visual — partner product imagery, never presented as a NEXERA project.
+ * Partnership journey. `photo` names the stage image (journeyImages.js); every image is technology-
+ * partner imagery and its caption says whose and what it shows — never presented as a NEXERA project.
+ * `focus` is the object-position that keeps the subject in frame when the image is cropped.
  */
 export const JOURNEY = [
   {
@@ -53,8 +54,10 @@ export const JOURNEY = [
     copy: "Choose from TCL, Hithium and CLOU systems across residential, C&I and utility-scale.",
     detail:
       "Direct, authorized access to our technology partners' storage — the right system sized to your load, with no separate brand negotiation on your side.",
-    scene: "storage-tcl",
+    photo: "select",
+    focus: "50% 60%",
     alt: "TCL BlueArk energy storage range: battery modules, floor-standing cabinets, wall-mounted units and inverters",
+    caption: "TCL BlueArk storage range",
   },
   {
     n: "02",
@@ -62,8 +65,11 @@ export const JOURNEY = [
     icon: DraftingCompass,
     copy: "Sizing and single-line diagrams, worked with our engineers.",
     detail: "Every partner gets our engineering team for sizing and single-line diagrams — we work your first system design with you.",
-    scene: "tech-cabinet",
-    alt: "Hithium battery cabinet with its doors open, showing stacked liquid-cooled battery modules",
+    photo: "design",
+    focus: "50% 50%",
+    contain: true,
+    alt: "Engineering drawing of a row of five Hithium C&I storage cabinets, with overall dimensions marked",
+    caption: "Hithium C&I cabinet system · engineering drawing",
   },
   {
     n: "03",
@@ -71,8 +77,10 @@ export const JOURNEY = [
     icon: Truck,
     copy: "Add battery storage without building a supply chain from scratch.",
     detail: "Your systems come through NEXERA as an authorized TCL, Hithium and CLOU partner, so your team can focus on the project on site.",
-    scene: "utility-yard",
-    alt: "Rows of Hithium battery storage containers at a large storage site",
+    photo: "deploy",
+    focus: "55% 60%",
+    alt: "Hithium storage containers placed across a gravel site beside a solar field, with an excavator still working on site",
+    caption: "Hithium storage site during construction",
   },
   {
     n: "04",
@@ -80,8 +88,10 @@ export const JOURNEY = [
     icon: PlugZap,
     copy: "On-site commissioning support from our engineers.",
     detail: "Our engineers work your first commissioning with you, on site — as part of onboarding, not as a one-off session.",
-    cutout: "tcl-blueark-w10",
-    alt: "TCL BlueArk W10 cabinet with its door open, showing battery packs and protection components",
+    photo: "commission",
+    focus: "35% 50%",
+    alt: "Row of TCL energy storage cabinets with their doors open on a test floor, battery modules and wiring visible",
+    caption: "TCL storage cabinets open for testing",
   },
   {
     n: "05",
@@ -89,8 +99,10 @@ export const JOURNEY = [
     icon: Wrench,
     copy: "After-sales and warranty handling — we manage the OEM relationship.",
     detail: "After-sales support is included, so warranty issues don't become your problem. Local-first warranty handling keeps your customer relationship intact.",
-    scene: "hithium-block",
-    alt: "Hithium DC block battery cabinet",
+    photo: "support",
+    focus: "50% 55%",
+    alt: "Rows of Hithium storage containers on a large site, with transmission masts behind",
+    caption: "Hithium utility storage site",
   },
   {
     n: "06",
@@ -98,8 +110,10 @@ export const JOURNEY = [
     icon: TrendingUp,
     copy: "Grow into new projects with a protected territory.",
     detail: "Once you're onboarded, your region is formally mapped and protected — and technician training in Kalaburagi helps your team take on more storage work.",
-    scene: "energy-night",
-    alt: "City at night seen from above, its lights forming a connected network",
+    photo: "scale",
+    focus: "50% 50%",
+    alt: "Aerial view of a very large storage installation: long rows of white containers along service roads",
+    caption: "Large-scale Hithium installation",
   },
 ];
 

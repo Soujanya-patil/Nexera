@@ -334,12 +334,29 @@ const ready = (el, ms) =>
  *   prefers-reduced-motion: no movement at all — no sweep, pulse, draw-in or parallax. A cycle cuts
  *   straight to the open frame with the labels, holds, then cuts back to the closed frame.
  *
- * DEPTH — a soft light behind the stage and a contact shadow under it (both outside the footage),
- * a light vignette at the stage edges, and a small pointer parallax on desktop: the product follows
+ * SET INTO THE HERO, NOT FRAMED — the footage has no panel: its edges are masked soft (EDGE_MASK) and
+ * a wide ambient field behind it continues the footage's graphite ground out into the hero, fading to
+ * the dark green (faintly behind the headline too), with a soft green light at the product. On wide
+ * screens the product reaches into the page margin, so it reads larger; it enters with the headline.
+ *
+ * DEPTH — the ambient field and a contact shadow (outside the footage), a light green-black vignette
+ * at the footage edges, and a small pointer parallax on desktop: the product follows
  * the pointer by up to 6px and the backdrop by up to 3px the other way. It is CSS-transition driven
  * (the pointer handler only writes two custom properties, at most once per frame), so there is no
  * running animation loop; it is off for touch and reduced motion.
  */
+// Soft edges for the footage so it dissolves into the hero instead of ending at a frame. Two linear
+// ramps intersected: 7% on the left (the open door reaches ~8%), 13% at the top (lifting eyes at ~15%),
+// 16% on the right (empty ground) and 10% at the bottom (feet at ~90%) — the cabinet is never faded.
+const RAMP_X = "linear-gradient(to right, transparent 0%, #000 7%, #000 84%, transparent 100%)";
+const RAMP_Y = "linear-gradient(to bottom, transparent 0%, #000 13%, #000 90%, transparent 100%)";
+const EDGE_MASK = {
+  maskImage: `${RAMP_X}, ${RAMP_Y}`,
+  maskComposite: "intersect",
+  WebkitMaskImage: `${RAMP_X}, ${RAMP_Y}`,
+  WebkitMaskComposite: "source-in",
+};
+
 export default function HomeHero() {
   const section = useRef(null);
   const opening = useRef(null);
@@ -538,23 +555,25 @@ export default function HomeHero() {
       <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-6 py-14 lg:min-h-[max(34rem,calc(100svh-4rem))] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 lg:py-16">
         <HomeHeroCopy parallax={parallax} subdued={phase === "scan" || phase === "open"} />
 
-        {/* Product: parallax layer -> lifted frame (light behind, contact shadow under) -> stage. */}
-        <div style={parallax ? drift(6, 5) : undefined}>
-          <div className="relative mx-auto w-full max-w-xl lg:max-w-none lg:-translate-y-[8vh]">
+        {/* Product, set into the hero rather than framed: parallax layer (wider than its column on wide
+            screens, reaching into the page margin) -> entrance -> ambient field + stage. */}
+        <div className="lg:w-[calc(100%+max(0px,(100vw-72rem)/2))]" style={parallax ? drift(6, 5) : undefined}>
+          <div className="hero-product-in relative mx-auto w-full max-w-xl lg:max-w-none lg:-translate-y-[6vh]">
+            {/* Ambient field: the footage's graphite ground continued out into the hero and fading to the
+                dark green over a wide area (reaching faintly behind the headline), with a soft green
+                light at the product. This is what lets the stage edge disappear. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -inset-[14%]"
+              className="pointer-events-none absolute -inset-x-[42%] -inset-y-[30%]"
               style={{
                 background:
-                  "radial-gradient(50% 50% at 50% 52%, rgba(144,217,136,0.10), rgba(144,217,136,0.035) 45%, transparent 72%)",
+                  "radial-gradient(34% 36% at 50% 52%, rgba(144,217,136,0.07), transparent 70%), radial-gradient(closest-side, rgba(22,29,30,0.92) 30%, rgba(16,28,26,0.55) 62%, rgba(7,26,23,0) 100%)",
               }}
             />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-x-[10%] -bottom-7 h-12 rounded-[100%] bg-black/55 blur-2xl"
-            />
+            <div aria-hidden="true" className="pointer-events-none absolute inset-x-[22%] bottom-[4%] h-10 rounded-[100%] bg-black/40 blur-2xl" />
 
-            {/* Stage: the footage's own graphite ground (#161D1F), framed as a deliberate panel. */}
+            {/* Stage: no panel — the footage's edges are masked soft (see EDGE_MASK), the labels, sweep
+                and interaction layer sit unmasked on top. */}
             <div
               onPointerEnter={(e) => e.pointerType !== "touch" && runCycle()}
               onPointerUp={(e) => e.pointerType === "touch" && runCycle()}
@@ -566,34 +585,36 @@ export default function HomeHero() {
               }}
               tabIndex={0}
               aria-label="Product view. Hover, tap or press Enter to open the cabinet and show its protection components."
-              className="relative aspect-[65/54] w-full overflow-hidden rounded-2xl bg-[#161D1F] shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75)] ring-1 ring-white/10 outline-none focus-visible:ring-2 focus-visible:ring-signal/70"
+              className="relative aspect-[65/54] w-full rounded-lg outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal/60"
             >
-              <video
-                ref={opening}
-                src={videoSrc}
-                poster={posterSrc}
-                muted
-                playsInline
-                preload="auto"
-                aria-label="NEXERA battery energy storage cabinet opening to reveal its stacked battery modules and power electronics"
-                className="h-full w-full object-contain transition-opacity duration-300"
-              />
-              {/* The closing clip sits exactly over the opening one and is only made visible while it plays. */}
-              <video
-                ref={closing}
-                src={closeSrc}
-                muted
-                playsInline
-                preload="none"
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0"
-              />
-              {/* Depth: a light vignette at the panel edges; the cabinet in the centre is untouched. */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0"
-                style={{ background: "radial-gradient(75% 70% at 50% 52%, transparent 60%, rgba(3,16,13,0.35) 100%)" }}
-              />
+              <div className="absolute inset-0" style={EDGE_MASK}>
+                <video
+                  ref={opening}
+                  src={videoSrc}
+                  poster={posterSrc}
+                  muted
+                  playsInline
+                  preload="auto"
+                  aria-label="NEXERA battery energy storage cabinet opening to reveal its stacked battery modules and power electronics"
+                  className="h-full w-full object-contain transition-opacity duration-300"
+                />
+                {/* The closing clip sits exactly over the opening one and is only made visible while it plays. */}
+                <video
+                  ref={closing}
+                  src={closeSrc}
+                  muted
+                  playsInline
+                  preload="none"
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0"
+                />
+                {/* Depth: the footage's edges lean toward the hero's green-black; the cabinet is untouched. */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0"
+                  style={{ background: "radial-gradient(75% 70% at 50% 52%, transparent 60%, rgba(7,26,23,0.45) 100%)" }}
+                />
+              </div>
               {/* One soft light sweep across the cabinet (its bounding box) as it settles open. */}
               {!reduced && (phase === "scan" || phase === "open") && (
                 <div

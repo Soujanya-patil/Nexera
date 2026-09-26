@@ -246,6 +246,16 @@
   animation: ambient-drift 16s ease-in-out infinite alternate;
 }
 
+/* Home hero: the product settles in alongside the headline (opacity + scale only — its translate
+   and the parallax transform are separate properties, so nothing is overridden). */
+@keyframes hero-product-in {
+  from { opacity: 0; scale: 0.97; }
+  to { opacity: 1; scale: 1; }
+}
+.hero-product-in {
+  animation: hero-product-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+
 /* Swapped detail content (For EPCs journey panel, partner panel, network card) settles in. */
 @keyframes detail-in {
   from { opacity: 0; transform: translate3d(0, 8px, 0); }
@@ -253,6 +263,21 @@
 }
 .journey-detail {
   animation: detail-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Partnership Journey panel text: slides in the direction of travel. */
+@keyframes journey-in-next {
+  from { opacity: 0; transform: translate3d(18px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes journey-in-prev {
+  from { opacity: 0; transform: translate3d(-18px, 0, 0); }
+  to { opacity: 1; transform: none; }
+}
+.journey-in-next {
+  animation: journey-in-next 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+.journey-in-prev {
+  animation: journey-in-prev 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
 }
 
 /* Card -> product page View Transition: the product image morphs, everything else cross-fades. */
@@ -268,7 +293,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ambient-drift,
-  .journey-detail {
+  .hero-product-in,
+  .journey-detail,
+  .journey-in-next,
+  .journey-in-prev {
     animation: none;
   }
   ::view-transition-group(*),
