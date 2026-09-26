@@ -1,7 +1,8 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import Reveal from "./Reveal";
 import SceneImg from "./SceneImg";
+import { useEntrance } from "../lib/entrance";
 import AnimatedText from "./ui/AnimatedText";
 import ParallaxMedia from "./ui/ParallaxMedia";
 
@@ -34,7 +35,23 @@ const cards = [
   },
 ];
 
+/**
+ * Solutions: the three segment cards.
+ * Entrance (medium rhythm): each card rises out of its own frame — a clip reveal from the bottom
+ * with a short lift — one after another.
+ * Hover / focus: the card rises 6 px with a deeper shadow, a green accent draws along its top edge,
+ * the photo zooms slowly and brightens (a soft shade over it lifts), the title shifts a touch and
+ * the arrow moves.
+ */
 export default function HomeSolutions() {
+  const grid = useRef(null);
+  const enter = useEntrance(grid, ({ tl, q }) => {
+    tl.fromTo(
+      q("[data-e]"),
+      { opacity: 0, y: 36, clipPath: "inset(18% 0% 0% 0% round 12px)" },
+      { opacity: 1, y: 0, clipPath: "inset(0% 0% 0% 0% round 12px)", duration: 0.9, stagger: 0.12, ease: "power3.out", clearProps: "all" }
+    );
+  });
   return (
     <section className="bg-ice py-20 md:py-24">
       <div className="mx-auto max-w-6xl px-6">
@@ -55,26 +72,28 @@ export default function HomeSolutions() {
           </Link>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {cards.map((c, i) => (
-            <Reveal
+        <div ref={grid} data-enter={enter} className="mt-10 grid gap-6 md:grid-cols-3">
+          {cards.map((c) => (
+            <article
               key={c.id}
-              as="article"
-              delay={i * 0.08}
-              className="group relative flex flex-col overflow-hidden rounded-xl bg-paper shadow-[0_1px_2px_rgba(7,22,33,0.06),0_12px_28px_-16px_rgba(7,22,33,0.22)] transition-shadow duration-300 hover:shadow-[0_1px_2px_rgba(7,22,33,0.06),0_20px_36px_-16px_rgba(7,22,33,0.3)]"
+              data-e
+              className="group relative flex flex-col overflow-hidden rounded-xl bg-paper shadow-[0_1px_2px_rgba(7,22,33,0.06),0_12px_28px_-16px_rgba(7,22,33,0.22)] transition-[box-shadow,translate] duration-500 ease-out hover:-translate-y-1.5 hover:shadow-[0_1px_2px_rgba(7,22,33,0.06),0_26px_44px_-18px_rgba(7,22,33,0.34)] focus-within:-translate-y-1.5"
             >
+              <span aria-hidden="true" className="absolute left-6 top-0 z-10 h-0.5 w-0 rounded-full bg-signal transition-[width] duration-500 ease-out group-hover:w-14 group-focus-within:w-14" />
               <div className="relative aspect-[16/10] overflow-hidden">
                 <ParallaxMedia amount={5}>
                   <SceneImg
                     name={c.img}
                     alt={c.alt}
                     sizes="(min-width: 768px) 33vw, 100vw"
-                    className="h-full w-full object-cover transition-[scale] duration-700 ease-out group-hover:scale-[1.04]"
+                    className="h-full w-full object-cover transition-[scale] duration-[1400ms] ease-out group-hover:scale-[1.06]"
                   />
                 </ParallaxMedia>
+                {/* A soft shade that lifts on hover, so the photo seems to brighten */}
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/30 via-night/5 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
               </div>
               <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-lg font-semibold text-ink">{c.title}</h3>
+                <h3 className="text-lg font-semibold text-ink transition-[translate] duration-500 ease-out group-hover:translate-x-1">{c.title}</h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-graphite">{c.copy}</p>
                 {/* Stretched link: the whole card is the target, the visible text names it */}
                 <Link
@@ -83,10 +102,10 @@ export default function HomeSolutions() {
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-forest after:absolute after:inset-0 group-hover:text-steel focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
                 >
                   Learn More
-                  <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
                 </Link>
               </div>
-            </Reveal>
+            </article>
           ))}
         </div>
       </div>

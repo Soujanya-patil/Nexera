@@ -3,6 +3,10 @@ import HomeHeroCopy from "./HomeHeroCopy";
 import videoSrc from "../assets/products/nexera-hero-cabinet.mp4";
 import closeSrc from "../assets/products/nexera-hero-cabinet-close.mp4";
 import posterSrc from "../assets/products/nexera-hero-cabinet-poster.webp";
+import scrubSrc from "../assets/products/nexera-hero-cabinet-scrub.mp4";
+import { useMediaQuery } from "../lib/scrollSteps";
+import { loadGsap } from "../lib/motion";
+import { getLenis } from "../lib/lenis";
 
 /*
  * Callouts for the held final (open-cabinet) frame of nexera-hero-cabinet.mp4, using the exact
@@ -119,8 +123,12 @@ const polylineLength = (pts) =>
  * the video itself is never filtered or transformed). `onActive` reports the hovered index so the
  * cycle can keep the labels up while someone is reading one. On phones chips wrap in a narrower
  * column.
+ *
+ * Two ways in: `show` brings every label in as one staggered sequence (the autoplay / tap cycle);
+ * `count` shows the first `count` labels, each drawing in the moment it is added (the desktop scroll
+ * story, where the scroll position decides how many are up).
  */
-function Callouts({ show, animate, onActive }) {
+function Callouts({ show, count, animate, onActive }) {
   const root = useRef(null);
   const chips = useRef([]);
   const [layout, setLayout] = useState(null);
@@ -145,7 +153,11 @@ function Callouts({ show, animate, onActive }) {
     return () => ro.disconnect();
   }, []);
 
-  const on = Boolean(show && layout);
+  const n = count ?? (show ? CALLOUTS.length : 0);
+  const on = Boolean(layout && n > 0);
+  const vis = (i) => on && i < n;
+  // Sequenced entrance for the cycle; labels added by scroll draw in at once.
+  const delayOf = (i) => (count == null ? i * STAGGER : 0);
   // Drop any highlight when the labels go away (e.g. the cabinet starts to close under the cursor).
   useEffect(() => {
     if (!on) {
@@ -155,15 +167,15 @@ function Callouts({ show, animate, onActive }) {
   }, [on, onActive]);
 
   const hover = (i) => {
-    if (!on) return;
+    if (!on || (i !== null && !vis(i))) return;
     setActive(i);
     onActive(i);
   };
 
   // Transition for one property group: in with its own delay/duration, out together in OUT ms.
-  const tr = (props, delay, duration) =>
+  const tr = (visible, props, delay, duration) =>
     animate
-      ? on
+      ? visible
         ? { transitionProperty: props, transitionDuration: `${duration}ms`, transitionDelay: `${delay}ms`, transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }
         : { transitionProperty: "opacity", transitionDuration: `${OUT}ms`, transitionDelay: "0ms" }
       : { transition: "none" };
@@ -178,7 +190,7 @@ function Callouts({ show, animate, onActive }) {
           style={{
             left: `${ax}%`,
             top: `${ay}%`,
-            opacity: on && active === i ? 1 : 0,
+            opacity: vis(i) && active === i ? 1 : 0,
             background: "radial-gradient(closest-side, rgba(144,217,136,0.22), rgba(144,217,136,0.07) 55%, transparent)",
           }}
         />
@@ -189,6 +201,8 @@ function Callouts({ show, animate, onActive }) {
           {layout.lines.map((pts, i) => {
             const len = layout.lengths[i];
             const hot = active === i;
+            const shown = vis(i);
+            const d = delayOf(i);
             return (
               <polyline
                 key={CALLOUTS[i].label}
@@ -198,11 +212,11 @@ function Callouts({ show, animate, onActive }) {
                 strokeWidth={hot ? 1.5 : 1}
                 strokeDasharray={len}
                 style={{
-                  opacity: on ? 1 : 0,
+                  opacity: shown ? 1 : 0,
                   // Drawn from the anchor outward; reset only once it has faded out.
-                  strokeDashoffset: on || !animate ? 0 : len,
-                  ...(animate && on
-                    ? { transition: `stroke-dashoffset ${LINE_IN}ms cubic-bezier(0.22, 1, 0.36, 1) ${i * STAGGER + LINE_DELAY}ms, opacity 0ms ${i * STAGGER + LINE_DELAY}ms, stroke 200ms, stroke-width 200ms` }
+                  strokeDashoffset: shown || !animate ? 0 : len,
+                  ...(animate && shown
+                    ? { transition: `stroke-dashoffset ${LINE_IN}ms cubic-bezier(0.22, 1, 0.36, 1) ${d + LINE_DELAY}ms, opacity 0ms ${d + LINE_DELAY}ms, stroke 200ms, stroke-width 200ms` }
                     : animate
                       ? { transition: `opacity ${OUT}ms, stroke-dashoffset 0ms ${OUT}ms` }
                       : {}),
@@ -217,7 +231,8 @@ function Callouts({ show, animate, onActive }) {
         {CALLOUTS.map(({ label, detail, anchor: [ax, ay], zone, w }, i) => {
           const p = layout?.pos[i];
           const hot = active === i;
-          const base = i * STAGGER;
+          const shown = vis(i);
+          const base = delayOf(i);
           // Chips slide in from the side their leader arrives from.
           const from = zone === "right" ? "translateX(-6px)" : zone === "floor" ? "translateY(5px)" : "translateY(-5px)";
           return (
@@ -226,19 +241,19 @@ function Callouts({ show, animate, onActive }) {
               <span
                 onPointerEnter={() => hover(i)}
                 onPointerLeave={() => hover(null)}
-                className={`absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center ${on ? "pointer-events-auto cursor-default" : ""}`}
+                className={`absolute grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center ${shown ? "pointer-events-auto cursor-default" : ""}`}
                 style={{ left: `${ax}%`, top: `${ay}%` }}
               >
                 {/* outer: staggered entrance; inner: hover response (no entrance delay) */}
                 <span
                   className="relative h-[7px] w-[7px]"
-                  style={{ opacity: on ? 1 : 0, transform: on ? "none" : "scale(0.4)", ...tr("opacity, transform", base, DOT_IN) }}
+                  style={{ opacity: shown ? 1 : 0, transform: shown ? "none" : "scale(0.4)", ...tr(shown, "opacity, transform", base, DOT_IN) }}
                 >
                   <span
                     className="relative block h-full w-full transition-transform duration-200"
                     style={{ transform: hot ? "scale(1.45)" : "none" }}
                   >
-                    {on && animate && (
+                    {shown && animate && (
                       <span className="animate-hotspot-pulse absolute inset-0 rounded-full bg-signal" style={{ animationDelay: `${base}ms` }} />
                     )}
                     <span
@@ -255,10 +270,10 @@ function Callouts({ show, animate, onActive }) {
                 ref={(el) => (chips.current[i] = el)}
                 onPointerEnter={() => hover(i)}
                 onPointerLeave={() => hover(null)}
-                className={`absolute left-0 top-0 ${on ? "pointer-events-auto cursor-default" : ""}`}
+                className={`absolute left-0 top-0 ${shown ? "pointer-events-auto cursor-default" : ""}`}
                 style={{ maxWidth: `${w}%`, transform: p ? `translate(${p.x}px, ${p.y}px)` : undefined }}
               >
-                <span className="block" style={{ opacity: on ? 1 : 0, transform: on ? "none" : from, ...tr("opacity, transform", base + CHIP_DELAY, CHIP_IN) }}>
+                <span className="block" style={{ opacity: shown ? 1 : 0, transform: shown ? "none" : from, ...tr(shown, "opacity, transform", base + CHIP_DELAY, CHIP_IN) }}>
                   <span
                     className={`block rounded-[3px] border px-1.5 py-1 leading-tight backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 sm:px-2 ${
                       hot ? "border-signal/45 bg-[#0a241d]/90 shadow-[0_0_14px_-2px_rgba(144,217,136,0.35)]" : "border-white/15 bg-deep/85"
@@ -357,6 +372,45 @@ const EDGE_MASK = {
   WebkitMaskComposite: "source-in",
 };
 
+/*
+ * SCROLL STORY (desktop, motion allowed) — the hero pins for STORY_VH of scrolling and the product
+ * tells the story; one ScrollTrigger progress p (0…1) drives everything, so it reverses exactly:
+ *
+ *   p 0.00–0.08  01 INTRO    closed cabinet, the copy leads
+ *   p 0.08–0.40  02 REVEAL   the real opening footage is scrubbed by scroll; the copy recedes, the
+ *                            product grows and moves toward the centre
+ *   p 0.40–0.50  03 EXPLORE  open cabinet held: battery modules and power electronics; one light sweep
+ *   p 0.50–0.76  04 SAFETY   the five verified protection labels appear one by one (LABEL_AT)
+ *   p 0.76–1.00  05 SYSTEM   the complete open system; then the labels clear (0.86), the footage
+ *                            scrubs back to the closed cabinet (0.88–0.98) and the copy returns — the
+ *                            section releases on the clean hero state, into the stat bar.
+ *
+ * The footage is nexera-hero-cabinet-scrub.mp4: the same 164 frames as the opening clip, re-encoded
+ * with a keyframe every 6 frames (SSIM 0.993 to the original) so a seek decodes at most 6 frames —
+ * the single-keyframe original cannot be scrubbed smoothly. It replaces the opening + closing clips
+ * on desktop (1.75 MB vs 1.88 MB), so the page is no heavier. Seeks are coalesced: a new time is only
+ * set once the previous seek has landed.
+ */
+const STORY_Q = "(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
+const STORY_VH = 300;
+const STAGES = [
+  { label: "Intro", at: 0, caption: "NEXERA battery energy storage cabinet — scroll to explore" },
+  { label: "Reveal", at: 0.08, caption: "The cabinet opens" },
+  { label: "Explore", at: 0.4, caption: "Stacked battery modules and power electronics" },
+  { label: "Safety", at: 0.5, caption: "Protection components, named as in the OEM protection architecture" },
+  { label: "System", at: 0.76, caption: "Storage, power electronics and protection in one cabinet" },
+];
+const LABEL_AT = [0.52, 0.565, 0.61, 0.655, 0.7];
+const LABELS_OUT = 0.86;
+const ramp = (p, a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
+const smooth = (t) => t * t * (3 - 2 * t);
+/** How far the copy has stepped back for the product (0 = hero, 1 = product-led). */
+const recedeAt = (p) => smooth(ramp(p, 0.08, 0.3)) * (1 - smooth(ramp(p, 0.86, 0.97)));
+/** Footage time for progress p: opens over REVEAL, holds, closes again at the end. */
+const footageAt = (p, d) => d * (smooth(ramp(p, 0.08, 0.4)) * (1 - smooth(ramp(p, 0.88, 0.98))));
+const labelsAt = (p) => (p >= LABELS_OUT ? 0 : LABEL_AT.filter((a) => p >= a).length);
+const stageAt = (p) => STAGES.reduce((k, s, i) => (p >= s.at ? i : k), 0);
+
 export default function HomeHero() {
   const section = useRef(null);
   const opening = useRef(null);
@@ -372,6 +426,10 @@ export default function HomeHero() {
   const busy = useRef(false);
   const alive = useRef(true);
   const reading = useRef(false); // a hotspot is hovered
+  const story = useMediaQuery(STORY_Q);
+  const [storyStage, setStoryStage] = useState(0);
+  const [storyLabels, setStoryLabels] = useState(0);
+  const [inspect, setInspect] = useState(false);
 
   useEffect(() => {
     alive.current = true;
@@ -400,7 +458,7 @@ export default function HomeHero() {
   const runCycle = async () => {
     const o = opening.current;
     const c = closing.current;
-    if (!o || !c || busy.current) return;
+    if (story || !o || !c || busy.current) return;
     busy.current = true;
     try {
       if (reduced) {
@@ -470,10 +528,11 @@ export default function HomeHero() {
     }
   };
 
-  // Autoplay: the first cycle runs once by itself when the stage is half in view.
+  // Autoplay: the first cycle runs once by itself when the stage is half in view (not in the scroll
+  // story, where scrolling opens the cabinet).
   useEffect(() => {
     const o = opening.current;
-    if (!o) return;
+    if (!o || story) return;
     o.muted = true;
     if (closing.current) closing.current.muted = true;
     const io = new IntersectionObserver(
@@ -487,7 +546,67 @@ export default function HomeHero() {
     );
     io.observe(o);
     return () => io.disconnect();
-  }, []);
+  }, [story]);
+
+  // Scroll story: pinned progress -> footage time, labels, stage, and two CSS variables the copy and
+  // the product read (--story, --recede). React only re-renders when the stage or label count changes.
+  useEffect(() => {
+    const el = section.current;
+    const v = opening.current;
+    if (!story || !el || !v) return;
+    let cancelled = false;
+    let ctx;
+    let want = 0;
+    let seeking = false;
+    const apply = () => {
+      if (seeking || v.readyState < 1) return;
+      const t = Math.min(want, v.duration - 0.001);
+      if (Math.abs(v.currentTime - t) < 0.02) return;
+      seeking = true;
+      v.currentTime = t;
+    };
+    const onSeeked = () => {
+      seeking = false;
+      apply();
+    };
+    v.addEventListener("seeked", onSeeked);
+    v.addEventListener("loadedmetadata", apply);
+    loadGsap().then(({ gsap, ScrollTrigger }) => {
+      if (cancelled) return;
+      const update = (self) => {
+        const p = self.progress;
+        el.style.setProperty("--story", p.toFixed(4));
+        el.style.setProperty("--recede", recedeAt(p).toFixed(4));
+        want = footageAt(p, Number.isFinite(v.duration) ? v.duration : 6.83);
+        apply();
+        setStoryLabels(labelsAt(p));
+        setStoryStage(stageAt(p));
+      };
+      ctx = gsap.context(() => {
+        ScrollTrigger.create({ trigger: el, start: "top 64px", end: "bottom bottom", onUpdate: update, onRefresh: update });
+      }, el);
+    });
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+      v.removeEventListener("seeked", onSeeked);
+      v.removeEventListener("loadedmetadata", apply);
+      el.style.removeProperty("--story");
+      el.style.removeProperty("--recede");
+    };
+  }, [story]);
+
+  /** Story navigation: glide the page to the start of stage `i` (a little into it). */
+  const goToStage = (i) => {
+    const el = section.current;
+    if (!el) return;
+    const at = i === 0 ? 0 : Math.min(0.99, STAGES[i].at + (i === 3 ? 0.2 : 0.06));
+    const range = el.offsetHeight - (window.innerHeight - 64);
+    const y = el.getBoundingClientRect().top + window.scrollY - 64 + at * range;
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(y, { duration: 1.2 });
+    else window.scrollTo({ top: y, behavior: "smooth" });
+  };
 
   // Pointer parallax (desktop only): write normalised pointer position as two custom properties,
   // at most once per frame; CSS transitions do the easing.
@@ -529,10 +648,15 @@ export default function HomeHero() {
   });
 
   return (
-    <section ref={section} className="relative overflow-hidden bg-night text-white">
+    <section
+      ref={section}
+      className={`relative bg-night text-white ${story ? "overflow-clip" : "overflow-hidden"}`}
+      style={story ? { height: `calc(100svh - 4rem + ${STORY_VH}svh)` } : undefined}
+    >
+      <div className={story ? "sticky top-16 h-[calc(100svh-4rem)] overflow-clip" : undefined}>
       {/* Atmosphere: a graphite lift from the top left, a faint engineering grid, and a fall-off into
           the deeper ground at the bottom. It drifts slightly against the product for depth. */}
-      <div aria-hidden="true" className="pointer-events-none absolute -inset-4" style={parallax ? drift(-3, -2) : undefined}>
+      <div aria-hidden="true" className="pointer-events-none absolute -inset-4" style={parallax ? drift(-2, -1.5) : undefined}>
         <div
           className="absolute inset-0"
           style={{
@@ -552,19 +676,46 @@ export default function HomeHero() {
         />
       </div>
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-6 py-14 lg:min-h-[max(34rem,calc(100svh-4rem))] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 lg:py-16">
-        <HomeHeroCopy parallax={parallax} subdued={phase === "scan" || phase === "open"} />
+      <div
+        className={`relative mx-auto grid max-w-6xl items-center gap-8 px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 ${
+          story ? "h-full pb-20 pt-10" : "py-14 lg:min-h-[max(34rem,calc(100svh-4rem))] lg:py-16"
+        }`}
+      >
+        {/* Copy — in the story it steps back (fades, drifts left, settles smaller) while the product
+            leads, and returns at the end. A wrapper of its own, so it never fights the copy's entrance. */}
+        <div
+          className="relative z-10"
+          style={
+            story
+              ? {
+                  opacity: "calc(1 - var(--recede, 0) * 0.55)",
+                  transform: "translate3d(calc(var(--recede, 0) * -28px), 0, 0) scale(calc(1 - var(--recede, 0) * 0.05))",
+                  transformOrigin: "left center",
+                }
+              : undefined
+          }
+        >
+          <HomeHeroCopy parallax={parallax} story={story} subdued={!story && (phase === "scan" || phase === "open")} />
+        </div>
 
         {/* Product, set into the hero rather than framed: parallax layer (wider than its column on wide
             screens, reaching into the page margin) -> entrance -> ambient field + stage. */}
         <div className="lg:w-[calc(100%+max(0px,(100vw-72rem)/2))]" style={parallax ? drift(6, 5) : undefined}>
+          {/* Story: the product grows ~10% and moves toward the centre as the copy steps back. */}
+          <div
+            style={
+              story
+                ? { transform: "translate3d(calc(var(--recede, 0) * -8%), 0, 0) scale(calc(1 + var(--recede, 0) * 0.1))", transformOrigin: "50% 55%" }
+                : undefined
+            }
+          >
           <div className="hero-product-in relative mx-auto w-full max-w-xl lg:max-w-none lg:-translate-y-[6vh]">
             {/* Ambient field: the footage's graphite ground continued out into the hero and fading to the
                 dark green over a wide area (reaching faintly behind the headline), with a soft green
                 light at the product. This is what lets the stage edge disappear. */}
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -inset-x-[42%] -inset-y-[30%]"
+              className={`pointer-events-none absolute -inset-x-[42%] -inset-y-[30%] transition-[opacity,filter] duration-700 ${inspect ? "brightness-125" : ""}`}
               style={{
                 background:
                   "radial-gradient(34% 36% at 50% 52%, rgba(144,217,136,0.07), transparent 70%), radial-gradient(closest-side, rgba(22,29,30,0.92) 30%, rgba(16,28,26,0.55) 62%, rgba(7,26,23,0) 100%)",
@@ -575,22 +726,39 @@ export default function HomeHero() {
             {/* Stage: no panel — the footage's edges are masked soft (see EDGE_MASK), the labels, sweep
                 and interaction layer sit unmasked on top. */}
             <div
-              onPointerEnter={(e) => e.pointerType !== "touch" && runCycle()}
+              onPointerEnter={(e) => {
+                if (e.pointerType === "mouse") setInspect(true);
+                if (e.pointerType !== "touch") runCycle();
+              }}
+              onPointerLeave={() => setInspect(false)}
+              onPointerMove={(e) => {
+                if (!story || e.pointerType !== "mouse") return;
+                const r = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--ix", `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
+                e.currentTarget.style.setProperty("--iy", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
+              }}
               onPointerUp={(e) => e.pointerType === "touch" && runCycle()}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  runCycle();
+                  if (story) goToStage(3);
+                  else runCycle();
                 }
               }}
               tabIndex={0}
-              aria-label="Product view. Hover, tap or press Enter to open the cabinet and show its protection components."
-              className="relative aspect-[65/54] w-full rounded-lg outline-none focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal/60"
+              aria-label={
+                story
+                  ? "Product view. Scroll to open the cabinet and show its protection components, or press Enter to go to them."
+                  : "Product view. Hover, tap or press Enter to open the cabinet and show its protection components."
+              }
+              className={`group/stage relative aspect-[65/54] w-full rounded-lg outline-none transition-[scale] duration-700 ease-out focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal/60 ${
+                story && inspect ? "scale-[1.01]" : ""
+              }`}
             >
               <div className="absolute inset-0" style={EDGE_MASK}>
                 <video
                   ref={opening}
-                  src={videoSrc}
+                  src={story ? scrubSrc : videoSrc}
                   poster={posterSrc}
                   muted
                   playsInline
@@ -598,16 +766,19 @@ export default function HomeHero() {
                   aria-label="NEXERA battery energy storage cabinet opening to reveal its stacked battery modules and power electronics"
                   className="h-full w-full object-contain transition-opacity duration-300"
                 />
-                {/* The closing clip sits exactly over the opening one and is only made visible while it plays. */}
-                <video
-                  ref={closing}
-                  src={closeSrc}
-                  muted
-                  playsInline
-                  preload="none"
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0"
-                />
+                {/* The closing clip sits exactly over the opening one and is only made visible while it plays
+                    (the cycle only; the story scrubs the footage back instead). */}
+                {!story && (
+                  <video
+                    ref={closing}
+                    src={closeSrc}
+                    muted
+                    playsInline
+                    preload="none"
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0"
+                  />
+                )}
                 {/* Depth: the footage's edges lean toward the hero's green-black; the cabinet is untouched. */}
                 <div
                   aria-hidden="true"
@@ -615,10 +786,18 @@ export default function HomeHero() {
                   style={{ background: "radial-gradient(75% 70% at 50% 52%, transparent 60%, rgba(7,26,23,0.45) 100%)" }}
                 />
               </div>
-              {/* One soft light sweep across the cabinet (its bounding box) as it settles open. */}
-              {!reduced && (phase === "scan" || phase === "open") && (
+              {/* Inspection (story, mouse): a soft light follows the cursor over the cabinet. */}
+              {story && (
                 <div
-                  key={cycle}
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute inset-0 mix-blend-screen transition-opacity duration-500 ${inspect ? "opacity-100" : "opacity-0"}`}
+                  style={{ background: "radial-gradient(22% 26% at var(--ix, 50%) var(--iy, 50%), rgba(244,247,244,0.07), rgba(144,217,136,0.04) 45%, transparent 75%)" }}
+                />
+              )}
+              {/* One soft light sweep across the cabinet (its bounding box) as it settles open. */}
+              {!reduced && (story ? storyStage === 2 : phase === "scan" || phase === "open") && (
+                <div
+                  key={story ? "story-sweep" : cycle}
                   aria-hidden="true"
                   className="pointer-events-none absolute left-[5%] top-[14%] h-[82%] w-[68%] overflow-hidden"
                 >
@@ -631,10 +810,51 @@ export default function HomeHero() {
                   />
                 </div>
               )}
-              <Callouts show={phase === "open"} animate={!reduced} onActive={onActive} />
+              {story ? (
+                <Callouts count={storyLabels} animate onActive={onActive} />
+              ) : (
+                <Callouts show={phase === "open"} animate={!reduced} onActive={onActive} />
+              )}
             </div>
           </div>
+          </div>
         </div>
+      </div>
+
+      {/* Story progress: five stages along a thin line (filled by --story), each a jump link, with the
+          current stage's caption beside it. */}
+      {story && (
+        <div className="absolute inset-x-0 bottom-6 z-10">
+          <div className="mx-auto flex max-w-6xl items-center gap-8 px-6">
+            <div className="relative shrink-0">
+              <span aria-hidden="true" className="absolute inset-x-0 -top-2 h-px bg-white/12" />
+              <span aria-hidden="true" className="absolute inset-x-0 -top-2 h-px origin-left bg-signal/80" style={{ scale: "var(--story, 0) 1" }} />
+            <ol className="flex items-center gap-6" aria-label="Product story">
+              {STAGES.map((st, i) => {
+                const on = i === storyStage;
+                return (
+                  <li key={st.label}>
+                    <button
+                      type="button"
+                      onClick={() => goToStage(i)}
+                      aria-current={on ? "step" : undefined}
+                      className={`text-[0.625rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-500 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal ${
+                        on ? "text-white" : "text-ice/40 hover:text-ice/75"
+                      }`}
+                    >
+                      <span className={on ? "text-signal" : undefined}>{String(i + 1).padStart(2, "0")}</span> {st.label}
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+            </div>
+            <p key={storyStage} className="journey-detail min-w-0 truncate text-xs text-ice/60" aria-live="polite">
+              {STAGES[storyStage].caption}
+            </p>
+          </div>
+        </div>
+      )}
       </div>
     </section>
   );

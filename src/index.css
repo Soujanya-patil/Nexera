@@ -236,6 +236,10 @@
 [data-sr-state="pending"] [data-sr] {
   opacity: 0;
 }
+/* Section entrances (lib/entrance.js): parts wait hidden only until GSAP has taken them over. */
+[data-enter="pending"] [data-e] {
+  opacity: 0;
+}
 
 /* Slow ambient light behind hero products (transform only; off for reduced motion). */
 @keyframes ambient-drift {
@@ -244,6 +248,40 @@
 }
 .ambient-drift {
   animation: ambient-drift 16s ease-in-out infinite alternate;
+}
+
+/* Outline pill (PillLink `sweep`): on hover a short green light travels around the border. The angle is
+   a registered property so it can be animated; the ring is the element's padding box with the
+   content box masked out. Runs only while hovered; reduced motion gets a static green border. */
+@property --sweep-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes pill-sweep {
+  to { --sweep-angle: 360deg; }
+}
+.pill-sweep {
+  padding: 1px;
+  background: conic-gradient(from var(--sweep-angle), transparent 0deg, rgba(144, 217, 136, 0.95) 50deg, transparent 110deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.group\/pill:hover .pill-sweep,
+.group\/pill:focus-visible .pill-sweep {
+  opacity: 1;
+  animation: pill-sweep 2.6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .group\/pill:hover .pill-sweep,
+  .group\/pill:focus-visible .pill-sweep {
+    animation: none;
+    background: rgba(144, 217, 136, 0.9);
+  }
 }
 
 /* Home hero: the product settles in alongside the headline (opacity + scale only — its translate

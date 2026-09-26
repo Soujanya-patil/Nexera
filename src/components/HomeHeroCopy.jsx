@@ -39,9 +39,17 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
  *   words / paragraph / button wrappers → the entrance.
  *   The green line brightens and lifts 2 px on hover, with a single highlight sweep (no idle shimmer).
  *
+ * In the desktop scroll story (`story`) the scroll-away lift is off: HomeHero's wrapper steps the whole
+ * copy back and forward instead, driven by the story's progress.
+ *
+ * HOVER — Explore Solutions: magnetic pull, arrow nudge, and a soft light that follows the pointer
+ * across the green; Partner with Us: magnetic pull and a short green light travelling around its
+ * border. Trust points: the icon lifts and fills green, a small green rule draws under the text and
+ * the text brightens.
+ *
  * prefers-reduced-motion: text shows immediately; no entrance, depth or scroll motion; hover states stay.
  */
-export default function HomeHeroCopy({ parallax, subdued }) {
+export default function HomeHeroCopy({ parallax, subdued, story = false }) {
   const column = useRef(null);
   const [intro, setIntro] = useState(() => (reducedMotion() ? "done" : "pending"));
 
@@ -93,7 +101,7 @@ export default function HomeHeroCopy({ parallax, subdued }) {
   // Scroll-away: lift, dim and settle the column as the hero leaves (scrubbed, so it reverses).
   useEffect(() => {
     const el = column.current;
-    if (!el || reducedMotion()) return;
+    if (!el || reducedMotion() || story) return;
     const small = window.matchMedia("(max-width: 1023px)").matches;
     let cancelled = false;
     let ctx;
@@ -117,7 +125,7 @@ export default function HomeHeroCopy({ parallax, subdued }) {
       cancelled = true;
       ctx?.revert();
     };
-  }, []);
+  }, [story]);
 
   const depth = (k) =>
     parallax
@@ -178,12 +186,12 @@ export default function HomeHeroCopy({ parallax, subdued }) {
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <span data-a="cta" className="inline-block">
-            <MagneticButton to="/solutions" arrow className="hover:scale-[1.02]">
+            <MagneticButton to="/solutions" arrow spotlight className="hover:scale-[1.02]">
               Explore Solutions
             </MagneticButton>
           </span>
           <span data-a="cta" className="inline-block">
-            <MagneticButton to="/become-a-partner" variant="outline" className="hover:-translate-y-0.5">
+            <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:-translate-y-0.5">
               Partner with Us
             </MagneticButton>
           </span>
@@ -192,15 +200,16 @@ export default function HomeHeroCopy({ parallax, subdued }) {
           {trust.map(({ icon: Icon, lines }) => (
             <li
               key={lines[0]}
-              className="flex flex-col items-start gap-2 px-3 first:pl-0 sm:flex-row sm:items-center sm:gap-3 sm:px-4 lg:flex-col lg:items-start lg:gap-2 xl:flex-row xl:items-center xl:gap-3"
+              className="group/trust flex flex-col items-start gap-2 px-3 first:pl-0 sm:flex-row sm:items-center sm:gap-3 sm:px-4 lg:flex-col lg:items-start lg:gap-2 xl:flex-row xl:items-center xl:gap-3"
             >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-signal/70 text-signal">
-                <Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-signal/70 text-signal transition-[background-color,color,translate] duration-500 ease-out group-hover/trust:-translate-y-0.5 group-hover/trust:bg-signal group-hover/trust:text-forest">
+                <Icon aria-hidden="true" className="h-4 w-4 transition-transform duration-500 ease-out group-hover/trust:scale-110" strokeWidth={1.8} />
               </span>
-              <span className="whitespace-nowrap text-xs leading-snug text-ice/85">
+              <span className="whitespace-nowrap text-xs leading-snug text-ice/85 transition-colors duration-300 group-hover/trust:text-white">
                 {lines[0]}
                 <br />
                 {lines[1]}
+                <span aria-hidden="true" className="mt-1.5 block h-px w-0 bg-signal transition-[width] duration-500 ease-out group-hover/trust:w-8" />
               </span>
             </li>
           ))}

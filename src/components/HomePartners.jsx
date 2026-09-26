@@ -1,6 +1,6 @@
-import { useState } from "react";
-import Reveal from "./Reveal";
+import { useRef, useState } from "react";
 import AnimatedText from "./ui/AnimatedText";
+import { useEntrance } from "../lib/entrance";
 import { Marquee } from "./ui/marquee";
 import tclLogo from "../assets/partners/tcl-logo.png";
 import hithiumLogo from "../assets/partners/hithium-logo.png";
@@ -14,13 +14,17 @@ const logos = [
   { name: "CLOU", src: clouLogo, className: "h-10" },
 ];
 
+// Each logo rests slightly muted; on hover it comes to full presence (colour + opacity) with a short
+// lift, a green indicator draws beneath it, and the hairline divider beside it brightens.
 const Logo = ({ l, hidden }) => (
-  <li aria-hidden={hidden || undefined} className="flex shrink-0 items-center px-6 sm:px-8">
+  <li aria-hidden={hidden || undefined} className="group/logo relative flex shrink-0 items-center px-6 sm:px-8">
+    <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-300 group-hover/logo:bg-signal/60" />
     <img
       src={l.src}
       alt={hidden ? "" : l.name}
-      className={`${l.className} w-auto max-w-none object-contain opacity-85 transition-[opacity,translate] duration-300 hover:-translate-y-0.5 hover:opacity-100`}
+      className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-500 ease-out group-hover/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-hover/logo:grayscale-0`}
     />
+    <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-signal transition-[width] duration-500 ease-out group-hover/logo:w-10" />
   </li>
 );
 
@@ -33,10 +37,20 @@ const Logo = ({ l, hidden }) => (
  */
 export default function HomePartners() {
   const [still] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  // Entrance: the copy slides in from the left while the logo strip wipes in from the right.
+  const root = useRef(null);
+  const enter = useEntrance(root, ({ tl, q }) => {
+    tl.fromTo(q('[data-e="copy"]'), { opacity: 0, x: -28 }, { opacity: 1, x: 0, duration: 0.8, clearProps: "all" }, 0).fromTo(
+      q('[data-e="logos"]'),
+      { opacity: 0, clipPath: "inset(0% 0% 0% 100%)" },
+      { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "power2.inOut", clearProps: "all" },
+      0.15
+    );
+  });
   return (
-    <section className="border-y border-line bg-paper py-16 md:py-20">
+    <section ref={root} data-enter={enter} className="border-y border-line bg-paper py-16 md:py-20">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16">
-        <div>
+        <div data-e="copy">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Our Technology Partners</p>
           <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Global Technology. Local Impact.</AnimatedText>
           <p className="mt-3 max-w-lg text-graphite">
@@ -44,7 +58,7 @@ export default function HomePartners() {
             residential, C&amp;I and utility-scale segments.
           </p>
         </div>
-        <Reveal className="min-w-0">
+        <div data-e="logos" className="min-w-0">
           {still ? (
             <ul className="flex flex-wrap items-center justify-center" aria-label="Technology partners">
               {logos.map((l) => (
@@ -72,7 +86,7 @@ export default function HomePartners() {
             </Marquee>
             </>
           )}
-        </Reveal>
+        </div>
       </div>
     </section>
   );
