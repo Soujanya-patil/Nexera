@@ -45,9 +45,13 @@ export function useProductTransition(productId) {
     const lenis = getLenis();
     if (lenis) lenis.scrollTo(window.scrollY, { immediate: true, force: true });
     else window.scrollTo({ top: window.scrollY, behavior: "instant" });
-    document.startViewTransition(async () => {
+    // The route fade (Layout) would hide the morph target mid-capture, so it is off during the transition.
+    const root = document.documentElement;
+    root.dataset.vt = "true";
+    const vt = document.startViewTransition(async () => {
       navigate(`/products/${productId}`);
       await waitFor(`[data-vt-hero="${productId}"]`);
     });
+    vt.finished.finally(() => delete root.dataset.vt);
   };
 }

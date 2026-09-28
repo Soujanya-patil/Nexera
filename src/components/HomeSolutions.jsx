@@ -3,6 +3,20 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SceneImg from "./SceneImg";
 import { useEntrance } from "../lib/entrance";
+import { PARTNERS, PRODUCTS } from "../data/products";
+
+// Which technology partners have systems for each application — read from the product catalogue,
+// so the preview can never claim a pairing the catalogue doesn't have.
+const partnersFor = (app) => PARTNERS.filter((p) => PRODUCTS.some((x) => x.partner === p.id && x.applications.includes(app)));
+const countFor = (app) => PRODUCTS.filter((x) => x.applications.includes(app)).length;
+
+/** A very soft light that follows the pointer across the section (mouse only). */
+const trackSpotlight = (e) => {
+  if (e.pointerType !== "mouse") return;
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--cx", `${Math.round(e.clientX - r.left)}px`);
+  e.currentTarget.style.setProperty("--cy", `${Math.round(e.clientY - r.top)}px`);
+};
 import AnimatedText from "./ui/AnimatedText";
 import ParallaxMedia from "./ui/ParallaxMedia";
 
@@ -36,12 +50,14 @@ const cards = [
 ];
 
 /**
- * Solutions: the three segment cards.
- * Entrance (medium rhythm): each card rises out of its own frame — a clip reveal from the bottom
- * with a short lift — one after another.
+ * Solutions — a product-discovery moment: the three segment cards act as a BESS selector.
+ * Entrance: Residential → C&I → Utility rise out of their own frames in turn (same direction, short
+ * stagger).
  * Hover / focus: the card rises 6 px with a deeper shadow, a green accent draws along its top edge,
- * the photo zooms slowly and brightens (a soft shade over it lifts), the title shifts a touch and
- * the arrow moves.
+ * the photo zooms slowly and brightens (a soft shade over it lifts), an "Explore" tag slides in on
+ * the photo, the title shifts 3 px, the arrow moves, and the technology partners with systems for
+ * that application (from the catalogue) and the number of systems come up at the foot of the card.
+ * The section carries a very soft light that follows the mouse.
  */
 export default function HomeSolutions() {
   const grid = useRef(null);
@@ -53,8 +69,13 @@ export default function HomeSolutions() {
     );
   });
   return (
-    <section className="bg-ice py-20 md:py-24">
-      <div className="mx-auto max-w-6xl px-6">
+    <section onPointerMove={trackSpotlight} className="group/sol relative overflow-hidden bg-ice py-20 md:py-24">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover/sol:opacity-100"
+        style={{ background: "radial-gradient(520px circle at var(--cx, -999px) var(--cy, -999px), rgba(144,217,136,0.09), transparent 65%)" }}
+      />
+      <div className="relative mx-auto max-w-6xl px-6">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Our Solutions</p>
@@ -91,10 +112,24 @@ export default function HomeSolutions() {
                 </ParallaxMedia>
                 {/* A soft shade that lifts on hover, so the photo seems to brighten */}
                 <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/30 via-night/5 to-transparent transition-opacity duration-700 group-hover:opacity-0" />
+                <span
+                  aria-hidden="true"
+                  className="absolute right-4 top-4 inline-flex translate-x-2 items-center gap-1.5 rounded-full bg-night/75 px-3 py-1 text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-white opacity-0 backdrop-blur-sm transition-[opacity,translate] duration-500 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100"
+                >
+                  Explore
+                  <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
               <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-lg font-semibold text-ink transition-[translate] duration-500 ease-out group-hover:translate-x-1">{c.title}</h3>
+                <h3 className="text-lg font-semibold text-ink transition-[translate] duration-500 ease-out group-hover:translate-x-[3px]">{c.title}</h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-graphite">{c.copy}</p>
+                {/* Product preview (space always reserved, so hovering never shifts the layout) */}
+                <p className="mt-4 flex translate-y-1 items-center gap-2 text-xs text-graphite opacity-60 transition-[opacity,translate] duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <span className="h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
+                  <span className="font-semibold text-forest">{partnersFor(c.id).map((p) => p.name).join(" · ")}</span>
+                  <span aria-hidden="true">·</span>
+                  {countFor(c.id)} {countFor(c.id) === 1 ? "system" : "systems"}
+                </p>
                 {/* Stretched link: the whole card is the target, the visible text names it */}
                 <Link
                   to={`/solutions#${c.id}`}

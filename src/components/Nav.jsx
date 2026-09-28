@@ -1,6 +1,51 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Wordmark from "./Wordmark";
+import { useMagnetic } from "../lib/magnetic";
+
+/** Desktop nav item with a very small magnetic pull (3 px; off for touch and reduced motion). */
+function Magnetic({ max = 3, children }) {
+  const ref = useMagnetic({ max, radius: 28 });
+  return (
+    <span ref={ref} className="inline-block">
+      {children}
+    </span>
+  );
+}
+
+/**
+ * Thin reading-progress line along the header's bottom edge. Written straight to the element's
+ * transform (at most once per frame, only when the page scrolls), so it never re-renders React. It
+ * reports position rather than animating, so it has no easing and needs no reduced-motion variant.
+ */
+function ScrollProgress() {
+  const bar = useRef(null);
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      if (bar.current) bar.current.style.transform = `scaleX(${p.toFixed(4)})`;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+  return (
+    <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 -bottom-px h-[2px] overflow-hidden">
+      <span ref={bar} className="block h-full origin-left bg-signal/80" style={{ transform: "scaleX(0)" }} />
+    </span>
+  );
+}
 
 // "For EPCs" has no page of its own: it maps to the existing Become a Partner route (confirmed
 // direction), so the nav matches the mockup without placeholders.
@@ -49,18 +94,24 @@ export default function Nav() {
         <ul className="hidden items-center gap-8 lg:flex">
           {links.map((link) => (
             <li key={link.label}>
-              <NavLink to={link.href} end={link.end} className={desktopLink}>
-                {link.label}
-              </NavLink>
+              <Magnetic>
+                <NavLink to={link.href} end={link.end} className={desktopLink}>
+                  {link.label}
+                </NavLink>
+              </Magnetic>
             </li>
           ))}
         </ul>
-        <Link
-          to="/contact"
-          className="hidden items-center rounded-full bg-signal px-5 py-2 text-sm font-semibold text-forest transition-all duration-300 hover:bg-[#a4e39d] hover:shadow-[0_0_20px_2px_rgba(144,217,136,0.35)] lg:inline-flex"
-        >
-          Contact Us
-        </Link>
+        <span className="hidden lg:inline-block">
+          <Magnetic max={5}>
+            <Link
+              to="/contact"
+              className="inline-flex items-center rounded-full bg-signal px-5 py-2 text-sm font-semibold text-forest transition-all duration-300 hover:bg-[#a4e39d] hover:shadow-[0_0_20px_2px_rgba(144,217,136,0.35)]"
+            >
+              Contact Us
+            </Link>
+          </Magnetic>
+        </span>
 
         {/* Mobile menu toggle */}
         <button
@@ -75,6 +126,7 @@ export default function Nav() {
           <span className={`block h-0.5 w-6 bg-white transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </nav>
+      <ScrollProgress />
 
       {/* Mobile menu panel */}
       {open && (

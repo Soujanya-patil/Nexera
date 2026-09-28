@@ -7,24 +7,35 @@ const STEPS = ["Partner", "Deploy", "Accelerate"];
 /**
  * Closing band: near-black green with the mockup's faint green light streaks along the bottom.
  *
- * The culmination of the page, with the quickest entrance: Partner · Deploy · Accelerate light up in
- * turn — each word glows green as it arrives and hands the green on to the next, so Accelerate ends
- * lit — while the light streaks draw themselves in beneath; the heading, copy and buttons follow
- * briskly. The soft glow behind drifts slowly (CSS, off under reduced motion). Buttons: magnetic
- * pull, arrow nudge, a pointer-following light on the solid one and a travelling border light on
- * the outline one.
+ * The culmination of the page ("energy"): Partner → Deploy → Accelerate light up in turn — each word
+ * glows green as it arrives and hands the green on, so Accelerate ends lit — then the light streaks
+ * draw themselves in, then the heading and copy, then the buttons arrive and "switch on" with one
+ * soft green pulse. The glow behind drifts slowly (CSS, off under reduced motion). Buttons: magnetic
+ * pull, arrow nudge, a pointer-following light on Get in Touch; a travelling border light and a soft
+ * green glow on Become a Partner.
  */
 export default function HomeCta() {
   const root = useRef(null);
   const enter = useEntrance(root, ({ tl, q }) => {
     const words = q("[data-step]");
-    tl.fromTo(q("[data-line]"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.4, stagger: 0.15, ease: "power2.out" }, 0);
+    // 1. Partner → Deploy → Accelerate
     words.forEach((w, i) => {
-      tl.fromTo(w, { opacity: 0.25, color: "rgba(244,247,244,0.8)" }, { opacity: 1, color: "#90D988", duration: 0.35, ease: "power2.out" }, 0.1 + i * 0.32);
-      if (i < words.length - 1) tl.to(w, { color: "rgba(244,247,244,0.8)", duration: 0.45 }, 0.1 + (i + 1) * 0.32);
+      tl.fromTo(w, { opacity: 0.25, color: "rgba(244,247,244,0.8)" }, { opacity: 1, color: "#90D988", duration: 0.35, ease: "power2.out" }, 0.05 + i * 0.3);
+      if (i < words.length - 1) tl.to(w, { color: "rgba(244,247,244,0.8)", duration: 0.45 }, 0.05 + (i + 1) * 0.3);
     });
-    tl.fromTo(q("[data-sep]"), { scaleY: 0 }, { scaleY: 1, duration: 0.3, stagger: 0.32, clearProps: "transform" }, 0.3)
-      .fromTo(q('[data-e="rest"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.08, clearProps: "all" }, 0.35);
+    tl.fromTo(q("[data-sep]"), { scaleY: 0 }, { scaleY: 1, duration: 0.3, stagger: 0.3, clearProps: "transform" }, 0.25)
+      // 2. the light lines draw
+      .fromTo(q("[data-line]"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.2, stagger: 0.12, ease: "power2.out" }, 0.8)
+      // 3. heading + copy
+      .fromTo(q('[data-e="rest"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, clearProps: "all" }, 0.95)
+      // 4. the buttons arrive and switch on
+      .fromTo(q('[data-e="actions"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, clearProps: "all" }, 1.25)
+      .fromTo(
+        q("[data-e='actions'] a"),
+        { boxShadow: "0 0 0 0 rgba(144,217,136,0)" },
+        { keyframes: [{ boxShadow: "0 0 0 6px rgba(144,217,136,0.28)", duration: 0.35 }, { boxShadow: "0 0 0 12px rgba(144,217,136,0)", duration: 0.5 }], stagger: 0.12, clearProps: "boxShadow" },
+        1.5
+      );
     // Hand the first two words back to their stylesheet colour; the last keeps its green.
     tl.set(words.slice(0, -1), { clearProps: "all" });
   });
@@ -69,11 +80,11 @@ export default function HomeCta() {
             trusted partner for BESS.
           </p>
         </div>
-        <div data-e="rest" className="flex shrink-0 flex-wrap items-center gap-4">
+        <div data-e="actions" className="flex shrink-0 flex-wrap items-center gap-4">
           <MagneticButton to="/contact" arrow spotlight className="hover:scale-[1.02]">
             Get in Touch
           </MagneticButton>
-          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:scale-[1.02]">
+          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:scale-[1.02] hover:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)]">
             Become a Partner
           </MagneticButton>
         </div>

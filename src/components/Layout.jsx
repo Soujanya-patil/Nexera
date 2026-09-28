@@ -23,11 +23,17 @@ export default function Layout() {
   // only <Outlet />'s content swaps) — the single Lenis instance the whole site scrolls through.
   useEffect(() => initSmoothScroll(), []);
   useScrollOnNavigate();
+  const { pathname } = useLocation();
 
   return (
     <div>
       <Nav />
-      <Outlet />
+      {/* Route change: the new page fades in (opacity only — no transform, so sticky/fixed children
+          and scroll measurements are unaffected). Keyed by path, so filter/query and #hash changes
+          don't re-trigger it; skipped during a product View Transition and under reduced motion. */}
+      <div key={pathname} className="route-fade">
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );

@@ -256,6 +256,8 @@ function Callouts({ show, count, animate, onActive }) {
                     {shown && animate && (
                       <span className="animate-hotspot-pulse absolute inset-0 rounded-full bg-signal" style={{ animationDelay: `${base}ms` }} />
                     )}
+                    {/* Hover: one stronger pulse from the dot (remounts on each hover, so it plays once) */}
+                    {shown && hot && animate && <span className="animate-hotspot-once absolute inset-0 rounded-full bg-signal" />}
                     <span
                       className={`relative block h-full w-full rounded-full bg-signal ring-2 transition-shadow duration-200 ${
                         hot ? "shadow-[0_0_10px_2px_rgba(144,217,136,0.55)] ring-signal/35" : "ring-deep/70"
@@ -404,8 +406,18 @@ const LABEL_AT = [0.52, 0.565, 0.61, 0.655, 0.7];
 const LABELS_OUT = 0.86;
 const ramp = (p, a, b) => Math.max(0, Math.min(1, (p - a) / (b - a)));
 const smooth = (t) => t * t * (3 - 2 * t);
-/** How far the copy has stepped back for the product (0 = hero, 1 = product-led). */
-const recedeAt = (p) => smooth(ramp(p, 0.08, 0.3)) * (1 - smooth(ramp(p, 0.86, 0.97)));
+/**
+ * How far the copy has stepped back for the product (0 = hero, 1 = product-led), by stage:
+ * a little as the cabinet opens (REVEAL -> 0.55), more while exploring (0.75), quietest during
+ * SAFETY (1, the labels lead), then the headline gradually returns through SYSTEM.
+ */
+const recedeAt = (p) =>
+  (smooth(ramp(p, 0.08, 0.4)) * 0.55 + smooth(ramp(p, 0.4, 0.5)) * 0.2 + smooth(ramp(p, 0.5, 0.58)) * 0.25) *
+  (1 - smooth(ramp(p, 0.76, 0.95)));
+/** The close of the story: the product settles and the hero's lighting fades toward the stat bar. */
+const settleAt = (p) => smooth(ramp(p, 0.9, 1));
+/** Small contextual line beside the copy, by stage (only where it adds something). */
+const CONTEXT = { 2: "Explore the system", 3: "Safety inspection" };
 /** Footage time for progress p: opens over REVEAL, holds, closes again at the end. */
 const footageAt = (p, d) => d * (smooth(ramp(p, 0.08, 0.4)) * (1 - smooth(ramp(p, 0.88, 0.98))));
 const labelsAt = (p) => (p >= LABELS_OUT ? 0 : LABEL_AT.filter((a) => p >= a).length);
@@ -577,6 +589,7 @@ export default function HomeHero() {
         const p = self.progress;
         el.style.setProperty("--story", p.toFixed(4));
         el.style.setProperty("--recede", recedeAt(p).toFixed(4));
+        el.style.setProperty("--settle", settleAt(p).toFixed(4));
         want = footageAt(p, Number.isFinite(v.duration) ? v.duration : 6.83);
         apply();
         setStoryLabels(labelsAt(p));
@@ -593,6 +606,7 @@ export default function HomeHero() {
       v.removeEventListener("loadedmetadata", apply);
       el.style.removeProperty("--story");
       el.style.removeProperty("--recede");
+      el.style.removeProperty("--settle");
     };
   }, [story]);
 
@@ -683,25 +697,39 @@ export default function HomeHero() {
       >
         {/* Copy — in the story it steps back (fades, drifts left, settles smaller) while the product
             leads, and returns at the end. A wrapper of its own, so it never fights the copy's entrance. */}
-        <div
-          className="relative z-10"
-          style={
-            story
-              ? {
-                  opacity: "calc(1 - var(--recede, 0) * 0.55)",
-                  transform: "translate3d(calc(var(--recede, 0) * -28px), 0, 0) scale(calc(1 - var(--recede, 0) * 0.05))",
-                  transformOrigin: "left center",
-                }
-              : undefined
-          }
-        >
-          <HomeHeroCopy parallax={parallax} story={story} subdued={!story && (phase === "scan" || phase === "open")} />
+        <div className="relative z-10">
+          {/* Contextual line while the product is examined (full strength; the copy below steps back). */}
+          {story && (
+            <p
+              aria-hidden="true"
+              className={`absolute -top-9 left-0 flex items-center gap-2 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-signal transition-[opacity,translate] duration-500 ease-out ${
+                CONTEXT[storyStage] ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0"
+              }`}
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+              {CONTEXT[storyStage] ?? CONTEXT[2]}
+            </p>
+          )}
+          <div
+            style={
+              story
+                ? {
+                    opacity: "calc(1 - var(--recede, 0) * 0.55)",
+                    transform: "translate3d(calc(var(--recede, 0) * -28px), 0, 0) scale(calc(1 - var(--recede, 0) * 0.06))",
+                    transformOrigin: "left center",
+                  }
+                : undefined
+            }
+          >
+            <HomeHeroCopy parallax={parallax} story={story} subdued={!story && (phase === "scan" || phase === "open")} />
+          </div>
         </div>
 
         {/* Product, set into the hero rather than framed: parallax layer (wider than its column on wide
             screens, reaching into the page margin) -> entrance -> ambient field + stage. */}
         <div className="lg:w-[calc(100%+max(0px,(100vw-72rem)/2))]" style={parallax ? drift(6, 5) : undefined}>
-          {/* Story: the product grows ~10% and moves toward the centre as the copy steps back. */}
+          {/* Story: the product grows ~10% and moves toward the centre as the copy steps back; a soft
+              green light behind it rises with it (below). */}
           <div
             style={
               story
@@ -717,6 +745,7 @@ export default function HomeHero() {
               aria-hidden="true"
               className={`pointer-events-none absolute -inset-x-[42%] -inset-y-[30%] transition-[opacity,filter] duration-700 ${inspect ? "brightness-125" : ""}`}
               style={{
+                ...(story ? { opacity: "calc(1 - var(--settle, 0) * 0.55)", scale: "calc(1 + var(--recede, 0) * 0.12)" } : null),
                 background:
                   "radial-gradient(34% 36% at 50% 52%, rgba(144,217,136,0.07), transparent 70%), radial-gradient(closest-side, rgba(22,29,30,0.92) 30%, rgba(16,28,26,0.55) 62%, rgba(7,26,23,0) 100%)",
               }}
@@ -820,6 +849,14 @@ export default function HomeHero() {
           </div>
         </div>
       </div>
+
+      {story && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-60% to-deep"
+          style={{ opacity: "calc(var(--settle, 0) * 0.85)" }}
+        />
+      )}
 
       {/* Story progress: five stages along a thin line (filled by --story), each a jump link, with the
           current stage's caption beside it. */}
