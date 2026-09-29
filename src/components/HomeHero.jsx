@@ -668,6 +668,12 @@ export default function HomeHero() {
       style={story ? { height: `calc(100svh - 4rem + ${STORY_VH}svh)` } : undefined}
     >
       <div className={story ? "sticky top-16 h-[calc(100svh-4rem)] overflow-clip" : undefined}>
+      {/* Ground: the footage's own graphite ground (sampled from its frame edges: ~#141819 top,
+          #171F1F middle, #1C2225 floor) continued across the full width of the hero, so the product
+          layer runs edge to edge with no visible video boundary. It fades in from behind the headline
+          toward the product (desktop) or from above the product (stacked layouts), so the copy keeps
+          its dark ground. */}
+      <div aria-hidden="true" className="hero-ground pointer-events-none absolute inset-0" />
       {/* Atmosphere: a graphite lift from the top left, a faint engineering grid, and a fall-off into
           the deeper ground at the bottom. It drifts slightly against the product for depth. */}
       <div aria-hidden="true" className="pointer-events-none absolute -inset-4" style={parallax ? drift(-2, -1.5) : undefined}>
@@ -675,7 +681,7 @@ export default function HomeHero() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(55% 60% at 8% 0%, rgba(244,247,244,0.05), transparent 70%), linear-gradient(to bottom, transparent 55%, var(--color-deep))",
+              "radial-gradient(55% 60% at 8% 0%, rgba(244,247,244,0.05), transparent 70%), linear-gradient(to bottom, transparent 70%, var(--color-deep))",
           }}
         />
         <div
@@ -727,7 +733,9 @@ export default function HomeHero() {
 
         {/* Product, set into the hero rather than framed: parallax layer (wider than its column on wide
             screens, reaching into the page margin) -> entrance -> ambient field + stage. */}
-        <div className="lg:w-[calc(100%+max(0px,(100vw-72rem)/2))]" style={parallax ? drift(6, 5) : undefined}>
+        {/* Reaches to the viewport's right edge: the column's width + the page margin beside the
+            centred container + the container's own 1.5rem (px-6) padding. */}
+        <div className="lg:w-[calc(100%+max(0px,(100vw-72rem)/2)+1.5rem)]" style={parallax ? drift(6, 5) : undefined}>
           {/* Story: the product grows ~10% and moves toward the centre as the copy steps back; a soft
               green light behind it rises with it (below). */}
           <div

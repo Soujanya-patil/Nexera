@@ -284,6 +284,20 @@
   }
 }
 
+/* Home hero ground (HomeHero.jsx): the footage's graphite ground, full width. Masked in from the copy
+   side: left-to-right on desktop (copy left, product right), top-to-bottom when stacked. */
+.hero-ground {
+  background: linear-gradient(to bottom, #141819 0%, #171f1f 50%, #1c2225 85%, #1c2225 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 35%, #000 58%);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 35%, #000 58%);
+}
+@media (min-width: 1024px) {
+  .hero-ground {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 30%, #000 56%);
+    mask-image: linear-gradient(to right, transparent 0%, transparent 30%, #000 56%);
+  }
+}
+
 /* Home hero label hover: one stronger pulse from the dot (plays once per hover). */
 @keyframes hotspot-once {
   0% { transform: scale(1); opacity: 0.7; }

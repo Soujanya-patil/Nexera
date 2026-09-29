@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- TODO: replace todo-production-domain.example with the production domain (also in robots.txt). -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://todo-production-domain.example/</loc></url>
-  <url><loc>https://todo-production-domain.example/about</loc></url>
-  <url><loc>https://todo-production-domain.example/products</loc></url>
-  <url><loc>https://todo-production-domain.example/products/tcl-blueark-x1</loc></url>
-  <url><loc>https://todo-production-domain.example/products/tcl-blueark-x5</loc></url>
-  <url><loc>https://todo-production-domain.example/products/tcl-blueark-w10</loc></url>
-  <url><loc>https://todo-production-domain.example/products/hithium-block-261</loc></url>
-  <url><loc>https://todo-production-domain.example/products/hithium-power-cabinet-1022</loc></url>
-  <url><loc>https://todo-production-domain.example/products/hithium-power-625</loc></url>
-  <url><loc>https://todo-production-domain.example/products/clou-aqua-c25s</loc></url>
-  <url><loc>https://todo-production-domain.example/solutions</loc></url>
-  <url><loc>https://todo-production-domain.example/become-a-partner</loc></url>
-  <url><loc>https://todo-production-domain.example/how-it-works</loc></url>
-  <url><loc>https://todo-production-domain.example/service-training</loc></url>
-  <url><loc>https://todo-production-domain.example/where-we-operate</loc></url>
-  <url><loc>https://todo-production-domain.example/resources</loc></url>
-  <url><loc>https://todo-production-domain.example/contact</loc></url>
+  <url><loc>https://nexerapower.com/</loc></url>
+  <url><loc>https://nexerapower.com/solutions</loc></url>
+  <url><loc>https://nexerapower.com/products</loc></url>
+  <url><loc>https://nexerapower.com/products/tcl-blueark-x1</loc></url>
+  <url><loc>https://nexerapower.com/products/tcl-blueark-x5</loc></url>
+  <url><loc>https://nexerapower.com/products/tcl-blueark-w10</loc></url>
+  <url><loc>https://nexerapower.com/products/hithium-block-261</loc></url>
+  <url><loc>https://nexerapower.com/products/hithium-power-cabinet-1022</loc></url>
+  <url><loc>https://nexerapower.com/products/hithium-power-625</loc></url>
+  <url><loc>https://nexerapower.com/products/clou-aqua-c25s</loc></url>
+  <url><loc>https://nexerapower.com/become-a-partner</loc></url>
+  <url><loc>https://nexerapower.com/about</loc></url>
+  <url><loc>https://nexerapower.com/how-it-works</loc></url>
+  <url><loc>https://nexerapower.com/service-training</loc></url>
+  <url><loc>https://nexerapower.com/where-we-operate</loc></url>
+  <url><loc>https://nexerapower.com/resources</loc></url>
+  <url><loc>https://nexerapower.com/contact</loc></url>
 </urlset>
