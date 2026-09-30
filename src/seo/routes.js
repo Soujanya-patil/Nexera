@@ -28,6 +28,19 @@ export const DESCRIPTION_MAX = 155;
  */
 export const NOT_FOUND_TITLE = "Page not found | NEXERA";
 
+/**
+ * The Organization for structured data (scripts/seo-pages.mjs puts it on every page). Only facts the
+ * site itself states: the address is the Footer's; the site shows no email, phone or social
+ * profiles, so none are given. No logo: the site has no NEXERA logo file (the wordmark is built in
+ * code, and public/favicon.svg is still the Vite default).
+ */
+export const ORGANIZATION = {
+  name: "NEXERA Powertech",
+  description:
+    "Authorized distributor and solution provider for TCL, Hithium and CLOU battery energy storage systems (BESS) in India, with design, commissioning, training and after-sales support.",
+  address: { locality: "Bangalore", region: "Karnataka", country: "IN" },
+};
+
 /** 1200x630 share image (public/og-default.jpg): the NEXERA wordmark and cabinet on the dark green. */
 export const DEFAULT_OG_IMAGE = "/og-default.jpg";
 /** A product page shares its own product image only if it is at least this wide (checked at build). */
@@ -128,6 +141,9 @@ function productPage(p) {
     ),
     // Candidate only: the build keeps it if the image is at least OG_IMAGE_MIN_WIDTH wide.
     ogImage: p.image,
+    // Structured data (Product): only what the catalogue states. The brand is the partner that makes
+    // it — never NEXERA — and there are no offers, prices, ratings or specs.
+    product: { name: label, description: p.summary, image: p.image, brand },
   };
 }
 

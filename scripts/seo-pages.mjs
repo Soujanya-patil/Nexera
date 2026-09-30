@@ -4,7 +4,8 @@
  *
  * For every route in src/seo/routes.js, dist/index.html is copied to dist/<path>.html (the homepage
  * rewrites dist/index.html itself) with the generic <title> and description removed and the route's
- * title, description, canonical, Open Graph and Twitter tags injected. Page bodies are not
+ * title, description, canonical, Open Graph and Twitter tags injected, plus one JSON-LD structured
+ * data block (the only place it is emitted, so each URL has exactly one copy). Page bodies are not
  * pre-rendered: every file is the same app shell, and React renders the page as before.
  * public/.htaccess serves /about from about.html (and so on) without a redirect. It also writes
  * dist/404.html — the same shell with the not-found title and a noindex, no canonical — which the
@@ -31,10 +32,17 @@ await build({
   build: { ssr: "src/seo/routes.js", outDir: tmp, emptyOutDir: true, copyPublicDir: false },
 });
 const entry = fs.readdirSync(tmp).find((f) => /^routes\.m?js$/.test(f));
-const { ROUTES, SITE_URL, TITLE_SUFFIX, TITLE_MAX, DESCRIPTION_MAX, DEFAULT_OG_IMAGE, OG_IMAGE_MIN_WIDTH, NOT_FOUND_TITLE } =
-  await import(
-  pathToFileURL(path.join(tmp, entry)).href
-);
+const {
+  ROUTES,
+  SITE_URL,
+  TITLE_SUFFIX,
+  TITLE_MAX,
+  DESCRIPTION_MAX,
+  DEFAULT_OG_IMAGE,
+  OG_IMAGE_MIN_WIDTH,
+  NOT_FOUND_TITLE,
+  ORGANIZATION,
+} = await import(pathToFileURL(path.join(tmp, entry)).href);
 
 // --- Checks -----------------------------------------------------------------------------------
 const problems = [];
@@ -88,6 +96,78 @@ const ogFor = (r) => {
 };
 const resolved = ROUTES.map((r) => ({ ...r, ogImage: ogFor(r) }));
 
+// --- Structured data: one JSON-LD @graph per page, only here (never rendered at runtime) --------
+// Organization on every page; WebSite on the homepage; BreadcrumbList on every other route
+// (Home > Page, Home > Products > Product), named like the page titles; Product on product pages,
+// from the catalogue only — brand is the partner, never NEXERA; no offers, prices or ratings.
+const ORG_ID = `${SITE_URL}/#organization`;
+const organization = {
+  "@type": "Organization",
+  "@id": ORG_ID,
+  name: ORGANIZATION.name,
+  url: `${SITE_URL}/`,
+  description: ORGANIZATION.description,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: ORGANIZATION.address.locality,
+    addressRegion: ORGANIZATION.address.region,
+    addressCountry: ORGANIZATION.address.country,
+  },
+};
+const pageName = (r) => r.title.slice(0, -TITLE_SUFFIX.length);
+const productsRoute = ROUTES.find((r) => r.path === "/products");
+const breadcrumbs = (trail) => ({
+  "@type": "BreadcrumbList",
+  itemListElement: trail.map((r, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: r.path === "/" ? "Home" : pageName(r),
+    item: r.canonical,
+  })),
+});
+const home = ROUTES.find((r) => r.path === "/");
+function graphFor(r) {
+  const nodes = [organization];
+  if (!r) return nodes; // 404.html
+  if (r.path === "/") {
+    nodes.push({ "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: ORGANIZATION.name, url: `${SITE_URL}/`, publisher: { "@id": ORG_ID } });
+  } else {
+    nodes.push(breadcrumbs(r.product ? [home, productsRoute, r] : [home, r]));
+  }
+  if (r.product) {
+    nodes.push({
+      "@type": "Product",
+      "@id": `${r.canonical}#product`,
+      name: r.product.name,
+      description: r.product.description,
+      image: SITE_URL + r.product.image,
+      url: r.canonical,
+      brand: { "@type": "Brand", name: r.product.brand },
+    });
+  }
+  return nodes;
+}
+/** The <script> for a page, after checking what goes into it. */
+function jsonLd(r) {
+  const where = r ? r.path : "404.html";
+  const graph = { "@context": "https://schema.org", "@graph": graphFor(r) };
+  const json = JSON.stringify(graph);
+  JSON.parse(json); // throws on anything that isn't plain JSON
+  const types = graph["@graph"].map((n) => n["@type"]);
+  if (new Set(types).size !== types.length) problems.push(`${where}: duplicate @type in JSON-LD (${types.join(", ")})`);
+  (function walk(v, key) {
+    if (Array.isArray(v)) return v.forEach((x) => walk(x, key));
+    if (v && typeof v === "object") return Object.entries(v).forEach(([k, x]) => walk(x, k));
+    if (!["url", "@id", "image", "item"].includes(key)) return;
+    if (!v.startsWith(`${SITE_URL}/`)) problems.push(`${where}: JSON-LD ${key} is not an absolute ${SITE_URL}/ URL: ${v}`);
+    if (key === "image" && !fs.existsSync(distFile(v.slice(SITE_URL.length)))) problems.push(`${where}: JSON-LD image not in dist: ${v}`);
+  })(graph);
+  // "<" escaped so the JSON can never close the script element early.
+  return `<script type="application/ld+json">${json.replace(/</g, "\\u003c")}</script>`;
+}
+const scripts = new Map(resolved.map((r) => [r.path, jsonLd(r)]));
+const notFoundScript = jsonLd(null);
+
 if (problems.length) {
   console.error(`\nseo-pages: ${problems.length} problem(s):\n  ${problems.join("\n  ")}\n`);
   process.exit(1);
@@ -113,6 +193,7 @@ for (const r of resolved) {
     `<meta property="og:url" content="${esc(r.canonical)}" />`,
     `<meta property="og:image" content="${esc(image)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
+    scripts.get(r.path),
   ].join("\n    ");
   const html = shell.replace(/\s*<\/head>/, `\n    ${head}\n  </head>`);
   const out = r.path === "/" ? path.join(dist, "index.html") : path.join(dist, `${r.path.slice(1)}.html`);
@@ -122,7 +203,10 @@ for (const r of resolved) {
 // The not-found page: same app shell (React renders the NotFound page), not indexed, no canonical.
 fs.writeFileSync(
   path.join(dist, "404.html"),
-  shell.replace(/\s*<\/head>/, `\n    <title>${esc(NOT_FOUND_TITLE)}</title>\n    <meta name="robots" content="noindex" />\n  </head>`)
+  shell.replace(
+    /\s*<\/head>/,
+    `\n    <title>${esc(NOT_FOUND_TITLE)}</title>\n    <meta name="robots" content="noindex" />\n    ${notFoundScript}\n  </head>`
+  )
 );
 fs.rmSync(tmp, { recursive: true, force: true });
 
