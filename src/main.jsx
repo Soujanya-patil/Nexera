@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './index.css'
 
 import Layout from './components/Layout'
+import Seo from './components/Seo'
 import Home from './pages/Home'
 import About from './pages/About'
 import Solutions from './pages/Solutions'
@@ -20,9 +21,15 @@ import { ProductsRoute, ProductDetailRoute } from './pages/lazy'
 // Full viewport height so the footer stays below the fold while a route loads (no layout shift).
 const PageFallback = () => <div className="min-h-svh bg-night" />
 
+// The served HTML carries this route's title, description and canonical for crawlers that don't run
+// JavaScript (scripts/seo-pages.mjs). From here on <Seo> renders them per route, so drop the static
+// copies: exactly one of each, and they follow client-side navigation.
+document.head.querySelectorAll('title, meta[name="description"], link[rel="canonical"]').forEach((el) => el.remove());
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
+      <Seo />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />

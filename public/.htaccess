@@ -1,15 +1,33 @@
 # Nexera — Hostinger (LiteSpeed / Apache-compatible). Copied into dist/ by Vite.
 
-# --- Single-page app fallback --------------------------------------------------------------------
-# React Router (BrowserRouter) owns the routes: any path that is not a real file or directory is
-# served index.html, so deep links like /about or /products/tcl-blueark-x1 load instead of 404ing.
+# --- Routes ------------------------------------------------------------------------------------
+# Every sitemap route has its own HTML file with that route's metadata in <head> (written after the
+# build by scripts/seo-pages.mjs): /about -> about.html, /products -> products.html,
+# /products/tcl-blueark-x5 -> products/tcl-blueark-x5.html. They are served internally: the URL never
+# shows .html and never gets a trailing slash. Anything else that is not a real file falls back to
+# index.html, and React Router (BrowserRouter) renders it.
 Options -MultiViews
+# /products is both products.html and the folder products/ (the product pages): never answer a
+# folder name with a redirect to its trailing-slash form.
+<IfModule mod_dir.c>
+  DirectorySlash Off
+</IfModule>
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
   RewriteRule ^index\.html$ - [L]
-  # Hashed build files are real files or nothing: a missing one must 404, not return index.html
-  # (a stale page asking for an old chunk would otherwise receive HTML instead of JavaScript).
+  # A route's own page (checked before the fallback, so /products is products.html, not the folder).
+  RewriteCond %{REQUEST_URI} !^/assets/
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.+)$ $1.html [L]
+  # The same page for a trailing-slash spelling (/about/, /products/), without a redirect; its
+  # canonical names the slash-less URL.
+  RewriteCond %{REQUEST_URI} !^/assets/
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.+)/$ $1.html [L]
+  # Single-page app fallback. Hashed build files are real files or nothing: a missing one must 404,
+  # not return index.html (a stale page asking for an old chunk would otherwise receive HTML instead
+  # of JavaScript).
   RewriteCond %{REQUEST_URI} !^/assets/
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
@@ -31,10 +49,11 @@ AddType video/mp4 .mp4
 </IfModule>
 
 # --- Caching -------------------------------------------------------------------------------------
-# index.html must always be revalidated so a new deploy shows up immediately (hashed files under
-# /assets/ get a one-year immutable cache from assets/.htaccess).
+# Every HTML page (index.html and the per-route pages) must always be revalidated so a new deploy
+# shows up immediately — a stale page would ask for hashed files that no longer exist (hashed files
+# under /assets/ get a one-year immutable cache from assets/.htaccess).
 <IfModule mod_headers.c>
-  <FilesMatch "^index\.html$">
+  <FilesMatch "\.html$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
 </IfModule>
