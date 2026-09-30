@@ -59,9 +59,12 @@ const CAB_TOP = 0.155;
 const DOOR_LEFT = 0.061;
 const COMPACT_TOP = 0.12;
 const COMPACT_BOTTOM = 0.93;
+// The stage reaches past the viewport's right edge on desktop, so the right column ends this far
+// inside the viewport instead (its leaders fan out from a bus just left of the chips).
+const VIEW_MARGIN = 16;
 
 /** Places every chip from its measured size and returns chip positions and leader polylines (px). */
-function layoutCallouts(W, H, sizes, compact) {
+function layoutCallouts(W, H, sizes, compact, rightEdge = W * (1 - EDGE)) {
   const pos = [];
   const right = [];
   CALLOUTS.forEach((c, i) => {
@@ -73,10 +76,11 @@ function layoutCallouts(W, H, sizes, compact) {
     } else if (c.zone === "floor") {
       pos[i] = compact ? { x: W * DOOR_LEFT, y: H * COMPACT_BOTTOM - h } : { x: W * EDGE, y: H * FLOOR_BOTTOM - h };
     } else {
-      pos[i] = { x: W * (1 - EDGE) - w, y: 0 };
+      pos[i] = { x: rightEdge - w, y: 0 };
       right.push(i);
     }
   });
+  const bus = Math.min(W * BUS, ...right.map((i) => pos[i].x - 10));
 
   // Right column: aim each chip's centre at its lane, then resolve collisions within
   // [EDGE, 1 - EDGE] — first pushing down, then (if the stack overruns the bottom) back up.
@@ -104,7 +108,7 @@ function layoutCallouts(W, H, sizes, compact) {
     if (c.zone === "right") {
       const ly = H * (lane(c) / 100);
       const run = ly === ay ? [[ax, ay]] : [[ax, ay], [ax, ly]];
-      return [...run, [W * BUS, ly], [x, y + h / 2]];
+      return [...run, [bus, ly], [x, y + h / 2]];
     }
     // Above/below the cabinet: run vertically from the anchor, then across to the chip if needed.
     const edgeY = c.zone === "top" ? y + h : y;
@@ -155,7 +159,15 @@ function Callouts({ show, count, animate, onActive, compact = false }) {
       const H = el.clientHeight;
       if (!W || !H) return;
       const sizes = chips.current.map((c) => ({ w: c.offsetWidth, h: c.offsetHeight }));
-      const { pos, lines } = layoutCallouts(W, H, sizes, compact);
+      // Desktop: keep the right column inside the viewport. Layout offsets, not bounding rects, so
+      // the entrance scale and the pointer parallax don't skew it.
+      let rightEdge;
+      if (compact) {
+        let left = 0;
+        for (let n = el; n; n = n.offsetParent) left += n.offsetLeft;
+        rightEdge = Math.min(W * (1 - EDGE), document.documentElement.clientWidth - VIEW_MARGIN - left);
+      }
+      const { pos, lines } = layoutCallouts(W, H, sizes, compact, rightEdge);
       setLayout({ W, H, pos, lines, lengths: lines.map(polylineLength) });
     };
     measure();
@@ -163,7 +175,12 @@ function Callouts({ show, count, animate, onActive, compact = false }) {
     ro.observe(el);
     chips.current.forEach((c) => ro.observe(c));
     document.fonts?.ready.then(measure);
-    return () => ro.disconnect();
+    // The stage can move without resizing (its left edge follows the viewport width).
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, [compact]);
 
   const n = count ?? (show ? CALLOUTS.length : 0);

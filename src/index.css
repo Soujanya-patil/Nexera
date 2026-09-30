@@ -333,9 +333,12 @@
  * (fractions of the frame): open door's left edge 0.061, lifting eyes 0.156, open rack's lower edge
  * 0.9375 — so the cabinet is never cropped and the soft edges / ground plate are untouched (they move
  * with the stage). Percentages resolve against the product column's width (the containing block).
- *   left   the fully open door stops 24px short of the copy's text (--copy-gap, measured by HomeHero)
+ *   left   sized as if the fully open door stopped 24px short of the copy's text (--copy-gap,
+ *          measured by HomeHero), then moved --shift further right for a clear gap between the
+ *          text and the cabinet (the size is unaffected: --w does not use --shift)
  *   width  the smallest of: 20% over the old column-plus-margin width; the right label column
- *          (ending at 0.97 of the stage) 16px inside the viewport — only faded ground lies beyond it;
+ *          (ending at 0.97 of the stage) 16px inside the viewport before --shift (the stage then
+ *          runs past the edge, where only faded ground lies, and HomeHero keeps the labels in view);
  *          and the height at which the band from the label chips above the eyes (--above) to just
  *          under the rack edge (0.95 + --below) fits in the hero
  *   top    that band centred on the hero
@@ -349,6 +352,7 @@
   .hero-fit .hero-product {
     --bleed: calc(max(0px, (100vw - 1440px) / 2) + var(--site-pad));
     --door-x: calc(24px - var(--copy-gap, 6.375rem)); /* open door's left edge, from the column */
+    --shift: 6vw;
     --above: 42px; /* top label chips (~23px) + 6px gap to the eyes + 8px to the hero's top + slack */
     --below: 12px;
     --w: min(
@@ -361,7 +365,7 @@
     left: 0;
     width: var(--w);
     max-width: none;
-    margin: calc((var(--above) - var(--below)) / 2 - var(--w) * 0.553 * 54 / 65) 0 0 calc(var(--door-x) - var(--w) * 0.061);
+    margin: calc((var(--above) - var(--below)) / 2 - var(--w) * 0.553 * 54 / 65) 0 0 calc(var(--door-x) - var(--w) * 0.061 + var(--shift));
   }
 }
 
