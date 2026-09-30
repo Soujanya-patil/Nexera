@@ -4,6 +4,7 @@ import videoSrc from "../assets/products/nexera-hero-cabinet.mp4";
 import closeSrc from "../assets/products/nexera-hero-cabinet-close.mp4";
 import posterSrc from "../assets/products/nexera-hero-cabinet-poster.webp";
 import scrubSrc from "../assets/products/nexera-hero-cabinet-scrub.mp4";
+import groundSrc from "../assets/products/nexera-hero-ground.webp";
 import { useMediaQuery } from "../lib/scrollSteps";
 import { loadGsap } from "../lib/motion";
 import { getLenis } from "../lib/lenis";
@@ -423,6 +424,19 @@ const footageAt = (p, d) => d * (smooth(ramp(p, 0.08, 0.4)) * (1 - smooth(ramp(p
 const labelsAt = (p) => (p >= LABELS_OUT ? 0 : LABEL_AT.filter((a) => p >= a).length);
 const stageAt = (p) => STAGES.reduce((k, s, i) => (p >= s.at ? i : k), 0);
 
+// The ground plate fades out toward the copy on the left (its left third is the extension behind the
+// headline) and at its top and bottom; everywhere around the footage it is fully present.
+const PLATE_X = "linear-gradient(to right, transparent 4%, #000 30%)";
+const PLATE_Y = "linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%)";
+const GROUND_PLATE = {
+  backgroundImage: `url(${groundSrc})`,
+  backgroundSize: "100% 100%",
+  maskImage: `${PLATE_X}, ${PLATE_Y}`,
+  maskComposite: "intersect",
+  WebkitMaskImage: `${PLATE_X}, ${PLATE_Y}`,
+  WebkitMaskComposite: "source-in",
+};
+
 export default function HomeHero() {
   const section = useRef(null);
   const opening = useRef(null);
@@ -668,12 +682,6 @@ export default function HomeHero() {
       style={story ? { height: `calc(100svh - 4rem + ${STORY_VH}svh)` } : undefined}
     >
       <div className={story ? "sticky top-16 h-[calc(100svh-4rem)] overflow-clip" : undefined}>
-      {/* Ground: the footage's own graphite ground (sampled from its frame edges: ~#141819 top,
-          #171F1F middle, #1C2225 floor) continued across the full width of the hero, so the product
-          layer runs edge to edge with no visible video boundary. It fades in from behind the headline
-          toward the product (desktop) or from above the product (stacked layouts), so the copy keeps
-          its dark ground. */}
-      <div aria-hidden="true" className="hero-ground pointer-events-none absolute inset-0" />
       {/* Atmosphere: a graphite lift from the top left, a faint engineering grid, and a fall-off into
           the deeper ground at the bottom. It drifts slightly against the product for depth. */}
       <div aria-hidden="true" className="pointer-events-none absolute -inset-4" style={parallax ? drift(-2, -1.5) : undefined}>
@@ -755,9 +763,15 @@ export default function HomeHero() {
               style={{
                 ...(story ? { opacity: "calc(1 - var(--settle, 0) * 0.55)", scale: "calc(1 + var(--recede, 0) * 0.12)" } : null),
                 background:
-                  "radial-gradient(34% 36% at 50% 52%, rgba(144,217,136,0.07), transparent 70%), radial-gradient(closest-side, rgba(22,29,30,0.92) 30%, rgba(16,28,26,0.55) 62%, rgba(7,26,23,0) 100%)",
+                  "radial-gradient(34% 36% at 50% 52%, rgba(144,217,136,0.07), rgba(144,217,136,0.035) 40%, rgba(144,217,136,0.01) 65%, transparent 85%)",
               }}
             />
+            {/* Ground plate (nexera-hero-ground.webp): the footage's own first frame, heavily blurred,
+                with every edge continued outward — 3x the stage wide, 1.8x tall, the frame exactly in
+                its centre third. So wherever the footage's soft edges fade out, what shows through is
+                the same tone the footage has there, carried on to the viewport edge: no visible video
+                boundary. It fades out toward the headline (left) and at the top and bottom. */}
+            <div aria-hidden="true" className="pointer-events-none absolute left-[-100%] top-[-39.81%] h-[179.63%] w-[300%]" style={GROUND_PLATE} />
             <div aria-hidden="true" className="pointer-events-none absolute inset-x-[22%] bottom-[4%] h-10 rounded-[100%] bg-black/40 blur-2xl" />
 
             {/* Stage: no panel — the footage's edges are masked soft (see EDGE_MASK), the labels, sweep
@@ -816,12 +830,6 @@ export default function HomeHero() {
                     className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0"
                   />
                 )}
-                {/* Depth: the footage's edges lean toward the hero's green-black; the cabinet is untouched. */}
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0"
-                  style={{ background: "radial-gradient(75% 70% at 50% 52%, transparent 60%, rgba(7,26,23,0.45) 100%)" }}
-                />
               </div>
               {/* Inspection (story, mouse): a soft light follows the cursor over the cabinet. */}
               {story && (
