@@ -51,16 +51,28 @@ const EDGE = 0.03;
 const FLOOR_BOTTOM = 0.985;
 const BUS = 0.705; // x where right-column leaders leave their lane and fan out to their chip
 const GAP = 6; // px between stacked chips
+// Desktop (`compact`): the hero shows only the band from just above the cabinet to the open rack's
+// lower edge (see .hero-product in index.css), so the top chips sit right above the lifting eyes
+// (y 0.155) and everything else ends above the rack edge. Chips on the left start at the open door's
+// edge (x 0.061), which is what the stage keeps clear of the copy.
+const CAB_TOP = 0.155;
+const DOOR_LEFT = 0.061;
+const COMPACT_TOP = 0.12;
+const COMPACT_BOTTOM = 0.93;
 
 /** Places every chip from its measured size and returns chip positions and leader polylines (px). */
-function layoutCallouts(W, H, sizes) {
+function layoutCallouts(W, H, sizes, compact) {
   const pos = [];
   const right = [];
   CALLOUTS.forEach((c, i) => {
     const { w, h } = sizes[i];
-    if (c.zone === "top") pos[i] = { x: W * (c.x / 100), y: H * EDGE };
-    else if (c.zone === "floor") pos[i] = { x: W * EDGE, y: H * FLOOR_BOTTOM - h };
-    else {
+    if (c.zone === "top") {
+      pos[i] = compact
+        ? { x: W * Math.max(c.x / 100, DOOR_LEFT), y: Math.max(H * EDGE, H * CAB_TOP - h - GAP) }
+        : { x: W * (c.x / 100), y: H * EDGE };
+    } else if (c.zone === "floor") {
+      pos[i] = compact ? { x: W * DOOR_LEFT, y: H * COMPACT_BOTTOM - h } : { x: W * EDGE, y: H * FLOOR_BOTTOM - h };
+    } else {
       pos[i] = { x: W * (1 - EDGE) - w, y: 0 };
       right.push(i);
     }
@@ -70,8 +82,8 @@ function layoutCallouts(W, H, sizes) {
   // [EDGE, 1 - EDGE] — first pushing down, then (if the stack overruns the bottom) back up.
   const lane = (c) => c.lane ?? c.anchor[1];
   right.sort((a, b) => lane(CALLOUTS[a]) - lane(CALLOUTS[b]));
-  const top = H * EDGE;
-  const bottom = H * (1 - EDGE);
+  const top = H * (compact ? COMPACT_TOP : EDGE);
+  const bottom = H * (compact ? COMPACT_BOTTOM : 1 - EDGE);
   right.forEach((i) => (pos[i].y = H * (lane(CALLOUTS[i]) / 100) - sizes[i].h / 2));
   let cursor = top;
   for (const i of right) {
@@ -129,7 +141,7 @@ const polylineLength = (pts) =>
  * `count` shows the first `count` labels, each drawing in the moment it is added (the desktop scroll
  * story, where the scroll position decides how many are up).
  */
-function Callouts({ show, count, animate, onActive }) {
+function Callouts({ show, count, animate, onActive, compact = false }) {
   const root = useRef(null);
   const chips = useRef([]);
   const [layout, setLayout] = useState(null);
@@ -143,7 +155,7 @@ function Callouts({ show, count, animate, onActive }) {
       const H = el.clientHeight;
       if (!W || !H) return;
       const sizes = chips.current.map((c) => ({ w: c.offsetWidth, h: c.offsetHeight }));
-      const { pos, lines } = layoutCallouts(W, H, sizes);
+      const { pos, lines } = layoutCallouts(W, H, sizes, compact);
       setLayout({ W, H, pos, lines, lengths: lines.map(polylineLength) });
     };
     measure();
@@ -152,7 +164,7 @@ function Callouts({ show, count, animate, onActive }) {
     chips.current.forEach((c) => ro.observe(c));
     document.fonts?.ready.then(measure);
     return () => ro.disconnect();
-  }, []);
+  }, [compact]);
 
   const n = count ?? (show ? CALLOUTS.length : 0);
   const on = Boolean(layout && n > 0);
@@ -354,8 +366,10 @@ const ready = (el, ms) =>
  *
  * SET INTO THE HERO, NOT FRAMED — the footage has no panel: its edges fade soft (EDGE_X / EDGE_Y) and
  * a wide ambient field behind it continues the footage's graphite ground out into the hero, fading to
- * the dark green (faintly behind the headline too), with a soft green light at the product. On wide
- * screens the product reaches into the page margin, so it reads larger; it enters with the headline.
+ * the dark green (faintly behind the headline too), with a soft green light at the product. On desktop
+ * the hero fits the first screen (the stat bar peeks in) and the product is sized to it: as large as
+ * fits, reaching toward the copy — the fully open door stops just short of the text — and toward the
+ * viewport's right edge (.hero-product in index.css); it enters with the headline.
  *
  * DEPTH — the ambient field and a contact shadow (outside the footage), a light green-black vignette
  * at the footage edges, and a small pointer parallax on desktop: the product follows
@@ -475,6 +489,10 @@ export default function HomeHero() {
   // never starts on the wrong source and switches.
   const storyScreen = useMediaQuery(STORY_Q); // always called (hook order), gated by ENABLE_STORY
   const story = ENABLE_STORY && storyScreen;
+  const desktop = useMediaQuery("(min-width: 1024px)");
+  const fit = desktop && !story; // desktop cycle: the product is placed by .hero-product (index.css)
+  const copyCol = useRef(null);
+  const productCol = useRef(null);
   // Story footage as an in-memory blob URL (see the effect below); null until it is ready, during
   // which the video shows only its poster.
   const [storySrc, setStorySrc] = useState(null);
@@ -690,6 +708,36 @@ export default function HomeHero() {
     };
   }, [story]);
 
+  // Desktop cycle: --copy-gap = how far the copy's last character ends before the product column
+  // (its widest line — headline, paragraph or trust points — measured from the text itself, so it
+  // follows the fonts at every width). .hero-product uses it to stop the fully open door just short of
+  // the text.
+  useLayoutEffect(() => {
+    const el = section.current;
+    const copy = copyCol.current;
+    const col = productCol.current;
+    if (!fit || !el || !copy || !col) return;
+    const measure = () => {
+      const range = document.createRange();
+      const walker = document.createTreeWalker(copy, NodeFilter.SHOW_TEXT);
+      let right = 0;
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (!n.textContent.trim()) continue;
+        range.selectNodeContents(n);
+        right = Math.max(right, range.getBoundingClientRect().right);
+      }
+      if (right) el.style.setProperty("--copy-gap", `${Math.round(col.getBoundingClientRect().left - right)}px`);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    document.fonts?.ready.then(measure);
+    return () => {
+      ro.disconnect();
+      el.style.removeProperty("--copy-gap");
+    };
+  }, [fit]);
+
   /** Story navigation: glide the page to the start of stage `i` (a little into it). */
   const goToStage = (i) => {
     const el = section.current;
@@ -772,12 +820,12 @@ export default function HomeHero() {
 
       <div
         className={`relative grid container-site items-center gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[minmax(0,36rem)_minmax(0,1fr)] ${
-          story ? "h-full pb-20 pt-10" : "py-14 lg:min-h-[max(34rem,calc(100svh-4rem))] lg:py-16"
+          story ? "h-full pb-20 pt-10" : "hero-fit py-14 lg:py-6"
         }`}
       >
         {/* Copy — in the story it steps back (fades, drifts left, settles smaller) while the product
             leads, and returns at the end. A wrapper of its own, so it never fights the copy's entrance. */}
-        <div className="relative z-10">
+        <div ref={copyCol} className="relative z-10">
           {/* Contextual line while the product is examined (full strength; the copy below steps back). */}
           {story && (
             <p
@@ -807,9 +855,15 @@ export default function HomeHero() {
 
         {/* Product, set into the hero rather than framed: parallax layer (wider than its column on wide
             screens, reaching into the page margin) -> entrance -> ambient field + stage. */}
-        {/* Reaches to the viewport's right edge: the column's width + the page margin beside the
-            centred 1440px container + the container's own side padding (--site-pad, container-site). */}
-        <div className="lg:w-[calc(100%+max(0px,(100vw-1440px)/2)+var(--site-pad))]" style={parallax ? drift(6, 5) : undefined}>
+        {/* Desktop cycle: the column only anchors the product, which .hero-product sizes and places
+            (index.css) — larger than the column, reaching toward the copy and the viewport's right
+            edge. Story: reaches to the viewport's right edge — the column's width + the page margin
+            beside the centred 1440px container + the container's side padding (--site-pad). */}
+        <div
+          ref={productCol}
+          className={story ? "lg:w-[calc(100%+max(0px,(100vw-1440px)/2)+var(--site-pad))]" : "lg:relative lg:self-stretch"}
+          style={parallax ? drift(6, 5) : undefined}
+        >
           {/* Story: the product grows ~10% and moves toward the centre as the copy steps back; a soft
               green light behind it rises with it (below). */}
           <div
@@ -825,7 +879,7 @@ export default function HomeHero() {
                 : undefined
             }
           >
-          <div className="hero-product-in relative mx-auto w-full max-w-xl lg:max-w-none lg:-translate-y-[6vh]">
+          <div className={`hero-product-in relative mx-auto w-full max-w-xl lg:max-w-none ${story ? "lg:-translate-y-[6vh]" : "hero-product"}`}>
             {/* Ambient field: the footage's graphite ground continued out into the hero and fading to the
                 dark green over a wide area (reaching faintly behind the headline), with a soft green
                 light at the product. This is what lets the stage edge disappear. */}
@@ -933,7 +987,7 @@ export default function HomeHero() {
               {story ? (
                 <Callouts count={storyLabels} animate onActive={onActive} />
               ) : (
-                <Callouts show={phase === "open"} animate={!reduced} onActive={onActive} />
+                <Callouts show={phase === "open"} animate={!reduced} onActive={onActive} compact={fit} />
               )}
             </div>
           </div>

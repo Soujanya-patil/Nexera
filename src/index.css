@@ -327,6 +327,44 @@
   animation: hero-product-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 }
 
+/*
+ * Home hero on desktop (HomeHero.jsx, autoplay cycle). The hero fills the first screen minus a strip
+ * where the stat bar peeks in; the product stage is sized and placed from the footage's own geometry
+ * (fractions of the frame): open door's left edge 0.061, lifting eyes 0.156, open rack's lower edge
+ * 0.9375 — so the cabinet is never cropped and the soft edges / ground plate are untouched (they move
+ * with the stage). Percentages resolve against the product column's width (the containing block).
+ *   left   the fully open door stops 24px short of the copy's text (--copy-gap, measured by HomeHero)
+ *   width  the smallest of: 20% over the old column-plus-margin width; the right label column
+ *          (ending at 0.97 of the stage) 16px inside the viewport — only faded ground lies beyond it;
+ *          and the height at which the band from the label chips above the eyes (--above) to just
+ *          under the rack edge (0.95 + --below) fits in the hero
+ *   top    that band centred on the hero
+ * Unlayered, so it overrides the stage's mobile utilities (relative, mx-auto, w-full) from lg up.
+ */
+@media (width >= 64rem) {
+  .hero-fit {
+    --hero-h: max(34rem, calc(100svh - 6rem)); /* nav 4rem + stat-bar peek 2rem */
+    min-height: var(--hero-h);
+  }
+  .hero-fit .hero-product {
+    --bleed: calc(max(0px, (100vw - 1440px) / 2) + var(--site-pad));
+    --door-x: calc(24px - var(--copy-gap, 6.375rem)); /* open door's left edge, from the column */
+    --above: 42px; /* top label chips (~23px) + 6px gap to the eyes + 8px to the hero's top + slack */
+    --below: 12px;
+    --w: min(
+      calc((100% + var(--bleed)) * 1.2),
+      calc((100% + var(--bleed) - 16px - var(--door-x)) / 0.909),
+      calc((var(--hero-h) - var(--above) - var(--below)) / 0.794 * 65 / 54)
+    );
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: var(--w);
+    max-width: none;
+    margin: calc((var(--above) - var(--below)) / 2 - var(--w) * 0.553 * 54 / 65) 0 0 calc(var(--door-x) - var(--w) * 0.061);
+  }
+}
+
 /* Swapped detail content (For EPCs journey panel, partner panel, network card) settles in. */
 @keyframes detail-in {
   from { opacity: 0; transform: translate3d(0, 8px, 0); }
