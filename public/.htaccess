@@ -8,6 +8,9 @@ Options -MultiViews
   RewriteEngine On
   RewriteBase /
   RewriteRule ^index\.html$ - [L]
+  # Hashed build files are real files or nothing: a missing one must 404, not return index.html
+  # (a stale page asking for an old chunk would otherwise receive HTML instead of JavaScript).
+  RewriteCond %{REQUEST_URI} !^/assets/
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
