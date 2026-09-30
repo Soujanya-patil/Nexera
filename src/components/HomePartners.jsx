@@ -72,7 +72,7 @@ export default function HomePartners() {
 
   return (
     <section ref={root} data-enter={enter} className="border-y border-line bg-paper py-16 md:py-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16">
+      <div className="grid container-site items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
           <p data-e="eyebrow" className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">
             Our Technology Partners

@@ -42,7 +42,7 @@ export default function ApplicationsShowcase() {
   const reveal = useScrollReveal(grid, { stagger: 0.1 });
   return (
     <section aria-labelledby="applications-title" className="bg-paper py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="container-site">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">BESS applications</p>

@@ -57,7 +57,7 @@ export default function WhoWeAre() {
       style={cine ? FEATHER : undefined}
     >
       <div
-        className={`mx-auto max-w-6xl px-6 pb-16 md:pb-20 ${cine ? "pt-[28vh]" : "pt-24 md:pt-28"}`}
+        className={`container-site pb-16 md:pb-20 ${cine ? "pt-[28vh]" : "pt-24 md:pt-28"}`}
       >
         <DisplayHeading eyebrow="Who We Are" className="max-w-3xl">
           Built by an EPC, for EPCs

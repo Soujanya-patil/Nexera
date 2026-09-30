@@ -158,7 +158,7 @@ export default function ScaleStory() {
             <div aria-hidden="true" className="absolute inset-0" style={{ background: c.shade }} />
             <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-night/85 to-transparent" />
             <div
-              className={`relative z-10 mx-auto flex max-w-6xl flex-col justify-end px-6 pb-16 pt-28 md:pb-24 ${
+              className={`relative z-10 flex container-site flex-col justify-end pb-16 pt-28 md:pb-24 ${
                 cine ? "h-full" : "min-h-[82svh]"
               }`}
             >

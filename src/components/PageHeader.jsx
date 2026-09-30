@@ -1,7 +1,7 @@
 export default function PageHeader({ eyebrow, title, subtitle }) {
   return (
     <section className="bg-ink text-white">
-      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
+      <div className="container-site py-16 md:py-20">
         {eyebrow && (
           <p className="text-sm text-signal font-medium mb-3">{eyebrow}</p>
         )}

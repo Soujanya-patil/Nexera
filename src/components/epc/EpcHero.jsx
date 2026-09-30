@@ -48,7 +48,7 @@ export default function EpcHero() {
           <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/90 to-transparent" />
         </div>
 
-        <div className="relative mx-auto flex min-h-[min(46rem,calc(100svh-4rem))] max-w-6xl flex-col justify-center px-6 py-20 lg:py-24">
+        <div className="relative flex min-h-[min(46rem,calc(100svh-4rem))] container-site flex-col justify-center py-20 lg:py-24">
           <p data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
             <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
             For EPCs &amp; Project Developers

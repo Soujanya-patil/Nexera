@@ -20,7 +20,7 @@ export default function ChooseCta({ productId }) {
         className="ambient-drift pointer-events-none absolute -inset-[10%]"
         style={{ background: "radial-gradient(45% 70% at 78% 105%, rgba(144,217,136,0.15), transparent 70%)" }}
       />
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
           <p data-sr className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
             Talk to an engineer

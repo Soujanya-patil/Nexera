@@ -59,7 +59,7 @@ export default function FinalCta() {
         <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-night to-transparent" />
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink to-transparent" />
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-24">
+        <div className="relative z-10 container-site py-24">
           <div className="max-w-2xl">
             <h2
               data-a="rise"

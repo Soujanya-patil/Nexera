@@ -67,7 +67,7 @@ export default function Storage() {
   );
 
   const beat = cine ? "absolute inset-0" : "relative min-h-[88svh] overflow-hidden";
-  const inner = `relative z-10 mx-auto flex max-w-6xl flex-col justify-end px-6 pb-16 pt-28 md:pb-24 ${
+  const inner = `relative z-10 flex container-site flex-col justify-end pb-16 pt-28 md:pb-24 ${
     cine ? "h-full" : "min-h-[88svh]"
   }`;
   const shadow = { filter: "drop-shadow(0 30px 34px rgba(0,0,0,0.6))" };

@@ -26,7 +26,7 @@ export default function NetworkMap() {
 
   return (
     <section aria-labelledby="network-title" className="relative overflow-hidden bg-deep py-20 text-white md:py-28">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 lg:grid-cols-2 lg:gap-16">
+      <div className="grid container-site items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-signal">Our network</p>
           <AnimatedText id="network-title" className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">

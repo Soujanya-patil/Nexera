@@ -13,7 +13,7 @@ export default function WhyEpcs() {
   const reveal = useScrollReveal(list, { stagger: 0.09 });
   return (
     <section aria-labelledby="why-epcs-title" className="bg-ice py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="container-site">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Why EPCs partner with NEXERA</p>
         <AnimatedText id="why-epcs-title" className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight text-ink md:text-4xl">
           A BESS Partner Built Around Your Project.

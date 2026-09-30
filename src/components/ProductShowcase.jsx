@@ -50,7 +50,7 @@ const products = [
 export default function ProductShowcase() {
   return (
     <section className="relative bg-night text-bone">
-      <div className="mx-auto max-w-6xl px-6 pt-16 pb-24 md:pt-20 md:pb-32">
+      <div className="container-site pt-16 pb-24 md:pt-20 md:pb-32">
         <DisplayHeading eyebrow="Product Showcase" className="max-w-3xl">
           Real systems, ready to deploy
         </DisplayHeading>

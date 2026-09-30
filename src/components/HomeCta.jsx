@@ -62,7 +62,7 @@ export default function HomeCta() {
         <path data-line pathLength="1" strokeDasharray="1" d="M0 240 C 500 200, 900 230, 1440 185" stroke="rgba(144,217,136,0.12)" strokeWidth="1" />
       </svg>
 
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
           <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
             {STEPS.map((w, i) => (

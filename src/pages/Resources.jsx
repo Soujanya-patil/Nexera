@@ -29,7 +29,7 @@ export default function Resources() {
       />
 
       <section className="bg-paper border-b border-line">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="container-site py-16">
           <h2 className="font-sans text-2xl font-semibold text-ink">
             Datasheets & Brochures
           </h2>

@@ -52,7 +52,7 @@ export default function PartnerForm() {
 
   return (
     <section id="apply" aria-labelledby="apply-title" className="bg-paper py-20 focus:outline-none md:py-28">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+      <div className="grid container-site gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Partner enquiry</p>
           <h2 id="apply-title" className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">

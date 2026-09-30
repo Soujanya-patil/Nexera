@@ -771,7 +771,7 @@ export default function HomeHero() {
       </div>
 
       <div
-        className={`relative mx-auto grid max-w-6xl items-center gap-8 px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 ${
+        className={`relative grid container-site items-center gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[minmax(0,36rem)_minmax(0,1fr)] ${
           story ? "h-full pb-20 pt-10" : "py-14 lg:min-h-[max(34rem,calc(100svh-4rem))] lg:py-16"
         }`}
       >
@@ -808,8 +808,8 @@ export default function HomeHero() {
         {/* Product, set into the hero rather than framed: parallax layer (wider than its column on wide
             screens, reaching into the page margin) -> entrance -> ambient field + stage. */}
         {/* Reaches to the viewport's right edge: the column's width + the page margin beside the
-            centred container + the container's own 1.5rem (px-6) padding. */}
-        <div className="lg:w-[calc(100%+max(0px,(100vw-72rem)/2)+1.5rem)]" style={parallax ? drift(6, 5) : undefined}>
+            centred 1440px container + the container's own side padding (--site-pad, container-site). */}
+        <div className="lg:w-[calc(100%+max(0px,(100vw-1440px)/2)+var(--site-pad))]" style={parallax ? drift(6, 5) : undefined}>
           {/* Story: the product grows ~10% and moves toward the centre as the copy steps back; a soft
               green light behind it rises with it (below). */}
           <div
@@ -953,7 +953,7 @@ export default function HomeHero() {
           current stage's caption beside it. */}
       {story && (
         <div className="absolute inset-x-0 bottom-6 z-10">
-          <div className="mx-auto flex max-w-6xl items-center gap-8 px-6">
+          <div className="flex container-site items-center gap-8">
             <div className="relative shrink-0">
               <span aria-hidden="true" className="absolute inset-x-0 -top-2 h-px bg-white/12" />
               <span aria-hidden="true" className="absolute inset-x-0 -top-2 h-px origin-left bg-signal/80" style={{ scale: "var(--story, 0) 1" }} />

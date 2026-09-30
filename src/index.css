@@ -4,6 +4,24 @@
    and project story) stick to the viewport. Everywhere else they read in normal flow. */
 @custom-variant stage (@media (min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference));
 
+/* The one site-wide layout container (nav, every page section, footer): full width up to 1440px,
+   centred, with side padding 1.5rem → 2.5rem (md) → 4rem (xl). The padding is exposed as --site-pad
+   so full-bleed children (e.g. the Home hero's product column) can reach exactly to the viewport
+   edge. Body text keeps its own reading widths (max-w-xl, max-w-2xl …) inside it. */
+@utility container-site {
+  --site-pad: 1.5rem;
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--site-pad);
+  @media (width >= 48rem) {
+    --site-pad: 2.5rem;
+  }
+  @media (width >= 80rem) {
+    --site-pad: 4rem;
+  }
+}
+
 /* Self-hosted IBM Plex (Latin subset). font-display: swap keeps text visible while faces load;
    the two above-the-fold faces are preloaded in index.html. */
 @font-face {

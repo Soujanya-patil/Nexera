@@ -17,7 +17,7 @@ export default function WhyPartner() {
 
   return (
     <section aria-labelledby="why-partner" className="bg-ice py-20 md:py-28">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="container-site">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Why partner with NEXERA</p>

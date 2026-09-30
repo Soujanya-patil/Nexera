@@ -18,7 +18,7 @@ export default function HowItWorks() {
       />
 
       <section className="bg-paper">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="container-site py-16">
           <h2 className="font-sans text-2xl font-semibold text-ink">
             The Five-Stage Distributor Journey
           </h2>
@@ -37,7 +37,7 @@ export default function HowItWorks() {
       </section>
 
       <section className="bg-ice border-t border-line">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="container-site py-16">
           <h2 className="font-sans text-2xl font-semibold text-ink">
             Inside the Partner Portal
           </h2>
@@ -52,7 +52,7 @@ export default function HowItWorks() {
       </section>
 
       <section className="bg-paper">
-        <div className="mx-auto max-w-6xl px-6 py-14 text-center">
+        <div className="container-site py-14 text-center">
           <Link
             to="/become-a-partner"
             className="inline-flex items-center rounded-full bg-signal px-6 py-3 text-sm font-semibold text-forest hover:bg-signal/90 transition-colors"

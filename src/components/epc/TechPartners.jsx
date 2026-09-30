@@ -38,7 +38,7 @@ export default function TechPartners() {
 
   return (
     <section aria-labelledby="partners-title" className="border-y border-line bg-ice py-20 md:py-28">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+      <div className="grid container-site gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Technology partners</p>
           <AnimatedText id="partners-title" className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">

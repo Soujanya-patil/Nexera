@@ -15,7 +15,7 @@ const links = [
 export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-deep text-ice/70">
-      <div className="mx-auto max-w-6xl px-6 py-14 grid md:grid-cols-2 gap-10">
+      <div className="container-site py-14 grid md:grid-cols-2 gap-10">
         <div>
           <Wordmark className="text-lg text-white" />
           <p className="mt-3 text-sm">Bangalore, Karnataka</p>
@@ -35,7 +35,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <p className="mx-auto max-w-6xl px-6 py-5 text-xs text-ice/50">
+        <p className="container-site py-5 text-xs text-ice/50">
           © {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.
         </p>
       </div>

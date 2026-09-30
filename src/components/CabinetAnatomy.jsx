@@ -298,7 +298,7 @@ export default function CabinetAnatomy() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/90 via-night/45 to-night/15"
         />
-        <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-6xl items-center justify-center px-6 py-20">
+        <div className="relative z-10 flex min-h-[100svh] container-site items-center justify-center py-20">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="font-serif text-4xl font-semibold leading-tight text-balance lg:text-5xl">
               Energy Storage, Built to Scale.
@@ -358,7 +358,7 @@ export default function CabinetAnatomy() {
           className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-night/85 via-night/25 to-transparent"
         />
 
-        <div className="relative z-20 mx-auto flex h-full max-w-6xl items-center justify-center px-6">
+        <div className="relative z-20 flex h-full container-site items-center justify-center">
           <OpeningCopy />
         </div>
 

@@ -40,7 +40,7 @@ export default function Solutions() {
           id={sol.id}
           className={i % 2 === 0 ? "bg-paper" : "bg-ice"}
         >
-          <div className="mx-auto max-w-6xl px-6 py-16 grid md:grid-cols-5 gap-10">
+          <div className="container-site py-16 grid md:grid-cols-5 gap-10">
             <div className="md:col-span-2">
               <p className="text-sm text-graphite">{sol.name}</p>
               <h2 className="mt-2 font-sans text-2xl font-semibold text-ink leading-snug">

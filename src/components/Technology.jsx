@@ -71,7 +71,7 @@ export default function Technology() {
         )}
 
         <div
-          className={`relative z-10 mx-auto max-w-6xl px-6 ${
+          className={`relative z-10 container-site ${
             cine ? "flex h-full items-center pt-16" : "pb-20 pt-4"
           }`}
         >

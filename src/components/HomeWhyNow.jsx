@@ -61,7 +61,7 @@ export default function HomeWhyNow() {
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-night/95 via-night/75 to-night/30" />
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/80 to-transparent" />
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:py-24 lg:grid-cols-2">
+      <div className="relative grid container-site items-center gap-12 py-20 md:py-24 lg:grid-cols-2">
         <div ref={copy}>
           <p data-e="copy" className="text-xs font-medium uppercase tracking-[0.2em] text-ice/80">
             Why Energy Storage, Why Now

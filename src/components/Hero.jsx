@@ -97,8 +97,8 @@ export default function Hero() {
     ? "sticky top-0 h-screen overflow-hidden bg-night text-bone"
     : "relative overflow-hidden bg-night text-bone";
   const grid = cine
-    ? "relative mx-auto grid h-full max-w-6xl grid-cols-5 items-center gap-14 px-6 pb-40 pt-20"
-    : "relative mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-5 md:items-center md:gap-14 md:py-24";
+    ? "relative grid h-full container-site grid-cols-5 items-center gap-14 pb-40 pt-20"
+    : "relative grid container-site gap-12 py-16 md:grid-cols-5 md:items-center md:gap-14 md:py-24";
   const band = cine
     ? "invisible absolute inset-x-0 bottom-0 bg-bone text-ink"
     : "relative bg-bone text-ink";
@@ -215,7 +215,7 @@ export default function Hero() {
         </div>
 
         <div data-a="band" className={band}>
-          <div className="mx-auto grid max-w-6xl grid-cols-3 divide-x divide-ink/15 px-6 py-8 sm:py-10">
+          <div className="grid container-site grid-cols-3 divide-x divide-ink/15 py-8 sm:py-10">
             {stats.map((s) => (
               <div key={s.label} data-a="stat" data-reveal className="px-3 text-center first:pl-0 sm:px-6">
                 <p className="whitespace-nowrap font-serif text-2xl font-semibold sm:text-3xl md:text-4xl">

@@ -79,7 +79,7 @@ export default function ProjectStory() {
             WebkitMaskImage: "radial-gradient(70% 80% at 35% 50%, #000, transparent 80%)",
           }}
         />
-        <div className="relative mx-auto grid h-full max-w-6xl items-center gap-12 px-6 py-20 md:py-24 lg:grid-cols-2 stage:py-0">
+        <div className="relative grid h-full container-site items-center gap-12 py-20 md:py-24 lg:grid-cols-2 stage:py-0">
           <div className="order-2 lg:order-1">{productFigure}</div>
 
           <div className="order-1 lg:order-2">

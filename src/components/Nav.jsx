@@ -80,7 +80,7 @@ export default function Nav() {
         scrolled ? "border-white/10 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)]" : "border-white/5"
       }`}
     >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <nav className="flex h-16 container-site items-center justify-between">
         <div className="flex items-center gap-5">
           <Link to="/" className="text-white" aria-label="Nexera Powertech home">
             <Wordmark className="text-lg" />

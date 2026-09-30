@@ -10,7 +10,7 @@ export default function ServiceTraining() {
       />
 
       <section className="bg-paper border-b border-line">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="container-site py-16">
           <h2 className="font-sans text-2xl font-semibold text-ink">
             Design & Commissioning Support
           </h2>
@@ -22,7 +22,7 @@ export default function ServiceTraining() {
       </section>
 
       <section className="bg-ice border-b border-line">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="container-site py-16">
           <h2 className="font-sans text-2xl font-semibold text-ink">
             After-Sales & Warranty
           </h2>
@@ -35,7 +35,7 @@ export default function ServiceTraining() {
       </section>
 
       <section className="bg-paper">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="container-site py-16">
           <h2 className="font-sans text-2xl font-semibold text-ink">
             Kalaburagi Technician Training Center
           </h2>

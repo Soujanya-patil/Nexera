@@ -32,7 +32,7 @@ export default function OurBrands() {
 
       {/* TCL — authorized, full treatment */}
       <section className="bg-paper border-b border-line">
-        <div className="mx-auto max-w-6xl px-6 py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
+        <div className="container-site py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
           <div className="md:col-span-2">
             <PartnerLogo src={tclLogo} name="TCL" className="h-8" />
             <div className="flex flex-wrap items-center gap-3">
@@ -65,7 +65,7 @@ export default function OurBrands() {
 
       {/* Hithium — authorized, full treatment */}
       <section className="bg-ice border-b border-line">
-        <div className="mx-auto max-w-6xl px-6 py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
+        <div className="container-site py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
           <Reveal className="md:col-span-3 order-2 md:order-1">
             <figure className="overflow-hidden rounded-lg bg-ink ring-1 ring-ink/10">
               <img
@@ -104,7 +104,7 @@ export default function OurBrands() {
           the project yet, so a logo panel stands in for the product image rather than a borrowed photo;
           specs are limited to what the project states (utility-scale applications). */}
       <section className="bg-paper">
-        <div className="mx-auto max-w-6xl px-6 py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
+        <div className="container-site py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
           <div className="md:col-span-2">
             <PartnerLogo src={clouLogo} name="CLOU" className="h-10" />
             <div className="flex flex-wrap items-center gap-3">

@@ -114,7 +114,7 @@ export default function WhyNexera() {
   return (
     <section className="relative overflow-hidden bg-night text-bone">
       <TechGrid size={56} tone={0.045} drift={3} />
-      <div className="relative z-10 mx-auto max-w-6xl px-6 pt-24 pb-16 md:pt-28 md:pb-20">
+      <div className="relative z-10 container-site pt-24 pb-16 md:pt-28 md:pb-20">
         <DisplayHeading eyebrow="Why Nexera" className="max-w-3xl">
           The capability behind the system
         </DisplayHeading>

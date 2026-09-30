@@ -35,7 +35,7 @@ export default function About() {
       </section>
 
       <section className="bg-ice border-y border-line">
-        <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="container-site py-16">
           <h2 className="font-sans text-2xl font-semibold text-ink">Leadership Team</h2>
           <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
             {leaders.map((l) => (

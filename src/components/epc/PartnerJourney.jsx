@@ -209,7 +209,7 @@ export default function PartnerJourney() {
           style={{ background: "radial-gradient(50% 60% at 80% 30%, rgba(144,217,136,0.06), transparent 70%)" }}
         />
 
-        <div className="relative mx-auto w-full max-w-6xl px-6">
+        <div className="relative container-site">
           {/* Heading + Previous / Next */}
           <div className="flex items-end justify-between gap-8">
             <div>{title}</div>

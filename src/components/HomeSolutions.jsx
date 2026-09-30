@@ -75,7 +75,7 @@ export default function HomeSolutions() {
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover/sol:opacity-100"
         style={{ background: "radial-gradient(520px circle at var(--cx, -999px) var(--cy, -999px), rgba(144,217,136,0.09), transparent 65%)" }}
       />
-      <div className="relative mx-auto max-w-6xl px-6">
+      <div className="relative container-site">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Our Solutions</p>

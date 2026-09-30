@@ -207,7 +207,7 @@ function ProductView({ product }) {
             style={{ background: "radial-gradient(55% 60% at 8% 0%, rgba(244,247,244,0.05), transparent 70%), linear-gradient(to bottom, transparent 60%, var(--color-deep))" }}
           />
         </div>
-        <div data-intro={intro} className="relative mx-auto max-w-6xl px-6 pb-14 pt-8 lg:pb-16">
+        <div data-intro={intro} className="relative container-site pb-14 pt-8 lg:pb-16">
           <nav data-a="crumbs" aria-label="Breadcrumb" className="text-xs text-ice/60">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
@@ -306,7 +306,7 @@ function ProductView({ product }) {
 
       {/* Key specifications */}
       <section className="bg-ice py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="container-site">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Key specifications</p>
           <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">At a glance</AnimatedText>
           <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -331,7 +331,7 @@ function ProductView({ product }) {
       {/* TECHNOLOGY */}
       {product.highlights.length > 0 && (
         <section className="bg-paper py-16 md:py-20">
-          <div className="mx-auto max-w-6xl px-6">
+          <div className="container-site">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Product highlights</p>
             <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Why this system</AnimatedText>
             <ul className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -355,7 +355,7 @@ function ProductView({ product }) {
       {/* SPECIFICATIONS */}
       {hasTech && (
         <section className="bg-ice py-16 md:py-20">
-          <div className="mx-auto grid max-w-6xl gap-10 px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+          <div className="grid container-site gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Technical information</p>
               <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Specifications</AnimatedText>
@@ -372,7 +372,7 @@ function ProductView({ product }) {
       {product.hotspots && (
         <section className="relative overflow-hidden bg-night py-16 text-white md:py-20">
           <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 35% 50%, rgba(144,217,136,0.07), transparent 70%)" }} />
-          <div className="relative mx-auto max-w-6xl px-6">
+          <div className="relative container-site">
             <p className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">Interactive product view</p>
             <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">Explore the protection architecture</AnimatedText>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ice/70">Hover or select a point to see the component.</p>
@@ -385,7 +385,7 @@ function ProductView({ product }) {
 
       {/* Sources */}
       <section className="border-t border-line bg-paper">
-        <div className="mx-auto max-w-6xl px-6 py-6">
+        <div className="container-site py-6">
           <p className="text-xs leading-relaxed text-graphite">
             <span className="font-semibold text-ink">Source:</span> {product.sources.join("; ")}. {partner.name} designs and manufactures this
             system; NEXERA supplies it and provides system design and support as an authorized partner.
@@ -396,7 +396,7 @@ function ProductView({ product }) {
       {/* More from this partner */}
       {related.length > 0 && (
         <section className="bg-ice py-16 md:py-20">
-          <div className="mx-auto max-w-6xl px-6">
+          <div className="container-site">
             <div className="flex items-end justify-between gap-4">
               <h2 className="text-2xl font-semibold tracking-tight text-ink">More from {partner.name}</h2>
               <Link

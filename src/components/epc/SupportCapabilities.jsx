@@ -92,7 +92,7 @@ export default function SupportCapabilities() {
           pinned ? "sticky top-16 h-[calc(100svh-4rem)] py-8" : "py-20 md:py-24"
         }`}
       >
-        <div className="mx-auto w-full max-w-6xl px-6">
+        <div className="container-site">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">What NEXERA brings</p>
@@ -118,7 +118,7 @@ export default function SupportCapabilities() {
 
         {/* Card row. Pinned: a clipped stage, the track translated by scroll only. Otherwise: stacked
             cards (phones) or a grid (reduced motion) — never a horizontal scroller. */}
-        <div ref={viewport} className={`mx-auto w-full max-w-6xl px-6 ${pinned ? "mt-8 lg:mt-10" : "mt-12"}`}>
+        <div ref={viewport} className={`container-site ${pinned ? "mt-8 lg:mt-10" : "mt-12"}`}>
           <ul
             ref={track}
             data-sr-state={pinned ? undefined : reveal}

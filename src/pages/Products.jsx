@@ -326,7 +326,7 @@ export default function Products() {
             }}
           />
         </div>
-        <div data-intro={intro} className="relative mx-auto grid max-w-6xl items-center gap-10 px-6 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:py-16">
+        <div data-intro={intro} className="relative grid container-site items-center gap-10 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:py-16">
           <div>
             <p data-a="eyebrow" className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
               Energy Storage Systems
@@ -359,7 +359,7 @@ export default function Products() {
 
       {/* Filters */}
       <section id="catalogue" aria-label="Filter the catalogue" className="scroll-mt-16 border-b border-line bg-ice">
-        <div className="mx-auto flex max-w-6xl flex-col gap-5 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex container-site flex-col gap-5 py-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="-mx-6 overflow-x-auto px-6 pb-1 [scrollbar-width:none] lg:mx-0 lg:overflow-visible lg:px-0 lg:pb-0">
             <Segmented label="Application" options={APP_OPTIONS} value={app} onChange={(v) => setFilter("app", v)} />
           </div>
@@ -407,7 +407,7 @@ export default function Products() {
 
       {/* Catalogue */}
       <section className="bg-ice pb-20 pt-10 md:pb-24">
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="container-site">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <CategoryHeading app={app} partner={partner} />
             <LiveCount count={visibleCount} total={PRODUCTS.length} />
