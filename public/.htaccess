@@ -1,0 +1,37 @@
+# Nexera — Hostinger (LiteSpeed / Apache-compatible). Copied into dist/ by Vite.
+
+# --- Single-page app fallback --------------------------------------------------------------------
+# React Router (BrowserRouter) owns the routes: any path that is not a real file or directory is
+# served index.html, so deep links like /about or /products/tcl-blueark-x1 load instead of 404ing.
+Options -MultiViews
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# --- Video -------------------------------------------------------------------------------------
+# Correct type, never compressed (compression breaks byte ranges), and byte ranges advertised so
+# browsers can seek.
+AddType video/mp4 .mp4
+<IfModule mod_deflate.c>
+  SetEnvIfNoCase Request_URI \.mp4$ no-gzip dont-vary
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.mp4$">
+    Header set Accept-Ranges bytes
+    Header unset Content-Encoding
+  </FilesMatch>
+</IfModule>
+
+# --- Caching -------------------------------------------------------------------------------------
+# index.html must always be revalidated so a new deploy shows up immediately (hashed files under
+# /assets/ get a one-year immutable cache from assets/.htaccess).
+<IfModule mod_headers.c>
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

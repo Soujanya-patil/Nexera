@@ -352,7 +352,7 @@ const ready = (el, ms) =>
  *   prefers-reduced-motion: no movement at all — no sweep, pulse, draw-in or parallax. A cycle cuts
  *   straight to the open frame with the labels, holds, then cuts back to the closed frame.
  *
- * SET INTO THE HERO, NOT FRAMED — the footage has no panel: its edges are masked soft (EDGE_MASK) and
+ * SET INTO THE HERO, NOT FRAMED — the footage has no panel: its edges fade soft (EDGE_X / EDGE_Y) and
  * a wide ambient field behind it continues the footage's graphite ground out into the hero, fading to
  * the dark green (faintly behind the headline too), with a soft green light at the product. On wide
  * screens the product reaches into the page margin, so it reads larger; it enters with the headline.
@@ -363,17 +363,30 @@ const ready = (el, ms) =>
  * (the pointer handler only writes two custom properties, at most once per frame), so there is no
  * running animation loop; it is off for touch and reduced motion.
  */
-// Soft edges for the footage so it dissolves into the hero instead of ending at a frame. Two linear
-// ramps intersected: 7% on the left (the open door reaches ~8%), 13% at the top (lifting eyes at ~15%),
-// 16% on the right (empty ground) and 10% at the bottom (feet at ~90%) — the cabinet is never faded.
-const RAMP_X = "linear-gradient(to right, transparent 0%, #000 7%, #000 84%, transparent 100%)";
-const RAMP_Y = "linear-gradient(to bottom, transparent 0%, #000 13%, #000 90%, transparent 100%)";
-const EDGE_MASK = {
-  maskImage: `${RAMP_X}, ${RAMP_Y}`,
-  maskComposite: "intersect",
-  WebkitMaskImage: `${RAMP_X}, ${RAMP_Y}`,
-  WebkitMaskComposite: "source-in",
-};
+// Soft edges for the footage so it dissolves into the hero instead of ending at a frame: 7% on the
+// left (the open door reaches ~8%), 13% at the top (lifting eyes at ~15%), 16% on the right (empty
+// ground) and 10% at the bottom (feet at ~90%) — the cabinet is never faded.
+//
+// PERFORMANCE: the footage itself is NOT masked. A CSS mask on a <video> layer sends every decoded
+// frame through an expensive compositing path — measured, it slowed each scroll seek from ~20 ms to
+// ~200 ms and made the scrub steppy. Instead two copies of the (static) ground plate sit over the
+// footage's edges, each faded by one linear ramp: EDGE_X covers the left/right bands, EDGE_Y the
+// top/bottom. Stacked, they give exactly plate·(1 − X·Y) + footage·X·Y — the same result as masking
+// the footage with X∩Y — while only static image layers carry masks.
+const EDGE_X = "linear-gradient(to right, #000 0%, transparent 7%, transparent 84%, #000 100%)";
+const EDGE_Y = "linear-gradient(to bottom, #000 0%, transparent 13%, transparent 90%, #000 100%)";
+const edgeOverlay = (mask) => ({
+  backgroundImage: `url(${groundSrc})`,
+  // The plate is 3x the stage wide and 1.7963x tall with the frame in its centre: centred at this
+  // size, it lines up with the footage exactly (same as the plate behind the stage).
+  backgroundSize: "300% 179.63%",
+  backgroundPosition: "center",
+  maskImage: mask,
+  WebkitMaskImage: mask,
+});
+const EDGE_OVERLAY_X = edgeOverlay(EDGE_X);
+const EDGE_OVERLAY_Y = edgeOverlay(EDGE_Y);
+
 
 /*
  * SCROLL STORY (desktop, motion allowed) — the hero pins for STORY_VH of scrolling and the product
@@ -396,6 +409,7 @@ const EDGE_MASK = {
  */
 const STORY_Q = "(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
 const STORY_VH = 300;
+const SEEK_TIMEOUT_MS = 250; // a seek that hasn't reported back by now is treated as lost
 const STAGES = [
   { label: "Intro", at: 0, caption: "NEXERA battery energy storage cabinet — scroll to explore" },
   { label: "Reveal", at: 0.08, caption: "The cabinet opens" },
@@ -452,7 +466,12 @@ export default function HomeHero() {
   const busy = useRef(false);
   const alive = useRef(true);
   const reading = useRef(false); // a hotspot is hovered
+  // Read synchronously on first render (useMediaQuery initialises from matchMedia), so the video
+  // never starts on the wrong source and switches.
   const story = useMediaQuery(STORY_Q);
+  // Story footage as an in-memory blob URL (see the effect below); null until it is ready, during
+  // which the video shows only its poster.
+  const [storySrc, setStorySrc] = useState(null);
   const [storyStage, setStoryStage] = useState(0);
   const [storyLabels, setStoryLabels] = useState(0);
   const [inspect, setInspect] = useState(false);
@@ -574,6 +593,29 @@ export default function HomeHero() {
     return () => io.disconnect();
   }, [story]);
 
+  // Story footage: fetched whole into memory and played from a blob: URL, so every scroll seek is a
+  // local seek that never depends on the server honouring HTTP Range requests (or on the browser's
+  // media cache keeping the file). 1.75 MB. The poster shows until it is ready; if the fetch fails,
+  // the normal URL is used instead. The object URL is revoked on unmount / when leaving story mode.
+  useEffect(() => {
+    if (!story) return;
+    let url = null;
+    let cancelled = false;
+    fetch(scrubSrc)
+      .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((blob) => {
+        if (cancelled) return;
+        url = URL.createObjectURL(blob);
+        setStorySrc(url);
+      })
+      .catch(() => !cancelled && setStorySrc(scrubSrc));
+    return () => {
+      cancelled = true;
+      setStorySrc(null);
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [story]);
+
   // Scroll story: pinned progress -> footage time, labels, stage, and two CSS variables the copy and
   // the product read (--story, --recede). React only re-renders when the stage or label count changes.
   useEffect(() => {
@@ -583,20 +625,35 @@ export default function HomeHero() {
     let cancelled = false;
     let ctx;
     let want = 0;
+    // One seek in flight at a time (newer targets coalesce into `want`). Self-healing: if `seeked`
+    // hasn't arrived within SEEK_TIMEOUT_MS, or the media errors / is emptied (e.g. the source
+    // switches to the blob), the gate reopens — a lost event can never freeze the scrub.
     let seeking = false;
+    let watchdog = 0;
+    const release = () => {
+      seeking = false;
+      clearTimeout(watchdog);
+    };
     const apply = () => {
       if (seeking || v.readyState < 1) return;
       const t = Math.min(want, v.duration - 0.001);
       if (Math.abs(v.currentTime - t) < 0.02) return;
       seeking = true;
+      clearTimeout(watchdog);
+      watchdog = setTimeout(() => {
+        release();
+        apply();
+      }, SEEK_TIMEOUT_MS);
       v.currentTime = t;
     };
     const onSeeked = () => {
-      seeking = false;
+      release();
       apply();
     };
     v.addEventListener("seeked", onSeeked);
     v.addEventListener("loadedmetadata", apply);
+    v.addEventListener("error", release);
+    v.addEventListener("emptied", release);
     loadGsap().then(({ gsap, ScrollTrigger }) => {
       if (cancelled) return;
       const update = (self) => {
@@ -616,8 +673,11 @@ export default function HomeHero() {
     return () => {
       cancelled = true;
       ctx?.revert();
+      clearTimeout(watchdog);
       v.removeEventListener("seeked", onSeeked);
       v.removeEventListener("loadedmetadata", apply);
+      v.removeEventListener("error", release);
+      v.removeEventListener("emptied", release);
       el.style.removeProperty("--story");
       el.style.removeProperty("--recede");
       el.style.removeProperty("--settle");
@@ -749,7 +809,13 @@ export default function HomeHero() {
           <div
             style={
               story
-                ? { transform: "translate3d(calc(var(--recede, 0) * -8%), 0, 0) scale(calc(1 + var(--recede, 0) * 0.1))", transformOrigin: "50% 55%" }
+                ? {
+                    transform: "translate3d(calc(var(--recede, 0) * -8%), 0, 0) scale(calc(1 + var(--recede, 0) * 0.1))",
+                    transformOrigin: "50% 55%",
+                    // Its scale changes on every scroll frame: keep it one GPU layer at a fixed raster
+                    // scale, so the masked ground layers inside are not re-drawn each frame.
+                    willChange: "transform",
+                  }
                 : undefined
             }
           >
@@ -774,7 +840,7 @@ export default function HomeHero() {
             <div aria-hidden="true" className="pointer-events-none absolute left-[-100%] top-[-39.81%] h-[179.63%] w-[300%]" style={GROUND_PLATE} />
             <div aria-hidden="true" className="pointer-events-none absolute inset-x-[22%] bottom-[4%] h-10 rounded-[100%] bg-black/40 blur-2xl" />
 
-            {/* Stage: no panel — the footage's edges are masked soft (see EDGE_MASK), the labels, sweep
+            {/* Stage: no panel — the footage's edges fade soft (see EDGE_X / EDGE_Y), the labels, sweep
                 and interaction layer sit unmasked on top. */}
             <div
               onPointerEnter={(e) => {
@@ -806,10 +872,10 @@ export default function HomeHero() {
                 story && inspect ? "scale-[1.01]" : ""
               }`}
             >
-              <div className="absolute inset-0" style={EDGE_MASK}>
+              <div className="absolute inset-0">
                 <video
                   ref={opening}
-                  src={story ? scrubSrc : videoSrc}
+                  src={story ? storySrc ?? undefined : videoSrc}
                   poster={posterSrc}
                   muted
                   playsInline
@@ -831,6 +897,9 @@ export default function HomeHero() {
                   />
                 )}
               </div>
+              {/* Soft edges: the ground plate laid over the footage's borders (see EDGE_X / EDGE_Y). */}
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={EDGE_OVERLAY_X} />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={EDGE_OVERLAY_Y} />
               {/* Inspection (story, mouse): a soft light follows the cursor over the cabinet. */}
               {story && (
                 <div
