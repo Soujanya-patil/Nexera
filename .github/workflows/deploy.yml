@@ -34,4 +34,6 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./dist/
-          server-dir: public_html/
+          # The FTP account already starts in the site's public_html, so upload to its root. (The
+          # earlier "public_html/" value created a nested public_html/public_html/ that was never served.)
+          server-dir: ./
