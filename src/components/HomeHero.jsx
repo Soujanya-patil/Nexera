@@ -407,11 +407,16 @@ const EDGE_OVERLAY_Y = edgeOverlay(EDGE_Y);
  * on desktop (1.75 MB vs 1.88 MB), so the page is no heavier. Seeks are coalesced: a new time is only
  * set once the previous seek has landed.
  */
+// Master switch for the desktop scroll story. Off: every screen size uses the autoplay cycle (plays
+// when the hero is in view, light sweep, labels hold, closes; replays on hover/tap) — no pinning, no
+// scroll-driven footage, no product scaling/drift, no 01–05 stage rail; the hero scrolls away like a
+// normal section. All the story code below stays in place; set this to true to bring it back.
+const ENABLE_STORY = false;
 const STORY_Q = "(min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
 const STORY_VH = 300;
 const SEEK_TIMEOUT_MS = 250; // a seek that hasn't reported back by now is treated as lost
 const STAGES = [
-  { label: "Intro", at: 0, caption: "NEXERA battery energy storage cabinet — scroll to explore" },
+  { label: "Intro", at: 0, caption: "NEXERA battery energy storage cabinet" },
   { label: "Reveal", at: 0.08, caption: "The cabinet opens" },
   { label: "Explore", at: 0.4, caption: "Stacked battery modules and power electronics" },
   { label: "Safety", at: 0.5, caption: "Protection components, named as in the OEM protection architecture" },
@@ -468,7 +473,8 @@ export default function HomeHero() {
   const reading = useRef(false); // a hotspot is hovered
   // Read synchronously on first render (useMediaQuery initialises from matchMedia), so the video
   // never starts on the wrong source and switches.
-  const story = useMediaQuery(STORY_Q);
+  const storyScreen = useMediaQuery(STORY_Q); // always called (hook order), gated by ENABLE_STORY
+  const story = ENABLE_STORY && storyScreen;
   // Story footage as an in-memory blob URL (see the effect below); null until it is ready, during
   // which the video shows only its poster.
   const [storySrc, setStorySrc] = useState(null);
