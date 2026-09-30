@@ -22,6 +22,12 @@ export const TITLE_SUFFIX = " | NEXERA";
 export const TITLE_MAX = 60;
 export const DESCRIPTION_MAX = 155;
 
+/**
+ * Any other URL: the server answers with 404.html (a 404 status) and <Seo> renders this title plus
+ * a noindex; no description or canonical.
+ */
+export const NOT_FOUND_TITLE = "Page not found | NEXERA";
+
 /** 1200x630 share image (public/og-default.jpg): the NEXERA wordmark and cabinet on the dark green. */
 export const DEFAULT_OG_IMAGE = "/og-default.jpg";
 /** A product page shares its own product image only if it is at least this wide (checked at build). */

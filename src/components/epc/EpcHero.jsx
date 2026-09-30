@@ -57,6 +57,8 @@ export default function EpcHero() {
             <span data-a="line1" className="block">
               Build More.
             </span>
+            {/* Keeps the lines' words apart in the heading's text; between block lines it renders nothing. */}
+            {" "}
             <span data-a="line2" className="block text-signal">
               Store Smarter.
             </span>

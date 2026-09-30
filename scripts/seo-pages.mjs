@@ -6,7 +6,9 @@
  * rewrites dist/index.html itself) with the generic <title> and description removed and the route's
  * title, description, canonical, Open Graph and Twitter tags injected. Page bodies are not
  * pre-rendered: every file is the same app shell, and React renders the page as before.
- * public/.htaccess serves /about from about.html (and so on) without a redirect.
+ * public/.htaccess serves /about from about.html (and so on) without a redirect. It also writes
+ * dist/404.html — the same shell with the not-found title and a noindex, no canonical — which the
+ * server returns, with a 404 status, for every URL that isn't a route or a real file.
  *
  * routes.js imports the product catalogue, which imports images, so it is loaded through a small Vite
  * SSR build (same config, same content hashes): product images resolve to the very /assets/ URLs the
@@ -29,7 +31,8 @@ await build({
   build: { ssr: "src/seo/routes.js", outDir: tmp, emptyOutDir: true, copyPublicDir: false },
 });
 const entry = fs.readdirSync(tmp).find((f) => /^routes\.m?js$/.test(f));
-const { ROUTES, SITE_URL, TITLE_SUFFIX, TITLE_MAX, DESCRIPTION_MAX, DEFAULT_OG_IMAGE, OG_IMAGE_MIN_WIDTH } = await import(
+const { ROUTES, SITE_URL, TITLE_SUFFIX, TITLE_MAX, DESCRIPTION_MAX, DEFAULT_OG_IMAGE, OG_IMAGE_MIN_WIDTH, NOT_FOUND_TITLE } =
+  await import(
   pathToFileURL(path.join(tmp, entry)).href
 );
 
@@ -116,7 +119,12 @@ for (const r of resolved) {
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, html);
 }
+// The not-found page: same app shell (React renders the NotFound page), not indexed, no canonical.
+fs.writeFileSync(
+  path.join(dist, "404.html"),
+  shell.replace(/\s*<\/head>/, `\n    <title>${esc(NOT_FOUND_TITLE)}</title>\n    <meta name="robots" content="noindex" />\n  </head>`)
+);
 fs.rmSync(tmp, { recursive: true, force: true });
 
-console.log(`\nseo-pages: ${resolved.length} route pages written\n`);
+console.log(`\nseo-pages: ${resolved.length} route pages + 404.html written\n`);
 for (const r of resolved) console.log(`  ${r.path.padEnd(38)} ${String(r.title.length).padStart(2)}  ${String(r.description.length).padStart(3)}  ${r.ogImage}`);

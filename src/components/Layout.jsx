@@ -28,12 +28,15 @@ export default function Layout() {
   return (
     <div>
       <Nav />
-      {/* Route change: the new page fades in (opacity only — no transform, so sticky/fixed children
-          and scroll measurements are unaffected). Keyed by path, so filter/query and #hash changes
-          don't re-trigger it; skipped during a product View Transition and under reduced motion. */}
-      <div key={pathname} className="route-fade">
-        <Outlet />
-      </div>
+      {/* The page's main content: the one <main> landmark on every route (pages render none). */}
+      <main id="main">
+        {/* Route change: the new page fades in (opacity only — no transform, so sticky/fixed children
+            and scroll measurements are unaffected). Keyed by path, so filter/query and #hash changes
+            don't re-trigger it; skipped during a product View Transition and under reduced motion. */}
+        <div key={pathname} className="route-fade">
+          <Outlet />
+        </div>
+      </main>
       <Footer />
     </div>
   );

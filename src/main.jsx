@@ -14,6 +14,7 @@ import ServiceTraining from './pages/ServiceTraining'
 import WhereWeOperate from './pages/WhereWeOperate'
 import Resources from './pages/Resources'
 import Contact from './pages/Contact'
+import NotFound from './pages/NotFound'
 
 import { ProductsRoute, ProductDetailRoute } from './pages/lazy'
 
@@ -22,9 +23,12 @@ import { ProductsRoute, ProductDetailRoute } from './pages/lazy'
 const PageFallback = () => <div className="min-h-svh bg-night" />
 
 // The served HTML carries this route's title, description and canonical for crawlers that don't run
-// JavaScript (scripts/seo-pages.mjs). From here on <Seo> renders them per route, so drop the static
-// copies: exactly one of each, and they follow client-side navigation.
-document.head.querySelectorAll('title, meta[name="description"], link[rel="canonical"]').forEach((el) => el.remove());
+// JavaScript (scripts/seo-pages.mjs; 404.html carries a noindex instead). From here on <Seo> renders
+// them per route, so drop the static copies: exactly one of each, and they follow client-side
+// navigation.
+document.head
+  .querySelectorAll('title, meta[name="description"], link[rel="canonical"], meta[name="robots"]')
+  .forEach((el) => el.remove());
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -45,6 +49,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/where-we-operate" element={<WhereWeOperate />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>

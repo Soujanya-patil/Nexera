@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { getRoute } from "../seo/routes";
+import { getRoute, NOT_FOUND_TITLE } from "../seo/routes";
 
 /**
  * The current route's <title>, meta description and canonical, from src/seo/routes.js. Mounted once,
@@ -11,11 +11,19 @@ import { getRoute } from "../seo/routes";
  * document never has two of any. Open Graph / Twitter tags stay static only: link-preview crawlers
  * read the served HTML and never run JavaScript.
  *
- * A path that isn't in routes.js gets the site name as its title and no description or canonical.
+ * A path that isn't in routes.js (the NotFound page, an unknown product) gets the not-found title and
+ * a noindex, and no description or canonical — the same as the 404.html the server answers it with.
  */
 export default function Seo() {
   const route = getRoute(useLocation().pathname);
-  if (!route) return <title>NEXERA</title>;
+  if (!route) {
+    return (
+      <>
+        <title>{NOT_FOUND_TITLE}</title>
+        <meta name="robots" content="noindex" />
+      </>
+    );
+  }
   return (
     <>
       <title>{route.title}</title>

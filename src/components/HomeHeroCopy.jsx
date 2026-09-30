@@ -159,9 +159,12 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
               </Fragment>
             ));
             if (!line.accent) {
+              // The trailing space keeps this line's last word apart from the next line's first in
+              // the heading's text (what crawlers and screen readers read); at the end of a block
+              // line it renders nothing.
               return (
                 <span key={i} data-line={i} className="block">
-                  {words}
+                  {words}{" "}
                 </span>
               );
             }

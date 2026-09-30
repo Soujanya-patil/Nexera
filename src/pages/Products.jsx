@@ -335,6 +335,8 @@ export default function Products() {
               <span data-a="line1" className="block">
                 Energy Storage,
               </span>
+              {/* Keeps the lines' words apart in the heading's text; between block lines it renders nothing. */}
+              {" "}
               <span data-a="line2" className="block origin-left text-signal">
                 Built to Scale.
               </span>

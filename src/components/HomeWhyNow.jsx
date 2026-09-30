@@ -67,7 +67,8 @@ export default function HomeWhyNow() {
             Why Energy Storage, Why Now
           </p>
           <h2 data-e="copy" className="mt-4 text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
-            A Stronger, Cleaner,
+            {/* The space keeps "Cleaner," and "More" apart in the heading's text; before a <br> it renders nothing. */}
+            A Stronger, Cleaner,{" "}
             <br />
             More Reliable India
           </h2>

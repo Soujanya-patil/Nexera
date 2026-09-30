@@ -2,11 +2,13 @@
 
 # --- Routes ------------------------------------------------------------------------------------
 # Every sitemap route has its own HTML file with that route's metadata in <head> (written after the
-# build by scripts/seo-pages.mjs): /about -> about.html, /products -> products.html,
+# build by scripts/seo-pages.mjs): / -> index.html, /about -> about.html, /products -> products.html,
 # /products/tcl-blueark-x5 -> products/tcl-blueark-x5.html. They are served internally: the URL never
-# shows .html and never gets a trailing slash. Anything else that is not a real file falls back to
-# index.html, and React Router (BrowserRouter) renders it.
+# shows .html and never gets a trailing slash. Only those routes and real files answer 200; any other
+# URL gets 404.html with a real 404 status (React renders the NotFound page there, marked noindex).
+# Hashed build files under /assets/ are real files or nothing, so a missing one is a plain 404 too.
 Options -MultiViews
+ErrorDocument 404 /404.html
 # /products is both products.html and the folder products/ (the product pages): never answer a
 # folder name with a redirect to its trailing-slash form.
 <IfModule mod_dir.c>
@@ -15,26 +17,23 @@ Options -MultiViews
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  # The Our Brands page became the product catalogue (the app also redirects in the browser).
+  RewriteRule ^brands/?$ /products [R=301,L]
   RewriteRule ^index\.html$ - [L]
-  # A route's own page (checked before the fallback, so /products is products.html, not the folder).
-  # Tested on the exact path, not %{REQUEST_FILENAME}: for /about/ or /about/x the server resolves
-  # REQUEST_FILENAME to .../about (the rest becomes path info), which would match about.html and
-  # rewrite in a loop (500).
+  # A route's own page (so /products is products.html, not the folder). index.html and 404.html are
+  # files, not routes: /index and /404 must not answer as pages. Tested on the exact path, not
+  # %{REQUEST_FILENAME}: for /about/ or /about/x the server resolves REQUEST_FILENAME to .../about
+  # (the rest becomes path info), which would match about.html and rewrite in a loop (500).
+  RewriteCond $1 !^(index|404)$
   RewriteCond %{REQUEST_URI} !^/assets/
   RewriteCond %{DOCUMENT_ROOT}/$1.html -f
   RewriteRule ^(.*[^/])$ $1.html [L]
   # The same page for a trailing-slash spelling (/about/, /products/), without a redirect; its
   # canonical names the slash-less URL.
+  RewriteCond $1 !^(index|404)$
   RewriteCond %{REQUEST_URI} !^/assets/
   RewriteCond %{DOCUMENT_ROOT}/$1.html -f
   RewriteRule ^(.+)/$ $1.html [L]
-  # Single-page app fallback. Hashed build files are real files or nothing: a missing one must 404,
-  # not return index.html (a stale page asking for an old chunk would otherwise receive HTML instead
-  # of JavaScript).
-  RewriteCond %{REQUEST_URI} !^/assets/
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
 </IfModule>
 
 # --- Video -------------------------------------------------------------------------------------
