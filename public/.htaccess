@@ -17,9 +17,12 @@ Options -MultiViews
   RewriteBase /
   RewriteRule ^index\.html$ - [L]
   # A route's own page (checked before the fallback, so /products is products.html, not the folder).
+  # Tested on the exact path, not %{REQUEST_FILENAME}: for /about/ or /about/x the server resolves
+  # REQUEST_FILENAME to .../about (the rest becomes path info), which would match about.html and
+  # rewrite in a loop (500).
   RewriteCond %{REQUEST_URI} !^/assets/
-  RewriteCond %{REQUEST_FILENAME}.html -f
-  RewriteRule ^(.+)$ $1.html [L]
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.*[^/])$ $1.html [L]
   # The same page for a trailing-slash spelling (/about/, /products/), without a redirect; its
   # canonical names the slash-less URL.
   RewriteCond %{REQUEST_URI} !^/assets/
