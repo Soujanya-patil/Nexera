@@ -31,14 +31,15 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
 /**
  * The Organization for structured data (scripts/seo-pages.mjs puts it on every page). Only facts the
  * site itself states: the address is the Footer's; the site shows no email, phone or social
- * profiles, so none are given. No logo: the site has no NEXERA logo file (the wordmark is built in
- * code, and public/favicon.svg is still the Vite default).
+ * profiles, so none are given. The logo is the NEXERA mark (the wordmark's green X on the ink
+ * ground) as the 180x180 public/apple-touch-icon.png, the same mark as public/favicon.svg.
  */
 export const ORGANIZATION = {
   name: "NEXERA Powertech",
   description:
     "Authorized distributor and solution provider for TCL, Hithium and CLOU battery energy storage systems (BESS) in India, with design, commissioning, training and after-sales support.",
   address: { locality: "Bangalore", region: "Karnataka", country: "IN" },
+  logo: "/apple-touch-icon.png",
 };
 
 /** 1200x630 share image (public/og-default.jpg): the NEXERA wordmark and cabinet on the dark green. */

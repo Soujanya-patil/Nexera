@@ -106,6 +106,7 @@ const organization = {
   "@id": ORG_ID,
   name: ORGANIZATION.name,
   url: `${SITE_URL}/`,
+  logo: { "@type": "ImageObject", url: SITE_URL + ORGANIZATION.logo },
   description: ORGANIZATION.description,
   address: {
     "@type": "PostalAddress",
@@ -114,6 +115,7 @@ const organization = {
     addressCountry: ORGANIZATION.address.country,
   },
 };
+if (!fs.existsSync(distFile(ORGANIZATION.logo))) problems.push(`Organization logo missing: dist${ORGANIZATION.logo}`);
 const pageName = (r) => r.title.slice(0, -TITLE_SUFFIX.length);
 const productsRoute = ROUTES.find((r) => r.path === "/products");
 const breadcrumbs = (trail) => ({
