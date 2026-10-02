@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -22,6 +22,7 @@ import {
   Zap,
 } from "lucide-react";
 import { PRODUCTS, SPEC_GROUPS, applicationLabel, getProduct, partnerOf } from "../data/products";
+import { SOLUTION_PAGES } from "../data/solutions";
 import PillLink from "../components/PillLink";
 import AnimatedTabs from "@/components/smoothui/animated-tabs";
 import MagneticButton from "../components/ui/MagneticButton";
@@ -251,6 +252,18 @@ function ProductView({ product }) {
                   </li>
                 ))}
               </ul>
+              {/* Back to the Solutions page(s) this system belongs to. */}
+              <p data-a="meta" className="mt-3 text-sm text-ice/70">
+                See how it fits:{" "}
+                {product.applications.map((a, i) => (
+                  <Fragment key={a}>
+                    {i > 0 && " · "}
+                    <Link to={SOLUTION_PAGES[a].path} className="font-semibold text-signal underline-offset-4 hover:underline">
+                      {SOLUTION_PAGES[a].label} solutions
+                    </Link>
+                  </Fragment>
+                ))}
+              </p>
               <p data-a="desc" className="mt-6 max-w-lg leading-relaxed text-ice/80">
                 {product.summary}
               </p>
@@ -288,13 +301,37 @@ function ProductView({ product }) {
                 <span aria-hidden="true" className="absolute inset-x-[18%] bottom-[5%] h-[6%] rounded-[100%] bg-black/60 blur-lg" />
                 <div ref={drift} className="absolute inset-0 will-change-transform">
                   <div className="absolute inset-0" style={depth(6, 5)}>
-                    <img
-                      src={product.image}
-                      alt={product.imageAlt}
-                      data-vt-hero={product.id}
-                      style={{ viewTransitionName: `product-${product.id}` }}
-                      className="absolute inset-0 m-auto h-[88%] w-[88%] object-contain transition-[scale] duration-700 ease-out group-hover/hero:scale-[1.015]"
-                    />
+                    {product.imageFallback ? (
+                      // No product photo (data/products.js `imageFallback`): the partner's logo on a light panel.
+                      <div
+                        data-vt-hero={product.id}
+                        style={{ viewTransitionName: `product-${product.id}` }}
+                        className="absolute inset-[16%] grid place-items-center rounded-3xl bg-paper/95"
+                      >
+                        <img src={product.image} alt={product.imageAlt} className="h-auto w-[52%] object-contain opacity-85" />
+                      </div>
+                    ) : product.imageBg ? (
+                      // A photo on its own background (data/products.js `imageBg`): framed in that colour.
+                      <div
+                        data-vt-hero={product.id}
+                        style={{ viewTransitionName: `product-${product.id}`, background: product.imageBg }}
+                        className="absolute inset-[6%] overflow-hidden rounded-3xl ring-1 ring-white/10"
+                      >
+                        <img
+                          src={product.image}
+                          alt={product.imageAlt}
+                          className="h-full w-full object-contain transition-[scale] duration-700 ease-out group-hover/hero:scale-[1.015]"
+                        />
+                      </div>
+                    ) : (
+                      <img
+                        src={product.image}
+                        alt={product.imageAlt}
+                        data-vt-hero={product.id}
+                        style={{ viewTransitionName: `product-${product.id}` }}
+                        className="absolute inset-0 m-auto h-[88%] w-[88%] object-contain transition-[scale] duration-700 ease-out group-hover/hero:scale-[1.015]"
+                      />
+                    )}
                   </div>
                 </div>
               </div>

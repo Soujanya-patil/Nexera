@@ -8,6 +8,17 @@ const paths = [
   { id: "oem", label: "Brand / OEM inquiry" },
 ];
 
+// Customer enquiry types. Arriving from a Solutions page — /contact?intent=residential|ci|utility —
+// pre-selects the type, so the submission says where the enquiry came from.
+const ENQUIRY_TYPES = [
+  { id: "residential", label: "Residential" },
+  { id: "ci", label: "Commercial & Industrial" },
+  { id: "utility", label: "Utility-Scale" },
+];
+// ?brand=<id>: a partner the visitor asked about that has no catalogue product to link (Midea's
+// residential range). It is carried in the submission and implies its segment.
+const BRANDS = { midea: { name: "Midea", type: "residential" } };
+
 export default function Contact() {
   const [path, setPath] = useState("general");
   const [submitted, setSubmitted] = useState(false);
@@ -15,7 +26,10 @@ export default function Contact() {
   // customer form with the system and its application, so the enquiry is routed with context.
   const [params] = useSearchParams();
   const product = getProduct(params.get("product"));
-  const quote = params.get("intent") === "quote";
+  const intent = params.get("intent");
+  const quote = intent === "quote";
+  const brand = BRANDS[params.get("brand")] ?? null;
+  const type = ENQUIRY_TYPES.find((t) => t.id === (ENQUIRY_TYPES.some((x) => x.id === intent) ? intent : brand?.type)) ?? null;
   const name = product ? productLabel(product) : null;
   const starter = quote
     ? `I'd like a quote${name ? ` for the ${name}` : ""}.`
@@ -88,12 +102,34 @@ export default function Contact() {
 
               {path === "general" && (
                 <>
-                  {(product || quote) && (
+                  {(product || quote || type || brand) && (
                     <p className="rounded-lg bg-ice px-4 py-3 text-sm text-ink">
-                      <span className="font-semibold">{quote ? "Quote request" : "Product enquiry"}</span>
+                      <span className="font-semibold">
+                        {quote ? "Quote request" : product ? "Product enquiry" : `${type.label} enquiry`}
+                      </span>
                       {name && <> &middot; {name}</>}
+                      {brand && <> &middot; {brand.name}</>}
                     </p>
                   )}
+                  <div>
+                    <label htmlFor="enquiry_type" className="block text-sm font-medium text-ink mb-1.5">
+                      Enquiry type
+                    </label>
+                    <select
+                      id="enquiry_type"
+                      name="enquiry_type"
+                      defaultValue={type?.id ?? ""}
+                      className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-steel/40"
+                    >
+                      <option value="">Select…</option>
+                      {ENQUIRY_TYPES.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {brand && <input type="hidden" name="brand" value={brand.name} />}
                   {product && (
                     <div className="grid sm:grid-cols-2 gap-5">
                       <Field label="Product" name="product" defaultValue={name} />

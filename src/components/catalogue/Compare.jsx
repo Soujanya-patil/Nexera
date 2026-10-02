@@ -103,8 +103,12 @@ export function CompareDialog({ ids, open, onClose }) {
                 </th>
                 {products.map((p) => (
                   <th key={p.id} scope="col" className="px-4 py-4 align-bottom font-normal">
-                    <div className="relative mb-3 aspect-[4/3] w-full max-w-[11rem] rounded-xl bg-ice">
-                      <img src={p.image} alt="" className="absolute inset-0 m-auto h-[80%] w-[80%] object-contain" />
+                    <div className="relative mb-3 aspect-[4/3] w-full max-w-[11rem] overflow-hidden rounded-xl bg-ice" style={p.imageBg ? { background: p.imageBg } : undefined}>
+                      <img
+                        src={p.image}
+                        alt=""
+                        className={`absolute inset-0 m-auto object-contain ${p.imageFallback ? "h-[18%] w-[50%] opacity-80" : p.imageBg ? "h-[92%] w-[92%]" : "h-[80%] w-[80%]"}`}
+                      />
                     </div>
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sage">{partnerOf(p.partner).name}</p>
                     <p className="mt-0.5 font-semibold text-ink">{p.name}</p>

@@ -9,11 +9,16 @@
  * Images are transparent cutouts of the partners' own product renders (src/assets/catalogue/), made
  * from Downloads/TCL_photos.zip, Hithium_photos.zip and CLOU_photos.
  *
- * Not listed, deliberately:
- *   - Hithium 5.016 MWh liquid-cooled ESS: specified in the Hithium brochure, but the only render is
- *     a 288px thumbnail — too small to present as a product image.
- *   - CLOU Aqua-X-261-125-2h: no product image in the CLOU material (its datasheet pages show only a
- *     background and a container that can't be tied to this model).
+ * CLOU Aqua-E261's image is a photo on a dark background from the CLOU BESS deck, not a cutout:
+ * `imageBg` is that background colour, which the cards and product page lay behind it so the photo
+ * sits flush. (A project datasheet names a 261 kWh CLOU system "Aqua-X-261-125-2h"; the approved
+ * Solutions content uses "Aqua-E261".)
+ *
+ * Listed without a product photo (`imageFallback: true` — `image` is the partner's logo, shown
+ * small on the usual plinth, and never used as a product image in search or share data):
+ *   - Hithium ∞Power 5.016 MWh: the brochure's only render is a 288px thumbnail, too small to use.
+ * Their data comes from the director-approved Solutions content (checked against the CLOU BESS deck
+ * and the Hithium brochure), and is limited to what that content states.
  *
  * Adding a product: append an entry with the same shape. `specs` groups render as the Technical
  * Information tabs (only non-empty groups show), `keySpecs` are the headline figures, `compare` holds
@@ -31,6 +36,7 @@ import imgBlock261 from "../assets/catalogue/hithium-block-261.webp";
 import imgCabinet1022 from "../assets/catalogue/hithium-power-cabinet-1022.webp";
 import imgPower625 from "../assets/catalogue/hithium-power-625.webp";
 import imgClouC25s from "../assets/catalogue/clou-aqua-c25s.webp";
+import imgClouE261 from "../assets/clou-aqua-e261.jpg";
 
 export const APPLICATIONS = [
   { id: "residential", label: "Residential" },
@@ -69,6 +75,10 @@ export const COMPARE_FIELDS = [
 
 const TCL_BROCHURE = "TCL Digital Power product brochure (EN)";
 const HITHIUM_BROCHURE = "Hithium product brochure — all solutions and company presentation";
+// Lines added from the director-approved Solutions content, which was checked against these decks.
+const TCL_DECK = "NEXERA Solutions content, checked against the TCL Digital Power Introduction deck";
+const CLOU_DECK = "NEXERA Solutions content, checked against the CLOU BESS deck";
+const HITHIUM_CONTENT = "NEXERA Solutions content";
 
 export const PRODUCTS = [
   {
@@ -158,9 +168,13 @@ export const PRODUCTS = [
         { label: "System capacity", value: "100 kWh" },
         { label: "Architecture", value: "All-in-one, DC-coupled" },
         { label: "On/off switch time", value: "20 ms" },
+        { label: "PV integration", value: "Direct PV access" },
+        { label: "Generator", value: "Diesel-generator interface" },
       ],
       battery: [
         { label: "Battery cell", value: "314 Ah" },
+        { label: "Chemistry", value: "LFP" },
+        { label: "Cycle life", value: "Up to 8,000 cycles (specification)" },
         { label: "DC-side expansion", value: "Up to 4 parallel battery cabinets: 50 kW/100 kWh to 50 kW/400 kWh" },
       ],
       safety: [
@@ -176,6 +190,7 @@ export const PRODUCTS = [
       ],
       installation: [
         { label: "Protection", value: "IP55" },
+        { label: "Inverter protection", value: "IP66" },
         { label: "Operating temperature", value: "−30 °C to 50 °C" },
         { label: "AC-side expansion", value: "Up to 10 parallel units: 50 kW/100 kWh to 500 kW/1 MWh" },
       ],
@@ -194,7 +209,7 @@ export const PRODUCTS = [
       protection: "IP55",
     },
     datasheet: null,
-    sources: [`${TCL_BROCHURE}: BlueArk X5, All-in-one C&I ESS, Flexible Expansion and Safety & Adaptability pages`],
+    sources: [`${TCL_BROCHURE}: BlueArk X5, All-in-one C&I ESS, Flexible Expansion and Safety & Adaptability pages`, TCL_DECK],
   },
   {
     id: "tcl-blueark-w10",
@@ -216,7 +231,19 @@ export const PRODUCTS = [
         { label: "Power", value: "125 kW" },
         { label: "Capacity", value: "261 kWh" },
         { label: "Scalability", value: "Expandable to 6.3 MWh" },
+        { label: "Rated output", value: "125 kVA" },
+        { label: "Current THD", value: "<2%" },
+        { label: "Grid", value: "Three-phase operation, stable in weak-grid conditions, three-phase imbalance correction" },
+        { label: "Integration", value: "Integrated BMS, PCS and EMS" },
       ],
+      battery: [
+        { label: "Cell", value: "314 Ah LFP" },
+        { label: "Cooling", value: "Intelligent liquid cooling" },
+        { label: "Cycle life", value: "8,000 cycles at 70% SOH (specification)" },
+        { label: "Depth of discharge", value: "95% DOD" },
+      ],
+      control: [{ label: "Monitoring", value: "Cloud-based monitoring and diagnostics" }],
+      installation: [{ label: "Protection", value: "IP55" }],
       safety: [
         { label: "Cabinet level", value: "Aerosol fire suppression, water fire protection system, explosion vent" },
         { label: "Detection", value: "Smoke detector, temperature sensor, combustible gas detector" },
@@ -232,6 +259,9 @@ export const PRODUCTS = [
     compare: {
       capacity: "261 kWh (expandable to 6.3 MWh)",
       power: "125 kW",
+      cell: "314 Ah LFP",
+      cooling: "Liquid",
+      protection: "IP55",
     },
     // The open-cabinet view is the held final frame of the Home hero footage (this cabinet design);
     // the five points are the same pixel-centroid anchors verified there against TCL's
@@ -249,7 +279,7 @@ export const PRODUCTS = [
       ],
     },
     datasheet: null,
-    sources: [`${TCL_BROCHURE}: Flexible Scalability page`, "TCL Protection Architecture slide"],
+    sources: [`${TCL_BROCHURE}: Flexible Scalability page`, "TCL Protection Architecture slide", TCL_DECK],
   },
   {
     id: "hithium-block-261",
@@ -279,6 +309,7 @@ export const PRODUCTS = [
       ],
       battery: [
         { label: "Cell", value: "314 Ah" },
+        { label: "Chemistry", value: "LFP" },
         { label: "Series-parallel mode", value: "1P260S" },
         { label: "Battery modules", value: "5" },
         { label: "Rated DC voltage", value: "832 V" },
@@ -306,7 +337,7 @@ export const PRODUCTS = [
       weight: "≤2.7 t",
     },
     datasheet: null,
-    sources: [`${HITHIUM_BROCHURE}: C&I All-in-One Energy Storage System table`, "Hithium DS ESS 261kWh datasheet (product image)"],
+    sources: [`${HITHIUM_BROCHURE}: C&I All-in-One Energy Storage System table`, "Hithium DS ESS 261kWh datasheet (product image)", HITHIUM_CONTENT],
   },
   {
     id: "hithium-power-cabinet-1022",
@@ -356,6 +387,34 @@ export const PRODUCTS = [
     sources: ["Hithium DC Block 1022kWh EU product material: 1022 Liquid-Cooled Cabinet System and Convenient High Usability pages"],
   },
   {
+    id: "hithium-power-5016",
+    partner: "hithium",
+    name: "∞Power 5.016 MWh",
+    type: "Liquid-cooled energy storage platform",
+    applications: ["utility"],
+    image: hithiumLogo,
+    imageFallback: true,
+    imageAlt: "Hithium logo (product photo not available)",
+    summary: "A high-density, liquid-cooled energy storage platform for utility-scale applications.",
+    cardSpecs: ["5.016 MWh", "Liquid-cooled"],
+    keySpecs: [
+      { label: "Rated energy", value: "5.016 MWh" },
+      { label: "Cooling", value: "Liquid-cooled" },
+    ],
+    specsNote: "Detailed specifications for this system are available from NEXERA on request.",
+    specs: {
+      system: [{ label: "Rated energy", value: "5.016 MWh" }],
+      battery: [{ label: "Cooling", value: "Liquid-cooled" }],
+    },
+    highlights: [],
+    compare: {
+      capacity: "5.016 MWh",
+      cooling: "Liquid",
+    },
+    datasheet: null,
+    sources: [`${HITHIUM_BROCHURE}: Liquid-Cooled Energy Storage System`, HITHIUM_CONTENT],
+  },
+  {
     id: "hithium-power-625",
     partner: "hithium",
     name: "∞Power 6.25 MWh",
@@ -383,6 +442,8 @@ export const PRODUCTS = [
         { label: "Dimensions (L×W×H)", value: "6058 × 2438 × 2896 mm" },
         { label: "Weight", value: "≤48 t" },
         { label: "Protection", value: "IP55" },
+        { label: "Format", value: "20-foot container" },
+        { label: "Operating temperature", value: "−30 °C to +55 °C" },
       ],
     },
     highlights: [
@@ -399,7 +460,63 @@ export const PRODUCTS = [
       weight: "≤48 t",
     },
     datasheet: null,
-    sources: [`${HITHIUM_BROCHURE}: Liquid-Cooled Energy Storage System table`, "Hithium DS ESS ∞Power 6.25MWh 4h datasheet (product image)"],
+    sources: [`${HITHIUM_BROCHURE}: Liquid-Cooled Energy Storage System table`, "Hithium DS ESS ∞Power 6.25MWh 4h datasheet (product image)", HITHIUM_CONTENT],
+  },
+  {
+    id: "clou-aqua-e261",
+    partner: "clou",
+    name: "Aqua-E261",
+    type: "All-in-one C&I energy storage system",
+    applications: ["ci"],
+    image: imgClouE261,
+    imageBg: "#020813",
+    imageAlt: "CLOU Aqua-E261 all-in-one liquid-cooled C&I battery energy storage cabinet",
+    summary:
+      "An all-in-one C&I storage system, pre-installed and pre-commissioned, with intelligent temperature control, cloud-based monitoring and remote O&M.",
+    cardSpecs: ["125 kW", "261 kWh"],
+    keySpecs: [
+      { label: "Power", value: "125 kW" },
+      { label: "Energy", value: "261 kWh" },
+      { label: "Battery cell", value: "LFP 314 Ah" },
+      { label: "Protection", value: "IP55" },
+    ],
+    specs: {
+      system: [
+        { label: "Power", value: "125 kW" },
+        { label: "Energy", value: "261 kWh" },
+        { label: "Format", value: "All-in-one, pre-installed and pre-commissioned" },
+        { label: "Auxiliary power", value: "Self-powered auxiliary system" },
+      ],
+      battery: [
+        { label: "Cell", value: "LFP 314 Ah" },
+        { label: "Cooling", value: "Liquid cooling" },
+        { label: "Cycle life", value: "≥7,000 cycles (specification)" },
+      ],
+      safety: [{ label: "Fire", value: "Integrated fire detection and suppression" }],
+      control: [
+        { label: "Communication", value: "Ethernet / CAN / RS485 / 4G" },
+        { label: "Monitoring", value: "Cloud-based monitoring and remote O&M" },
+      ],
+      installation: [
+        { label: "Protection", value: "IP55" },
+        { label: "Compliance", value: "IEC / UN38.3" },
+      ],
+    },
+    highlights: [
+      { icon: "Snowflake", title: "Liquid-cooled", text: "Liquid cooling with intelligent temperature control." },
+      { icon: "Boxes", title: "Pre-installed and pre-commissioned", text: "An all-in-one C&I system, with a self-powered auxiliary system." },
+      { icon: "ShieldCheck", title: "Integrated fire protection", text: "Fire detection and suppression built in, with IP55 protection." },
+    ],
+    compare: {
+      capacity: "261 kWh",
+      power: "125 kW",
+      configuration: "All-in-one",
+      cell: "LFP 314 Ah",
+      cooling: "Liquid",
+      protection: "IP55",
+    },
+    datasheet: null,
+    sources: [CLOU_DECK, "CLOU BESS deck (product image)"],
   },
   {
     id: "clou-aqua-c25s",
@@ -411,19 +528,38 @@ export const PRODUCTS = [
     image: imgClouC25s,
     imageAlt: "CLOU Aqua C2.5S containerised energy storage system",
     summary: "A containerised energy storage system from CLOU for utility-scale applications.",
-    cardSpecs: [],
+    cardSpecs: ["2.089 MWh", "500 kVA"],
     keySpecs: [
       { label: "Model", value: "Aqua C2.5S-2089-500-4h" },
       { label: "Format", value: "Containerised" },
+      { label: "Energy", value: "2.089 MWh" },
+      { label: "Power", value: "500 kVA" },
     ],
     specsNote: "Detailed specifications for this system are available from NEXERA on request.",
-    specs: {},
+    specs: {
+      system: [
+        { label: "Energy", value: "2.089 MWh" },
+        { label: "Power", value: "500 kVA" },
+        { label: "Duration", value: "4 h" },
+      ],
+      battery: [
+        { label: "Cell", value: "314 Ah LFP" },
+        { label: "Cooling", value: "Intelligent liquid cooling" },
+      ],
+      safety: [{ label: "Fire", value: "Multi-level fire protection" }],
+      installation: [{ label: "Protection", value: "IP55" }],
+    },
     highlights: [],
     compare: {
+      capacity: "2.089 MWh",
+      power: "500 kVA",
       configuration: "Containerised",
+      cell: "314 Ah LFP",
+      cooling: "Liquid",
+      protection: "IP55",
     },
     datasheet: null,
-    sources: ["CLOU Aqua C2.5S-2089-500-4h IEC datasheet (product image and model designation)"],
+    sources: ["CLOU Aqua C2.5S-2089-500-4h IEC datasheet (product image and model designation)", CLOU_DECK],
   },
 ];
 

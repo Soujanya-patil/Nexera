@@ -25,3 +25,8 @@ function preloadable(factory) {
 // live count), so they are split from the main bundle.
 export const ProductsRoute = preloadable(() => import("./Products"));
 export const ProductDetailRoute = preloadable(() => import("./ProductDetail"));
+
+// The three Solutions pages are long and only needed on their own routes, so they load on demand too.
+export const SolutionsUtilityRoute = preloadable(() => import("./SolutionsUtility"));
+export const SolutionsCIRoute = preloadable(() => import("./SolutionsCI"));
+export const SolutionsResidentialRoute = preloadable(() => import("./SolutionsResidential"));

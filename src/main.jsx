@@ -16,7 +16,7 @@ import Resources from './pages/Resources'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
 
-import { ProductsRoute, ProductDetailRoute } from './pages/lazy'
+import { ProductsRoute, ProductDetailRoute, SolutionsUtilityRoute, SolutionsCIRoute, SolutionsResidentialRoute } from './pages/lazy'
 
 // Product pages are split out (see pages/lazy.jsx); the motion runtime only loads with them.
 // Full viewport height so the footer stays below the fold while a route loads (no layout shift).
@@ -43,6 +43,9 @@ createRoot(document.getElementById('root')).render(
           {/* The catalogue replaced the Our Brands page; keep old links working. */}
           <Route path="/brands" element={<Navigate to="/products" replace />} />
           <Route path="/solutions" element={<Solutions />} />
+          <Route path="/solutions/utility-scale" element={<Suspense fallback={<PageFallback />}><SolutionsUtilityRoute /></Suspense>} />
+          <Route path="/solutions/commercial-industrial" element={<Suspense fallback={<PageFallback />}><SolutionsCIRoute /></Suspense>} />
+          <Route path="/solutions/residential" element={<Suspense fallback={<PageFallback />}><SolutionsResidentialRoute /></Suspense>} />
           <Route path="/become-a-partner" element={<BecomePartner />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/service-training" element={<ServiceTraining />} />

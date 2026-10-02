@@ -79,8 +79,8 @@ export default function HomePartners() {
           </p>
           <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Global Technology. Local Impact.</AnimatedText>
           <p data-e="desc" className="mt-3 max-w-lg text-graphite">
-            Nexera represents world-leading BESS manufacturers — TCL, Hithium and CLOU — with products across
-            residential, C&amp;I and utility-scale segments.
+            NEXERA brings systems from world-leading BESS manufacturers — TCL, Hithium, CLOU and Midea — with products
+            across residential, C&amp;I and utility-scale segments.
           </p>
         </div>
         <div className="min-w-0">
@@ -123,7 +123,7 @@ export default function HomePartners() {
                   {partner.count === 1 ? "system" : "systems"} in the catalogue
                 </>
               ) : (
-                "Residential, C&I and utility-scale systems across all three partners"
+                "Residential, C&I and utility-scale systems across our technology partners"
               )}
             </span>
           </p>

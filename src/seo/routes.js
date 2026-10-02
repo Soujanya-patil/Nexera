@@ -16,6 +16,7 @@
  * canonical = SITE_URL + path, no trailing slash (the homepage is the bare domain with its "/").
  */
 import { PRODUCTS, partnerOf, productLabel, applicationLabel } from "../data/products";
+import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/solutions";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -37,7 +38,7 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
 export const ORGANIZATION = {
   name: "NEXERA Powertech",
   description:
-    "Authorized distributor and solution provider for TCL, Hithium and CLOU battery energy storage systems (BESS) in India, with design, commissioning, training and after-sales support.",
+    "Authorized distributor and solution provider for TCL, Hithium, CLOU and Midea battery energy storage systems in India, with design, commissioning, training and after-sales support.",
   address: { locality: "Bangalore", region: "Karnataka", country: "IN" },
   logo: "/apple-touch-icon.png",
 };
@@ -52,13 +53,39 @@ const PAGES = [
     path: "/",
     title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
     description:
-      "Authorized distributor of TCL, Hithium and CLOU battery energy storage systems (BESS) in India — for residential, C&I and utility-scale projects.",
+      "Authorized distributor of TCL, Hithium, CLOU and Midea battery energy storage systems (BESS) in India — for residential, C&I and utility-scale projects.",
   },
   {
     path: "/solutions",
     title: "BESS Solutions for Homes, C&I and Utility-Scale | NEXERA",
     description:
-      "Battery energy storage for Indian homes, commercial & industrial sites and utility-scale projects — TCL, Hithium and CLOU systems supplied by NEXERA.",
+      "Battery energy storage for Indian homes, C&I sites and utility-scale projects — TCL, Hithium, CLOU and Midea systems supplied by NEXERA.",
+  },
+  // The three Solutions pages: breadcrumb Home > Solutions > page (`crumbs`, after Home), and an FAQ
+  // whose text the page renders from the same data (data/solutions.js) — written as FAQPage data.
+  {
+    path: SOLUTION_PAGES.utility.path,
+    title: "Utility-Scale Battery Energy Storage (BESS) India | NEXERA",
+    description:
+      "Grid-scale BESS from Hithium and CLOU for solar, wind and grid projects in India, with sizing, engineering and commissioning support from NEXERA.",
+    crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.utility.label, SOLUTION_PAGES.utility.path]],
+    faq: UTILITY_FAQ,
+  },
+  {
+    path: SOLUTION_PAGES.ci.path,
+    title: "C&I Battery Energy Storage Systems in India | NEXERA",
+    description:
+      "C&I battery energy storage for peak shaving, solar self-consumption and backup power. TCL, Hithium and CLOU systems, with project engineering by NEXERA.",
+    crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.ci.label, SOLUTION_PAGES.ci.path]],
+    faq: CI_FAQ,
+  },
+  {
+    path: SOLUTION_PAGES.residential.path,
+    title: "Home Battery Storage & Solar Solutions in India | NEXERA",
+    description:
+      "Home battery storage from Midea and TCL: use solar after sunset, keep essential loads running in outages and cut grid dependence. Supplied by NEXERA.",
+    crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.residential.label, SOLUTION_PAGES.residential.path]],
+    faq: RESIDENTIAL_FAQ,
   },
   {
     path: "/products",
@@ -76,7 +103,7 @@ const PAGES = [
     path: "/about",
     title: "About Us — Built by an EPC, for EPCs | NEXERA",
     description:
-      "NEXERA is an authorized TCL, Hithium and CLOU partner built by EPCs, with India-based design and commissioning support and a Kalaburagi training center.",
+      "NEXERA is an authorized TCL, Hithium, CLOU and Midea partner built by EPCs, with design and commissioning support and a Kalaburagi training center.",
   },
   {
     path: "/how-it-works",
@@ -140,15 +167,17 @@ function productPage(p) {
       ],
       DESCRIPTION_MAX
     ),
-    // Candidate only: the build keeps it if the image is at least OG_IMAGE_MIN_WIDTH wide.
-    ogImage: p.image,
+    // Candidate only: the build keeps it if the image is at least OG_IMAGE_MIN_WIDTH wide. A product
+    // without a photo (`imageFallback`: its `image` is the partner's logo) shares the default image.
+    ogImage: p.imageFallback ? DEFAULT_OG_IMAGE : p.image,
     // Structured data (Product): only what the catalogue states. The brand is the partner that makes
-    // it — never NEXERA — and there are no offers, prices, ratings or specs.
-    product: { name: label, description: p.summary, image: p.image, brand },
+    // it — never NEXERA — and there are no offers, prices, ratings or specs; no image without a photo.
+    product: { name: label, description: p.summary, image: p.imageFallback ? null : p.image, brand },
   };
 }
 
-export const ROUTES = [...PAGES.slice(0, 3), ...PRODUCTS.map(productPage), ...PAGES.slice(3)].map((r) => ({
+const afterProducts = PAGES.findIndex((r) => r.path === "/products") + 1;
+export const ROUTES = [...PAGES.slice(0, afterProducts), ...PRODUCTS.map(productPage), ...PAGES.slice(afterProducts)].map((r) => ({
   ogImage: DEFAULT_OG_IMAGE,
   ...r,
   canonical: SITE_URL + r.path,

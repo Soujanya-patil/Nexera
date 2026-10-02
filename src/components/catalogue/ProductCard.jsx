@@ -32,20 +32,31 @@ export default function ProductCard({ product, compared, compareFull, onToggleCo
         className={`absolute left-6 top-0 z-10 h-0.5 rounded-full bg-signal transition-[width] duration-500 ease-out ${compared ? "w-12" : "w-0 group-hover:w-12"}`}
       />
 
-      <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)]">
-        {/* Soft light behind the product, brightening on hover */}
-        <span
-          aria-hidden="true"
-          className="absolute inset-[12%] rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,0.95),rgba(144,217,136,0.10)_60%,transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        />
-        <span aria-hidden="true" className="absolute inset-x-[22%] bottom-[9%] h-5 rounded-[100%] bg-black/15 blur-lg" />
+      <div
+        className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)]"
+        // A photo on its own background (data/products.js `imageBg`): that colour, edge to edge.
+        style={product.imageBg ? { background: product.imageBg } : undefined}
+      >
+        {!product.imageBg && (
+          <>
+            {/* Soft light behind the product, brightening on hover */}
+            <span
+              aria-hidden="true"
+              className="absolute inset-[12%] rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,0.95),rgba(144,217,136,0.10)_60%,transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            />
+            <span aria-hidden="true" className="absolute inset-x-[22%] bottom-[9%] h-5 rounded-[100%] bg-black/15 blur-lg" />
+          </>
+        )}
         <img
           src={product.image}
           alt={product.imageAlt}
           loading="lazy"
           decoding="async"
           style={{ viewTransitionName: `product-${product.id}` }}
-          className="absolute inset-0 m-auto h-[82%] w-[82%] object-contain transition-[scale,translate] duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
+          className={`absolute inset-0 m-auto object-contain transition-[scale,translate] duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03] ${
+            // No product photo (data/products.js `imageFallback`): the partner's logo, small.
+            product.imageFallback ? "h-[16%] w-[44%] opacity-80" : product.imageBg ? "h-[92%] w-[92%]" : "h-[82%] w-[82%]"
+          }`}
         />
       </div>
 

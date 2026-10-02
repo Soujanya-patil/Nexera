@@ -98,8 +98,9 @@ const resolved = ROUTES.map((r) => ({ ...r, ogImage: ogFor(r) }));
 
 // --- Structured data: one JSON-LD @graph per page, only here (never rendered at runtime) --------
 // Organization on every page; WebSite on the homepage; BreadcrumbList on every other route
-// (Home > Page, Home > Products > Product), named like the page titles; Product on product pages,
-// from the catalogue only — brand is the partner, never NEXERA; no offers, prices or ratings.
+// (Home > Page, Home > Products > Product, named like the page titles; or the route's own `crumbs`,
+// e.g. Home > Solutions > Utility-Scale); Product on product pages, from the catalogue only — brand
+// is the partner, never NEXERA; no offers, prices or ratings; FAQPage where a route has an FAQ.
 const ORG_ID = `${SITE_URL}/#organization`;
 const organization = {
   "@type": "Organization",
@@ -118,13 +119,14 @@ const organization = {
 if (!fs.existsSync(distFile(ORGANIZATION.logo))) problems.push(`Organization logo missing: dist${ORGANIZATION.logo}`);
 const pageName = (r) => r.title.slice(0, -TITLE_SUFFIX.length);
 const productsRoute = ROUTES.find((r) => r.path === "/products");
+/** Trail items are routes (named like their titles) or [name, path] pairs from a route's `crumbs`. */
 const breadcrumbs = (trail) => ({
   "@type": "BreadcrumbList",
   itemListElement: trail.map((r, i) => ({
     "@type": "ListItem",
     position: i + 1,
-    name: r.path === "/" ? "Home" : pageName(r),
-    item: r.canonical,
+    name: Array.isArray(r) ? r[0] : r.path === "/" ? "Home" : pageName(r),
+    item: Array.isArray(r) ? SITE_URL + r[1] : r.canonical,
   })),
 });
 const home = ROUTES.find((r) => r.path === "/");
@@ -134,7 +136,7 @@ function graphFor(r) {
   if (r.path === "/") {
     nodes.push({ "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: ORGANIZATION.name, url: `${SITE_URL}/`, publisher: { "@id": ORG_ID } });
   } else {
-    nodes.push(breadcrumbs(r.product ? [home, productsRoute, r] : [home, r]));
+    nodes.push(breadcrumbs(r.crumbs ? [home, ...r.crumbs] : r.product ? [home, productsRoute, r] : [home, r]));
   }
   if (r.product) {
     nodes.push({
@@ -142,9 +144,17 @@ function graphFor(r) {
       "@id": `${r.canonical}#product`,
       name: r.product.name,
       description: r.product.description,
-      image: SITE_URL + r.product.image,
+      ...(r.product.image ? { image: SITE_URL + r.product.image } : {}), // none for a product without a photo
       url: r.canonical,
       brand: { "@type": "Brand", name: r.product.brand },
+    });
+  }
+  // The page's visible FAQ, word for word (both come from data/solutions.js).
+  if (r.faq) {
+    nodes.push({
+      "@type": "FAQPage",
+      "@id": `${r.canonical}#faq`,
+      mainEntity: r.faq.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
     });
   }
   return nodes;
