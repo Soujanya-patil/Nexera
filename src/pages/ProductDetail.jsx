@@ -310,19 +310,6 @@ function ProductView({ product }) {
                       >
                         <img src={product.image} alt={product.imageAlt} className="h-auto w-[52%] object-contain opacity-85" />
                       </div>
-                    ) : product.imageBg ? (
-                      // A photo on its own background (data/products.js `imageBg`): framed in that colour.
-                      <div
-                        data-vt-hero={product.id}
-                        style={{ viewTransitionName: `product-${product.id}`, background: product.imageBg }}
-                        className="absolute inset-[6%] overflow-hidden rounded-3xl ring-1 ring-white/10"
-                      >
-                        <img
-                          src={product.image}
-                          alt={product.imageAlt}
-                          className="h-full w-full object-contain transition-[scale] duration-700 ease-out group-hover/hero:scale-[1.015]"
-                        />
-                      </div>
                     ) : (
                       <img
                         src={product.image}

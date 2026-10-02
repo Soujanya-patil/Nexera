@@ -9,10 +9,9 @@
  * Images are transparent cutouts of the partners' own product renders (src/assets/catalogue/), made
  * from Downloads/TCL_photos.zip, Hithium_photos.zip and CLOU_photos.
  *
- * CLOU Aqua-E261's image is a photo on a dark background from the CLOU BESS deck, not a cutout:
- * `imageBg` is that background colour, which the cards and product page lay behind it so the photo
- * sits flush. (A project datasheet names a 261 kWh CLOU system "Aqua-X-261-125-2h"; the approved
- * Solutions content uses "Aqua-E261".)
+ * CLOU Aqua-E261's cutout comes from the CLOU BESS deck (src/assets/clou-aqua-e261.png). (A project
+ * datasheet names a 261 kWh CLOU system "Aqua-X-261-125-2h"; the approved Solutions content uses
+ * "Aqua-E261".)
  *
  * Listed without a product photo (`imageFallback: true` — `image` is the partner's logo, shown
  * small on the usual plinth, and never used as a product image in search or share data):
@@ -36,7 +35,7 @@ import imgBlock261 from "../assets/catalogue/hithium-block-261.webp";
 import imgCabinet1022 from "../assets/catalogue/hithium-power-cabinet-1022.webp";
 import imgPower625 from "../assets/catalogue/hithium-power-625.webp";
 import imgClouC25s from "../assets/catalogue/clou-aqua-c25s.webp";
-import imgClouE261 from "../assets/clou-aqua-e261.jpg";
+import imgClouE261 from "../assets/clou-aqua-e261.png";
 
 export const APPLICATIONS = [
   { id: "residential", label: "Residential" },
@@ -469,7 +468,6 @@ export const PRODUCTS = [
     type: "All-in-one C&I energy storage system",
     applications: ["ci"],
     image: imgClouE261,
-    imageBg: "#020813",
     imageAlt: "CLOU Aqua-E261 all-in-one liquid-cooled C&I battery energy storage cabinet",
     summary:
       "An all-in-one C&I storage system, pre-installed and pre-commissioned, with intelligent temperature control, cloud-based monitoring and remote O&M.",

@@ -22,6 +22,11 @@ import { ProductsRoute, ProductDetailRoute, SolutionsUtilityRoute, SolutionsCIRo
 // Full viewport height so the footer stays below the fold while a route loads (no layout shift).
 const PageFallback = () => <div className="min-h-svh bg-night" />
 
+// Motion is allowed: from here on the reveal styles may hold content hidden until GSAP animates it
+// in (index.css gates them on this class, so without JavaScript — or under reduced motion —
+// everything is simply visible).
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-motion')
+
 // The served HTML carries this route's title, description and canonical for crawlers that don't run
 // JavaScript (scripts/seo-pages.mjs; 404.html carries a noindex instead). From here on <Seo> renders
 // them per route, so drop the static copies: exactly one of each, and they follow client-side

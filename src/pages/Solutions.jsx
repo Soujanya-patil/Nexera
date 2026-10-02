@@ -42,7 +42,7 @@ export default function Solutions() {
   const grid = useRef(null);
   const reveal = useScrollReveal(grid, { stagger: 0.1 });
   return (
-    <div>
+    <div className="solutions-page">
       <PageHeader
         eyebrow="Solutions"
         title="Storage built for how you'll actually use it"
@@ -50,7 +50,7 @@ export default function Solutions() {
       />
 
       {/* Same card treatment as For EPCs' application cards: partner imagery under a dark gradient. */}
-      <section aria-label="Solutions by segment" className="bg-paper py-16 md:py-24">
+      <section aria-label="Solutions by segment" className="bg-paper py-14 lg:py-20">
         <ul ref={grid} data-sr-state={reveal} className="grid container-site gap-5 md:grid-cols-3">
           {SEGMENTS.map((s) => (
             <li key={s.id} id={s.id} data-sr className="scroll-mt-20">

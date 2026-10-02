@@ -24,7 +24,7 @@ import {
   Zap,
 } from "lucide-react";
 import { getProduct } from "../data/products";
-import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.jpg";
+import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.png";
 import { UTILITY_FAQ } from "../data/solutions";
 import {
   BenefitStrip,
@@ -122,12 +122,12 @@ const PARTNERS = [
           "Ethernet / Modbus-TCP / IEC 104 / IEC 61850 communication",
         ],
         // A different configuration from the catalogue's Aqua C2.5S (the 2.089 MWh / 500 kVA model), so
-        // this card has its own photo (CLOU BESS deck) and asks for the datasheet instead of linking there.
-        // The photo's background is dark at the top and a grey floor at the bottom; the card matches both.
+        // this card has its own cutout (CLOU BESS deck) and asks for the datasheet instead of linking there.
         photo: {
           src: imgAquaC25_5mwh,
+          width: 864,
+          height: 465,
           alt: "CLOU Aqua C2.5S 5 MWh-class liquid-cooled utility-scale battery energy storage container",
-          bg: "linear-gradient(to bottom, #01060c 0 50%, #5a6067 50% 100%)",
         },
         to: "/contact?intent=utility",
         cta: "Request Datasheet",
@@ -145,7 +145,7 @@ const PARTNERS = [
 
 export default function SolutionsUtility() {
   return (
-    <div>
+    <div className="solutions-page">
       <SolutionHero
         crumb="Utility-Scale"
         eyebrow="Utility-Scale Energy Storage"

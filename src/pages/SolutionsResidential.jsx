@@ -89,7 +89,7 @@ const SYSTEMS = [
 
 export default function SolutionsResidential() {
   return (
-    <div>
+    <div className="solutions-page">
       <SolutionHero
         crumb="Residential"
         eyebrow="Residential Energy Solutions"

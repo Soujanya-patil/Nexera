@@ -110,16 +110,13 @@ export default function TechPartners() {
                     to={`/products/${x.id}`}
                     className="group/row flex items-center gap-4 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
                   >
-                    <span
-                      className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-ice"
-                      style={x.imageBg ? { background: x.imageBg } : undefined}
-                    >
+                    <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-ice">
                       <img
                         src={x.image}
                         alt=""
                         loading="lazy"
                         decoding="async"
-                        className={`object-contain transition-[scale] duration-300 group-hover/row:scale-110 ${x.imageFallback ? "h-4 w-10 opacity-80" : x.imageBg ? "h-13 w-13" : "h-11 w-11"}`}
+                        className={`object-contain transition-[scale] duration-300 group-hover/row:scale-110 ${x.imageFallback ? "h-4 w-10 opacity-80" : "h-11 w-11"}`}
                       />
                     </span>
                     <span className="min-w-0 flex-1">

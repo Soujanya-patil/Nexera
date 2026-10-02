@@ -1,11 +1,18 @@
 import { createElement, useEffect, useRef } from "react";
 import { loadGsap } from "../../lib/motion";
+import { REVEAL, scrollingFast } from "../../lib/scrollReveal";
 
 /**
- * Section-heading reveal (level 3): the words rise in with a short stagger the first time the heading
- * scrolls into view — GSAP SplitText + ScrollTrigger, run once, then everything is reverted to plain
- * text. The heading is fully visible until GSAP has loaded and never re-animates, and nothing runs
- * under prefers-reduced-motion. Use on section headings only, not body copy.
+ * Section-heading reveal: the whole heading fades and rises in once, the first time it scrolls into
+ * view (REVEAL timing from lib/scrollReveal — starts as it enters the viewport, 0.4 s). It never starts
+ * below 35% opacity, so a heading is never "empty", and it is done well before it reaches the middle
+ * of the screen. (This replaced a word-by-word reveal whose later words could still be grey when the
+ * heading was already mid-screen.)
+ *
+ * Never leaves a heading dimmed: one already at or above the trigger line when set up is left alone;
+ * one passed without its reveal (a jump or a fast fling) is shown at once; a fast scroll shows it
+ * instead of animating it. Runs once. Nothing runs under prefers-reduced-motion. Use on section
+ * headings only, not body copy.
  */
 export default function AnimatedText({ as = "h2", className = "", children, ...rest }) {
   const ref = useRef(null);
@@ -15,48 +22,29 @@ export default function AnimatedText({ as = "h2", className = "", children, ...r
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let cancelled = false;
     let ctx;
-    let split;
-    Promise.all([loadGsap(), import("gsap/SplitText")]).then(([{ gsap, ScrollTrigger }, { SplitText }]) => {
+    loadGsap().then(({ gsap, ScrollTrigger }) => {
       if (cancelled || !ref.current) return;
-      // Already scrolled past (e.g. arriving on a #section link): nothing to show, and splitting would
-      // only re-wrap the heading for a moment and shift the page under the reader.
-      if (el.getBoundingClientRect().bottom < 0) return;
-      gsap.registerPlugin(SplitText);
+      // Only headings still below the viewport wait; anything already on screen is simply visible.
+      if (el.getBoundingClientRect().top < window.innerHeight) return;
       ctx = gsap.context(() => {
-        // Split only when the heading arrives (not at mount), and hold its width for the moment it is
-        // split: in a flex row the word boxes can size the heading differently, re-wrapping it and
-        // shifting everything below. The split is reverted, and the width released, when it lands.
-        const width = el.style.width;
-        const restore = () => (el.style.width = width);
+        const show = () => gsap.set(el, { opacity: 1, y: 0, clearProps: "opacity,transform" });
+        gsap.set(el, { opacity: 0.35, y: 12 });
         ScrollTrigger.create({
           trigger: el,
-          start: "top 88%",
+          start: REVEAL.start,
           once: true,
-          onEnter: () => {
-            // A couple of pixels of slack: the word boxes can round a fraction wider than the text.
-            el.style.width = `${Math.ceil(el.getBoundingClientRect().width) + 2}px`;
-            split = new SplitText(el, { type: "words", wordsClass: "inline-block will-change-transform" });
-            gsap.from(split.words, {
-              yPercent: 55,
-              opacity: 0,
-              duration: 0.7,
-              ease: "power3.out",
-              stagger: 0.045,
-              onComplete: () => {
-                split?.revert();
-                split = null;
-                restore();
-              },
-            });
+          onEnter: (self) => {
+            if (scrollingFast(self)) return show();
+            gsap.to(el, { opacity: 1, y: 0, duration: REVEAL.duration, ease: REVEAL.ease, overwrite: true, clearProps: "opacity,transform" });
           },
+          onLeave: show,
+          onEnterBack: show,
         });
-        return restore;
       }, el);
     });
     return () => {
       cancelled = true;
       ctx?.revert();
-      split?.revert();
     };
   }, []);
 

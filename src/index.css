@@ -221,10 +221,20 @@
   }
 }
 
+/* Solutions pages (/solutions and its three segment pages): balanced line breaks on page and section
+   headings, so no word is left alone on a line. */
+.solutions-page :is(h1, h2) {
+  text-wrap: balance;
+}
+
+/* Progressive enhancement: every "wait hidden until GSAP takes over" rule below applies only once
+   JavaScript has added `js-motion` to <html> (main.jsx — never under reduced motion), so content is
+   visible by default. */
+
 /* Home hero copy: animated parts wait (hidden) only until the GSAP entrance timeline exists; from
    then on GSAP's inline styles own them. */
-[data-intro="pending"] [data-a],
-[data-intro="pending"] [data-word] {
+html.js-motion [data-intro="pending"] [data-a],
+html.js-motion [data-intro="pending"] [data-word] {
   opacity: 0;
 }
 
@@ -251,11 +261,11 @@
 
 /* Scroll reveals (lib/scrollReveal.js) and hero entrances (lib/intro.js): parts wait hidden only
    until GSAP has taken them over. */
-[data-sr-state="pending"] [data-sr] {
+html.js-motion [data-sr-state="pending"] [data-sr] {
   opacity: 0;
 }
 /* Section entrances (lib/entrance.js): parts wait hidden only until GSAP has taken them over. */
-[data-enter="pending"] [data-e] {
+html.js-motion [data-enter="pending"] [data-e] {
   opacity: 0;
 }
 

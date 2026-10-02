@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { getProduct } from "../data/products";
 import { CI_FAQ } from "../data/solutions";
+import CabinetScrub from "../components/solutions/CabinetScrub";
 import {
   BenefitStrip,
   CardGrid,
@@ -171,7 +172,7 @@ const PORTFOLIO = [
 
 export default function SolutionsCI() {
   return (
-    <div>
+    <div className="solutions-page">
       <SolutionHero
         crumb="Commercial & Industrial"
         eyebrow="Commercial & Industrial Energy Solutions"
@@ -265,6 +266,8 @@ export default function SolutionsCI() {
           ))}
         </CardGrid>
       </Section>
+
+      <CabinetScrub />
 
       <Section
         id="quality"
