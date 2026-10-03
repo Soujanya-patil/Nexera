@@ -15,10 +15,21 @@ import {
   TrendingDown,
   Wallet,
   Warehouse,
+  FlaskConical,
+  RefreshCw,
+  Thermometer,
+  ShieldCheck,
+  Activity,
+  Shield,
+  MonitorCheck,
+  Expand,
+  BadgeCheck,
+  Wrench,
 } from "lucide-react";
 import { getProduct } from "../data/products";
 import { CI_FAQ } from "../data/solutions";
 import CabinetScrub from "../components/solutions/CabinetScrub";
+import { AppRail, KeywordTicker, SectionRail } from "../components/solutions/Interactive";
 import {
   BenefitStrip,
   CardGrid,
@@ -174,6 +185,7 @@ export default function SolutionsCI() {
   return (
     <div className="solutions-page">
       <SolutionHero
+        segment="ci"
         crumb="Commercial & Industrial"
         eyebrow="Commercial & Industrial Energy Solutions"
         line1="Power Your Business."
@@ -200,9 +212,15 @@ export default function SolutionsCI() {
           { icon: Leaf, title: "A Cleaner, Greener Future", text: "For your business and the planet" },
         ]}
       />
+      <KeywordTicker
+        label="C&I storage capabilities"
+        items={["Peak Shaving", "Solar Self-Consumption", "Demand Management", "Backup Power", "Energy Arbitrage", "Grid & Renewable Integration"]}
+      />
 
       <Section
         id="why-ci"
+        push
+        mark="Your Business"
         eyebrow="Why C&I energy storage"
         title="Energy Storage Built Around Your Business"
         intro="Electricity consumption is not constant. Your energy system shouldn't be either. Our C&I BESS solutions help businesses with:"
@@ -221,6 +239,7 @@ export default function SolutionsCI() {
 
       <Section
         id="partners"
+        mark="One NEXERA Energy Ecosystem"
         tone="ice"
         eyebrow="Our global technology partners"
         title="Three Global Energy Storage Platforms. One NEXERA Energy Ecosystem."
@@ -228,7 +247,7 @@ export default function SolutionsCI() {
       >
         <CardGrid>
           {PARTNERS.map((p) => (
-            <article key={p.id} className="flex h-full flex-col rounded-2xl border border-line bg-paper p-6 md:p-8">
+            <article key={p.id} className="group/card flex h-full flex-col rounded-2xl border border-line bg-paper p-6 md:p-8">
               <PartnerMark partner={p.id} decorative />
               <h3 className="mt-5 text-lg font-semibold leading-snug text-ink">{p.title}</h3>
               {p.statsFirst ? (
@@ -256,6 +275,7 @@ export default function SolutionsCI() {
 
       <Section
         id="ci-products"
+        mark="Multiple Applications"
         eyebrow="Our C&I BESS portfolio"
         title="Four Solutions. Multiple Applications."
         intro="From a compact 100 kWh all-in-one system to 261 kWh liquid-cooled cabinets, choose the platform that fits your site."
@@ -271,12 +291,25 @@ export default function SolutionsCI() {
 
       <Section
         id="quality"
+        push
         tone="ice"
         eyebrow="Quality you can measure"
         title="We Don't Judge BESS Quality by a Logo Alone."
         intro="We evaluate every system on the parameters that matter to an industrial customer."
       >
         <DataTable
+          icons={{
+            "Battery Chemistry": FlaskConical,
+            "Cycle Life": RefreshCw,
+            "Thermal Management": Thermometer,
+            Safety: ShieldCheck,
+            "Power Quality": Activity,
+            Protection: Shield,
+            Monitoring: MonitorCheck,
+            Scalability: Expand,
+            Certifications: BadgeCheck,
+            Serviceability: Wrench,
+          }}
           className="mt-10 max-w-4xl"
           caption="How NEXERA evaluates a BESS"
           head={["What matters", "What we look at"]}
@@ -300,6 +333,7 @@ export default function SolutionsCI() {
 
       <Section
         id="safety"
+        mark="Designed In"
         tone="night"
         title="Safety Isn't an Add-On. It's Designed In."
         intro="Modern BESS systems combine multiple layers of protection."
@@ -321,12 +355,13 @@ export default function SolutionsCI() {
 
       <Section
         id="applications"
+        push
         eyebrow="Applications"
         title="One Platform. Multiple Business Cases."
         intro="From manufacturing to commercial buildings, our C&I energy storage solutions help businesses across sectors."
       >
-        <FeatureGrid
-          columns={4}
+        <AppRail
+          label="C&I applications"
           items={[
             { icon: Factory, title: "Manufacturing", text: "Peak-demand management and solar self-consumption" },
             { icon: Building2, title: "Commercial Buildings", text: "Load shifting and backup power" },
@@ -342,11 +377,13 @@ export default function SolutionsCI() {
 
       <Section
         id="nexera-difference"
+        mark="Engineer the Energy System"
         tone="ice"
         title="We Don't Just Sell a Battery. We Engineer the Energy System."
         intro="A battery is only one part of a successful BESS project. NEXERA evaluates:"
       >
         <NumberedSteps
+          surface="bg-ice"
           items={[
             { title: "Load Profile", text: "15-minute / 30-minute demand pattern" },
             { title: "Tariff Structure", text: "Peak demand, TOD and energy charges" },
@@ -385,6 +422,8 @@ export default function SolutionsCI() {
         ]}
         button={{ label: "Design My Energy Storage System", to: "/contact?intent=ci" }}
       />
+      {/* Last in the DOM, so keyboard users reach the page before the section dots. */}
+      <SectionRail />
     </div>
   );
 }

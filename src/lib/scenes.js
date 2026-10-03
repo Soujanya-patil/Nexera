@@ -27,6 +27,10 @@ const DIMENSIONS = {
   "partner-tcl": [3585, 4894], // TODO(india-imagery): partner HQ
   "partner-hithium": [1342, 1650], // TODO(india-imagery): partner HQ
   "cta-desert": [4399, 2476], // TODO(india-imagery)
+  // From the CLOU BESS deck: aerial of a solar plant with BESS containers (utility hero), and the
+  // isometric solar / wind / BESS / grid / city illustration (utility use-case map).
+  "utility-solar": [1437, 1771],
+  "utility-grid": [1920, 960],
 };
 
 export function scene(name) {

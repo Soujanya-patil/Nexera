@@ -26,6 +26,8 @@ import {
 import { getProduct } from "../data/products";
 import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.png";
 import { UTILITY_FAQ } from "../data/solutions";
+import UseCaseMap from "../components/solutions/UseCaseMap";
+import { KeywordTicker, SectionRail } from "../components/solutions/Interactive";
 import {
   BenefitStrip,
   CardGrid,
@@ -126,7 +128,7 @@ const PARTNERS = [
         photo: {
           src: imgAquaC25_5mwh,
           width: 864,
-          height: 465,
+          height: 459,
           alt: "CLOU Aqua C2.5S 5 MWh-class liquid-cooled utility-scale battery energy storage container",
         },
         to: "/contact?intent=utility",
@@ -147,6 +149,8 @@ export default function SolutionsUtility() {
   return (
     <div className="solutions-page">
       <SolutionHero
+        segment="utility"
+        overlay="light"
         crumb="Utility-Scale"
         eyebrow="Utility-Scale Energy Storage"
         line1="Powering the"
@@ -158,9 +162,10 @@ export default function SolutionsUtility() {
         ]}
         cta={{ label: "Explore Utility Solutions", target: "utility-solutions" }}
         image={{
-          name: "utility-yard",
-          alt: "Aerial view of rows of Hithium battery storage containers at a large site",
-          credit: "Hithium utility-scale storage site · technology partner imagery",
+          name: "utility-solar",
+          alt: "Utility-scale battery energy storage containers beside a solar plant",
+          position: "object-[50%_62%]",
+          credit: "CLOU utility-scale storage · technology partner imagery",
         }}
       />
 
@@ -172,9 +177,15 @@ export default function SolutionsUtility() {
           { icon: ShieldCheck, title: "Built for Long-Term Operation", text: "Safe. Reliable. Scalable." },
         ]}
       />
+      <KeywordTicker
+        label="Utility-scale storage capabilities"
+        items={["Renewable Integration", "Peak Shifting", "Grid Stabilization", "24/7 Renewable Power", "Energy Arbitrage", "T&D Support"]}
+      />
 
       <Section
         id="why-utility"
+        push
+        mark="Stabilize the Grid"
         eyebrow="Why utility-scale storage?"
         title="Store More. Shift More. Stabilize the Grid."
         intro="Utility-scale BESS enables renewable power to be stored when generation is high and dispatched when it is needed most."
@@ -194,13 +205,14 @@ export default function SolutionsUtility() {
       <Section
         id="utility-solutions"
         tone="ice"
+        mark="One NEXERA Utility Ecosystem"
         eyebrow="Two global technology platforms"
         title="Hithium + CLOU. Two Specialists. One NEXERA Utility Ecosystem."
         intro="NEXERA brings together two dedicated energy-storage technology platforms, so project developers, IPPs, EPCs and utilities can select the architecture that best fits their project."
       >
         <div className="mt-12 space-y-16">
           {PARTNERS.map((p) => (
-            <div key={p.id} className="rounded-3xl border border-line bg-paper p-6 md:p-10">
+            <div key={p.id} className="group/card rounded-3xl border border-line bg-paper p-6 md:p-10">
               <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
                 <div>
                   <PartnerMark partner={p.id} decorative />
@@ -239,6 +251,7 @@ export default function SolutionsUtility() {
 
       <Section
         id="grid-scale"
+        mark="What Matters at Grid Scale"
         eyebrow="Built for utility-scale performance"
         title="Compare What Matters at Grid Scale"
         intro="Instead of simply comparing battery capacity, NEXERA evaluates the complete energy-storage system."
@@ -257,7 +270,7 @@ export default function SolutionsUtility() {
         />
       </Section>
 
-      <Section id="safety" tone="night" title="Safety Is Not One Feature. It's a System.">
+      <Section id="safety" tone="night" mark="It's a System" title="Safety Is Not One Feature. It's a System.">
         <LayerStack
           items={[
             { title: "Cell", text: "LFP chemistry and controlled operating conditions." },
@@ -273,6 +286,7 @@ export default function SolutionsUtility() {
 
       <Section
         id="india"
+        push
         tone="ice"
         eyebrow="Designed for India's conditions"
         title="Built for Real-World Operating Conditions"
@@ -305,22 +319,23 @@ export default function SolutionsUtility() {
         title="Powering Multiple Use Cases"
         intro="Utility-scale storage plays a critical role in building a cleaner, more flexible and more resilient power system."
       >
-        <FeatureGrid
-          columns={4}
+        {/* Hotspot positions on the CLOU illustration: the feature each use case is pinned to. */}
+        <UseCaseMap
           items={[
-            { icon: Sun, title: "Solar + Storage", text: "Store midday solar generation and dispatch it during evening demand." },
-            { icon: Wind, title: "Wind + Storage", text: "Smooth variable wind generation and improve dispatchability." },
-            { icon: Leaf, title: "Renewable Firming", text: "Increase renewable utilization and reduce curtailment." },
-            { icon: Activity, title: "Grid Support", text: "Provide fast-response power and improve grid flexibility." },
-            { icon: BarChart3, title: "Peak Demand Management", text: "Shift large blocks of energy to high-demand periods." },
-            { icon: Clock, title: "Round-the-Clock Renewable Power", text: "Combine renewable generation and storage for more predictable delivery." },
-            { icon: Network, title: "Transmission & Distribution", text: "Support constrained grid infrastructure and improve network flexibility." },
+            { icon: Sun, at: [15, 74], title: "Solar + Storage", text: "Store midday solar generation and dispatch it during evening demand." },
+            { icon: Wind, at: [88, 42], title: "Wind + Storage", text: "Smooth variable wind generation and improve dispatchability." },
+            { icon: Leaf, at: [69, 22], title: "Renewable Firming", text: "Increase renewable utilization and reduce curtailment." },
+            { icon: Activity, at: [25, 65], title: "Grid Support", text: "Provide fast-response power and improve grid flexibility." },
+            { icon: BarChart3, at: [47, 27], title: "Peak Demand Management", text: "Shift large blocks of energy to high-demand periods." },
+            { icon: Clock, at: [35, 86], title: "Round-the-Clock Renewable Power", text: "Combine renewable generation and storage for more predictable delivery." },
+            { icon: Network, at: [52, 63], title: "Transmission & Distribution", text: "Support constrained grid infrastructure and improve network flexibility." },
           ]}
         />
       </Section>
 
-      <Section id="lifecycle" tone="ice" eyebrow="From MWh to GWh" title="NEXERA Supports the Complete Project Lifecycle">
+      <Section id="lifecycle" tone="ice" eyebrow="From MWh to GWh" mark="Complete Project Lifecycle" title="NEXERA Supports the Complete Project Lifecycle">
         <NumberedSteps
+          surface="bg-ice"
           items={[
             { title: "Project Assessment", text: "Understand generation profile, load profile, grid requirements and operating objective." },
             { title: "System Sizing", text: "Determine the right MW / MWh configuration and duration." },
@@ -374,6 +389,8 @@ export default function SolutionsUtility() {
         ]}
         button={{ label: "Talk to a Utility BESS Expert", to: "/contact?intent=utility" }}
       />
+      {/* Last in the DOM, so keyboard users reach the page before the section dots. */}
+      <SectionRail />
     </div>
   );
 }

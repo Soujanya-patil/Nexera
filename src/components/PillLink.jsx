@@ -14,6 +14,20 @@ const trackPointer = (e) => {
   e.currentTarget.style.setProperty("--sy", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
 };
 
+/** `ripple`: a disc expands from the press point (a span removed when its animation ends). */
+const addRipple = (e) => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const size = Math.hypot(r.width, r.height) * 2;
+  const dot = document.createElement("span");
+  dot.className = "ripple pointer-events-none absolute -z-10 rounded-full bg-white/60";
+  dot.setAttribute("aria-hidden", "true");
+  Object.assign(dot.style, { left: `${e.clientX - r.left}px`, top: `${e.clientY - r.top}px`, width: `${size}px`, height: `${size}px` });
+  dot.addEventListener("animationend", () => dot.remove());
+  el.appendChild(dot);
+};
+
 /**
  * The mockup's pill CTA: filled green or white outline (the outline is for dark grounds only).
  * Level-1 interaction for every CTA: the arrow nudges forward on hover and the pill gives a small
@@ -24,14 +38,15 @@ const trackPointer = (e) => {
  *   `sweep`     — outline pill: a short green light travels around the border (static highlight under
  *                 reduced motion; see .pill-sweep in index.css).
  */
-export default function PillLink({ to, variant = "solid", arrow = false, spotlight = false, sweep = false, className = "", children, ...rest }) {
-  const extra = spotlight || sweep;
+export default function PillLink({ to, variant = "solid", arrow = false, spotlight = false, sweep = false, ripple = false, className = "", children, ...rest }) {
+  const extra = spotlight || sweep || ripple;
   return (
     <Link
       to={to}
       onPointerMove={spotlight ? trackPointer : undefined}
+      onPointerDown={ripple ? addRipple : undefined}
       className={`group/pill inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-[background-color,border-color,box-shadow,scale,translate] duration-300 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${
-        extra ? "relative isolate" : ""
+        extra ? `relative isolate${ripple ? " overflow-hidden" : ""}` : ""
       } ${VARIANTS[variant]} ${className}`}
       {...rest}
     >

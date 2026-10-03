@@ -55,3 +55,38 @@ export function useProductTransition(productId) {
     vt.finished.finally(() => delete root.dataset.vt);
   };
 }
+
+/**
+ * Navigates to `to` inside a View Transition (same-document, React Router): elements sharing a
+ * view-transition-name on the old and new page morph into each other, the rest cross-fades. The new
+ * state is captured once `waitSelector` is in the DOM. Sets html[data-vt] for the duration, so the
+ * route fade and hero intros stand aside. Returns an onClick for a <Link>; falls back to normal
+ * navigation (the route fade) without the API, for modified clicks and under reduced motion.
+ */
+export function useRouteTransition(to, waitSelector) {
+  const navigate = useNavigate();
+  return (e) => {
+    if (
+      !document.startViewTransition ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      e.defaultPrevented ||
+      e.button !== 0 ||
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey
+    )
+      return;
+    e.preventDefault();
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(window.scrollY, { immediate: true, force: true });
+    else window.scrollTo({ top: window.scrollY, behavior: "instant" });
+    const root = document.documentElement;
+    root.dataset.vt = "true";
+    const vt = document.startViewTransition(async () => {
+      navigate(to);
+      await waitFor(waitSelector);
+    });
+    vt.finished.finally(() => delete root.dataset.vt);
+  };
+}

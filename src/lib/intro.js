@@ -9,12 +9,14 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
  * exists (no flash of the final state), after which GSAP's inline styles own them. `build({ tl, q })`
  * adds the tweens; each should end with `clearProps` so nothing is left inline. If GSAP is slow or
  * fails the parts are simply shown after 2.5 s; under prefers-reduced-motion nothing is hidden.
+ * `skip()` (optional, read once at mount) shows the final state at once — e.g. a hero arriving by a
+ * View Transition, which must be visible when the transition captures it.
  */
-export function useIntro(ref, build) {
-  const [intro, setIntro] = useState(() => (reduced() ? "done" : "pending"));
+export function useIntro(ref, build, skip) {
+  const [intro, setIntro] = useState(() => (reduced() || skip?.() ? "done" : "pending"));
 
   useEffect(() => {
-    if (reduced()) return;
+    if (intro === "done") return;
     const el = ref.current;
     let cancelled = false;
     let ctx;

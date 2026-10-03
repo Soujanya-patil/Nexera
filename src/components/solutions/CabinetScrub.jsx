@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import AnimatedText from "../ui/AnimatedText";
+import { KineticHeading } from "./Kinetic";
 import { CALLOUTS } from "../cabinet/Callouts";
 import posterSrc from "../../assets/products/nexera-hero-cabinet-poster.webp";
 import openStill from "../../assets/catalogue/tcl-blueark-w10-open.webp";
@@ -50,9 +50,9 @@ export default function CabinetScrub() {
       <div className={scrub ? "flex h-[calc(100svh-4rem)] items-center py-8" : "py-14 lg:py-20"}>
         <div className="grid w-full container-site items-center gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
           <div>
-            <AnimatedText id="inside-cabinet-title" className="text-3xl font-semibold tracking-tight md:text-4xl">
-              Inside a C&amp;I Energy Storage Cabinet
-            </AnimatedText>
+            <KineticHeading id="inside-cabinet-title" className="sol-h2 font-semibold">
+              Inside a C&I Energy Storage Cabinet
+            </KineticHeading>
             <p className="mt-4 max-w-md leading-relaxed text-ice/75">
               Scroll to open the cabinet: battery modules, power electronics and protection, engineered as one system.
             </p>

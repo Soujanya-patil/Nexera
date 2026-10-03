@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, ChevronRight } from "lucide-react";
-import AnimatedText from "../ui/AnimatedText";
+import { ArrowRight, Check, ChevronDown, ChevronRight } from "lucide-react";
+import { KineticEyebrow, KineticHeading } from "./Kinetic";
+import { Spotlight, useTilt } from "./Interactive";
 import MagneticButton from "../ui/MagneticButton";
 import PillLink from "../PillLink";
 import SceneImg from "../SceneImg";
@@ -9,6 +10,9 @@ import { depth, usePointerDepth } from "../../lib/pointerDepth";
 import { useIntro } from "../../lib/intro";
 import { useScrollReveal } from "../../lib/scrollReveal";
 import { scrollToId } from "../../lib/scrollTo";
+import { useRouteTransition } from "../../lib/viewTransition";
+import { loadGsap } from "../../lib/motion";
+import { onceInView } from "../../lib/inview";
 import { SCRUB, useScrub } from "../../lib/scrub";
 import { partnerOf } from "../../data/products";
 import { formatCount, parseCount } from "../../lib/count";
@@ -25,13 +29,40 @@ import { formatCount, parseCount } from "../../lib/count";
 
 const TONES = { paper: "bg-paper", ice: "bg-ice", night: "bg-night text-white" };
 
-/** Solutions hero (EpcHero's structure): breadcrumb, eyebrow, two-line h1 with the accent line, copy, CTA. */
-export function SolutionHero({ crumb, eyebrow, line1, line2, subheading, body = [], tagline, cta, image }) {
+// Hero overlays. The photo itself fades out toward the copy (a mask on its wrapper — see below), so
+// the gradient only has to keep the copy's contrast: "strong" for photos with bright detail behind
+// the text, "light" where the photo should stay clearly visible (utility).
+const HERO_OVERLAY = {
+  strong: "lg:bg-gradient-to-r lg:from-night lg:via-night/60 lg:to-night/10",
+  // Lighter only from 1280 px: between 1024 and 1279 the copy overlaps more of the photo.
+  light: "lg:bg-gradient-to-r lg:from-night lg:via-night/60 lg:to-night/10 xl:from-night/90 xl:via-night/25 xl:to-transparent",
+};
+
+/**
+ * Solutions hero: breadcrumb, eyebrow, two-line h1 with the accent line, copy, CTA, and the photo on
+ * the right (full-bleed and dimmed behind the copy on phones).
+ *
+ * Load sequence (≤ 1.2 s, GSAP; the hero's text is only ever held for its own entrance):
+ *   eyebrow — letter-spacing settles from wide while it fades in, its rule draws (0.6 s)
+ *   h1 — each line slides up from behind its own mask (0.65 s, 90 ms apart, expo.out); the accent
+ *        line then gets one soft light sweep (1.2 s) and stays static
+ *   subheading + body — fade up 12 px, starting 80 ms after the last h1 line
+ *   CTA — scales 0.96 → 1 with a fade, last
+ *   photo — clip-path wipe (0.8 s, desktop) while it zooms out slowly (1.12 → 1.06 over 1.6 s); on desktop the
+ *           scroll parallax then takes it from 1.06 to 1.0 (yPercent 0 → 8) as the hero scrolls out.
+ * Arriving by the hub → page View Transition the hero is shown in its final state (it is the morph
+ * target). Reduced motion: no motion at all.
+ *
+ * The photo wrapper's left edge is faded out with a mask so the image has no hard edge to show: at
+ * fractional device-pixel ratios (125 % / 150 % display scaling) the GPU-composited photo used to leak
+ * a 1-device-pixel bright line at that edge, past the painted overlay.
+ */
+export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading, body = [], tagline, cta, image, overlay = "strong" }) {
   const root = useRef(null);
   const parallax = useRef(null);
+  const accent = useRef(null);
+  const back = useRouteTransition("/solutions", `[data-vt-card="${segment}"]`);
   usePointerDepth(root);
-  // Desktop scroll parallax: as the hero scrolls out, the photo drifts down (slower than the page)
-  // and settles from 1.06 to 1.0. The headline and copy don't move or fade.
   useScrub(root, ({ gsap }) => {
     gsap.fromTo(
       parallax.current,
@@ -39,48 +70,69 @@ export function SolutionHero({ crumb, eyebrow, line1, line2, subheading, body = 
       { yPercent: 8, scale: 1, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: SCRUB } }
     );
   });
-  const intro = useIntro(root, ({ tl, q }) => {
-    const done = { clearProps: "all" };
-    tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ...done }, 0)
-      .fromTo(q('[data-a="line1"]'), { opacity: 0, y: 40, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.85, ...done }, 0.12)
-      .fromTo(
-        q('[data-a="line2"]'),
-        { opacity: 0, y: 44, filter: "blur(8px)", textShadow: "0 0 26px rgba(144,217,136,0.55)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", textShadow: "0 0 0px rgba(144,217,136,0)", duration: 1, ease: "expo.out", ...done },
-        0.26
-      )
-      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power2.out", ...done }, 0.5)
-      .fromTo(q('[data-a="image"]'), { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out", ...done }, 0.58)
-      .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ...done }, 0.95);
-  });
+  const intro = useIntro(
+    root,
+    ({ tl, q }) => {
+      const done = { clearProps: "all" };
+      tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, letterSpacing: "0.4em" }, { opacity: 1, letterSpacing: "0.22em", duration: 0.6, ease: "power2.out", ...done }, 0)
+        .fromTo(q('[data-a="rule"]'), { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out", ...done }, 0)
+        .fromTo(q('[data-a="line"]'), { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: 0.65, ease: "expo.out", stagger: 0.09, ...done }, 0.1)
+        .add(() => {
+          const el = accent.current;
+          if (!el) return;
+          el.classList.add("accent-sweep");
+          el.addEventListener("animationend", () => el.classList.remove("accent-sweep"), { once: true });
+        }, 0.84)
+        .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: "power2.out", ...done }, 0.27)
+        .fromTo(q('[data-a="cta"]'), { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out", ...done }, 0.62)
+        // Desktop only: on phones the photo is the page's largest paint (LCP) and sits dimmed behind the
+        // copy, so it is shown at once there (the zoom below still plays).
+        .fromTo(
+          q('[data-a="image"]'),
+          window.matchMedia("(min-width: 1024px)").matches ? { opacity: 1, clipPath: "inset(0% 0% 100% 0%)" } : { opacity: 1 },
+          { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "power2.out", ...done },
+          0
+        )
+        .fromTo(q('[data-a="zoom"]'), { opacity: 1, scale: 1.0566 }, { scale: 1, duration: 1.6, ease: "power2.out", ...done }, 0);
+    },
+    () => document.documentElement.dataset.vt === "true"
+  );
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-night text-white">
+    <section ref={root} data-vt-hero={segment} className="relative overflow-hidden bg-night text-white">
+      <Spotlight />
       <div data-intro={intro}>
-        {/* Image: full-bleed behind the copy on phones (dimmed), the right ~60% of the frame on desktop */}
-        <div data-a="image" className="absolute inset-0 overflow-hidden lg:left-[38%]">
-          {/* parallax: the scroll scrub's layer (transform only), separate from the pointer drift below */}
+        {/* Photo: full-bleed behind the copy on phones (dimmed); on desktop the right 54% (62% from 1280 px,
+            where the copy has more room), its left edge masked to transparent so it melts into the ground. */}
+        <div
+          data-a="image"
+          style={{ viewTransitionName: `sol-img-${segment}` }}
+          className="absolute inset-0 overflow-hidden lg:left-[46%] xl:left-[38%] lg:[mask-image:linear-gradient(to_right,transparent,#000_42%)] xl:[mask-image:linear-gradient(to_right,transparent,#000_26%)]"
+        >
+          {/* parallax (scroll scrub, transform only) → zoom (load) → pointer drift → photo */}
           <div ref={parallax} className="absolute inset-0 will-change-transform">
-          <div className="absolute -inset-3" style={depth(-6, -4)}>
-            <SceneImg
-              name={image.name}
-              eager
-              fetchPriority="high"
-              sizes="(min-width: 1024px) 62vw, 100vw"
-              alt={image.alt}
-              className={`h-full w-full object-cover ${image.position ?? ""}`}
-            />
+            <div data-a="zoom" className="absolute inset-0">
+              <div className="absolute -inset-3" style={depth(-6, -4)}>
+                <SceneImg
+                  name={image.name}
+                  eager
+                  fetchPriority="high"
+                  sizes="(min-width: 1024px) 62vw, 100vw"
+                  alt={image.alt}
+                  className={`h-full w-full object-cover ${image.position ?? ""}`}
+                />
+              </div>
+            </div>
           </div>
-          </div>
-          <div aria-hidden="true" className="absolute inset-0 bg-night/75 lg:bg-transparent lg:bg-gradient-to-r lg:from-night lg:via-night/60 lg:to-night/10" />
-          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/90 to-transparent" />
+          <div aria-hidden="true" className={`absolute inset-0 bg-night/75 lg:bg-transparent ${HERO_OVERLAY[overlay]}`} />
+          <div aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t ${overlay === "light" ? "from-night/70" : "from-night/90"} to-transparent`} />
         </div>
 
         <div className="relative container-site py-14 lg:py-20">
-          <nav aria-label="Breadcrumb" className="text-xs text-ice/60">
+          <nav aria-label="Breadcrumb" className="text-xs text-ice/75">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
-                <Link to="/solutions" className="hover:text-white">
+                <Link to="/solutions" onClick={back} className="hover:text-white">
                   Solutions
                 </Link>
               </li>
@@ -94,22 +146,28 @@ export function SolutionHero({ crumb, eyebrow, line1, line2, subheading, body = 
           </nav>
           <div className="mt-10 max-w-2xl">
             <p data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
-              <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
+              <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
               {eyebrow}
             </p>
-            <h1 className="mt-5 text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
-              <span data-a="line1" className="block">
-                {line1}
+            <h1 style={{ viewTransitionName: `sol-title-${segment}` }} className="mt-5 text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
+              <span className="line-mask">
+                <span data-a="line" className="block">
+                  {line1}
+                </span>
               </span>{" "}
-              <span data-a="line2" className="block text-signal">
-                {line2}
+              <span className="line-mask">
+                <span data-a="line" className="block">
+                  <span ref={accent} className="text-signal">
+                    {line2}
+                  </span>
+                </span>
               </span>
             </h1>
             <p data-a="desc" className="mt-6 text-lg font-medium text-white md:text-xl">
               {subheading}
             </p>
             {body.map((p) => (
-              <p data-a="desc" key={p} className="mt-4 max-w-xl leading-relaxed text-ice/80">
+              <p data-a="desc" key={p} className="mt-4 max-w-xl leading-relaxed text-ice/90">
                 {p}
               </p>
             ))}
@@ -120,7 +178,7 @@ export function SolutionHero({ crumb, eyebrow, line1, line2, subheading, body = 
             )}
             <div className="mt-9">
               <span data-a="cta" className="inline-block">
-                <MagneticButton to={`#${cta.target}`} onClick={scrollToId(cta.target)} arrow className="hover:scale-[1.02]">
+                <MagneticButton to={`#${cta.target}`} onClick={scrollToId(cta.target)} arrow ripple className="hover:scale-[1.02]">
                   {cta.label}
                 </MagneticButton>
               </span>
@@ -128,7 +186,7 @@ export function SolutionHero({ crumb, eyebrow, line1, line2, subheading, body = 
           </div>
         </div>
         {image.credit && (
-          <p className="absolute bottom-4 right-6 hidden text-[0.6875rem] tracking-[0.14em] text-ice/45 lg:block">{image.credit}</p>
+          <p className="absolute bottom-4 right-6 hidden rounded-full bg-night/85 px-3 py-1 text-[0.6875rem] tracking-[0.14em] text-ice/90 backdrop-blur-sm lg:block">{image.credit}</p>
         )}
       </div>
     </section>
@@ -138,19 +196,51 @@ export function SolutionHero({ crumb, eyebrow, line1, line2, subheading, body = 
 /**
  * The four-up benefit strip under the hero: icon, h3, one line. Its h2 is for screen readers only
  * (the strip has no visible heading), so the outline doesn't jump from the hero's h1 to these h3s.
+ * The icons draw their strokes in once as the strip comes into view; on hover a tile lifts and glows.
  */
 export function BenefitStrip({ items }) {
+  // The strip is first-screen content: its text is static (no scroll fade), only the icons draw in.
   const list = useRef(null);
-  const reveal = useScrollReveal(list, { stagger: 0.08 });
+  useEffect(() => {
+    const el = list.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let cancelled = false;
+    let off;
+    loadGsap().then(({ gsap }) => {
+      if (cancelled) return;
+      const draw = () => {
+        const shapes = [...el.querySelectorAll("svg :is(path, line, circle, rect, polyline, polygon)")];
+        shapes.forEach((s) => s.setAttribute("pathLength", "1"));
+        gsap.fromTo(
+          shapes,
+          { strokeDasharray: 1, strokeDashoffset: 1 },
+          {
+            strokeDashoffset: 0,
+            duration: 0.9,
+            ease: "power2.inOut",
+            stagger: 0.03,
+            clearProps: "strokeDasharray,strokeDashoffset",
+            onComplete: () => shapes.forEach((s) => s.removeAttribute("pathLength")),
+          }
+        );
+      };
+      // Icons only (decoration): they draw whenever the strip first shows, on screen at load included.
+      off = onceInView(el, { initial: true, enter: draw, show: (why) => why === "visible" && draw() });
+    });
+    return () => {
+      cancelled = true;
+      off?.();
+    };
+  }, []);
   return (
     <section aria-labelledby="benefits-title" className="border-t border-white/10 bg-deep text-white">
       <h2 id="benefits-title" className="sr-only">
         Key benefits
       </h2>
-      <ul ref={list} data-sr-state={reveal} className="grid container-site gap-x-8 gap-y-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
+      <ul ref={list} className="grid container-site gap-x-8 gap-y-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(({ icon: Icon, title, text }) => (
-          <li data-sr key={title} className="flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-signal/60 text-signal">
+          <li key={title} className="group/ben flex items-start gap-4">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-signal/60 text-signal transition-[translate,box-shadow,border-color] duration-300 group-hover/ben:-translate-y-1 group-hover/ben:border-signal group-hover/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)]">
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <div>
@@ -164,23 +254,46 @@ export function BenefitStrip({ items }) {
   );
 }
 
-/** A section with the site's standard heading: eyebrow, animated h2, intro paragraph(s). */
-export function Section({ id, tone = "paper", eyebrow, title, intro, children, className = "" }) {
+/**
+ * A section with the site's standard heading: eyebrow (rule + settle), kinetic h2 with an optional
+ * marker on one key phrase (`mark`), intro paragraph(s).
+ *
+ * `push`: a light section that follows a dark one slides up over it — a 24 px rounded top edge, a soft
+ * shadow and a short 24 px overlap; on desktop (motion allowed) it rises 40 px into place as it
+ * enters. Dark (`night`) sections get the cursor spotlight.
+ */
+export function Section({ id, tone = "paper", eyebrow, title, mark, intro, push = false, children, className = "" }) {
   const dark = tone === "night";
   const intros = intro ? [].concat(intro) : [];
+  const ref = useRef(null);
+  useScrub(
+    ref,
+    ({ gsap }) => {
+      if (!push) return;
+      gsap.fromTo(ref.current, { y: 40 }, { y: 0, ease: "none", scrollTrigger: { trigger: ref.current, start: "top bottom", end: "top 65%", scrub: SCRUB } });
+    },
+    [push]
+  );
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className={`${TONES[tone]} py-14 lg:py-20 ${className}`}>
-      <div className="container-site">
+    <section
+      ref={ref}
+      id={id}
+      aria-labelledby={`${id}-title`}
+      className={`${TONES[tone]} relative py-14 lg:py-20 ${dark ? "overflow-hidden" : ""} ${
+        push ? "z-10 -mt-6 rounded-t-[24px] shadow-[0_-24px_48px_-28px_rgba(0,0,0,0.55)]" : ""
+      } ${className}`}
+    >
+      {dark && <Spotlight />}
+      <div className="relative container-site">
         <div className="max-w-3xl">
           {eyebrow && (
-            <p className={`text-xs font-semibold uppercase tracking-[0.2em] ${dark ? "text-signal" : "text-sage"}`}>{eyebrow}</p>
+            <KineticEyebrow className={`text-xs font-semibold uppercase tracking-[0.2em] ${dark ? "text-signal" : "text-sage"}`} ruleClass={dark ? "bg-signal" : "bg-sage"}>
+              {eyebrow}
+            </KineticEyebrow>
           )}
-          <AnimatedText
-            id={`${id}-title`}
-            className={`${eyebrow ? "mt-3" : ""} text-3xl font-semibold tracking-tight md:text-4xl ${dark ? "text-white" : "text-ink"}`}
-          >
+          <KineticHeading id={`${id}-title`} mark={mark} className={`sol-h2 ${eyebrow ? "mt-3" : ""} font-semibold ${dark ? "text-white" : "text-ink"}`}>
             {title}
-          </AnimatedText>
+          </KineticHeading>
           {intros.map((p) => (
             <p key={p} className={`mt-4 leading-relaxed ${dark ? "text-ice/75" : "text-graphite"}`}>
               {p}
@@ -230,9 +343,11 @@ const pad2 = (n) => String(n).padStart(2, "0");
  * steps stack and show the final state (full line, every number active). Only the line and the
  * number states are scrubbed — the step text is always fully visible once revealed.
  *
- * `variant`: "card" (title + text in a card under each number) or "chip" (a short label).
+ * `variant`: "card" — a large outline number (stroke only until its step is active, then filled) over a
+ * card with the title and text; or "chip" — a numbered circle and a short label. `surface` is the
+ * section's background, laid behind the card numbers so the connector line passes behind them.
  */
-function Timeline({ items, cols, variant, className }) {
+function Timeline({ items, cols, variant, surface = "bg-ice", className }) {
   const list = useRef(null);
   const reveal = useScrollReveal(list);
   const rows = Math.ceil(items.length / cols);
@@ -284,8 +399,8 @@ function Timeline({ items, cols, variant, className }) {
             style={{ "--r": r + 1 }}
             className="pointer-events-none relative hidden lg:block lg:[grid-column:1/-1] lg:[grid-row:var(--r)]"
           >
-            <span className="absolute left-5 top-5 h-px bg-forest/15" style={{ width }} />
-            <span data-fill className="absolute left-5 top-[19px] h-0.5 origin-left rounded-full bg-signal" style={{ width }} />
+            <span className={`absolute left-5 h-px bg-forest/15 ${variant === "card" ? "top-9" : "top-5"}`} style={{ width }} />
+            <span data-fill className={`absolute left-5 h-0.5 origin-left rounded-full bg-signal ${variant === "card" ? "top-[35px]" : "top-[19px]"}`} style={{ width }} />
           </li>
         );
       })}
@@ -300,12 +415,18 @@ function Timeline({ items, cols, variant, className }) {
               variant === "card" ? "flex-col" : "items-center lg:flex-col lg:items-start lg:gap-3"
             }`}
           >
-            <span
-              data-step
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-signal bg-signal text-sm font-semibold text-forest transition-[background-color,color,border-color] duration-300 data-[active=false]:border-forest/20 data-[active=false]:bg-paper data-[active=false]:text-sage"
-            >
-              {pad2(i + 1)}
-            </span>
+            {variant === "card" ? (
+              <span data-step className={`step-num self-start pr-3 text-[4.5rem] font-semibold leading-none tracking-tight ${surface}`}>
+                {pad2(i + 1)}
+              </span>
+            ) : (
+              <span
+                data-step
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-signal bg-signal text-sm font-semibold text-forest transition-[background-color,color,border-color] duration-300 data-[active=false]:border-forest/20 data-[active=false]:bg-paper data-[active=false]:text-sage"
+              >
+                {pad2(i + 1)}
+              </span>
+            )}
             {variant === "card" ? (
               <div className="flex-1 rounded-2xl border border-line bg-paper p-6">
                 <h3 className="font-semibold text-ink">{title}</h3>
@@ -322,8 +443,8 @@ function Timeline({ items, cols, variant, className }) {
 }
 
 /** Numbered steps (card per step) on a scroll-filled timeline; see Timeline. */
-export function NumberedSteps({ items, columns = 4, className = "mt-12" }) {
-  return <Timeline items={items} cols={columns} variant="card" className={className} />;
+export function NumberedSteps({ items, columns = 4, surface, className = "mt-12" }) {
+  return <Timeline items={items} cols={columns} variant="card" surface={surface} className={className} />;
 }
 
 /** A short flow of labelled steps (Your consumption → … → Future expansion) on one timeline row. */
@@ -393,8 +514,14 @@ export function LayerStack({ items, className = "mt-12" }) {
   );
 }
 
-/** A real data table with a caption; scrolls sideways inside its own box on narrow screens. */
-export function DataTable({ caption, head, rows, className = "mt-10" }) {
+/**
+ * A real data table with a caption; scrolls sideways inside its own box on narrow screens. Rows
+ * reveal with a stagger; `icons` (keyed by a row's first cell) adds a small icon to that cell; hovering
+ * a row highlights it and slides a 3 px accent bar in from the left. Table semantics are unchanged.
+ */
+export function DataTable({ caption, head, rows, icons = {}, className = "mt-10" }) {
+  const body = useRef(null);
+  const reveal = useScrollReveal(body, { stagger: 0.04 });
   return (
     <div className={`overflow-x-auto rounded-2xl border border-line bg-paper ${className}`}>
       <table className="w-full min-w-[30rem] border-collapse text-left text-sm">
@@ -408,19 +535,29 @@ export function DataTable({ caption, head, rows, className = "mt-10" }) {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-line">
-          {rows.map(([first, ...rest]) => (
-            <tr key={first}>
-              <th scope="row" className="px-5 py-3.5 font-semibold text-ink sm:px-6">
-                {first}
-              </th>
-              {rest.map((c) => (
-                <td key={c} className="px-5 py-3.5 text-graphite sm:px-6">
-                  {c}
-                </td>
-              ))}
-            </tr>
-          ))}
+        <tbody ref={body} data-sr-state={reveal} className="divide-y divide-line">
+          {rows.map(([first, ...rest]) => {
+            const Icon = icons[first];
+            return (
+              <tr data-sr key={first} className="group/row transition-colors duration-200 hover:bg-ice/70">
+                <th scope="row" className="relative overflow-hidden px-5 py-3.5 font-semibold text-ink sm:px-6">
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-y-0 left-0 w-[3px] -translate-x-full bg-signal transition-transform duration-300 ease-out group-hover/row:translate-x-0"
+                  />
+                  <span className="flex items-center gap-2.5">
+                    {Icon && <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-forest/70" strokeWidth={1.8} />}
+                    {first}
+                  </span>
+                </th>
+                {rest.map((c) => (
+                  <td key={c} className="px-5 py-3.5 text-graphite sm:px-6">
+                    {c}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -442,7 +579,8 @@ export function Checklist({ items, dark = false, className = "mt-6" }) {
 }
 
 /**
- * A figure that counts up once when it scrolls into view (lib/count.js; ~1.1 s). The real value is
+ * A figure that counts up once when it scrolls into view (lib/count.js; 0.9 s, power2.out). Only
+ * quantities count: a ranking ("#231") or a calendar year renders as its final text at once. The real value is
  * in the markup from the start and stays there until the count begins — it only animates the
  * displayed text and always ends on the exact original string. Nothing animates under reduced
  * motion or for values that aren't countable.
@@ -452,7 +590,8 @@ function CountValue({ value }) {
   useEffect(() => {
     const el = ref.current;
     const parsed = parseCount(value);
-    if (!el || !parsed || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const notQuantity = /^#/.test(value.trim()) || /^(19|20)\d{2}$/.test(value.trim());
+    if (!el || !parsed || notQuantity || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let raf;
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -460,7 +599,7 @@ function CountValue({ value }) {
         io.disconnect();
         const start = performance.now();
         const tick = (now) => {
-          const t = Math.min((now - start) / 1100, 1);
+          const t = Math.min((now - start) / 900, 1);
           el.textContent = t < 1 ? formatCount(parsed, t) : value;
           if (t < 1) raf = requestAnimationFrame(tick);
         };
@@ -502,7 +641,16 @@ export function Stats({ items, className = "mt-6" }) {
 export function PartnerMark({ partner, name, decorative = false }) {
   const p = partner && partnerOf(partner);
   // self-start: inside a flex column a logo would otherwise stretch to the full card width.
-  if (p) return <img src={p.logo} alt={decorative ? "" : p.name} className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto self-start`} />;
+  if (p)
+    return (
+      <span data-sr data-wipe className="self-start">
+        <img
+          src={p.logo}
+          alt={decorative ? "" : p.name}
+          className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-500 ease-out group-hover/card:scale-110`}
+        />
+      </span>
+    );
   return (
     <p aria-hidden={decorative || undefined} className="self-start text-2xl font-bold uppercase leading-6 tracking-tight text-ink">
       {name}
@@ -520,7 +668,7 @@ const IMAGE_SIZES = {
   "hithium-power-cabinet-1022": [640, 900],
   "hithium-power-625": [1404, 800],
   "clou-aqua-c25s": [765, 640],
-  "clou-aqua-e261": [427, 628],
+  "clou-aqua-e261": [427, 616],
 };
 const LOGO_SIZES = { tcl: [86, 31], hithium: [355, 89], clou: [94, 44] };
 
@@ -539,9 +687,21 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
   const fallback = !photo && product.imageFallback;
   const src = photo?.src ?? product.image;
   const [w, h] = photo ? [photo.width, photo.height] : fallback ? LOGO_SIZES[product.partner] : IMAGE_SIZES[product.id] ?? [];
+  const card = useRef(null);
+  useTilt(card, 6);
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper transition-[border-color,box-shadow,translate] duration-300 ease-out hover:-translate-y-1 hover:border-forest/30 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)]">
-      <div className="relative h-56 shrink-0 overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)] lg:h-60">
+    <article
+      ref={card}
+      style={{ transform: "perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))" }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper transition-[border-color,box-shadow,transform] duration-300 ease-out hover:border-forest/30 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)]"
+    >
+      {/* Glare: a soft highlight that follows the cursor while tilting (desktop). */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{ background: "radial-gradient(40% 50% at var(--gx, 50%) var(--gy, 30%), rgba(255,255,255,0.35), transparent 70%)" }}
+      />
+      <div data-sr data-wipe className="relative h-56 shrink-0 overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)] lg:h-60">
         {!fallback && <span aria-hidden="true" className="absolute inset-x-[22%] bottom-[7%] h-5 rounded-[100%] bg-black/15 blur-lg" />}
         <img
           src={src}
@@ -553,7 +713,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
           className={
             fallback
               ? "absolute inset-0 m-auto h-auto w-[40%] max-w-[10rem] object-contain opacity-80"
-              : "absolute inset-0 h-full w-full object-contain p-6 transition-[scale,translate] duration-500 ease-out group-hover:-translate-y-1 group-hover:scale-[1.03]"
+              : "absolute inset-0 h-full w-full object-contain p-6 transition-[scale,translate] duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.03]"
           }
         />
       </div>
@@ -602,20 +762,46 @@ export function CardGrid({ children, columns = 3, className = "mt-12" }) {
   );
 }
 
-/** FAQ: h2, then every question as an h3 with its answer, all visible (the text matches the FAQPage data). */
+/**
+ * FAQ as an accordion of native <details>: every question is an h3 inside its <summary>, every answer
+ * stays in the DOM (word for word the FAQPage data). The first item starts open. Opening animates
+ * smoothly where supported (index.css), the chevron turns, and with the question focused + opens and
+ * − closes (Enter / Space toggle as usual).
+ */
 export function FaqList({ id, title, items, tone = "ice" }) {
+  const onKey = (e) => {
+    const d = e.currentTarget.parentElement;
+    if (e.key === "+" || e.key === "=") {
+      e.preventDefault();
+      d.open = true;
+    } else if (e.key === "-" || e.key === "_") {
+      e.preventDefault();
+      d.open = false;
+    }
+  };
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "paper" ? "bg-paper" : "bg-ice"} py-14 lg:py-20`}>
+    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "paper" ? "bg-paper" : "bg-ice"} relative py-14 lg:py-20`}>
       <div className="container-site">
-        <AnimatedText id={`${id}-title`} className="max-w-3xl text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+        <KineticHeading id={`${id}-title`} className="sol-h2 max-w-3xl font-semibold text-ink">
           {title}
-        </AnimatedText>
+        </KineticHeading>
         <div className={`mt-10 max-w-3xl divide-y divide-line rounded-2xl border border-line ${tone === "paper" ? "bg-ice/60" : "bg-paper"}`}>
-          {items.map(({ q, a }) => (
-            <div key={q} className="px-5 py-5 sm:px-6">
-              <h3 className="font-semibold text-ink">{q}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-graphite">{a}</p>
-            </div>
+          {items.map(({ q, a }, i) => (
+            <details key={q} className="faq-item group/faq" open={i === 0 || undefined}>
+              <summary
+                onKeyDown={onKey}
+                className="flex cursor-pointer items-center justify-between gap-4 px-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-signal sm:px-6"
+              >
+                <h3 className="font-semibold text-ink">{q}</h3>
+                <span
+                  aria-hidden="true"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-forest transition-[transform,background-color] duration-300 group-open/faq:rotate-180 group-open/faq:bg-signal/25"
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </span>
+              </summary>
+              <p className="px-5 pb-5 text-sm leading-relaxed text-graphite sm:px-6">{a}</p>
+            </details>
           ))}
         </div>
       </div>
@@ -628,15 +814,20 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, butto
   return (
     <section id={id} aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-night py-14 text-white lg:py-20">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, rgba(144,217,136,0.08), transparent 70%)" }} />
+      <Spotlight />
       <div className="relative container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
         <div>
-          {eyebrow && <p className="text-xs font-semibold uppercase tracking-[0.2em] text-signal">{eyebrow}</p>}
-          <AnimatedText id={`${id}-title`} className={`${eyebrow ? "mt-3" : ""} text-3xl font-semibold tracking-tight md:text-4xl`}>
+          {eyebrow && (
+            <KineticEyebrow className="text-xs font-semibold uppercase tracking-[0.2em] text-signal" ruleClass="bg-signal">
+              {eyebrow}
+            </KineticEyebrow>
+          )}
+          <KineticHeading id={`${id}-title`} className={`sol-h2 ${eyebrow ? "mt-3" : ""} font-semibold`}>
             {title}
-          </AnimatedText>
+          </KineticHeading>
           {subheading && <p className="mt-4 text-lg font-medium text-white">{subheading}</p>}
           <p className="mt-4 max-w-xl leading-relaxed text-ice/80">{body}</p>
-          <PillLink to={button.to} arrow spotlight className="mt-8">
+          <PillLink to={button.to} arrow spotlight ripple className="mt-8">
             {button.label}
           </PillLink>
         </div>

@@ -227,6 +227,184 @@
   text-wrap: balance;
 }
 
+/* ---- Solutions pages: kinetic typography and interaction layer (components/solutions) ---------
+   Everything here is decoration on real text: without JavaScript, or under reduced motion, every
+   word renders in its final state. Animated properties: transform, opacity, clip-path, filter (plus
+   a background-position sweep and stroke-dashoffset, both paint-only). */
+
+/* Section headings: bigger, tighter. */
+.sol-h2 {
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+/* Line masks (hero h1 lines): a line slides up from behind its own clip. The padding keeps descenders
+   inside the clip; the negative margin keeps the line box where it was. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+/* Solutions hero photo on phones / tablets: visible from the first paint (it is the page's largest
+   paint), already at the start of its zoom-out, which GSAP then continues; on desktop it waits hidden
+   for its clip-path wipe like the rest of the hero entrance. */
+@media (max-width: 1023.98px) {
+  /* [data-a] repeated: outranks the general "pending parts wait hidden" rule further down. */
+  html.js-motion [data-intro="pending"] :is([data-a="image"], [data-a="zoom"])[data-a] {
+    opacity: 1;
+  }
+  html.js-motion [data-intro="pending"] [data-a="zoom"] {
+    transform: scale(1.0566);
+  }
+}
+
+/* Accent line: one soft light sweep across it after it lands (JS adds the class, removes it on end).
+   The gradient is solid accent at both ends, so the start and end frames equal the plain colour. */
+.accent-sweep {
+  background-image: linear-gradient(110deg, var(--color-signal) 0%, var(--color-signal) 40%, #effbe9 50%, var(--color-signal) 60%, var(--color-signal) 100%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: accent-sweep 1.2s ease-in-out forwards;
+}
+@keyframes accent-sweep {
+  to { background-position: 0% 0; }
+}
+
+/* Key phrase in a section heading: a marker underline drawn left → right once the heading has
+   landed. Drawn by default; held at zero width only while a heading waits for its reveal. */
+.h2-mark {
+  background-image: linear-gradient(rgba(144, 217, 136, 0.35), rgba(144, 217, 136, 0.35));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 0.3em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
+}
+html.js-motion [data-kinetic="waiting"] .h2-mark {
+  background-size: 0% 0.3em;
+}
+
+/* Keyword ticker: one strip of four copies of the list moves left by one copy per loop (~40 s), so
+   it repeats seamlessly. It runs only while on screen (JS sets data-run) and pauses on hover. */
+@keyframes ticker {
+  to { transform: translateX(-25%); }
+}
+.ticker-strip {
+  animation: ticker 40s linear infinite paused;
+}
+.ticker[data-run] .ticker-strip {
+  animation-play-state: running;
+}
+.ticker[data-run]:hover .ticker-strip {
+  animation-play-state: paused;
+}
+
+/* Big outline step numbers: stroke only until the step is active (scroll timeline / selected card). */
+.step-num {
+  color: var(--color-forest);
+  -webkit-text-stroke: 1px rgba(9, 47, 39, 0.35);
+  transition: color 0.35s ease;
+}
+.step-num[data-active="false"],
+.step-num.is-outline {
+  color: transparent;
+}
+
+/* Energy-flow diagram: dashes travel along the active lines. */
+@keyframes flow-dash {
+  to { stroke-dashoffset: -28; }
+}
+.flow-line[data-on="true"] {
+  animation: flow-dash 1.1s linear infinite;
+}
+
+/* Use-case map hotspots: a slow pulse ring. */
+@keyframes hotspot-ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.hotspot-ring {
+  animation: hotspot-ring 2.2s ease-out infinite;
+}
+
+/* FAQ accordion: native <details> with a smooth open/close where the browser supports animating to
+   `auto` (elsewhere it simply toggles). */
+.faq-item {
+  interpolate-size: allow-keywords;
+}
+.faq-item::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size 0.35s cubic-bezier(0.22, 1, 0.36, 1), content-visibility 0.35s allow-discrete;
+}
+.faq-item[open]::details-content {
+  block-size: auto;
+}
+.faq-item > summary {
+  list-style: none;
+}
+.faq-item > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Primary button ripple (PillLink `ripple`): a disc expanding from the press point. */
+@keyframes ripple {
+  from { transform: translate(-50%, -50%) scale(0); opacity: 0.4; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+.ripple {
+  animation: ripple 0.6s ease-out forwards;
+}
+
+/* Horizontal rail (applications): no visible scrollbar; snapping cards. */
+.rail {
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accent-sweep,
+  .flow-line[data-on="true"],
+  .hotspot-ring,
+  .ripple {
+    animation: none;
+  }
+  .accent-sweep {
+    color: var(--color-signal);
+    background: none;
+  }
+  .h2-mark,
+  .step-num {
+    transition: none;
+  }
+  /* The ticker stops and becomes a plain wrapped list (the repeats used for the loop are dropped). */
+  .ticker-strip {
+    animation: none;
+    width: 100%;
+  }
+  .ticker-track:first-child {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    row-gap: 0.5rem;
+  }
+  .ticker-track + .ticker-track {
+    display: none;
+  }
+  .faq-item::details-content {
+    transition: none;
+  }
+}
+
 /* Progressive enhancement: every "wait hidden until GSAP takes over" rule below applies only once
    JavaScript has added `js-motion` to <html> (main.jsx — never under reduced motion), so content is
    visible by default. */

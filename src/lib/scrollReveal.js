@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { loadGsap } from "./motion";
+import { onceInView } from "./inview";
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -22,70 +23,69 @@ export const REVEAL = {
 export const scrollingFast = (trigger) => Math.abs(trigger?.getVelocity?.() ?? 0) > REVEAL.fastScroll;
 
 /**
- * Section-level reveal (GSAP ScrollTrigger.batch): every `[data-sr]` element inside `ref` fades and
- * rises in once as it enters the viewport (REVEAL timing), elements entering together staggered.
- * Put `data-sr-state={state}` on the container: index.css holds items at opacity 0 only while it is
- * "pending" AND <html> has the `js-motion` class (main.jsx adds it when motion is allowed), so
- * content is visible by default.
+ * Section-level reveal: every `[data-sr]` element inside `ref` fades and rises in once as it enters the
+ * viewport (REVEAL timing), elements entering together staggered. `[data-sr][data-wipe]` (media only,
+ * never text) is revealed by a top → bottom clip-path wipe instead (0.8 s), its image settling from
+ * 1.08. Put `data-sr-state={state}` on the container: index.css holds items at opacity 0 only while
+ * it is "pending" AND <html> has the `js-motion` class, so content is visible by default.
  *
- * Never leaves content hidden: items already scrolled past when the reveal is set up are shown at
- * once; an item passed or re-entered without its reveal running (a jump or a fast fling) is shown at
- * once; a fast scroll shows items instead of animating them. Runs once — scrolling back up never
- * hides anything. Elements that are display:none at setup (filtered-out cards) are left alone.
- * Reverted on unmount; nothing is hidden under prefers-reduced-motion.
+ * Positions come from the shared IntersectionObserver (lib/inview), never from synchronous layout
+ * reads. Never leaves content hidden: items already above the viewport are shown at once; an item
+ * arriving during a fast scroll, or coming back into view after being jumped past, is shown at once.
+ * Runs once. Reverted on unmount; nothing is hidden under prefers-reduced-motion.
  */
-export function useScrollReveal(ref, { stagger = REVEAL.stagger, y = REVEAL.y, start = REVEAL.start } = {}) {
+export function useScrollReveal(ref, { stagger = REVEAL.stagger, y = REVEAL.y } = {}) {
   const [state, setState] = useState(() => (reduced() ? "done" : "pending"));
 
   useEffect(() => {
     if (reduced()) return;
     const el = ref.current;
     let cancelled = false;
-    let ctx;
+    const subs = [];
+    let gsapRef;
+    let items = [];
     const safety = setTimeout(() => !cancelled && setState("done"), 2500);
     loadGsap()
-      .then(({ gsap, ScrollTrigger }) => {
+      .then(({ gsap }) => {
         if (cancelled || !el) return;
         clearTimeout(safety);
-        ctx = gsap.context(() => {
-          // Only this container's own items (a nested reveal handles its own) and only rendered ones.
-          const items = [...el.querySelectorAll("[data-sr]")].filter(
-            (n) => n.closest("[data-sr-state]") === el && n.getClientRects().length > 0
-          );
-          const show = (batch) => gsap.set(batch, { opacity: 1, y: 0, clearProps: "opacity,transform" });
-          // Already above the viewport: nothing to reveal.
-          const pending = items.filter((n) => n.getBoundingClientRect().bottom > 0);
-          show(items.filter((n) => !pending.includes(n)));
-          gsap.set(pending, { opacity: 0, y: Math.min(y, REVEAL.y) });
-          ScrollTrigger.batch(pending, {
-            start,
-            once: true,
-            onEnter: (batch, triggers) => {
-              if (scrollingFast(triggers[0])) return show(batch);
-              const each = Math.min(stagger, REVEAL.stagger, batch.length > 1 ? REVEAL.maxStagger / (batch.length - 1) : REVEAL.stagger);
-              gsap.to(batch, {
-                opacity: 1,
-                y: 0,
-                duration: REVEAL.duration,
-                ease: REVEAL.ease,
-                stagger: each,
-                overwrite: true,
-                clearProps: "opacity,transform",
-              });
-            },
-            onLeave: show,
-            onEnterBack: show,
-          });
-          setState("ready");
-        }, el);
+        gsapRef = gsap;
+        // Only this container's own items (a nested reveal handles its own).
+        items = [...el.querySelectorAll("[data-sr]")].filter((n) => n.closest("[data-sr-state]") === el);
+        const isWipe = (n) => n.matches("[data-wipe]");
+        const imgs = (n) => [...n.querySelectorAll("img")];
+        const show = (n) => {
+          gsap.set(n, { clearProps: "opacity,transform,clipPath" });
+          if (isWipe(n)) gsap.set(imgs(n), { clearProps: "scale" });
+        };
+        // Writes only: every item takes its waiting state; the observer then decides per item.
+        gsap.set(items.filter((n) => !isWipe(n)), { opacity: 0, y: Math.min(y, REVEAL.y) });
+        gsap.set(items.filter(isWipe), { opacity: 1, clipPath: "inset(0% 0% 100% 0%)" });
+        const enter = (batch) => {
+          const each = Math.min(stagger, REVEAL.stagger, batch.length > 1 ? REVEAL.maxStagger / (batch.length - 1) : REVEAL.stagger);
+          const wipes = batch.filter(isWipe);
+          const fades = batch.filter((n) => !isWipe(n));
+          if (wipes.length) {
+            gsap.to(wipes, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "power2.out", stagger: each, clearProps: "clipPath" });
+            gsap.fromTo(wipes.flatMap(imgs), { scale: 1.08 }, { scale: 1, duration: 0.8, ease: "power2.out", clearProps: "scale" });
+          }
+          if (fades.length)
+            gsap.to(fades, { opacity: 1, y: 0, duration: REVEAL.duration, ease: REVEAL.ease, stagger: each, overwrite: true, clearProps: "opacity,transform" });
+        };
+        for (const n of items) subs.push(onceInView(n, { initial: true, enter, show: () => show(n) }));
+        setState("ready");
       })
       .catch(() => !cancelled && setState("done"));
     return () => {
       cancelled = true;
       clearTimeout(safety);
-      ctx?.revert();
+      subs.forEach((off) => off());
+      if (gsapRef && items.length) {
+        gsapRef.killTweensOf(items);
+        gsapRef.set(items, { clearProps: "opacity,transform,clipPath" });
+      }
     };
-  }, [ref, stagger, y, start]);
+  }, [ref, stagger, y]);
 
   return state;
 }

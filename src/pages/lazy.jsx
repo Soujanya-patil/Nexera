@@ -27,6 +27,7 @@ export const ProductsRoute = preloadable(() => import("./Products"));
 export const ProductDetailRoute = preloadable(() => import("./ProductDetail"));
 
 // The three Solutions pages are long and only needed on their own routes, so they load on demand too.
+export const SolutionsRoute = preloadable(() => import("./Solutions"));
 export const SolutionsUtilityRoute = preloadable(() => import("./SolutionsUtility"));
 export const SolutionsCIRoute = preloadable(() => import("./SolutionsCI"));
 export const SolutionsResidentialRoute = preloadable(() => import("./SolutionsResidential"));

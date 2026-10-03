@@ -1,3 +1,4 @@
+import { lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -16,6 +17,18 @@ import {
   Unplug,
 } from "lucide-react";
 import { RESIDENTIAL_FAQ } from "../data/solutions";
+import { KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
+
+// The energy-flow diagram is its own chunk, loaded when "Solutions for Every Home" is near.
+const EnergyFlow = lazy(() => import("../components/solutions/EnergyFlow"));
+
+// What the diagram shows for each system, for screen readers (the diagram itself is decorative).
+const FLOW_SUMMARY = {
+  1: "Energy flow for Solar + Grid: solar panels and the grid both supply the home.",
+  2: "Energy flow for Solar + Battery: solar supplies the home and charges the battery, and the battery supplies the home later.",
+  3: "Energy flow for Solar + Battery + Backup: as Solar + Battery, and during a grid outage the battery keeps selected backup loads running.",
+  4: "Energy flow for Complete Smart Home Energy: solar, battery, grid, home, EV charger and backup loads all connected.",
+};
 import {
   BenefitStrip,
   CardGrid,
@@ -91,6 +104,7 @@ export default function SolutionsResidential() {
   return (
     <div className="solutions-page">
       <SolutionHero
+        segment="residential"
         crumb="Residential"
         eyebrow="Residential Energy Solutions"
         line1="Power Your Home."
@@ -117,8 +131,12 @@ export default function SolutionsResidential() {
           { icon: Leaf, title: "Cleaner Tomorrow", text: "For your family and the planet" },
         ]}
       />
+      <KeywordTicker
+        label="Home energy storage capabilities"
+        items={["Store Solar Energy", "Use Solar After Sunset", "Backup During Outages", "Smart Monitoring", "Built to Scale", "LFP Battery Technology"]}
+      />
 
-      <Section id="why-home" eyebrow="Why residential energy storage" title="Why Add Battery Storage to Your Home?">
+      <Section id="why-home" push mark="Battery Storage" eyebrow="Why residential energy storage" title="Why Add Battery Storage to Your Home?">
         <FeatureGrid
           items={[
             { icon: Sun, title: "Store the Solar You Generate", text: "Use excess solar energy generated during the day instead of sending it back to the grid." },
@@ -133,6 +151,7 @@ export default function SolutionsResidential() {
 
       <Section
         id="partners"
+        mark="Trusted Platform"
         tone="ice"
         eyebrow="Our global technology partners"
         title="Two Global Technology Brands. One Trusted Platform."
@@ -142,7 +161,7 @@ export default function SolutionsResidential() {
       >
         <CardGrid columns={2}>
           {PARTNERS.map((p) => (
-            <article key={p.key} className="flex h-full flex-col rounded-2xl border border-line bg-paper p-6 md:p-8">
+            <article key={p.key} className="group/card flex h-full flex-col rounded-2xl border border-line bg-paper p-6 md:p-8">
               <PartnerMark partner={p.partner} name={p.name} decorative />
               <h3 className="mt-5 text-lg font-semibold leading-snug text-ink">{p.title}</h3>
               <Stats items={p.stats} />
@@ -198,33 +217,12 @@ export default function SolutionsResidential() {
       <Section
         id="home-solutions"
         tone="ice"
+        mark="Every Home"
         eyebrow="Choose your home energy system"
         title="Solutions for Every Home"
         intro="From simple solar systems to complete smart energy homes, choose what fits your needs."
       >
-        <CardGrid columns={4}>
-          {SYSTEMS.map((s, i) => (
-            <article key={s.title} className="relative flex h-full flex-col rounded-2xl border border-line bg-paper p-6">
-              <span aria-hidden="true" className="absolute left-6 top-0 h-0.5 w-8 rounded-full bg-signal" />
-              <span className="text-3xl font-semibold leading-none tracking-tight text-forest/20">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 text-lg font-semibold text-ink">{s.title}</h3>
-              <p className="mt-1 text-sm font-semibold text-forest">{s.lead}</p>
-              <p className="mt-3 text-sm leading-relaxed text-graphite">{s.copy}</p>
-              {s.ideal && (
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-graphite">
-                  <strong className="font-semibold text-ink">Ideal for:</strong> {s.ideal}
-                </p>
-              )}
-              <Link
-                to="/contact?intent=residential"
-                className="group/cta mt-6 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-forest hover:text-steel"
-              >
-                Learn More
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
-              </Link>
-            </article>
-          ))}
-        </CardGrid>
+        <HomeSystems />
       </Section>
 
       <Section
@@ -273,6 +271,7 @@ export default function SolutionsResidential() {
 
       <Section
         id="nexera-difference"
+        mark="Design Energy Systems"
         tone="ice"
         title="We Don't Just Sell Batteries. We Design Energy Systems."
         intro="With our experience in solar engineering, plant monitoring, energy analysis and system optimisation, NEXERA looks at the complete picture:"
@@ -302,6 +301,65 @@ export default function SolutionsResidential() {
         ]}
         button={{ label: "Design My Home Energy System", to: "/contact?intent=residential" }}
       />
+      {/* Last in the DOM, so keyboard users reach the page before the section dots. */}
+      <SectionRail />
     </div>
+  );
+}
+
+/**
+ * "Solutions for Every Home": the energy-flow diagram above the four system cards. Hovering or focusing
+ * a card (or tapping it on a phone) switches the diagram to that system; the selected card is
+ * outlined and its big outline number fills. Default: 02 Solar + Battery. All card text stays visible.
+ */
+function HomeSystems() {
+  const [mode, setMode] = useState(2);
+  return (
+    <>
+      <div className="mt-12 rounded-2xl border border-line bg-paper px-4 py-6 sm:px-8">
+        <NearViewport className="aspect-[3/1] w-full">
+          <Suspense fallback={null}>
+            <EnergyFlow mode={mode} />
+          </Suspense>
+        </NearViewport>
+        <p className="sr-only" aria-live="polite">
+          {FLOW_SUMMARY[mode]}
+        </p>
+      </div>
+      <CardGrid columns={4} className="mt-6">
+        {SYSTEMS.map((s, i) => {
+          const on = mode === i + 1;
+          return (
+            <article
+              key={s.title}
+              onPointerEnter={(e) => e.pointerType === "mouse" && setMode(i + 1)}
+              onFocus={() => setMode(i + 1)}
+              onClick={() => setMode(i + 1)}
+              className={`relative flex h-full cursor-pointer flex-col rounded-2xl border bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 ${
+                on ? "-translate-y-1 border-signal shadow-[0_0_0_1px_var(--color-signal),0_18px_40px_-28px_rgba(7,26,23,0.45)]" : "border-line"
+              }`}
+            >
+              <span aria-hidden="true" className="absolute left-6 top-0 h-0.5 w-8 rounded-full bg-signal" />
+              <span className={`step-num text-[4rem] font-semibold leading-none tracking-tight ${on ? "" : "is-outline"}`}>{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="mt-4 text-lg font-semibold text-ink">{s.title}</h3>
+              <p className="mt-1 text-sm font-semibold text-forest">{s.lead}</p>
+              <p className="mt-3 text-sm leading-relaxed text-graphite">{s.copy}</p>
+              {s.ideal && (
+                <p className="mt-3 text-sm leading-relaxed text-graphite">
+                  <strong className="font-semibold text-ink">Ideal for:</strong> {s.ideal}
+                </p>
+              )}
+              <Link
+                to="/contact?intent=residential"
+                className="group/cta mt-auto inline-flex items-center gap-1.5 self-start pt-6 text-sm font-semibold text-forest hover:text-steel"
+              >
+                Learn More
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
+              </Link>
+            </article>
+          );
+        })}
+      </CardGrid>
+    </>
   );
 }
