@@ -240,7 +240,9 @@ export default function Products() {
     const target = document.getElementById("catalogue");
     if (!target) return;
     const lenis = getLenis();
-    if (lenis) lenis.scrollTo(target, { offset: -64, duration: 1.1 });
+    // A position, not the element: given an element, Lenis also subtracts its scroll-margin-top
+    // (scroll-mt-16), which doubled the clearance under the sticky header.
+    if (lenis) lenis.scrollTo(target.getBoundingClientRect().top + window.scrollY - 64, { duration: 1.1 });
     else target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
   };
 

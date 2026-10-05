@@ -1,7 +1,5 @@
 import { lazy, Suspense, useState } from "react";
-import { Link } from "react-router-dom";
 import {
-  ArrowRight,
   BatteryCharging,
   ExternalLink,
   Expand,
@@ -17,10 +15,13 @@ import {
   Unplug,
 } from "lucide-react";
 import { RESIDENTIAL_FAQ } from "../data/solutions";
-import { KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
+import { CTA_TOPICS } from "../data/solutionTopics";
+import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
+const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
 
-// The energy-flow diagram is its own chunk, loaded when "Solutions for Every Home" is near.
+// The energy-flow diagram and its day slider are their own chunk, loaded when "Solutions for Every Home" is near.
 const EnergyFlow = lazy(() => import("../components/solutions/EnergyFlow"));
+const DaySlider = lazy(() => import("../components/solutions/EnergyFlow").then((m) => ({ default: m.DaySlider })));
 
 // What the diagram shows for each system, for screen readers (the diagram itself is decorative).
 const FLOW_SUMMARY = {
@@ -102,7 +103,7 @@ const SYSTEMS = [
 
 export default function SolutionsResidential() {
   return (
-    <div className="solutions-page">
+    <div className="solutions-page segment-page">
       <SolutionHero
         segment="residential"
         crumb="Residential"
@@ -122,6 +123,12 @@ export default function SolutionsResidential() {
           credit: "TCL residential storage · technology partner imagery",
         }}
       />
+      {/* Sticky segment switcher (own chunk, mounted once the page is idle): shown once the hero has scrolled away. */}
+      <AfterIdle>
+        <Suspense fallback={null}>
+          <SegmentSwitcher current="residential" />
+        </Suspense>
+      </AfterIdle>
 
       <BenefitStrip
         items={[
@@ -166,13 +173,9 @@ export default function SolutionsResidential() {
               <h3 className="mt-5 text-lg font-semibold leading-snug text-ink">{p.title}</h3>
               <Stats items={p.stats} />
               <p className="mt-5 flex-1 text-sm leading-relaxed text-graphite">{p.copy}</p>
-              <Link
-                to={p.cta.to}
-                className="group/cta mt-6 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-forest hover:text-steel"
-              >
+              <ArrowLink to={p.cta.to} className="mt-6 self-start">
                 {p.cta.label}
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
-              </Link>
+              </ArrowLink>
             </article>
           ))}
         </CardGrid>
@@ -290,15 +293,8 @@ export default function SolutionsResidential() {
         eyebrow="Ready to make your home smarter?"
         title="Get a Personalized Energy Recommendation"
         body="Tell us your monthly electricity consumption and your current solar capacity. We'll help you determine:"
-        checklist={[
-          "Recommended solar capacity",
-          "Battery capacity",
-          "Backup loads",
-          "Expected solar self-consumption",
-          "Available government subsidy",
-          "System configuration",
-          "Expansion possibilities",
-        ]}
+        checklist={CTA_TOPICS.residential}
+        segment="residential"
         button={{ label: "Design My Home Energy System", to: "/contact?intent=residential" }}
       />
       {/* Last in the DOM, so keyboard users reach the page before the section dots. */}
@@ -308,23 +304,44 @@ export default function SolutionsResidential() {
 }
 
 /**
- * "Solutions for Every Home": the energy-flow diagram above the four system cards. Hovering or focusing
- * a card (or tapping it on a phone) switches the diagram to that system; the selected card is
- * outlined and its big outline number fills. Default: 02 Solar + Battery. All card text stays visible.
+ * "Solutions for Every Home": the energy-flow diagram above the four system cards, with "A day with
+ * home storage" under it. Hovering or focusing a card (or tapping it on a phone) switches the diagram
+ * to that system; the selected card is outlined and its big outline number fills. Default: 02 Solar +
+ * Battery. Moving the day slider (or its first auto-play, or "Power cut") switches to 04 Complete Smart
+ * Home Energy and shows that hour's flows. All card text stays visible.
  */
 function HomeSystems() {
   const [mode, setMode] = useState(2);
+  const [day, setDay] = useState(null); // null, or { hour, outage } while the slider drives the diagram
+  const [hour, setHour] = useState(12);
+  const pick = (m) => {
+    setMode(m);
+    setDay(null);
+  };
+  const onDay = (d) => {
+    setMode(4);
+    setHour(d.hour);
+    setDay(d);
+  };
   return (
     <>
       <div className="mt-12 rounded-2xl border border-line bg-paper px-4 py-6 sm:px-8">
         <NearViewport className="aspect-[3/1] w-full">
           <Suspense fallback={null}>
-            <EnergyFlow mode={mode} />
+            <EnergyFlow mode={mode} day={day} />
           </Suspense>
         </NearViewport>
-        <p className="sr-only" aria-live="polite">
-          {FLOW_SUMMARY[mode]}
-        </p>
+        {/* The slider's box is reserved, so nothing shifts when its chunk arrives. */}
+        <NearViewport className="min-h-[6.5rem] sm:min-h-[5.25rem]">
+          <Suspense fallback={null}>
+            <DaySlider day={day} hour={hour} onDay={onDay} />
+          </Suspense>
+        </NearViewport>
+        {!day && (
+          <p className="sr-only" aria-live="polite">
+            {FLOW_SUMMARY[mode]}
+          </p>
+        )}
       </div>
       <CardGrid columns={4} className="mt-6">
         {SYSTEMS.map((s, i) => {
@@ -332,9 +349,9 @@ function HomeSystems() {
           return (
             <article
               key={s.title}
-              onPointerEnter={(e) => e.pointerType === "mouse" && setMode(i + 1)}
-              onFocus={() => setMode(i + 1)}
-              onClick={() => setMode(i + 1)}
+              onPointerEnter={(e) => e.pointerType === "mouse" && pick(i + 1)}
+              onFocus={() => pick(i + 1)}
+              onClick={() => pick(i + 1)}
               className={`relative flex h-full cursor-pointer flex-col rounded-2xl border bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 ${
                 on ? "-translate-y-1 border-signal shadow-[0_0_0_1px_var(--color-signal),0_18px_40px_-28px_rgba(7,26,23,0.45)]" : "border-line"
               }`}
@@ -349,13 +366,9 @@ function HomeSystems() {
                   <strong className="font-semibold text-ink">Ideal for:</strong> {s.ideal}
                 </p>
               )}
-              <Link
-                to="/contact?intent=residential"
-                className="group/cta mt-auto inline-flex items-center gap-1.5 self-start pt-6 text-sm font-semibold text-forest hover:text-steel"
-              >
+              <ArrowLink to="/contact?intent=residential" className="mt-auto self-start pt-6">
                 Learn More
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
-              </Link>
+              </ArrowLink>
             </article>
           );
         })}

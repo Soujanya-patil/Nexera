@@ -13,8 +13,10 @@ function useScrollOnNavigate() {
   const { pathname, hash } = useLocation();
   useLayoutEffect(() => {
     const target = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
-    // Clear the sticky nav (h-16) when landing on a section
-    jumpTo(target ? target.getBoundingClientRect().top + window.scrollY - 64 : 0);
+    // Clear the sticky nav (h-16) when landing on a section — or the section's own scroll-margin-top
+    // where it sets a larger one (the Solutions segment pages also clear their segment switcher).
+    const clear = target ? Math.max(64, parseFloat(getComputedStyle(target).scrollMarginTop) || 0) : 0;
+    jumpTo(target ? target.getBoundingClientRect().top + window.scrollY - clear : 0);
   }, [pathname, hash]);
 }
 
@@ -24,6 +26,10 @@ export default function Layout() {
   useEffect(() => initSmoothScroll(), []);
   useScrollOnNavigate();
   const { pathname } = useLocation();
+  // A page arriving by a View Transition doesn't get the route fade at all (decided as it renders):
+  // toggling the animation off only while html[data-vt] is set made it restart — a blank flash — the
+  // moment the transition ended and the flag was removed.
+  const fade = document.documentElement.dataset.vt === "true" ? "" : "route-fade";
 
   return (
     <div>
@@ -32,8 +38,8 @@ export default function Layout() {
       <main id="main">
         {/* Route change: the new page fades in (opacity only — no transform, so sticky/fixed children
             and scroll measurements are unaffected). Keyed by path, so filter/query and #hash changes
-            don't re-trigger it; skipped during a product View Transition and under reduced motion. */}
-        <div key={pathname} className="route-fade">
+            don't re-trigger it; skipped for a page opened by a View Transition and under reduced motion. */}
+        <div key={pathname} className={fade}>
           <Outlet />
         </div>
       </main>

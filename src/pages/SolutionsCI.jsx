@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import {
-  ArrowRight,
   BatteryCharging,
   Building2,
   EvCharger,
@@ -27,12 +26,16 @@ import {
   Wrench,
 } from "lucide-react";
 import { getProduct } from "../data/products";
+import { CTA_TOPICS } from "../data/solutionTopics";
 import { CI_FAQ } from "../data/solutions";
 import CabinetScrub from "../components/solutions/CabinetScrub";
-import { AppRail, KeywordTicker, SectionRail } from "../components/solutions/Interactive";
+import { AfterIdle, AppRail, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
+const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
+const LoadShiftChart = lazy(() => import("../components/solutions/LoadShiftChart"));
 import {
   BenefitStrip,
   CardGrid,
+  CompareProvider,
   CtaBand,
   DataTable,
   FaqList,
@@ -58,7 +61,7 @@ const PARTNERS = [
     id: "tcl",
     title: "TCL — A global technology group with massive industrial scale.",
     stats: [
-      ["RMB 354+ billion", "total revenue"],
+      ["RMB 354+ billion", "total revenue (2025)"],
       ["160,000+", "employees"],
       ["1.3 billion+", "global users"],
       ["160+", "countries and regions"],
@@ -183,7 +186,7 @@ const PORTFOLIO = [
 
 export default function SolutionsCI() {
   return (
-    <div className="solutions-page">
+    <div className="solutions-page segment-page">
       <SolutionHero
         segment="ci"
         crumb="Commercial & Industrial"
@@ -203,6 +206,12 @@ export default function SolutionsCI() {
           credit: "TCL commercial & industrial storage · technology partner imagery",
         }}
       />
+      {/* Sticky segment switcher (own chunk, mounted once the page is idle): shown once the hero has scrolled away. */}
+      <AfterIdle>
+        <Suspense fallback={null}>
+          <SegmentSwitcher current="ci" />
+        </Suspense>
+      </AfterIdle>
 
       <BenefitStrip
         items={[
@@ -235,6 +244,12 @@ export default function SolutionsCI() {
             { icon: Network, title: "Grid & Renewable Integration", text: "Integrate solar, diesel generation, grid supply and battery storage into one coordinated system." },
           ]}
         />
+        {/* Illustrative chart (own chunk, loaded near; its box is reserved). */}
+        <NearViewport className="mt-12 aspect-[4/3] w-full max-w-3xl sm:aspect-[16/10]">
+          <Suspense fallback={null}>
+            <LoadShiftChart variant="ci" />
+          </Suspense>
+        </NearViewport>
       </Section>
 
       <Section
@@ -261,13 +276,9 @@ export default function SolutionsCI() {
                   <Stats items={p.stats} className="mt-5 flex-1 content-start" />
                 </>
               )}
-              <Link
-                to={`/products?partner=${p.id}`}
-                className="group/all mt-6 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-forest hover:text-steel"
-              >
+              <ArrowLink to={`/products?partner=${p.id}`} className="mt-6 self-start">
                 View {PARTNER_NAMES[p.id]} systems
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/all:translate-x-1" />
-              </Link>
+              </ArrowLink>
             </article>
           ))}
         </CardGrid>
@@ -280,11 +291,13 @@ export default function SolutionsCI() {
         title="Four Solutions. Multiple Applications."
         intro="From a compact 100 kWh all-in-one system to 261 kWh liquid-cooled cabinets, choose the platform that fits your site."
       >
-        <CardGrid columns={4}>
-          {PORTFOLIO.map((c) => (
-            <SolutionProductCard key={c.product} {...c} product={getProduct(c.product)} />
-          ))}
-        </CardGrid>
+        <CompareProvider>
+          <CardGrid columns={4}>
+            {PORTFOLIO.map((c) => (
+              <SolutionProductCard key={c.product} {...c} product={getProduct(c.product)} />
+            ))}
+          </CardGrid>
+        </CompareProvider>
       </Section>
 
       <CabinetScrub />
@@ -395,13 +408,9 @@ export default function SolutionsCI() {
             { title: "Monitoring & O&M", text: "Remote monitoring, alerts and performance tracking" },
           ]}
         />
-        <Link
-          to="/become-a-partner"
-          className="group/p mt-12 inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:text-steel"
-        >
+        <ArrowLink to="/become-a-partner" className="mt-12">
           For EPCs: Become a Partner
-          <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/p:translate-x-1" />
-        </Link>
+        </ArrowLink>
       </Section>
 
       <FaqList id="faq" tone="paper" title="C&I Energy Storage — Frequently Asked Questions" items={CI_FAQ} />
@@ -411,15 +420,8 @@ export default function SolutionsCI() {
         title="Your Factory. Your Loads. Your Energy Strategy."
         subheading="Let's design the right BESS for your business."
         body="Share your monthly electricity bill, sanctioned load, 15-minute load profile and existing solar capacity, and NEXERA will help evaluate:"
-        checklist={[
-          "Recommended BESS capacity",
-          "Solar + storage configuration",
-          "Peak-demand reduction potential",
-          "Backup capability",
-          "Expected savings",
-          "System expansion options",
-          "Project economics",
-        ]}
+        checklist={CTA_TOPICS.ci}
+        segment="ci"
         button={{ label: "Design My Energy Storage System", to: "/contact?intent=ci" }}
       />
       {/* Last in the DOM, so keyboard users reach the page before the section dots. */}

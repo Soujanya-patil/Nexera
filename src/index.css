@@ -232,6 +232,123 @@
    word renders in its final state. Animated properties: transform, opacity, clip-path, filter (plus
    a background-position sweep and stroke-dashoffset, both paint-only). */
 
+/* Stat figures (SolutionBlocks RollValue): each character rolls up from its own mask. The padding
+   keeps descenders and the "+"/"#" marks unclipped; the negative margin cancels it in the layout. */
+.roll-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.1em;
+  margin-bottom: -0.1em;
+}
+html.js-motion [data-roll="waiting"] {
+  opacity: 0;
+}
+
+/* Segment pages: native #hash jumps land below the header and the segment switcher (SEGMENT_OFFSET). */
+.segment-page section[id] {
+  scroll-margin-top: 8rem;
+}
+
+/* Hub segment cards as "expanding panels" (desktop, mouse, motion allowed; Solutions.jsx usePanels):
+   the cards never move — each card's visible window (clip-path) and its text block (transform) switch
+   between the four precomputed states, 400 ms power3.out. No layout shift on hover. */
+.seg-panels[data-panels] {
+  position: relative;
+  display: block;
+  height: 34rem;
+}
+.seg-panels[data-panels] > li {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+/* The photo layer carries the same window, so a View Transition captures the photo as it is seen. */
+.seg-panels[data-panels] > li,
+.seg-panels[data-panels] > li [data-vt-img] {
+  clip-path: var(--cn);
+  transition: clip-path 400ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.seg-panels[data-panels] > li > a {
+  height: 100%;
+  aspect-ratio: auto;
+}
+.seg-panels[data-panels] [data-panel-text] {
+  width: var(--tw);
+  transform: translateX(var(--xn));
+  transition: transform 400ms cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+.seg-panels[data-panels]:has(> li:nth-child(1):is(:hover, :focus-within)) > li,
+.seg-panels[data-panels]:has(> li:nth-child(1):is(:hover, :focus-within)) > li [data-vt-img] { clip-path: var(--c0); }
+.seg-panels[data-panels]:has(> li:nth-child(2):is(:hover, :focus-within)) > li,
+.seg-panels[data-panels]:has(> li:nth-child(2):is(:hover, :focus-within)) > li [data-vt-img] { clip-path: var(--c1); }
+.seg-panels[data-panels]:has(> li:nth-child(3):is(:hover, :focus-within)) > li,
+.seg-panels[data-panels]:has(> li:nth-child(3):is(:hover, :focus-within)) > li [data-vt-img] { clip-path: var(--c2); }
+.seg-panels[data-panels]:has(> li:nth-child(1):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x0)); }
+.seg-panels[data-panels]:has(> li:nth-child(2):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x1)); }
+.seg-panels[data-panels]:has(> li:nth-child(3):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x2)); }
+
+/* Hub ribbon label: rolls up from its mask as its photo comes in. */
+@keyframes ribbon-label {
+  from { transform: translateY(100%); }
+}
+.ribbon-label {
+  animation: ribbon-label 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-label { animation: none; }
+}
+
+/* Residential "A day with home storage" slider: the track runs night → day → night (no numbers); the
+   thumb is a sun by day and a moon by night. */
+.day-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2.75rem;
+  background: transparent;
+  cursor: pointer;
+}
+.day-range::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #12352e 0%, #12352e 20%, #cfe9c9 32%, #f1f9ee 50%, #cfe9c9 68%, #12352e 82%, #12352e 100%);
+}
+.day-range::-moz-range-track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(to right, #12352e 0%, #12352e 20%, #cfe9c9 32%, #f1f9ee 50%, #cfe9c9 68%, #12352e 82%, #12352e 100%);
+}
+.day-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: -0.875rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-forest);
+  background: var(--color-signal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23071A17' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E") center / 1.25rem no-repeat;
+  box-shadow: 0 6px 16px -6px rgba(7, 26, 23, 0.5);
+}
+.day-range::-moz-range-thumb {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-forest);
+  background: var(--color-signal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23071A17' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E") center / 1.25rem no-repeat;
+}
+.day-range[data-phase="moon"]::-webkit-slider-thumb {
+  background: var(--color-night) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E2F6DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E") center / 1.125rem no-repeat;
+  border-color: var(--color-signal);
+}
+.day-range[data-phase="moon"]::-moz-range-thumb {
+  background: var(--color-night) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E2F6DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E") center / 1.125rem no-repeat;
+  border-color: var(--color-signal);
+}
+.day-range:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 4px;
+  border-radius: 9999px;
+}
+
 /* Section headings: bigger, tighter. */
 .sol-h2 {
   font-size: clamp(2rem, 1.2rem + 2.4vw, 3.25rem);
@@ -608,6 +725,41 @@ html[data-vt] .route-fade {
 ::view-transition-group(*) {
   animation-duration: 520ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Solutions route transitions (useRouteTransition): no cross-fade of the pages. The old page is gone
+   in 150 ms before the new one starts to appear, so two pages' text never overlap; the segment photo
+   morphs above both. */
+@keyframes vt-page-out {
+  to { opacity: 0; }
+}
+@keyframes vt-page-in {
+  from { opacity: 0; }
+}
+/* Between the two pages the backdrop is the site's dark ground, not a white flash. */
+html[data-vt-fade]::view-transition {
+  background-color: var(--color-night);
+}
+html[data-vt-fade]::view-transition-old(root) {
+  animation: vt-page-out 150ms ease-in both;
+}
+html[data-vt-fade]::view-transition-new(root) {
+  animation: vt-page-in 300ms ease-out 150ms both;
+}
+/* Only the photos of the segment being opened carry a name (html[data-vt-seg], useRouteTransition):
+   the hub card's photo and that segment hero's photo morph into each other; nothing else does. */
+html[data-vt-seg="residential"] :is([data-vt-card="residential"], [data-vt-hero="residential"]) [data-vt-img] {
+  view-transition-name: sol-img-residential;
+}
+html[data-vt-seg="ci"] :is([data-vt-card="ci"], [data-vt-hero="ci"]) [data-vt-img] {
+  view-transition-name: sol-img-ci;
+}
+html[data-vt-seg="utility"] :is([data-vt-card="utility"], [data-vt-hero="utility"]) [data-vt-img] {
+  view-transition-name: sol-img-utility;
+}
+/* From the segment switcher: the pill grows into the new hero photo; its own (text) snapshot is gone
+   as fast as the old page. */
+html[data-vt-from="pill"]::view-transition-old(*) {
+  animation: vt-page-out 150ms ease-in both;
 }
 
 @media (prefers-reduced-motion: reduce) {

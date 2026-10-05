@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Callouts from "../cabinet/Callouts";
+import StageBlend from "./StageBlend";
 import scrubSrc from "../../assets/products/nexera-hero-cabinet-scrub.mp4";
 import posterSrc from "../../assets/products/nexera-hero-cabinet-poster.webp";
 import { loadGsap } from "../../lib/motion";
@@ -94,6 +95,7 @@ export default function CabinetStage({ section }) {
         aria-label="Battery energy storage cabinet opening to reveal its battery modules, power electronics and protection components"
         className="absolute inset-0 h-full w-full object-contain"
       />
+      <StageBlend />
       <Callouts count={labels} animate onActive={noop} />
     </>
   );

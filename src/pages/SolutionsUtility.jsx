@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import {
   Activity,
-  ArrowRight,
   BarChart3,
   Clock,
   Cpu,
@@ -24,13 +23,17 @@ import {
   Zap,
 } from "lucide-react";
 import { getProduct } from "../data/products";
+import { CTA_TOPICS } from "../data/solutionTopics";
 import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.png";
 import { UTILITY_FAQ } from "../data/solutions";
 import UseCaseMap from "../components/solutions/UseCaseMap";
-import { KeywordTicker, SectionRail } from "../components/solutions/Interactive";
+import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
+const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
+const LoadShiftChart = lazy(() => import("../components/solutions/LoadShiftChart"));
 import {
   BenefitStrip,
   CardGrid,
+  CompareProvider,
   CtaBand,
   FaqList,
   FeatureGrid,
@@ -147,7 +150,7 @@ const PARTNERS = [
 
 export default function SolutionsUtility() {
   return (
-    <div className="solutions-page">
+    <div className="solutions-page segment-page">
       <SolutionHero
         segment="utility"
         overlay="light"
@@ -168,6 +171,12 @@ export default function SolutionsUtility() {
           credit: "CLOU utility-scale storage · technology partner imagery",
         }}
       />
+      {/* Sticky segment switcher (own chunk, mounted once the page is idle): shown once the hero has scrolled away. */}
+      <AfterIdle>
+        <Suspense fallback={null}>
+          <SegmentSwitcher current="utility" />
+        </Suspense>
+      </AfterIdle>
 
       <BenefitStrip
         items={[
@@ -200,6 +209,12 @@ export default function SolutionsUtility() {
             { icon: UtilityPole, title: "Transmission & Distribution Support", text: "Deploy storage close to demand or generation to improve flexibility and reduce grid constraints." },
           ]}
         />
+        {/* Illustrative chart (own chunk, loaded near; its box is reserved). */}
+        <NearViewport className="mt-12 aspect-[4/3] w-full max-w-3xl sm:aspect-[16/10]">
+          <Suspense fallback={null}>
+            <LoadShiftChart variant="utility" />
+          </Suspense>
+        </NearViewport>
       </Section>
 
       <Section
@@ -210,43 +225,42 @@ export default function SolutionsUtility() {
         title="Hithium + CLOU. Two Specialists. One NEXERA Utility Ecosystem."
         intro="NEXERA brings together two dedicated energy-storage technology platforms, so project developers, IPPs, EPCs and utilities can select the architecture that best fits their project."
       >
-        <div className="mt-12 space-y-16">
-          {PARTNERS.map((p) => (
-            <div key={p.id} className="group/card rounded-3xl border border-line bg-paper p-6 md:p-10">
-              <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-                <div>
-                  <PartnerMark partner={p.id} decorative />
-                  <h3 className="mt-5 text-2xl font-semibold tracking-tight text-ink">{p.title}</h3>
-                  <p className="mt-3 leading-relaxed text-graphite">{p.copy}</p>
-                  <Stats items={p.stats} />
-                  <Link
-                    to={`/products?partner=${p.id}`}
-                    className="group/all mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:text-steel"
-                  >
-                    All {p.id === "clou" ? "CLOU" : "Hithium"} systems
-                    <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/all:translate-x-1" />
-                  </Link>
+        {/* One compare selection across both partners' featured systems. */}
+        <CompareProvider>
+          <div className="mt-12 space-y-16">
+            {PARTNERS.map((p) => (
+              <div key={p.id} className="group/card rounded-3xl border border-line bg-paper p-6 md:p-10">
+                <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+                  <div>
+                    <PartnerMark partner={p.id} decorative />
+                    <h3 className="mt-5 text-2xl font-semibold tracking-tight text-ink">{p.title}</h3>
+                    <p className="mt-3 leading-relaxed text-graphite">{p.copy}</p>
+                    <Stats items={p.stats} />
+                    <ArrowLink to={`/products?partner=${p.id}`} className="mt-6">
+                      All {p.id === "clou" ? "CLOU" : "Hithium"} systems
+                    </ArrowLink>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{p.whyTitle}</p>
+                    <ul className="mt-4 divide-y divide-line">
+                      {p.why.map(([t, d]) => (
+                        <li key={t} className="py-3 text-sm leading-relaxed text-graphite">
+                          <strong className="font-semibold text-ink">{t}:</strong> {d}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{p.whyTitle}</p>
-                  <ul className="mt-4 divide-y divide-line">
-                    {p.why.map(([t, d]) => (
-                      <li key={t} className="py-3 text-sm leading-relaxed text-graphite">
-                        <strong className="font-semibold text-ink">{t}:</strong> {d}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <p className="mt-10 text-xs font-semibold uppercase tracking-[0.2em] text-sage">Featured systems</p>
+                <CardGrid columns={2} className="mt-4">
+                  {p.systems.map((s) => (
+                    <SolutionProductCard key={s.name} {...s} level={4} product={getProduct(s.product)} />
+                  ))}
+                </CardGrid>
               </div>
-              <p className="mt-10 text-xs font-semibold uppercase tracking-[0.2em] text-sage">Featured systems</p>
-              <CardGrid columns={2} className="mt-4">
-                {p.systems.map((s) => (
-                  <SolutionProductCard key={s.name} {...s} level={4} product={getProduct(s.product)} />
-                ))}
-              </CardGrid>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </CompareProvider>
       </Section>
 
       <Section
@@ -363,13 +377,9 @@ export default function SolutionsUtility() {
             { icon: MonitorCheck, title: "Lifecycle Support", text: "Monitoring, diagnostics and technical service throughout the system lifecycle." },
           ]}
         />
-        <Link
-          to="/become-a-partner"
-          className="group/p mt-12 inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:text-steel"
-        >
+        <ArrowLink to="/become-a-partner" className="mt-12">
           For EPCs: Become a Partner
-          <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/p:translate-x-1" />
-        </Link>
+        </ArrowLink>
       </Section>
 
       <FaqList id="faq" title="Utility-Scale BESS — Frequently Asked Questions" items={UTILITY_FAQ} />
@@ -379,14 +389,8 @@ export default function SolutionsUtility() {
         eyebrow="Ready to build your utility-scale project?"
         title="Let's Design the Right Storage Solution for Your Project."
         body="Tell us your project capacity, solar/wind capacity, required duration, grid voltage and location. Our team will help evaluate the appropriate Hithium or CLOU solution, system configuration and project architecture."
-        checklist={[
-          "Project feasibility support",
-          "Recommended system configuration",
-          "Technical & commercial evaluation",
-          "Grid integration guidance",
-          "Local support in India",
-          "End-to-end project collaboration",
-        ]}
+        checklist={CTA_TOPICS.utility}
+        segment="utility"
         button={{ label: "Talk to a Utility BESS Expert", to: "/contact?intent=utility" }}
       />
       {/* Last in the DOM, so keyboard users reach the page before the section dots. */}

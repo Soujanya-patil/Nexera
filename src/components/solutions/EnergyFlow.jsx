@@ -1,4 +1,7 @@
+import { useEffect, useRef, useState } from "react";
 import { BatteryCharging, EvCharger, House, Lightbulb, Sun, UtilityPole, ZapOff } from "lucide-react";
+import { loadGsap } from "../../lib/motion";
+import { onceInView } from "../../lib/inview";
 
 // Nodes of the home energy diagram (viewBox 900 × 300).
 const NODES = {
@@ -27,13 +30,31 @@ export const MODES = {
 };
 
 /**
+ * "A day with home storage" (the slider under the diagram, in the Complete Smart Home Energy mode):
+ * which lines carry energy at each hour, and during a power cut. Captions are the slider's live text.
+ */
+export const DAY = [
+  { from: 6, to: 10, nodes: ["solar", "home"], lines: ["solarHome"], caption: "Morning: solar powers the home" },
+  { from: 10, to: 16, nodes: ["solar", "home", "battery"], lines: ["solarHome", "solarBattery"], caption: "Midday: solar powers the home and charges the battery" },
+  { from: 16, to: 23, nodes: ["battery", "home", "ev"], lines: ["batteryHome", "homeEv"], caption: "Evening: the battery powers the home" },
+  { from: 23, to: 30, nodes: ["grid", "home"], lines: ["gridHome"], caption: "Night: the grid takes over" }, // 23:00 → 06:00
+];
+export const OUTAGE = { nodes: ["battery", "backup"], lines: ["batteryBackup"], outage: true, caption: "Power cut: the battery keeps essential loads running" };
+/** The DAY entry for an hour 0–24. */
+export const dayAt = (hour) => {
+  const h = hour < 6 ? hour + 24 : hour;
+  return DAY.find((d) => h >= d.from && h < d.to) ?? DAY[3];
+};
+
+/**
  * Animated energy-flow diagram for "Solutions for Every Home" (decorative: aria-hidden; the page
- * carries a visually hidden summary of the selected system). Active lines carry moving dashes
- * (stroke-dashoffset, CSS; static under reduced motion); inactive nodes and lines fade back. Its own
+ * carries a visually hidden summary of the selected system, and the day slider a live caption). Active
+ * lines carry moving dashes (stroke-dashoffset, CSS; static under reduced motion); inactive nodes and
+ * lines fade back. `day` ({ hour, outage }, from the day slider) overrides the system `mode`. Its own
  * chunk, loaded when the section is near.
  */
-export default function EnergyFlow({ mode }) {
-  const m = MODES[mode];
+export default function EnergyFlow({ mode, day }) {
+  const m = day ? (day.outage ? OUTAGE : dayAt(day.hour)) : MODES[mode];
   return (
     <svg viewBox="0 0 900 300" aria-hidden="true" className="h-auto w-full" role="presentation">
       {Object.entries(LINES).map(([id, d]) => {
@@ -75,5 +96,98 @@ export default function EnergyFlow({ mode }) {
         );
       })}
     </svg>
+  );
+}
+
+const hhmm = (hour) => {
+  const h = Math.floor(hour) % 24;
+  const m = Math.round((hour % 1) * 60);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
+
+/**
+ * "A day with home storage": a 24-hour range slider under the diagram (sun thumb by day, moon by
+ * night) and a "Power cut" toggle chip. Moving either puts the diagram in the Complete Smart Home
+ * Energy mode with the flows of that hour (`onDay({ hour, outage })`); a caption under it says what is
+ * happening (aria-live). When the slider first scrolls into view at a normal pace it plays the 24 h
+ * once (4 s) and then is the visitor's; any interaction stops that at once. Reduced motion: no
+ * auto-play. Same chunk as the diagram.
+ */
+export function DaySlider({ day, hour, onDay }) {
+  const root = useRef(null);
+  const stop = useRef(() => {});
+  const [auto, setAuto] = useState(false); // auto-playing: the caption isn't announced meanwhile
+  const outage = !!day?.outage;
+  const caption = outage ? OUTAGE.caption : dayAt(hour).caption;
+
+  useEffect(() => {
+    const el = root.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let cancelled = false;
+    let off;
+    let tween;
+    loadGsap().then(({ gsap }) => {
+      if (cancelled) return;
+      off = onceInView(el, {
+        initial: true,
+        enter: () => {
+          const p = { h: 0 };
+          setAuto(true);
+          tween = gsap.to(p, {
+            h: 24,
+            duration: 4,
+            ease: "none",
+            onUpdate: () => onDay({ hour: Math.round(p.h * 4) / 4, outage: false }),
+            onComplete: () => setAuto(false),
+          });
+          stop.current = () => {
+            tween.kill();
+            setAuto(false);
+          };
+        },
+        show: () => {},
+      });
+    });
+    return () => {
+      cancelled = true;
+      off?.();
+      tween?.kill();
+    };
+    // Set up once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const night = hour < 6 || hour >= 18;
+  return (
+    <div ref={root} onPointerDownCapture={() => stop.current()} onKeyDownCapture={() => stop.current()} className="mt-6">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+        <input
+          type="range"
+          min="0"
+          max="24"
+          step="0.25"
+          value={hour}
+          onChange={(e) => onDay({ hour: Number(e.target.value), outage: false })}
+          aria-label="Time of day"
+          aria-valuetext={`${hhmm(hour)}, ${dayAt(hour).caption}`}
+          data-phase={night ? "moon" : "sun"}
+          className="day-range min-w-[12rem] flex-1"
+        />
+        <button
+          type="button"
+          aria-pressed={outage}
+          onClick={() => onDay({ hour, outage: !outage })}
+          className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${
+            outage ? "border-amber bg-amber/15 text-ink" : "border-line bg-paper text-forest hover:border-forest/40"
+          }`}
+        >
+          <ZapOff aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+          Power cut
+        </button>
+      </div>
+      <p aria-live={auto ? "off" : "polite"} className={`mt-3 min-h-[1.5rem] text-sm font-medium transition-opacity duration-300 ${day ? "text-forest" : "text-graphite/70"}`}>
+        {caption}
+      </p>
+    </div>
   );
 }

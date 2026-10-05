@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { KineticHeading } from "./Kinetic";
+import StageBlend, { FOOTAGE_EDGE } from "./StageBlend";
 import { CALLOUTS } from "../cabinet/Callouts";
 import posterSrc from "../../assets/products/nexera-hero-cabinet-poster.webp";
 import openStill from "../../assets/catalogue/tcl-blueark-w10-open.webp";
@@ -62,14 +63,25 @@ export default function CabinetScrub() {
           </div>
 
           {scrub ? (
-            // The stage keeps the footage's own 1040 × 864 aspect and fits the pinned viewport.
-            <div className="relative mx-auto aspect-[65/54] w-full max-w-[calc((100svh-12rem)*65/54)] overflow-hidden rounded-2xl bg-[#0d1012] ring-1 ring-white/10">
+            // The stage keeps the footage's own 1040 × 864 aspect and fits the pinned viewport. No box: its
+            // ground is the footage's edge colour and StageBlend fades the edges into the section.
+            <div className="relative mx-auto aspect-[65/54] w-full max-w-[calc((100svh-12rem)*65/54)] overflow-hidden" style={{ backgroundColor: FOOTAGE_EDGE }}>
               {near ? (
-                <Suspense fallback={poster}>
+                <Suspense
+                  fallback={
+                    <>
+                      {poster}
+                      <StageBlend />
+                    </>
+                  }
+                >
                   <CabinetStage section={section} />
                 </Suspense>
               ) : (
-                poster
+                <>
+                  {poster}
+                  <StageBlend />
+                </>
               )}
             </div>
           ) : (

@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { createContext, lazy, Suspense, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, ChevronDown, ChevronRight } from "lucide-react";
+import { Check, ChevronDown, ChevronRight } from "lucide-react";
 import { KineticEyebrow, KineticHeading } from "./Kinetic";
-import { Spotlight, useTilt } from "./Interactive";
+import { ArrowLink, SEGMENT_OFFSET, Spotlight, useTilt } from "./Interactive";
 import MagneticButton from "../ui/MagneticButton";
 import PillLink from "../PillLink";
 import SceneImg from "../SceneImg";
@@ -15,7 +15,7 @@ import { loadGsap } from "../../lib/motion";
 import { onceInView } from "../../lib/inview";
 import { SCRUB, useScrub } from "../../lib/scrub";
 import { partnerOf } from "../../data/products";
-import { formatCount, parseCount } from "../../lib/count";
+import { topicSlug } from "../../data/solutionTopics";
 
 /*
  * Building blocks for the three Solutions pages (/solutions/utility-scale, /commercial-industrial,
@@ -50,8 +50,9 @@ const HERO_OVERLAY = {
  *   CTA — scales 0.96 → 1 with a fade, last
  *   photo — clip-path wipe (0.8 s, desktop) while it zooms out slowly (1.12 → 1.06 over 1.6 s); on desktop the
  *           scroll parallax then takes it from 1.06 to 1.0 (yPercent 0 → 8) as the hero scrolls out.
- * Arriving by the hub → page View Transition the hero is shown in its final state (it is the morph
- * target). Reduced motion: no motion at all.
+ * Arriving by a View Transition (hub card or segment switcher → this page) the photo is the morph
+ * target, so it is shown as it is (no wipe, no zoom); the text still plays its entrance, starting as
+ * the new page fades in (the old page is gone by then). Reduced motion: no motion at all.
  *
  * The photo wrapper's left edge is faded out with a mask so the image has no hard edge to show: at
  * fractional device-pixel ratios (125 % / 150 % display scaling) the GPU-composited photo used to leak
@@ -61,7 +62,9 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
   const root = useRef(null);
   const parallax = useRef(null);
   const accent = useRef(null);
-  const back = useRouteTransition("/solutions", `[data-vt-card="${segment}"]`);
+  const back = useRouteTransition("/solutions", `[data-vt-card="${segment}"]`, { segment });
+  // Read once: arrived by a View Transition (the photo is already in place, morphed from the card).
+  const [morphed] = useState(() => document.documentElement.dataset.vt === "true");
   usePointerDepth(root);
   useScrub(root, ({ gsap }) => {
     gsap.fromTo(
@@ -70,10 +73,10 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
       { yPercent: 8, scale: 1, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: SCRUB } }
     );
   });
-  const intro = useIntro(
-    root,
-    ({ tl, q }) => {
+  const intro = useIntro(root, ({ tl, q }) => {
       const done = { clearProps: "all" };
+      // After a morph, start once the old page has faded out (150 ms, index.css).
+      if (morphed) tl.delay(0.15);
       tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, letterSpacing: "0.4em" }, { opacity: 1, letterSpacing: "0.22em", duration: 0.6, ease: "power2.out", ...done }, 0)
         .fromTo(q('[data-a="rule"]'), { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out", ...done }, 0)
         .fromTo(q('[data-a="line"]'), { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: 0.65, ease: "expo.out", stagger: 0.09, ...done }, 0.1)
@@ -94,9 +97,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
           0
         )
         .fromTo(q('[data-a="zoom"]'), { opacity: 1, scale: 1.0566 }, { scale: 1, duration: 1.6, ease: "power2.out", ...done }, 0);
-    },
-    () => document.documentElement.dataset.vt === "true"
-  );
+  });
 
   return (
     <section ref={root} data-vt-hero={segment} className="relative overflow-hidden bg-night text-white">
@@ -105,13 +106,13 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
         {/* Photo: full-bleed behind the copy on phones (dimmed); on desktop the right 54% (62% from 1280 px,
             where the copy has more room), its left edge masked to transparent so it melts into the ground. */}
         <div
-          data-a="image"
-          style={{ viewTransitionName: `sol-img-${segment}` }}
+          data-a={morphed ? undefined : "image"}
+          data-vt-img
           className="absolute inset-0 overflow-hidden lg:left-[46%] xl:left-[38%] lg:[mask-image:linear-gradient(to_right,transparent,#000_42%)] xl:[mask-image:linear-gradient(to_right,transparent,#000_26%)]"
         >
           {/* parallax (scroll scrub, transform only) → zoom (load) → pointer drift → photo */}
           <div ref={parallax} className="absolute inset-0 will-change-transform">
-            <div data-a="zoom" className="absolute inset-0">
+            <div data-a={morphed ? undefined : "zoom"} className="absolute inset-0">
               <div className="absolute -inset-3" style={depth(-6, -4)}>
                 <SceneImg
                   name={image.name}
@@ -149,7 +150,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
               <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
               {eyebrow}
             </p>
-            <h1 style={{ viewTransitionName: `sol-title-${segment}` }} className="mt-5 text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
+            <h1 className="mt-5 text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
               <span className="line-mask">
                 <span data-a="line" className="block">
                   {line1}
@@ -178,7 +179,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
             )}
             <div className="mt-9">
               <span data-a="cta" className="inline-block">
-                <MagneticButton to={`#${cta.target}`} onClick={scrollToId(cta.target)} arrow ripple className="hover:scale-[1.02]">
+                <MagneticButton to={`#${cta.target}`} onClick={scrollToId(cta.target, { offset: SEGMENT_OFFSET })} arrow ripple className="hover:scale-[1.02]">
                   {cta.label}
                 </MagneticButton>
               </span>
@@ -579,42 +580,64 @@ export function Checklist({ items, dark = false, className = "mt-6" }) {
 }
 
 /**
- * A figure that counts up once when it scrolls into view (lib/count.js; 0.9 s, power2.out). Only
- * quantities count: a ranking ("#231") or a calendar year renders as its final text at once. The real value is
- * in the markup from the start and stays there until the count begins — it only animates the
- * displayed text and always ends on the exact original string. Nothing animates under reduced
- * motion or for values that aren't countable.
+ * A figure that rolls in once as it scrolls into view: each character of the FINAL value (digits,
+ * "+", "#", units alike) slides up from behind its own mask, 30 ms apart (closer for long values), the
+ * whole roll ≤ 0.5 s. No other number is ever rendered — there is no count, so no frame can show a
+ * wrong figure — and the text in the markup is the final value from the start. While it waits below
+ * the viewport it is hidden (index.css, js-motion only); already on screen, scrolled past, arriving in a
+ * fast scroll or under reduced motion it is simply shown.
  */
-function CountValue({ value }) {
+function RollValue({ value }) {
   const ref = useRef(null);
+  const gsapRef = useRef(null);
+  const [phase, setPhase] = useState("plain"); // plain → waiting → roll → plain
   useEffect(() => {
     const el = ref.current;
-    const parsed = parseCount(value);
-    const notQuantity = /^#/.test(value.trim()) || /^(19|20)\d{2}$/.test(value.trim());
-    if (!el || !parsed || notQuantity || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let raf;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        io.disconnect();
-        const start = performance.now();
-        const tick = (now) => {
-          const t = Math.min((now - start) / 900, 1);
-          el.textContent = t < 1 ? formatCount(parsed, t) : value;
-          if (t < 1) raf = requestAnimationFrame(tick);
-        };
-        raf = requestAnimationFrame(tick);
-      },
-      { rootMargin: "0px 0px -8% 0px" }
-    );
-    io.observe(el);
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let cancelled = false;
+    let off;
+    setPhase("waiting");
+    loadGsap()
+      .then(({ gsap }) => {
+        if (cancelled) return;
+        gsapRef.current = gsap;
+        off = onceInView(el, { enter: () => setPhase("roll"), show: () => setPhase("plain") });
+      })
+      .catch(() => !cancelled && setPhase("plain"));
     return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-      el.textContent = value;
+      cancelled = true;
+      off?.();
     };
-  }, [value]);
-  return <span ref={ref}>{value}</span>;
+  }, []);
+  // Before the first paint of the split value, so its characters never show in place first.
+  useLayoutEffect(() => {
+    if (phase !== "roll") return;
+    const chars = ref.current.querySelectorAll("[data-ch]");
+    const each = chars.length > 1 ? Math.min(0.03, 0.2 / (chars.length - 1)) : 0;
+    const tween = gsapRef.current.fromTo(
+      chars,
+      { yPercent: 110 },
+      { yPercent: 0, duration: 0.3, ease: "power3.out", stagger: each, onComplete: () => setPhase("plain") }
+    );
+    return () => tween.kill();
+  }, [phase]);
+  return (
+    <span ref={ref} data-roll={phase === "plain" ? undefined : phase}>
+      {phase === "roll"
+        ? [...value].map((c, i) =>
+            c === " " ? (
+              " "
+            ) : (
+              <span key={i} className="roll-mask">
+                <span data-ch className="inline-block">
+                  {c}
+                </span>
+              </span>
+            )
+          )
+        : value}
+    </span>
+  );
 }
 
 /** Figures as value + label pairs (tabular figures so the columns line up). */
@@ -626,7 +649,7 @@ export function Stats({ items, className = "mt-6" }) {
         <div key={label} className="flex flex-col-reverse border-l-2 border-signal/60 pl-3">
           <dt className="text-xs leading-snug text-graphite">{label}</dt>
           <dd className="text-lg font-semibold tracking-tight text-forest tabular-nums">
-            <CountValue value={value} />
+            <RollValue value={value} />
           </dd>
         </div>
       ))}
@@ -655,6 +678,64 @@ export function PartnerMark({ partner, name, decorative = false }) {
     <p aria-hidden={decorative || undefined} className="self-start text-2xl font-bold uppercase leading-6 tracking-tight text-ink">
       {name}
     </p>
+  );
+}
+
+// ---- Product compare (C&I "Four Solutions", Utility "Featured systems") ----------------------------
+
+// The tray and the comparison dialog: their own chunk, fetched when a first system is ticked.
+const CompareTray = lazy(() => import("./CompareTray"));
+const CompareContext = createContext(null);
+export const MAX_COMPARE = 3;
+
+/**
+ * Holds a page's compare selection (product ids, oldest first, at most 3: a 4th replaces the oldest
+ * and says so). Wrap the part of a page whose SolutionProductCards can be compared; the selection
+ * lives as long as the page does, so it resets on route change. From 2 systems the tray slides up.
+ */
+export function CompareProvider({ children }) {
+  const [ids, setIds] = useState([]);
+  const [replaced, setReplaced] = useState(0); // bumps when a 4th pick replaced the oldest (toast)
+  const toggle = (id) => {
+    if (ids.includes(id)) return setIds(ids.filter((x) => x !== id));
+    if (ids.length >= MAX_COMPARE) {
+      setReplaced((n) => n + 1);
+      return setIds([...ids.slice(1), id]);
+    }
+    setIds([...ids, id]);
+  };
+  const clear = () => setIds([]);
+  return (
+    <CompareContext.Provider value={{ ids, toggle }}>
+      {children}
+      {ids.length > 0 && (
+        <Suspense fallback={null}>
+          <CompareTray ids={ids} replaced={replaced} onClear={clear} />
+        </Suspense>
+      )}
+    </CompareContext.Provider>
+  );
+}
+
+/** The "Compare" checkbox chip at the top right of a product card's media. */
+function CompareChip({ id, name }) {
+  const { ids, toggle } = useContext(CompareContext);
+  const checked = ids.includes(id);
+  return (
+    <label
+      className={`absolute right-3 top-3 z-20 inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold shadow-sm backdrop-blur transition-colors duration-200 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-signal ${
+        checked ? "border-forest bg-forest text-white" : "border-line bg-paper/90 text-forest hover:border-forest/40"
+      }`}
+    >
+      <input type="checkbox" checked={checked} onChange={() => toggle(id)} className="sr-only" />
+      <span
+        aria-hidden="true"
+        className={`grid h-4 w-4 place-items-center rounded-[4px] border ${checked ? "border-signal bg-signal text-forest" : "border-forest/40 bg-paper"}`}
+      >
+        {checked && <Check className="h-3 w-3" strokeWidth={3} />}
+      </span>
+      Compare<span className="sr-only"> {name}</span>
+    </label>
   );
 }
 
@@ -688,7 +769,10 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
   const src = photo?.src ?? product.image;
   const [w, h] = photo ? [photo.width, photo.height] : fallback ? LOGO_SIZES[product.partner] : IMAGE_SIZES[product.id] ?? [];
   const card = useRef(null);
-  useTilt(card, 6);
+  useTilt(card, 4);
+  // Comparable inside a CompareProvider, from the catalogue's own record — so not a card that shows a
+  // different configuration than its catalogue entry (`photo`), whose figures the catalogue lacks.
+  const comparable = useContext(CompareContext) && !photo;
   return (
     <article
       ref={card}
@@ -702,7 +786,14 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
         style={{ background: "radial-gradient(40% 50% at var(--gx, 50%) var(--gy, 30%), rgba(255,255,255,0.35), transparent 70%)" }}
       />
       <div data-sr data-wipe className="relative h-56 shrink-0 overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)] lg:h-60">
-        {!fallback && <span aria-hidden="true" className="absolute inset-x-[22%] bottom-[7%] h-5 rounded-[100%] bg-black/15 blur-lg" />}
+        {comparable && <CompareChip id={product.id} name={name} />}
+        {/* Ground shadow: widens as the product lifts on hover. */}
+        {!fallback && (
+          <span
+            aria-hidden="true"
+            className="absolute inset-x-[22%] bottom-[7%] h-5 rounded-[100%] bg-black/15 blur-lg transition-transform duration-500 ease-out group-hover:scale-x-[1.3] motion-reduce:transition-none"
+          />
+        )}
         <img
           src={src}
           width={w}
@@ -713,7 +804,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
           className={
             fallback
               ? "absolute inset-0 m-auto h-auto w-[40%] max-w-[10rem] object-contain opacity-80"
-              : "absolute inset-0 h-full w-full object-contain p-6 transition-[scale,translate] duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.03]"
+              : "absolute inset-0 h-full w-full object-contain p-6 transition-[scale,translate] duration-500 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.03] motion-reduce:transition-none"
           }
         />
       </div>
@@ -734,13 +825,9 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
           </ul>
         )}
         {note && <p className="mt-4 text-xs leading-relaxed text-graphite">{note}</p>}
-        <Link
-          to={to ?? `/products/${product.id}`}
-          className="group/cta mt-auto inline-flex items-center gap-1.5 self-start pt-6 text-sm font-semibold text-forest hover:text-steel"
-        >
+        <ArrowLink to={to ?? `/products/${product.id}`} className="mt-auto self-start pt-6">
           {cta}
-          <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
-        </Link>
+        </ArrowLink>
       </div>
     </article>
   );
@@ -809,10 +896,61 @@ export function FaqList({ id, title, items, tone = "ice" }) {
   );
 }
 
-/** Closing CTA band (dark): eyebrow, h2, optional subheading, body, checklist, button. */
-export function CtaBand({ id, eyebrow, title, subheading, body, checklist, button }) {
+/**
+ * The CTA checklist as toggle chips: every item starts selected; clicking (or Space / Enter) deselects
+ * or reselects it, its tick drawing in or out (stroke). Labelled by the band's body text ("…we'll
+ * help you determine:").
+ */
+function TopicChips({ items, selected, onToggle, labelledBy }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-night py-14 text-white lg:py-20">
+    <ul aria-labelledby={labelledBy} className="flex flex-wrap gap-2.5">
+      {items.map((t) => {
+        const on = selected.includes(t);
+        return (
+          <li key={t}>
+            <button
+              type="button"
+              aria-pressed={on}
+              onClick={() => onToggle(t)}
+              className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-left text-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${
+                on ? "border-signal/60 bg-signal/15 text-white" : "border-white/15 bg-transparent text-ice/60 hover:border-white/30 hover:text-ice/85"
+              }`}
+            >
+              <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors duration-200 ${on ? "border-signal bg-signal" : "border-white/30"}`}>
+                <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none">
+                  <path
+                    d="M2.5 6.2 5 8.6 9.6 3.6"
+                    pathLength="1"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-forest transition-[stroke-dashoffset] duration-300 ease-out motion-reduce:transition-none"
+                    style={{ strokeDasharray: 1, strokeDashoffset: on ? 0 : 1 }}
+                  />
+                </svg>
+              </span>
+              {t}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/**
+ * Closing CTA band (dark): eyebrow, h2, optional subheading, body, the checklist as selectable chips,
+ * and the button. With `segment`, the button carries the chosen items to the contact form:
+ * /contact?intent=<segment>&topics=<slugs> (the contact page pre-fills its message from them); with
+ * none chosen it is the plain /contact?intent=<segment> link.
+ */
+export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segment, button }) {
+  const [selected, setSelected] = useState(checklist);
+  const toggle = (t) => setSelected((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : checklist.filter((x) => x === t || cur.includes(x))));
+  const to = segment && selected.length ? `${button.to}&topics=${selected.map(topicSlug).join(",")}` : button.to;
+  return (
+    <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-night py-14 text-white lg:py-20">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, rgba(144,217,136,0.08), transparent 70%)" }} />
       <Spotlight />
       <div className="relative container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
@@ -826,13 +964,19 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, butto
             {title}
           </KineticHeading>
           {subheading && <p className="mt-4 text-lg font-medium text-white">{subheading}</p>}
-          <p className="mt-4 max-w-xl leading-relaxed text-ice/80">{body}</p>
-          <PillLink to={button.to} arrow spotlight ripple className="mt-8">
+          <p id={`${id}-body`} className="mt-4 max-w-xl leading-relaxed text-ice/80">
+            {body}
+          </p>
+          <PillLink to={to} arrow spotlight ripple className="mt-8">
             {button.label}
           </PillLink>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 md:p-8">
-          <Checklist items={checklist} dark className="" />
+          {segment ? (
+            <TopicChips items={checklist} selected={selected} onToggle={toggle} labelledBy={`${id}-body`} />
+          ) : (
+            <Checklist items={checklist} dark className="" />
+          )}
         </div>
       </div>
     </section>

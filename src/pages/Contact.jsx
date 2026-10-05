@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import { applicationLabel, getProduct, productLabel } from "../data/products";
+import { topicLabels } from "../data/solutionTopics";
 
 const paths = [
   { id: "general", label: "I'm a customer looking for a BESS system" },
@@ -31,11 +32,15 @@ export default function Contact() {
   const brand = BRANDS[params.get("brand")] ?? null;
   const type = ENQUIRY_TYPES.find((t) => t.id === (ENQUIRY_TYPES.some((x) => x.id === intent) ? intent : brand?.type)) ?? null;
   const name = product ? productLabel(product) : null;
+  // ?topics=<slugs>: the items chosen in a Solutions page's final CTA.
+  const topics = topicLabels(intent, params.get("topics"));
   const starter = quote
     ? `I'd like a quote${name ? ` for the ${name}` : ""}.`
     : name
       ? `I'd like to know more about the ${name}.`
-      : undefined;
+      : topics.length
+        ? `I'd like help with: ${topics.join(", ")}`
+        : undefined;
 
   function handleSubmit(e) {
     e.preventDefault();

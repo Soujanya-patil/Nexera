@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 import SceneImg from "../components/SceneImg";
-import { PartnerStrip, Spotlight } from "../components/solutions/Interactive";
+import { ArrowUnderline, PartnerStrip, Spotlight } from "../components/solutions/Interactive";
 import { SOLUTION_PAGES } from "../data/solutions";
 import { loadGsap } from "../lib/motion";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { useRouteTransition } from "../lib/viewTransition";
+import { useMediaQuery } from "../lib/scrollSteps";
+
+// The hero's crossfading segment ribbon: desktop only, its own chunk.
+const SegmentRibbon = lazy(() => import("../components/solutions/SegmentRibbon"));
 
 // The Solutions hub: one card per segment, each opening its own page. The card ids are the old
 // section ids, so links such as /solutions#ci (Home's Solutions cards) still land on the right card.
@@ -51,6 +54,7 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
  */
 function HubHeader({ eyebrow, title, subtitle }) {
   const root = useRef(null);
+  const wide = useMediaQuery("(min-width: 1024px)");
   const [state, setState] = useState(() => (reduced() || document.documentElement.dataset.vt === "true" ? "done" : "pending"));
   useEffect(() => {
     if (state === "done") return;
@@ -95,25 +99,105 @@ function HubHeader({ eyebrow, title, subtitle }) {
   return (
     <section ref={root} className="relative overflow-hidden bg-ink text-white">
       <Spotlight />
-      <div data-intro={state} className="relative container-site py-16 md:py-20">
-        <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-sm font-medium text-signal">
-          <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
-          {eyebrow}
-        </p>
-        <h1 data-a="title" className="max-w-2xl font-sans text-3xl font-semibold md:text-4xl">
-          {title}
-        </h1>
-        <p data-a="desc" className="mt-4 max-w-2xl leading-relaxed text-ice/75">
-          {subtitle}
-        </p>
+      <div data-intro={state} className="relative container-site grid items-center gap-12 py-16 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
+        <div>
+          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-sm font-medium text-signal">
+            <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
+            {eyebrow}
+          </p>
+          <h1 data-a="title" className="max-w-2xl font-sans text-3xl font-semibold md:text-4xl">
+            {title}
+          </h1>
+          <p data-a="desc" className="mt-4 max-w-2xl leading-relaxed text-ice/75">
+            {subtitle}
+          </p>
+        </div>
+        {/* The space is reserved (same size as the ribbon) so nothing shifts when it arrives. */}
+        {wide && (
+          <Suspense fallback={<div aria-hidden="true" className="aspect-[4/3] rounded-2xl bg-deep" />}>
+            <SegmentRibbon />
+          </Suspense>
+        )}
       </div>
     </section>
   );
 }
 
-/** A hub card: opening it morphs its photo into the segment hero's photo and its title into the h1. */
+// "Expanding panels": the hovered / focused card's share of the row (the others keep 1).
+const GROW = 1.6;
+const PANELS = "(hover: hover) and (pointer: fine) and (min-width: 1024px) and (prefers-reduced-motion: no-preference)";
+
+/**
+ * The hub cards as "expanding panels" (desktop, mouse, motion allowed): the hovered or focused card
+ * opens to 1.6 shares of the row while the other two narrow (400 ms, power3.out). Nothing moves in the
+ * layout — that would be a layout shift on every hover. Each card is placed once, spanning every
+ * position it can ever show; what changes is its visible window (clip-path inset) and the position of
+ * its text block within it (transform), both precomputed here as CSS custom properties for the four
+ * states (none / 1st / 2nd / 3rd card open) and switched by index.css. The text block keeps the width
+ * of the narrowest window, so it is never clipped. Recomputed on resize; elsewhere the plain grid.
+ */
+function usePanels(ref) {
+  useEffect(() => {
+    const ul = ref.current;
+    if (!ul) return;
+    const mq = window.matchMedia(PANELS);
+    const items = [...ul.children];
+    const clear = () => {
+      delete ul.dataset.panels;
+      items.forEach((li) => li.removeAttribute("style"));
+    };
+    const layout = () => {
+      if (!mq.matches) return clear();
+      const cs = getComputedStyle(ul);
+      const pad = parseFloat(cs.paddingLeft);
+      const gap = parseFloat(cs.columnGap) || 20;
+      const avail = ul.clientWidth - pad - parseFloat(cs.paddingRight) - gap * (items.length - 1);
+      // Visible [left, right] of each card in each state (-1: none open).
+      const windows = (open) => {
+        const shares = items.map((_, i) => (i === open ? GROW : 1));
+        const sum = shares.reduce((a, b) => a + b, 0);
+        let x = 0;
+        return shares.map((w) => {
+          const left = x;
+          x += (avail * w) / sum + gap;
+          return [left, left + (avail * w) / sum];
+        });
+      };
+      const states = [-1, ...items.map((_, i) => i)].map(windows);
+      const narrowest = avail / (items.length - 1 + GROW);
+      ul.dataset.panels = "";
+      items.forEach((li, i) => {
+        const from = Math.min(...states.map((s) => s[i][0]));
+        const to = Math.max(...states.map((s) => s[i][1]));
+        li.style.left = `${pad + from}px`;
+        li.style.width = `${to - from}px`;
+        li.style.setProperty("--tw", `${narrowest}px`);
+        states.forEach((s, k) => {
+          const [l, r] = s[i];
+          const name = k === 0 ? "n" : k - 1;
+          li.style.setProperty(`--c${name}`, `inset(0 ${to - r}px 0 ${l - from}px round 16px)`);
+          li.style.setProperty(`--x${name}`, `${l - from}px`);
+        });
+      });
+    };
+    layout();
+    window.addEventListener("resize", layout);
+    mq.addEventListener("change", layout);
+    return () => {
+      window.removeEventListener("resize", layout);
+      mq.removeEventListener("change", layout);
+      clear();
+    };
+  }, [ref]);
+}
+
+/**
+ * A hub card: opening it morphs its photo into the segment hero's photo (the photo only: text never
+ * morphs). On desktop it is one of the expanding panels (usePanels): its photo zooms a little as it
+ * opens. Touch, small screens and reduced motion: the usual grid of cards.
+ */
 function SegmentCard({ s }) {
-  const open = useRouteTransition(s.page, `[data-vt-hero="${s.id}"]`);
+  const open = useRouteTransition(s.page, `[data-vt-hero="${s.id}"]`, { segment: s.id });
   return (
     <Link
       to={s.page}
@@ -121,27 +205,29 @@ function SegmentCard({ s }) {
       data-vt-card={s.id}
       className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-night text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal md:aspect-[4/5]"
     >
-      <div className="absolute inset-0 overflow-hidden" style={{ viewTransitionName: `sol-img-${s.id}` }}>
+      <div data-vt-img className="absolute inset-0 overflow-hidden">
         <SceneImg
           name={s.img}
           alt={s.alt}
-          sizes="(min-width: 768px) 33vw, 100vw"
+          sizes="(min-width: 1024px) 45vw, (min-width: 768px) 33vw, 100vw"
           className="absolute inset-0 h-full w-full object-cover transition-[scale,translate] duration-700 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.05] group-focus-visible:scale-[1.05]"
         />
       </div>
       <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/60 to-night/5" />
       <span aria-hidden="true" className="absolute inset-0 bg-night/0 transition-colors duration-500 group-hover:bg-night/35 group-focus-visible:bg-night/35" />
-      <div className="relative p-6 md:p-7">
+      {/* In the panels the card's own outline would be clipped by its window: the ring is drawn on the text. */}
+      <div
+        data-panel-text
+        className="relative rounded-2xl p-6 group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-signal md:p-7"
+      >
         <h2
-          style={{ viewTransitionName: `sol-title-${s.id}` }}
           className="text-2xl font-semibold transition-colors duration-300 group-hover:text-signal group-focus-visible:text-signal"
         >
           {s.title}
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-ice/85">{s.copy}</p>
-        <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-signal">
-          {s.cta}
-          <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-signal">
+          <ArrowUnderline group="card">{s.cta}</ArrowUnderline>
         </span>
       </div>
     </Link>
@@ -151,6 +237,7 @@ function SegmentCard({ s }) {
 export default function Solutions() {
   const grid = useRef(null);
   const reveal = useScrollReveal(grid, { stagger: 0.1 });
+  usePanels(grid);
   return (
     <div className="solutions-page">
       <HubHeader
@@ -161,7 +248,7 @@ export default function Solutions() {
 
       {/* Same card treatment as For EPCs' application cards: partner imagery under a dark gradient. */}
       <section aria-label="Solutions by segment" className="bg-paper py-14 lg:py-20">
-        <ul ref={grid} data-sr-state={reveal} className="grid container-site gap-5 md:grid-cols-3">
+        <ul ref={grid} data-sr-state={reveal} className="seg-panels grid container-site gap-5 md:grid-cols-3">
           {SEGMENTS.map((s) => (
             <li key={s.id} id={s.id} data-sr className="scroll-mt-20">
               <SegmentCard s={s} />

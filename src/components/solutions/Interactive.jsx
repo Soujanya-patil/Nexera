@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { partnerOf } from "../../data/products";
 import { getLenis } from "../../lib/lenis";
 import { useScrollReveal } from "../../lib/scrollReveal";
@@ -10,8 +11,58 @@ import { useScrollReveal } from "../../lib/scrollReveal";
  * request is removed on unmount (route change).
  */
 
+/**
+ * Anchor offset on the segment pages: the site header (64 px) plus the segment switcher under it
+ * (SegmentSwitcher, ~56 px with its gap), plus a little air. index.css sets the same value as the
+ * sections' scroll-margin-top for native #hash jumps.
+ */
+export const SEGMENT_OFFSET = -128;
+
 const FINE_POINTER = "(hover: hover) and (pointer: fine) and (min-width: 1024px) and (prefers-reduced-motion: no-preference)";
 const fine = () => window.matchMedia(FINE_POINTER).matches;
+
+/**
+ * The Solutions pages' text link ("Explore …", "Learn More", "View … systems"): on hover / keyboard focus
+ * the arrow nudges 4 px and an underline draws left → right (scaleX, 250 ms). Reduced motion: the same
+ * states, without the movement.
+ */
+export function ArrowLink({ to, children, className = "", ...rest }) {
+  return (
+    <Link
+      to={to}
+      className={`group/arrow inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:text-steel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal ${className}`}
+      {...rest}
+    >
+      <ArrowUnderline>{children}</ArrowUnderline>
+    </Link>
+  );
+}
+
+// Tailwind needs whole class names: the hover / focus triggers per kind of parent group.
+const ARROW_GROUP = {
+  arrow: ["group-hover/arrow:scale-x-100 group-focus-visible/arrow:scale-x-100", "group-hover/arrow:translate-x-1 group-focus-visible/arrow:translate-x-1"],
+  card: ["group-hover:scale-x-100 group-focus-visible:scale-x-100", "group-hover:translate-x-1 group-focus-visible:translate-x-1"],
+};
+
+/**
+ * ArrowLink's label + arrow, for a link styled elsewhere: `group="arrow"` reacts to the nearest
+ * `group/arrow` (ArrowLink itself), `group="card"` to a whole card that is the link (`group`).
+ */
+export function ArrowUnderline({ children, group = "arrow" }) {
+  const [line, nudge] = ARROW_GROUP[group];
+  return (
+    <>
+      <span className="relative">
+        {children}
+        <span
+          aria-hidden="true"
+          className={`absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-current transition-transform duration-[250ms] ease-out motion-reduce:transition-none ${line}`}
+        />
+      </span>
+      <ArrowRight aria-hidden="true" className={`h-4 w-4 shrink-0 transition-transform duration-[250ms] ease-out motion-reduce:transition-none ${nudge}`} />
+    </>
+  );
+}
 
 /**
  * A soft radial light (~420 px radius, faint green-white) that follows the cursor across its parent
@@ -276,30 +327,38 @@ export function AppRail({ items, label }) {
   );
 }
 
+// Where a partner's logo leads: its systems in the catalogue; Midea (no catalogue products yet) to a
+// residential enquiry about Midea, as on the residential page.
+const PARTNER_LINK = { midea: "/contact?intent=residential&brand=midea" };
+
 /**
- * Partner logo strip ("gallery"): each partner slides in with the reveal and its logo scales gently on
- * hover, with the partner's name as visible text beside it (Midea has no logo file: name only).
+ * Partner logo strip ("gallery"): the logos alone (each logo already says the name; the name is its
+ * alt text). Midea has no logo file, so its name is set as a wordmark at the logos' height — type, not
+ * an invented logo. Logos sit in greyscale at 70% and turn full colour on hover or keyboard focus.
+ * Each is a link to that partner's systems.
  */
 export function PartnerStrip({ partners, label = "Technology partners", className = "" }) {
   const list = useRef(null);
   const reveal = useScrollReveal(list);
   return (
-    <ul ref={list} data-sr-state={reveal} aria-label={label} className={`flex flex-wrap items-center justify-center gap-x-12 gap-y-6 ${className}`}>
+    <ul ref={list} data-sr-state={reveal} aria-label={label} className={`flex flex-wrap items-center justify-center gap-x-14 gap-y-8 ${className}`}>
       {partners.map((id) => {
         const p = partnerOf(id);
         const name = p?.name ?? id.charAt(0).toUpperCase() + id.slice(1);
         return (
-          <li data-sr key={id} className="group/logo flex items-center gap-3">
-            {p ? (
-              <img
-                src={p.logo}
-                alt=""
-                className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-500 ease-out group-hover/logo:scale-110`}
-              />
-            ) : null}
-            <span className={`font-semibold text-forest transition-colors duration-300 group-hover/logo:text-ink ${p ? "text-sm" : "text-lg uppercase tracking-tight"}`}>
-              {name}
-            </span>
+          <li data-sr key={id}>
+            <Link
+              to={PARTNER_LINK[id] ?? `/products?partner=${id}`}
+              className="grid h-10 place-items-center rounded-md px-2 opacity-70 grayscale transition-[opacity,filter] duration-300 hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal motion-reduce:transition-none"
+            >
+              {p ? (
+                <img src={p.logo} alt={name} className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto`} />
+              ) : (
+                <span className="text-[1.6rem] font-bold uppercase leading-6 tracking-[0.02em] text-forest">
+                  {name}
+                </span>
+              )}
+            </Link>
           </li>
         );
       })}
@@ -309,8 +368,9 @@ export function PartnerStrip({ partners, label = "Technology partners", classNam
 
 /**
  * Section progress rail (desktop ≥ 1280 px): a dot per visible section heading on the page, the
- * current one highlighted, the heading shown beside a dot on hover / focus. Clicking a dot glides to
- * that section below the sticky header (Lenis when running).
+ * current one highlighted, the heading (its h2 text, cut with an ellipsis) shown beside a dot on
+ * hover / focus. Clicking a dot glides to that section below the sticky header and the segment
+ * switcher (Lenis when running).
  */
 export function SectionRail() {
   const [sections, setSections] = useState([]);
@@ -346,8 +406,10 @@ export function SectionRail() {
   if (!sections.length) return null;
   const go = (el) => {
     const lenis = getLenis();
-    if (lenis) lenis.scrollTo(el, { offset: -64, duration: 1 });
-    else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 64, behavior: "smooth" });
+    // A position, not the element: Lenis would also subtract the section's scroll-margin-top.
+    const top = el.getBoundingClientRect().top + window.scrollY + SEGMENT_OFFSET;
+    if (lenis) lenis.scrollTo(top, { duration: 1 });
+    else window.scrollTo({ top, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
   return (
     <nav aria-label="Page sections" className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
@@ -376,16 +438,37 @@ export function SectionRail() {
   );
 }
 
+/** True once the page has been idle once after mount (at most 2 s): for work the first screen doesn't need. */
+export function useIdle() {
+  const [idle, setIdle] = useState(false);
+  useEffect(() => {
+    if (window.requestIdleCallback) {
+      const id = window.requestIdleCallback(() => setIdle(true), { timeout: 2000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const t = setTimeout(() => setIdle(true), 200);
+    return () => clearTimeout(t);
+  }, []);
+  return idle;
+}
+
+/** Renders `children` once the page has been idle (see useIdle): e.g. the segment switcher, hidden on the hero anyway. */
+export function AfterIdle({ children }) {
+  return useIdle() ? children : null;
+}
+
 /**
- * Renders `children` only once this box is within about one screen of the viewport (then keeps them).
- * The box reserves its space (`className` sets the size), so nothing shifts when the content arrives.
+ * Renders `children` only once this box is within about one screen of the viewport (then keeps them),
+ * and not before the page has been idle once — nothing in it is needed for the first paint. The box
+ * reserves its space (`className` sets the size), so nothing shifts when the content arrives.
  */
 export function NearViewport({ className = "", children }) {
   const ref = useRef(null);
   const [near, setNear] = useState(false);
+  const idle = useIdle();
   useEffect(() => {
     const el = ref.current;
-    if (!el || near) return;
+    if (!el || near || !idle) return;
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
@@ -396,7 +479,7 @@ export function NearViewport({ className = "", children }) {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [near]);
+  }, [near, idle]);
   return (
     <div ref={ref} className={className}>
       {near ? children : null}
