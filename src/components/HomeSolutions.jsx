@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import SceneImg from "./SceneImg";
 import { useEntrance } from "../lib/entrance";
 import { PARTNERS, PRODUCTS } from "../data/products";
+import { SOLUTION_PAGES } from "../data/solutions";
 
 // Which technology partners have systems for each application — read from the product catalogue,
 // so the preview can never claim a pairing the catalogue doesn't have.
@@ -26,6 +27,8 @@ const cards = [
   {
     id: "residential",
     title: "Residential",
+    page: SOLUTION_PAGES.residential.path,
+    cta: "Explore Residential Storage",
     copy: "Store your solar power. Use it when you need it. Greater independence, lower bills, reliable backup.",
     // TODO(india-imagery): see ScaleStory — res-house is a CGI render of a generic non-Indian house.
     img: "res-house",
@@ -34,6 +37,8 @@ const cards = [
   {
     id: "ci",
     title: "Commercial & Industrial (C&I)",
+    page: SOLUTION_PAGES.ci.path,
+    cta: "Explore C&I Storage",
     copy: "Cut peak demand charges. Improve reliability. Maximise solar ROI.",
     // TODO(india-imagery): see ScaleStory — ci-industrial is not identifiably Indian.
     img: "ci-industrial",
@@ -42,6 +47,8 @@ const cards = [
   {
     id: "utility",
     title: "Utility-Scale",
+    page: SOLUTION_PAGES.utility.path,
+    cta: "Explore Utility-Scale Storage",
     copy: "Enable a cleaner, more stable grid with large-scale storage.",
     // TODO(india-imagery): see ScaleStory — utility-yard shows Chinese-language signage.
     img: "utility-yard",
@@ -130,13 +137,14 @@ export default function HomeSolutions() {
                   <span aria-hidden="true">·</span>
                   {countFor(c.id)} {countFor(c.id) === 1 ? "system" : "systems"}
                 </p>
-                {/* Stretched link: the whole card is the target, the visible text names it */}
+                {/* Stretched link: the whole card is the target; the visible text names where it goes (the
+                    accessible name is the same words) */}
                 <Link
-                  to={`/solutions#${c.id}`}
-                  aria-label={`Learn more about ${c.title} storage`}
+                  to={c.page}
+                  aria-label={c.cta}
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-forest after:absolute after:inset-0 group-hover:text-steel focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
                 >
-                  Learn More
+                  {c.cta}
                   <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
                 </Link>
               </div>

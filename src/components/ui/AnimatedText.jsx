@@ -28,14 +28,20 @@ export default function AnimatedText({ as = "h2", className = "", children, ...r
       if (el.getBoundingClientRect().top < window.innerHeight) return;
       ctx = gsap.context(() => {
         const show = () => gsap.set(el, { opacity: 1, y: 0, clearProps: "opacity,transform" });
-        gsap.set(el, { opacity: 0.35, y: 12 });
+        // The 35% start is applied as the heading enters (its top at the viewport's bottom edge), not
+        // while it waits off screen: the heading is never left dimmed — and never measured dimmed by
+        // accessibility tools — however long it sits below the fold. Same reveal as before.
         ScrollTrigger.create({
           trigger: el,
           start: REVEAL.start,
           once: true,
           onEnter: (self) => {
             if (scrollingFast(self)) return show();
-            gsap.to(el, { opacity: 1, y: 0, duration: REVEAL.duration, ease: REVEAL.ease, overwrite: true, clearProps: "opacity,transform" });
+            gsap.fromTo(
+              el,
+              { opacity: 0.35, y: 12 },
+              { opacity: 1, y: 0, duration: REVEAL.duration, ease: REVEAL.ease, overwrite: true, clearProps: "opacity,transform" }
+            );
           },
           onLeave: show,
           onEnterBack: show,

@@ -82,8 +82,11 @@ export default function Nav() {
     >
       <nav className="flex h-16 container-site items-center justify-between">
         <div className="flex items-center gap-5">
-          <Link to="/" className="text-white" aria-label="Nexera Powertech home">
+          {/* Named by its own text (the wordmark) plus a hidden " home", so the accessible name always
+              contains the visible words. */}
+          <Link to="/" className="text-white">
             <Wordmark className="text-lg" />
+            <span className="sr-only"> home</span>
           </Link>
           <p className="hidden border-l border-white/20 pl-5 text-[0.625rem] font-medium uppercase leading-snug tracking-[0.2em] text-ice/80 xl:block">
             Store today
