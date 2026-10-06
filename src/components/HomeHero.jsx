@@ -4,6 +4,9 @@ import Callouts, { OUT } from "./cabinet/Callouts";
 import { createSeekGate, useBlobUrl } from "../lib/footage";
 import videoSrc from "../assets/products/nexera-hero-cabinet.mp4";
 import closeSrc from "../assets/products/nexera-hero-cabinet-close.mp4";
+// Phone versions of the two cycle clips (720 px wide, H.264, no audio, faststart; ~345 KB each).
+import videoMobileSrc from "../assets/products/nexera-hero-cabinet-mobile.mp4";
+import closeMobileSrc from "../assets/products/nexera-hero-cabinet-close-mobile.mp4";
 import posterSrc from "../assets/products/nexera-hero-cabinet-poster.webp";
 import scrubSrc from "../assets/products/nexera-hero-cabinet-scrub.mp4";
 import groundSrc from "../assets/products/nexera-hero-ground.webp";
@@ -181,16 +184,32 @@ export default function HomeHero() {
   // First load: the product (the poster: the desktop LCP) must not start transparent, so it only
   // settles in scale; client-side navigations keep the fade-and-settle (index.css).
   const [firstLoad] = useState(() => typeof window === "undefined" || isFirstLoad());
-  // The footage: desktop only, and only once the page has loaded (the poster is the first paint and
-  // the LCP). Phones, Save-Data and slow (2g/3g) connections keep the poster and never download the
-  // MP4s. Decided after mount, so the pre-rendered page and the first render match (no video src).
-  const [videoReady, setVideoReady] = useState(false);
+  // The footage, only once the page has loaded (the poster is the first paint and the LCP):
+  //  - desktop: the full clips, after the first idle moment past `load` (as before);
+  //  - phones (< 1024 px): the 720 px phone clips, requested at `load`; the cycle starts once the
+  //    opening clip can play through, the poster fading off over it (see `veil`);
+  //  - Save-Data, slow (2g/3g) connections, and phones under prefers-reduced-motion: the poster only,
+  //    no MP4 is downloaded.
+  // Decided after mount, so the pre-rendered page and the first render match (no video src).
+  const [footage, setFootage] = useState(null); // null | "desktop" | "mobile"
+  const videoReady = footage !== null;
+  // Phones: a copy of the poster laid over the video as it starts, then faded out (0.4 s), so the
+  // sharp poster hands over to the 720 px clip softly. Drawn into a <canvas> — canvas content is never
+  // a Largest Contentful Paint candidate, so the poster stays the LCP (an <img> copy, painted after
+  // load, would be recorded as a later LCP). Only ever rendered after load.
+  const [veil, setVeil] = useState(null); // null | "on" | "fade"
+  const veilCanvas = useRef(null);
+  const posterImg = useRef(null);
   useEffect(() => {
     const net = navigator.connection;
     const slow = net && (net.saveData || /(^|-)(2g|3g)$/.test(net.effectiveType ?? ""));
-    if (slow || !window.matchMedia("(min-width: 1024px)").matches) return;
+    if (slow) return;
+    const desktopScreen = window.matchMedia("(min-width: 1024px)").matches;
+    if (!desktopScreen && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let id;
-    const go = () => (id = (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 1)))(() => setVideoReady(true), { timeout: 1500 }));
+    const go = desktopScreen
+      ? () => (id = (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 1)))(() => setFootage("desktop"), { timeout: 1500 }))
+      : () => setFootage("mobile");
     if (document.readyState === "complete") go();
     else window.addEventListener("load", go, { once: true });
     return () => {
@@ -324,20 +343,56 @@ export default function HomeHero() {
     if (!o || story || !videoReady) return;
     o.muted = true;
     if (closing.current) closing.current.muted = true;
+    let cancelled = false;
+    const timers = [];
+    const start = async () => {
+      if (footage !== "mobile") return runCycle();
+      // Phones: begin once the opening clip can play through, the poster copy fading off over it.
+      if (o.readyState < 4) await once(o, "canplaythrough");
+      // The poster (already loaded: it is the first paint) decoded for the veil canvas.
+      const img = new Image();
+      img.src = posterSrc;
+      await img.decode().catch(() => {});
+      if (cancelled) return;
+      posterImg.current = img;
+      setVeil("on");
+      runCycle();
+      timers.push(setTimeout(() => setVeil("fade"), 60), setTimeout(() => setVeil(null), 520));
+    };
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           io.disconnect();
-          runCycle();
+          start();
         }
       },
       { threshold: 0.5 }
     );
     io.observe(o);
-    return () => io.disconnect();
+    return () => {
+      cancelled = true;
+      io.disconnect();
+      timers.forEach(clearTimeout);
+    };
     // runCycle reads the latest state through its closure on each call.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [story, videoReady]);
+  }, [story, videoReady, footage]);
+
+  // Paint the poster into the veil canvas the moment it mounts (before the browser paints it), fitted
+  // like the video's object-contain.
+  useLayoutEffect(() => {
+    const c = veilCanvas.current;
+    const img = posterImg.current;
+    if (veil !== "on" || !c || !img?.naturalWidth) return;
+    const r = c.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    c.width = Math.round(r.width * dpr);
+    c.height = Math.round(r.height * dpr);
+    const k = Math.min(c.width / img.naturalWidth, c.height / img.naturalHeight);
+    const w = img.naturalWidth * k;
+    const h = img.naturalHeight * k;
+    c.getContext("2d").drawImage(img, (c.width - w) / 2, (c.height - h) / 2, w, h);
+  }, [veil]);
 
   // Scroll story: pinned progress -> footage time, labels, stage, and two CSS variables the copy and
   // the product read (--story, --recede). React only re-renders when the stage or label count changes.
@@ -601,7 +656,7 @@ export default function HomeHero() {
               <div className="absolute inset-0">
                 <video
                   ref={opening}
-                  src={story ? storySrc ?? undefined : videoReady ? videoSrc : undefined}
+                  src={story ? storySrc ?? undefined : footage === "mobile" ? videoMobileSrc : footage ? videoSrc : undefined}
                   poster={posterSrc}
                   muted
                   playsInline
@@ -614,12 +669,21 @@ export default function HomeHero() {
                 {!story && (
                   <video
                     ref={closing}
-                    src={videoReady ? closeSrc : undefined}
+                    src={footage === "mobile" ? closeMobileSrc : footage ? closeSrc : undefined}
                     muted
                     playsInline
                     preload="none"
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0"
+                  />
+                )}
+                {/* Phones: the poster, laid over the clip as it starts and faded off (the video fades in). */}
+                {veil && (
+                  <canvas
+                    ref={veilCanvas}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-[400ms] ease-out"
+                    style={{ opacity: veil === "fade" ? 0 : 1 }}
                   />
                 )}
               </div>
