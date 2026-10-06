@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import AnimatedText from "./ui/AnimatedText";
 import { useEntrance } from "../lib/entrance";
+import { useMediaQuery } from "../lib/scrollSteps";
 import { Marquee } from "./ui/marquee";
 import { APPLICATIONS, PRODUCTS, applicationLabel } from "../data/products";
 import tclLogo from "../assets/partners/tcl-logo.png";
@@ -34,6 +35,8 @@ const Logo = ({ l, index, hidden, onHover }) => (
     <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-300 group-hover/logo:bg-signal/60" />
     <img
       src={l.src}
+      loading="lazy"
+      decoding="async"
       alt={hidden ? "" : l.name}
       className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-500 ease-out group-hover/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-hover/logo:grayscale-0`}
     />
@@ -54,7 +57,7 @@ const Logo = ({ l, index, hidden, onHover }) => (
  * where that partner's systems fit — applications and number of systems, from the catalogue.
  */
 export default function HomePartners() {
-  const [still] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const still = useMediaQuery("(prefers-reduced-motion: reduce)");
   const [hot, setHot] = useState(null);
   const root = useRef(null);
   const enter = useEntrance(root, ({ tl, q }) => {

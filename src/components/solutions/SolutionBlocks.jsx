@@ -8,6 +8,7 @@ import PillLink from "../PillLink";
 import SceneImg from "../SceneImg";
 import { depth, usePointerDepth } from "../../lib/pointerDepth";
 import { useIntro } from "../../lib/intro";
+import { isFirstLoad } from "../../lib/firstLoad";
 import { useScrollReveal } from "../../lib/scrollReveal";
 import { scrollToId } from "../../lib/scrollTo";
 import { useRouteTransition } from "../../lib/viewTransition";
@@ -64,7 +65,9 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
   const accent = useRef(null);
   const back = useRouteTransition("/solutions", `[data-vt-card="${segment}"]`, { segment });
   // Read once: arrived by a View Transition (the photo is already in place, morphed from the card).
-  const [morphed] = useState(() => document.documentElement.dataset.vt === "true");
+  const [morphed] = useState(() => typeof document !== "undefined" && document.documentElement.dataset.vt === "true");
+  // First load (lib/firstLoad): no entrance — the photo only settles from 1.0566 in CSS (.hero-settle).
+  const [firstLoad] = useState(() => typeof window === "undefined" || isFirstLoad());
   usePointerDepth(root);
   useScrub(root, ({ gsap }) => {
     gsap.fromTo(
@@ -112,7 +115,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
         >
           {/* parallax (scroll scrub, transform only) → zoom (load) → pointer drift → photo */}
           <div ref={parallax} className="absolute inset-0 will-change-transform">
-            <div data-a={morphed ? undefined : "zoom"} className="absolute inset-0">
+            <div data-a={morphed ? undefined : "zoom"} className={`absolute inset-0 ${firstLoad && !morphed ? "hero-settle" : ""}`}>
               <div className="absolute -inset-3" style={depth(-6, -4)}>
                 <SceneImg
                   name={image.name}
@@ -225,8 +228,10 @@ export function BenefitStrip({ items }) {
           }
         );
       };
-      // Icons only (decoration): they draw whenever the strip first shows, on screen at load included.
-      off = onceInView(el, { initial: true, enter: draw, show: (why) => why === "visible" && draw() });
+      // Icons only (decoration): they draw as the strip arrives. On a first load (the pre-rendered page)
+      // icons already on screen stay as they are — drawing them would hide them first.
+      const first = isFirstLoad();
+      off = onceInView(el, { initial: !first, enter: draw, show: (why) => !first && why === "visible" && draw() });
     });
     return () => {
       cancelled = true;
@@ -596,12 +601,13 @@ function RollValue({ value }) {
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let cancelled = false;
     let off;
-    setPhase("waiting");
     loadGsap()
       .then(({ gsap }) => {
         if (cancelled) return;
         gsapRef.current = gsap;
-        off = onceInView(el, { enter: () => setPhase("roll"), show: () => setPhase("plain") });
+        // Hidden ("waiting") only once it is known to be below the viewport: a figure on screen is never
+        // hidden for its roll.
+        off = onceInView(el, { enter: () => setPhase("roll"), show: () => setPhase("plain"), below: () => setPhase("waiting") });
       })
       .catch(() => !cancelled && setPhase("plain"));
     return () => {
@@ -669,6 +675,8 @@ export function PartnerMark({ partner, name, decorative = false }) {
       <span data-sr data-wipe className="self-start">
         <img
           src={p.logo}
+          loading="lazy"
+          decoding="async"
           alt={decorative ? "" : p.name}
           className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-500 ease-out group-hover/card:scale-110`}
         />
@@ -739,7 +747,7 @@ function CompareChip({ id, name }) {
   );
 }
 
-// Intrinsic sizes of the catalogue images (src/assets/catalogue, src/assets/clou-aqua-e261.png) and
+// Intrinsic sizes of the catalogue images (src/assets/catalogue, src/assets/clou-aqua-e261.webp) and
 // partner logos, for the width/height attributes on Solutions product cards (no layout shift).
 const IMAGE_SIZES = {
   "tcl-blueark-x1": [389, 774],

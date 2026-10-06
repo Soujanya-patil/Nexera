@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { getProduct } from "../data/products";
 import { CTA_TOPICS } from "../data/solutionTopics";
-import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.png";
+import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.webp";
 import { UTILITY_FAQ } from "../data/solutions";
 import UseCaseMap from "../components/solutions/UseCaseMap";
 import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";

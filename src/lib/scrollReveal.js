@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { loadGsap } from "./motion";
 import { onceInView } from "./inview";
+import { isFirstLoad } from "./firstLoad";
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -33,9 +34,14 @@ export const scrollingFast = (trigger) => Math.abs(trigger?.getVelocity?.() ?? 0
  * reads. Never leaves content hidden: items already above the viewport are shown at once; an item
  * arriving during a fast scroll, or coming back into view after being jumped past, is shown at once.
  * Runs once. Reverted on unmount; nothing is hidden under prefers-reduced-motion.
+ *
+ * First load (a direct visit: the pre-rendered page is already on screen; lib/firstLoad): nothing is
+ * held by CSS ("idle"), and an item is put into its waiting state only once the observer reports it
+ * below the viewport — what is on screen (or above) stays exactly as it is, so nothing visible is
+ * ever hidden. Client-side navigations hold everything from the start ("pending") as before.
  */
 export function useScrollReveal(ref, { stagger = REVEAL.stagger, y = REVEAL.y } = {}) {
-  const [state, setState] = useState(() => (reduced() ? "done" : "pending"));
+  const [state, setState] = useState(() => (typeof window === "undefined" || isFirstLoad() ? "idle" : reduced() ? "done" : "pending"));
 
   useEffect(() => {
     if (reduced()) return;
@@ -58,9 +64,12 @@ export function useScrollReveal(ref, { stagger = REVEAL.stagger, y = REVEAL.y } 
           gsap.set(n, { clearProps: "opacity,transform,clipPath" });
           if (isWipe(n)) gsap.set(imgs(n), { clearProps: "scale" });
         };
-        // Writes only: every item takes its waiting state; the observer then decides per item.
-        gsap.set(items.filter((n) => !isWipe(n)), { opacity: 0, y: Math.min(y, REVEAL.y) });
-        gsap.set(items.filter(isWipe), { opacity: 1, clipPath: "inset(0% 0% 100% 0%)" });
+        // Writes only: an item takes its waiting state — all of them at once after a navigation (nothing
+        // was on screen yet), on a first load only those the observer reports below the viewport.
+        const wait = (n) =>
+          isWipe(n) ? gsap.set(n, { opacity: 1, clipPath: "inset(0% 0% 100% 0%)" }) : gsap.set(n, { opacity: 0, y: Math.min(y, REVEAL.y) });
+        const first = state === "idle";
+        if (!first) items.forEach(wait);
         const enter = (batch) => {
           const each = Math.min(stagger, REVEAL.stagger, batch.length > 1 ? REVEAL.maxStagger / (batch.length - 1) : REVEAL.stagger);
           const wipes = batch.filter(isWipe);
@@ -72,7 +81,7 @@ export function useScrollReveal(ref, { stagger = REVEAL.stagger, y = REVEAL.y } 
           if (fades.length)
             gsap.to(fades, { opacity: 1, y: 0, duration: REVEAL.duration, ease: REVEAL.ease, stagger: each, overwrite: true, clearProps: "opacity,transform" });
         };
-        for (const n of items) subs.push(onceInView(n, { initial: true, enter, show: () => show(n) }));
+        for (const n of items) subs.push(onceInView(n, { initial: !first, enter, show: () => show(n), below: first ? () => wait(n) : undefined }));
         setState("ready");
       })
       .catch(() => !cancelled && setState("done"));
@@ -85,6 +94,8 @@ export function useScrollReveal(ref, { stagger = REVEAL.stagger, y = REVEAL.y } 
         gsapRef.set(items, { clearProps: "opacity,transform,clipPath" });
       }
     };
+    // Set up once per container; `state` is read for its starting value only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, stagger, y]);
 
   return state;

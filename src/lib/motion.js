@@ -36,10 +36,41 @@ export const FEATHER = {
 export const MotionContext = createContext({ mode: "static", fail: () => {} });
 export const useMotion = () => useContext(MotionContext);
 
+let idle;
+/**
+ * Resolves once the first screen has painted and the page has gone quiet: the first idle moment
+ * after `load` (at most ~2 s later), or the visitor's first scroll, pointer or key press, whichever
+ * comes first. Nothing above the fold waits on what is gated behind it (the first screen is already
+ * visible); after that first time it resolves at once, so client-side navigations never wait.
+ */
+export function afterFirstPaint() {
+  idle ??= new Promise((resolve) => {
+    if (typeof window === "undefined") return;
+    const events = ["scroll", "wheel", "pointerdown", "keydown", "touchstart"];
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      events.forEach((e) => window.removeEventListener(e, go, true));
+      resolve();
+    };
+    events.forEach((e) => window.addEventListener(e, go, { capture: true, passive: true }));
+    const whenIdle = () => (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 1)))(go, { timeout: 2000 });
+    if (document.readyState === "complete") whenIdle();
+    else window.addEventListener("load", whenIdle, { once: true });
+  });
+  return idle;
+}
+
 let gsapPromise;
-/** Lazy, memoised GSAP + ScrollTrigger. Only ever requested in cinematic mode. */
+/**
+ * Lazy, memoised GSAP + ScrollTrigger — fetched only after the first paint (afterFirstPaint), so they
+ * never compete with the first screen.
+ */
 export function loadGsap() {
-  gsapPromise ??= Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+  gsapPromise ??= afterFirstPaint()
+    .then(() => Promise.all([import("gsap"), import("gsap/ScrollTrigger")]))
+    .then(
     ([{ gsap }, { ScrollTrigger }]) => {
       gsap.registerPlugin(ScrollTrigger);
       // Section heights are viewport-relative, but re-measure once fonts and images settle.

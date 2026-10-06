@@ -2,6 +2,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { ChartNoAxesColumnIncreasing, Leaf, Zap } from "lucide-react";
 import MagneticButton from "./ui/MagneticButton";
 import { loadGsap } from "../lib/motion";
+import { isFirstLoad } from "../lib/firstLoad";
 
 const trust = [
   { icon: Zap, lines: ["Cleaner Energy", "Round the Clock"] },
@@ -51,7 +52,9 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
  */
 export default function HomeHeroCopy({ parallax, subdued, story = false }) {
   const column = useRef(null);
-  const [intro, setIntro] = useState(() => (reducedMotion() ? "done" : "pending"));
+  // A first load shows the copy as pre-rendered (no entrance: it is the first screen and the LCP);
+  // the entrance plays on client-side navigations.
+  const [intro, setIntro] = useState(() => (typeof window === "undefined" || isFirstLoad() || reducedMotion() ? "done" : "pending"));
 
   useEffect(() => {
     if (intro === "done") return;

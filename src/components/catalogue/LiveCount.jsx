@@ -1,12 +1,25 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useEffect, useState } from "react";
+
+const DURATION = 350; // ms, matches .count-in / .count-out in index.css
 
 /**
- * "SHOWING 3 SYSTEMS" with the number rolling up/down when the filters change (Motion's
- * AnimatePresence; the old number leaves as the new one arrives). Screen readers get the plain
- * sentence through the polite live region.
+ * "SHOWING 3 SYSTEMS" with the number rolling up/down when the filters change: the old number leaves
+ * upward as the new one arrives from below, both at once (CSS keyframes, transform + opacity; under
+ * reduced motion the old number only fades and the new one simply appears). Screen readers get the
+ * plain sentence through the polite live region.
  */
 export default function LiveCount({ count, total }) {
-  const reduce = useReducedMotion();
+  // The number on show, plus the one leaving (kept briefly so it can animate out).
+  const [shown, setShown] = useState({ now: count, prev: null, n: 0 });
+  // A new count swaps in during this render (derived state), so the number never lags a frame.
+  if (count !== shown.now) setShown((s) => ({ now: count, prev: s.now, n: s.n + 1 }));
+  // The leaving number is dropped once its animation is over.
+  useEffect(() => {
+    if (shown.prev === null) return;
+    const t = setTimeout(() => setShown((s) => ({ ...s, prev: null })), DURATION);
+    return () => clearTimeout(t);
+  }, [shown.n, shown.prev]);
+
   return (
     <p className="flex shrink-0 items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage">
       <span aria-hidden="true" className="relative inline-flex h-2 w-2">
@@ -15,18 +28,14 @@ export default function LiveCount({ count, total }) {
       </span>
       <span aria-hidden="true">Showing</span>
       <span aria-hidden="true" className="relative inline-flex h-[1.4em] min-w-[1.2ch] items-center justify-center overflow-hidden text-base text-forest">
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
-            key={count}
-            initial={reduce ? false : { y: "100%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={reduce ? { opacity: 0 } : { y: "-100%", opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="tabular-nums"
-          >
-            {count}
-          </motion.span>
-        </AnimatePresence>
+        {shown.prev !== null && (
+          <span key={`out-${shown.n}`} className="count-out absolute tabular-nums">
+            {shown.prev}
+          </span>
+        )}
+        <span key={`in-${shown.n}`} className={`tabular-nums ${shown.n ? "count-in" : ""}`}>
+          {shown.now}
+        </span>
       </span>
       <span aria-hidden="true">
         {count === 1 ? "system" : "systems"} <span className="text-sage/70">of {total}</span>

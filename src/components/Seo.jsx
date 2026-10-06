@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getRoute, NOT_FOUND_TITLE } from "../seo/routes";
+import { loadRouteMeta } from "../seo/loadRouteMeta";
 
 /**
  * The current route's <title>, meta description and canonical, from src/seo/routes.js. Mounted once,
@@ -7,7 +8,9 @@ import { getRoute, NOT_FOUND_TITLE } from "../seo/routes";
  * React 19 hoists these tags into <head> and swaps them as the location changes.
  *
  * The HTML each route is served with already carries the same three tags (scripts/seo-pages.mjs, for
- * crawlers without JavaScript); main.jsx removes those static copies before the app mounts, so the
+ * crawlers without JavaScript). The route table is its own chunk (it carries the product catalogue),
+ * loaded once the first screen is up (seo/loadRouteMeta): until then this renders nothing and the
+ * served tags stand; when it arrives main.jsx removes the static copies and this takes over, so the
  * document never has two of any. Open Graph / Twitter tags stay static only: link-preview crawlers
  * read the served HTML and never run JavaScript.
  *
@@ -15,11 +18,21 @@ import { getRoute, NOT_FOUND_TITLE } from "../seo/routes";
  * a noindex, and no description or canonical — the same as the 404.html the server answers it with.
  */
 export default function Seo() {
-  const route = getRoute(useLocation().pathname);
+  const { pathname } = useLocation();
+  const [meta, setMeta] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    loadRouteMeta().then((m) => alive && setMeta(m));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  if (!meta) return null;
+  const route = meta.getRoute(pathname);
   if (!route) {
     return (
       <>
-        <title>{NOT_FOUND_TITLE}</title>
+        <title>{meta.NOT_FOUND_TITLE}</title>
         <meta name="robots" content="noindex" />
       </>
     );

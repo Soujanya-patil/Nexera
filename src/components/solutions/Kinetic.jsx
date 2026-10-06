@@ -18,8 +18,9 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
 /**
  * Calls `play(gsap)` once when `ref` scrolls into view at a normal pace, or `finish()` instead when it
  * can't be animated cleanly (already on screen, above, a fast scroll, a jump). `play` may return a
- * cleanup. `onWait()` runs at setup (the element may animate). Positions come from the shared
- * IntersectionObserver (lib/inview) — no layout reads.
+ * cleanup. `onWait()` runs once the element is known to be below the viewport (it will animate; hiding
+ * it then can't flash). Positions come from the shared IntersectionObserver (lib/inview) — no layout
+ * reads.
  */
 function useEnterOnce(ref, { play, finish, onWait, preload }) {
   useEffect(() => {
@@ -32,13 +33,12 @@ function useEnterOnce(ref, { play, finish, onWait, preload }) {
     let cancelled = false;
     let off;
     let undo;
-    onWait?.();
     // Fetch extras (SplitText) once the page is idle, not while it is still loading.
     const idle = window.requestIdleCallback ?? ((fn) => setTimeout(fn, 1));
     if (preload) idle(preload, { timeout: 3000 });
     loadGsap().then(({ gsap }) => {
       if (cancelled) return;
-      off = onceInView(el, { enter: () => (undo = play(gsap)), show: () => finish?.() });
+      off = onceInView(el, { enter: () => (undo = play(gsap)), show: () => finish?.(), below: onWait });
     });
     return () => {
       cancelled = true;

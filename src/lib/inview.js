@@ -13,6 +13,8 @@
  *   show("fast")     it arrives while the page is scrolling fast (a fling): no animation
  *   show("back")     it comes back into view from above without having been revealed (a jump past)
  *   enter(entries)   it scrolls into view at a normal pace — animate it
+ * and, before any of those, `below()` once if it starts below the viewport (the moment it may be put
+ * into its hidden "waiting" state: it is off screen, so hiding it can't flash).
  * Returns an unsubscribe function.
  */
 
@@ -48,7 +50,8 @@ function onEntries(entries) {
       w.first = false;
       if (entry.isIntersecting) w.initial ? enterNow(w, entry) : finish(entry.target, "visible");
       else if (r.bottom <= 0) finish(entry.target, "above");
-      continue; // below the viewport: wait
+      else w.below?.(); // below the viewport: wait (hidden from now on, if the caller wants)
+      continue;
     }
     if (!entry.isIntersecting) continue;
     if (r.top < 0 && r.bottom < vh) finish(entry.target, "back");
@@ -78,14 +81,14 @@ function unwatch(el) {
  * in one batch. `initial: true` animates elements that are already on screen at setup too (reveals);
  * otherwise those are simply shown.
  */
-export function onceInView(el, { enter, show, initial = false }) {
+export function onceInView(el, { enter, show, below, initial = false }) {
   if (!io) io = new IntersectionObserver(onEntries, { threshold: 0 });
   if (!tracking) {
     tracking = true;
     track();
     window.addEventListener("scroll", track, { passive: true });
   }
-  watched.set(el, { enter, show, initial, first: true });
+  watched.set(el, { enter, show, below, initial, first: true });
   io.observe(el);
   return () => unwatch(el);
 }

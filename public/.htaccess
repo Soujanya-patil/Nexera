@@ -50,6 +50,16 @@ AddType video/mp4 .mp4
   </FilesMatch>
 </IfModule>
 
+# --- Compression -------------------------------------------------------------------------------
+# Text responses are compressed: Brotli where the server has it, gzip (deflate) otherwise. Images,
+# fonts (woff2 is already compressed) and video are left alone; MP4s are explicitly excluded above.
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/css text/plain application/javascript text/javascript application/json application/ld+json image/svg+xml application/xml text/xml
+</IfModule>
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript text/javascript application/json application/ld+json image/svg+xml application/xml text/xml
+</IfModule>
+
 # --- Caching -------------------------------------------------------------------------------------
 # Every HTML page (index.html and the per-route pages) must always be revalidated so a new deploy
 # shows up immediately — a stale page would ask for hashed files that no longer exist (hashed files
@@ -57,5 +67,11 @@ AddType video/mp4 .mp4
 <IfModule mod_headers.c>
   <FilesMatch "\.html$">
     Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  # Fonts (/fonts/*.woff2) and the favicons change rarely and aren't hashed: 30 days. Matched by name, so
+  # hashed images under /assets/ keep their one-year immutable cache (FilesMatch is applied after every
+  # directory's .htaccess, so a broad \.png rule here would override assets/.htaccess).
+  <FilesMatch "(\.woff2|^favicon[^/]*\.(png|svg|ico)|^apple-touch-icon\.png)$">
+    Header set Cache-Control "public, max-age=2592000"
   </FilesMatch>
 </IfModule>

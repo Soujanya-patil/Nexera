@@ -27,6 +27,7 @@ import PillLink from "../components/PillLink";
 import AnimatedTabs from "@/components/smoothui/animated-tabs";
 import MagneticButton from "../components/ui/MagneticButton";
 import AnimatedText from "../components/ui/AnimatedText";
+import { isFirstLoad } from "../lib/firstLoad";
 import { useParallax } from "../lib/parallax";
 import ProductCard from "../components/catalogue/ProductCard";
 import HotspotViewer from "../components/catalogue/HotspotViewer";
@@ -97,16 +98,27 @@ function SpecValue({ value }) {
     const f = (n) => (parseFloat(n) * t).toFixed(decimals(n));
     return range ? `${f(range[1])}–${f(range[2])}${range[3]}` : `${f(single[1])}${single[2]}`;
   };
-  const [shown, setShown] = useState(() =>
-    countable && !window.matchMedia("(prefers-reduced-motion: reduce)").matches ? format(0) : value
-  );
+  // A first load (lib/firstLoad) renders the real figure — it is in the pre-rendered page and must not
+  // read 0 — and only a value still below the viewport is reset to count when it arrives. After a
+  // client-side navigation the count starts from 0 as before.
+  const [first] = useState(() => typeof window === "undefined" || isFirstLoad());
+  const motion = () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const [shown, setShown] = useState(() => (countable && !first && motion() ? format(0) : value));
   const ref = useRef(null);
   useEffect(() => {
-    if (!countable || shown === value) return;
+    if (!countable || (!first && shown === value) || (first && !motion())) return;
     const el = ref.current;
     let raf = 0;
+    let seen = false;
     const io = new IntersectionObserver(
       ([entry]) => {
+        if (first && !seen) {
+          seen = true;
+          // On screen already (or passed): leave the real figure. Below: it may count when it arrives.
+          if (entry.boundingClientRect.top < window.innerHeight) return io.disconnect();
+          setShown(format(0));
+          return;
+        }
         if (!entry.isIntersecting) return;
         io.disconnect();
         const start = performance.now();
@@ -308,12 +320,22 @@ function ProductView({ product }) {
                         style={{ viewTransitionName: `product-${product.id}` }}
                         className="absolute inset-[16%] grid place-items-center rounded-3xl bg-paper/95"
                       >
-                        <img src={product.image} alt={product.imageAlt} className="h-auto w-[52%] object-contain opacity-85" />
+                        <img
+                          src={product.image}
+                          alt={product.imageAlt}
+                          fetchPriority="high"
+                          loading="eager"
+                          decoding="async"
+                          className="h-auto w-[52%] object-contain opacity-85"
+                        />
                       </div>
                     ) : (
                       <img
                         src={product.image}
                         alt={product.imageAlt}
+                        fetchPriority="high"
+                        loading="eager"
+                        decoding="async"
                         data-vt-hero={product.id}
                         style={{ viewTransitionName: `product-${product.id}` }}
                         className="absolute inset-0 m-auto h-[88%] w-[88%] object-contain transition-[scale] duration-700 ease-out group-hover/hero:scale-[1.015]"

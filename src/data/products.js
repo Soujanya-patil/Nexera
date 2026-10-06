@@ -9,7 +9,7 @@
  * Images are transparent cutouts of the partners' own product renders (src/assets/catalogue/), made
  * from Downloads/TCL_photos.zip, Hithium_photos.zip and CLOU_photos.
  *
- * CLOU Aqua-E261's cutout comes from the CLOU BESS deck (src/assets/clou-aqua-e261.png). (A project
+ * CLOU Aqua-E261's cutout comes from the CLOU BESS deck (src/assets/clou-aqua-e261.webp). (A project
  * datasheet names a 261 kWh CLOU system "Aqua-X-261-125-2h"; the approved Solutions content uses
  * "Aqua-E261".)
  *
@@ -35,7 +35,7 @@ import imgBlock261 from "../assets/catalogue/hithium-block-261.webp";
 import imgCabinet1022 from "../assets/catalogue/hithium-power-cabinet-1022.webp";
 import imgPower625 from "../assets/catalogue/hithium-power-625.webp";
 import imgClouC25s from "../assets/catalogue/clou-aqua-c25s.webp";
-import imgClouE261 from "../assets/clou-aqua-e261.png";
+import imgClouE261 from "../assets/clou-aqua-e261.webp";
 
 export const APPLICATIONS = [
   { id: "residential", label: "Residential" },

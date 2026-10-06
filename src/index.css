@@ -22,7 +22,8 @@
   }
 }
 
-/* Self-hosted IBM Plex (Latin subset). font-display: swap keeps text visible while faces load;
+/* Self-hosted IBM Plex Sans (Latin subset; IBM Plex Serif is used by no page, so it isn't shipped).
+   font-display: swap keeps text visible while faces load;
    the two above-the-fold faces are preloaded in index.html. */
 @font-face {
   font-family: "IBM Plex Sans";
@@ -46,30 +47,6 @@
   font-weight: 600;
   font-display: swap;
   src: url("/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "IBM Plex Serif";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("/fonts/ibm-plex-serif-latin-400-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "IBM Plex Serif";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/fonts/ibm-plex-serif-latin-500-normal.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "IBM Plex Serif";
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("/fonts/ibm-plex-serif-latin-600-normal.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -97,7 +74,7 @@
 
   /* Type — IBM Plex: an engineering-documentation typeface family,
      a deliberate fit for a technical hardware brand, not a generic pairing */
-  --font-serif: "IBM Plex Serif", "Georgia", serif;
+  --font-serif: "Georgia", serif; /* only in components no page mounts (IBM Plex Serif removed) */
   --font-sans: "IBM Plex Sans", "Segoe UI", sans-serif;
 }
 
@@ -209,15 +186,16 @@
   --color-brand: var(--color-signal);
 
   /* Magic UI Marquee */
-  --animate-marquee: marquee var(--duration) infinite linear;
-  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  /* --duration / --gap come from the Marquee's className; these are the component's defaults. */
+  --animate-marquee: marquee var(--duration, 40s) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear infinite;
   @keyframes marquee {
     from { transform: translateX(0); }
-    to { transform: translateX(calc(-100% - var(--gap))); }
+    to { transform: translateX(calc(-100% - var(--gap, 1rem))); }
   }
   @keyframes marquee-vertical {
     from { transform: translateY(0); }
-    to { transform: translateY(calc(-100% - var(--gap))); }
+    to { transform: translateY(calc(-100% - var(--gap, 1rem))); }
   }
 }
 
@@ -631,6 +609,21 @@ html.js-motion [data-enter="pending"] [data-e] {
 .hero-product-in {
   animation: hero-product-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 }
+/* First load (HomeHero): the product is the first screen's largest image — no fade, only the settle. */
+@keyframes hero-product-settle {
+  from { scale: 0.97; }
+}
+.hero-product-settle {
+  animation: hero-product-settle 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* First load (SolutionHero): the hero photo's slow zoom-out, as CSS from the first paint (transform
+   only; the photo is visible throughout). Client-side navigations play it with GSAP instead. */
+@keyframes hero-settle {
+  from { transform: scale(1.0566); }
+}
+.hero-settle {
+  animation: hero-settle 1.6s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
 
 /*
  * Home hero on desktop (HomeHero.jsx, autoplay cycle). The hero fills the first screen minus a strip
@@ -765,6 +758,8 @@ html[data-vt-from="pill"]::view-transition-old(*) {
 @media (prefers-reduced-motion: reduce) {
   .ambient-drift,
   .hero-product-in,
+  .hero-product-settle,
+  .hero-settle,
   .journey-detail,
   .journey-in-next,
   .journey-in-prev {
@@ -788,4 +783,48 @@ html[data-vt-from="pill"]::view-transition-old(*) {
   .animate-marquee-vertical {
     animation: none;
   }
+}
+
+/* Products: the live count's number rolls (LiveCount.jsx) — the old one leaves upward as the new
+   one rises in, 0.35 s; reduced motion: the old one only fades, the new one is simply there. */
+@keyframes count-in {
+  from { transform: translateY(100%); opacity: 0; }
+}
+@keyframes count-out {
+  to { transform: translateY(-100%); opacity: 0; }
+}
+.count-in {
+  animation: count-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.count-out {
+  animation: count-out 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+/* Products: the category heading swaps — the old one leaves (fade, 6 px up), then the new one arrives
+   (fade, from 8 px below), 0.28 s each (Products.jsx CategoryHeading). */
+@keyframes heading-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes heading-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
+.heading-out {
+  animation: heading-out 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.heading-in {
+  animation: heading-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .count-in,
+  .heading-in {
+    animation: none;
+  }
+  .count-out {
+    animation-name: fade-out;
+  }
+  .heading-out {
+    animation-name: fade-out;
+  }
+}
+@keyframes fade-out {
+  to { opacity: 0; }
 }

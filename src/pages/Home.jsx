@@ -1,9 +1,11 @@
+import { lazy, Suspense } from "react";
 import HomeHero from "../components/HomeHero";
 import HomeStats from "../components/HomeStats";
-import HomeSolutions from "../components/HomeSolutions";
-import HomePartners from "../components/HomePartners";
-import HomeWhyNow from "../components/HomeWhyNow";
-import HomeCta from "../components/HomeCta";
+
+// Everything below the hero and the stat bar is its own chunk (it carries the catalogue data), so the
+// first screen doesn't wait for it. In the pre-rendered page its markup is already there; the browser
+// hydrates it when the chunk arrives.
+const HomeBelow = lazy(() => import("../components/HomeBelow"));
 
 /**
  * Home, per the approved mockup (home-mockup-v2-approved.png): Hero -> stat bar -> Solutions ->
@@ -20,16 +22,18 @@ import HomeCta from "../components/HomeCta";
  * This replaces the continuous cinematic scroll sequence. Its scenes (CabinetAnatomy, ScaleStory,
  * WhoWeAre, ProductShowcase, Credibility, WhyNexera, Enquire, JourneyRail — and the earlier Hero,
  * Storage, Technology, FinalCta) stay in the codebase unmounted, per this project's convention.
+ *
+ * Solutions → CTA load as one chunk (HomeBelow); the placeholder keeps the footer below the fold
+ * while it loads on a client-side visit.
  */
 export default function Home() {
   return (
     <>
       <HomeHero />
       <HomeStats />
-      <HomeSolutions />
-      <HomePartners />
-      <HomeWhyNow />
-      <HomeCta />
+      <Suspense fallback={<div className="min-h-[200svh] bg-paper" />}>
+        <HomeBelow />
+      </Suspense>
     </>
   );
 }

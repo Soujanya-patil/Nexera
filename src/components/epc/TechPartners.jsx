@@ -71,6 +71,8 @@ export default function TechPartners() {
                   <span aria-hidden="true" className={`absolute inset-y-3 left-0 w-[3px] rounded-r-full bg-signal transition-[scale] duration-300 ${on ? "scale-y-100" : "scale-y-0"}`} />
                   <img
                     src={p.logo}
+                    loading="lazy"
+                    decoding="async"
                     alt={p.name}
                     className={`${p.id === "clou" ? "h-7" : "h-5"} w-auto max-w-full object-contain transition-[opacity,filter] duration-300 ${
                       on ? "opacity-100 grayscale-0" : "opacity-50 grayscale group-hover:opacity-80"

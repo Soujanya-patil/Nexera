@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { loadGsap } from "./motion";
+import { isFirstLoad } from "./firstLoad";
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -11,9 +12,13 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
  * fails the parts are simply shown after 2.5 s; under prefers-reduced-motion nothing is hidden.
  * `skip()` (optional, read once at mount) shows the final state at once — e.g. a hero arriving by a
  * View Transition, which must be visible when the transition captures it.
+ *
+ * On a first load (a direct visit; lib/firstLoad) there is no entrance at all: the hero is in the
+ * pre-rendered HTML and must stay visible, so it starts "done" — on the server and in the browser
+ * alike. The full entrance plays on client-side navigations.
  */
 export function useIntro(ref, build, skip) {
-  const [intro, setIntro] = useState(() => (reduced() || skip?.() ? "done" : "pending"));
+  const [intro, setIntro] = useState(() => (typeof window === "undefined" || isFirstLoad() || reduced() || skip?.() ? "done" : "pending"));
 
   useEffect(() => {
     if (intro === "done") return;

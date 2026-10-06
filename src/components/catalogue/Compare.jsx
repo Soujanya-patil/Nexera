@@ -106,6 +106,8 @@ export function CompareDialog({ ids, open, onClose }) {
                     <div className="relative mb-3 aspect-[4/3] w-full max-w-[11rem] overflow-hidden rounded-xl bg-ice">
                       <img
                         src={p.image}
+                        loading="lazy"
+                        decoding="async"
                         alt=""
                         className={`absolute inset-0 m-auto object-contain ${p.imageFallback ? "h-[18%] w-[50%] opacity-80" : "h-[80%] w-[80%]"}`}
                       />

@@ -7,6 +7,7 @@ import { loadGsap } from "../lib/motion";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { useRouteTransition } from "../lib/viewTransition";
 import { useMediaQuery } from "../lib/scrollSteps";
+import { isFirstLoad } from "../lib/firstLoad";
 
 // The hero's crossfading segment ribbon: desktop only, its own chunk.
 const SegmentRibbon = lazy(() => import("../components/solutions/SegmentRibbon"));
@@ -46,6 +47,14 @@ const SEGMENTS = [
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/** The ribbon's footprint (its 4:3 photo box and the label line under it). */
+const RibbonSpace = () => (
+  <div aria-hidden="true">
+    <div className="aspect-[4/3] rounded-2xl bg-deep ring-1 ring-white/10" />
+    <div className="mt-4 h-5" />
+  </div>
+);
+
 /**
  * The hub header (PageHeader's look) with the Solutions entrance: the eyebrow's letter-spacing settles
  * while its rule draws, the h1 is split into its rendered lines (GSAP SplitText, no ARIA changes) and
@@ -55,7 +64,10 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
 function HubHeader({ eyebrow, title, subtitle }) {
   const root = useRef(null);
   const wide = useMediaQuery("(min-width: 1024px)");
-  const [state, setState] = useState(() => (reduced() || document.documentElement.dataset.vt === "true" ? "done" : "pending"));
+  // A first load shows the header as pre-rendered (no entrance); client-side navigations get it.
+  const [state, setState] = useState(() =>
+    typeof window === "undefined" || isFirstLoad() || reduced() || document.documentElement.dataset.vt === "true" ? "done" : "pending"
+  );
   useEffect(() => {
     if (state === "done") return;
     const el = root.current;
@@ -112,12 +124,17 @@ function HubHeader({ eyebrow, title, subtitle }) {
             {subtitle}
           </p>
         </div>
-        {/* The space is reserved (same size as the ribbon) so nothing shifts when it arrives. */}
-        {wide && (
-          <Suspense fallback={<div aria-hidden="true" className="aspect-[4/3] rounded-2xl bg-deep" />}>
-            <SegmentRibbon />
-          </Suspense>
-        )}
+        {/* The ribbon's space is always in the markup (desktop only, CSS), so the hero never changes size
+            when the ribbon arrives — it is mounted into it on wide screens. */}
+        <div className="hidden lg:block">
+          {wide ? (
+            <Suspense fallback={<RibbonSpace />}>
+              <SegmentRibbon />
+            </Suspense>
+          ) : (
+            <RibbonSpace />
+          )}
+        </div>
       </div>
     </section>
   );

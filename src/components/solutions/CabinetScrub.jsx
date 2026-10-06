@@ -43,7 +43,7 @@ export default function CabinetScrub() {
   }, [scrub, near]);
 
   const poster = (
-    <img src={posterSrc} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-contain" />
+    <img src={posterSrc} alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-contain" />
   );
 
   return (

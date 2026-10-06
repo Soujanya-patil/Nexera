@@ -1,13 +1,9 @@
-"use client";;
 import { cn } from "@/lib/utils";
-import { motion, useReducedMotion } from "motion/react";
-import { useCallback, useId, useState } from "react";
+import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
 
-const SPRING = {
-  bounce: 0.05,
-  duration: 0.25,
-  type: "spring",
-};
+// The indicator's slide: 0.25 s, settling with the faintest overshoot (what the original 0.25 s spring
+// with bounce 0.05 looked like).
+const SLIDE = "transform 250ms cubic-bezier(0.25, 1.06, 0.5, 1)";
 
 export default function AnimatedTabs({
   tabs,
@@ -18,8 +14,9 @@ export default function AnimatedTabs({
   layoutId: customLayoutId,
   className
 }) {
-  const shouldReduceMotion = useReducedMotion();
   const generatedId = useId();
+  const indicator = useRef(null);
+  const lastRect = useRef(null);
   const layoutId = customLayoutId ?? `animated-tabs-${generatedId}`;
 
   const [internalActiveTab, setInternalActiveTab] = useState(
@@ -102,6 +99,26 @@ export default function AnimatedTabs({
       ]
     );
 
+  // FLIP: the indicator lives inside the active tab (so the markup is right without JavaScript); when
+  // the active tab changes it starts transformed to where the previous one was and slides into place.
+  useLayoutEffect(() => {
+    const el = indicator.current;
+    if (!el) return;
+    // Relative to the tab list, so scrolling between two changes doesn't matter.
+    const box = el.closest('[role="tablist"]').getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    const rect = { left: r.left - box.left, top: r.top - box.top, width: r.width, height: r.height };
+    const prev = lastRect.current;
+    lastRect.current = rect;
+    if (!prev || !rect.width || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    el.style.transition = "none";
+    el.style.transformOrigin = "0 0";
+    el.style.transform = `translate(${prev.left - rect.left}px, ${prev.top - rect.top}px) scale(${prev.width / rect.width}, ${prev.height / rect.height || 1})`;
+    el.getBoundingClientRect(); // commit the start position
+    el.style.transition = SLIDE;
+    el.style.transform = "";
+  }, [activeTab]);
+
   const getIndicatorStyles = () =>
     cn(
       "absolute",
@@ -134,13 +151,7 @@ export default function AnimatedTabs({
             type="button"
           >
             {isActive && (
-              <motion.span
-                className={getIndicatorStyles()}
-                layout
-                layoutId={layoutId}
-                style={{ originY: "0px" }}
-                transition={shouldReduceMotion ? { duration: 0 } : SPRING}
-              />
+              <span ref={indicator} className={getIndicatorStyles()} />
             )}
             {tab.icon ? (
               <span className="relative z-10">{tab.icon}</span>

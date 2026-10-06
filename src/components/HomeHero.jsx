@@ -10,6 +10,7 @@ import groundSrc from "../assets/products/nexera-hero-ground.webp";
 import { useMediaQuery } from "../lib/scrollSteps";
 import { loadGsap } from "../lib/motion";
 import { getLenis } from "../lib/lenis";
+import { isFirstLoad } from "../lib/firstLoad";
 
 // Labels are fully drawn ~1.25s after they start; 3.6s leaves all of them legible together ~2.3s.
 const HOLD_MS = 3600;
@@ -174,11 +175,29 @@ export default function HomeHero() {
   const section = useRef(null);
   const opening = useRef(null);
   const closing = useRef(null);
-  const [reduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  const [parallax] = useState(
-    () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches && window.matchMedia("(hover: hover) and (pointer: fine)").matches
-  );
+  const reduced = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const parallax = useMediaQuery("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
   const [phase, setPhase] = useState("closed"); // closed | opening | scan | open | closing
+  // First load: the product (the poster: the desktop LCP) must not start transparent, so it only
+  // settles in scale; client-side navigations keep the fade-and-settle (index.css).
+  const [firstLoad] = useState(() => typeof window === "undefined" || isFirstLoad());
+  // The footage: desktop only, and only once the page has loaded (the poster is the first paint and
+  // the LCP). Phones, Save-Data and slow (2g/3g) connections keep the poster and never download the
+  // MP4s. Decided after mount, so the pre-rendered page and the first render match (no video src).
+  const [videoReady, setVideoReady] = useState(false);
+  useEffect(() => {
+    const net = navigator.connection;
+    const slow = net && (net.saveData || /(^|-)(2g|3g)$/.test(net.effectiveType ?? ""));
+    if (slow || !window.matchMedia("(min-width: 1024px)").matches) return;
+    let id;
+    const go = () => (id = (window.requestIdleCallback ?? ((fn) => setTimeout(fn, 1)))(() => setVideoReady(true), { timeout: 1500 }));
+    if (document.readyState === "complete") go();
+    else window.addEventListener("load", go, { once: true });
+    return () => {
+      window.removeEventListener("load", go);
+      if (id) (window.cancelIdleCallback ?? clearTimeout)(id);
+    };
+  }, []);
   const [cycle, setCycle] = useState(0); // remounts the sweep each cycle
   // Synchronous "a cycle is running" flag: several pointer events can land in the same tick,
   // before React re-renders `phase`; this makes every one after the first a no-op.
@@ -228,7 +247,7 @@ export default function HomeHero() {
   const runCycle = async () => {
     const o = opening.current;
     const c = closing.current;
-    if (story || !o || !c || busy.current) return;
+    if (story || !videoReady || !o || !c || busy.current) return;
     busy.current = true;
     try {
       if (reduced) {
@@ -302,7 +321,7 @@ export default function HomeHero() {
   // story, where scrolling opens the cabinet).
   useEffect(() => {
     const o = opening.current;
-    if (!o || story) return;
+    if (!o || story || !videoReady) return;
     o.muted = true;
     if (closing.current) closing.current.muted = true;
     const io = new IntersectionObserver(
@@ -316,7 +335,9 @@ export default function HomeHero() {
     );
     io.observe(o);
     return () => io.disconnect();
-  }, [story]);
+    // runCycle reads the latest state through its closure on each call.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [story, videoReady]);
 
   // Scroll story: pinned progress -> footage time, labels, stage, and two CSS variables the copy and
   // the product read (--story, --recede). React only re-renders when the stage or label count changes.
@@ -524,7 +545,7 @@ export default function HomeHero() {
                 : undefined
             }
           >
-          <div className={`hero-product-in relative mx-auto w-full max-w-xl lg:max-w-none ${story ? "lg:-translate-y-[6vh]" : "hero-product"}`}>
+          <div className={`${firstLoad ? "hero-product-settle" : "hero-product-in"} relative mx-auto w-full max-w-xl lg:max-w-none ${story ? "lg:-translate-y-[6vh]" : "hero-product"}`}>
             {/* Ambient field: the footage's graphite ground continued out into the hero and fading to the
                 dark green over a wide area (reaching faintly behind the headline), with a soft green
                 light at the product. This is what lets the stage edge disappear. */}
@@ -580,11 +601,11 @@ export default function HomeHero() {
               <div className="absolute inset-0">
                 <video
                   ref={opening}
-                  src={story ? storySrc ?? undefined : videoSrc}
+                  src={story ? storySrc ?? undefined : videoReady ? videoSrc : undefined}
                   poster={posterSrc}
                   muted
                   playsInline
-                  preload="auto"
+                  preload={videoReady || story ? "auto" : "none"}
                   aria-label="NEXERA battery energy storage cabinet opening to reveal its stacked battery modules and power electronics"
                   className="h-full w-full object-contain transition-opacity duration-300"
                 />
@@ -593,7 +614,7 @@ export default function HomeHero() {
                 {!story && (
                   <video
                     ref={closing}
-                    src={closeSrc}
+                    src={videoReady ? closeSrc : undefined}
                     muted
                     playsInline
                     preload="none"

@@ -1,17 +1,25 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { loadGsap } from "./motion";
 
-/** Live `matchMedia` result, updated when the query flips (resize, rotation, OS motion setting). */
+/**
+ * Live `matchMedia` result, updated when the query flips (resize, rotation, OS motion setting).
+ * `false` while pre-rendering and during hydration (so the browser's first render matches the
+ * pre-rendered HTML); the real value right after, and at once on a client-side render.
+ */
 export function useMediaQuery(query) {
-  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
-  useEffect(() => {
-    const mq = window.matchMedia(query);
-    const onChange = () => setMatches(mq.matches);
-    onChange();
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, [query]);
-  return matches;
+  const subscribe = useCallback(
+    (onChange) => {
+      const mq = window.matchMedia(query);
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    },
+    [query]
+  );
+  return useSyncExternalStore(
+    subscribe,
+    () => window.matchMedia(query).matches,
+    () => false
+  );
 }
 
 /**

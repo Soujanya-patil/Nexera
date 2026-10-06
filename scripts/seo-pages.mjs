@@ -25,13 +25,22 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
 const tmp = path.join(root, "node_modules", ".cache", "seo-routes");
 
-// --- Load routes.js through Vite --------------------------------------------------------------
+// --- Load routes.js and the page renderer through Vite ---------------------------------------------
+// One SSR build: src/seo/routes.js (the route table) and src/entry-server.jsx (the pre-renderer).
 await build({
   root,
   logLevel: "warn",
-  build: { ssr: "src/seo/routes.js", outDir: tmp, emptyOutDir: true, copyPublicDir: false },
+  build: {
+    ssr: true,
+    rollupOptions: { input: { routes: "src/seo/routes.js", server: "src/entry-server.jsx" } },
+    outDir: tmp,
+    emptyOutDir: true,
+    copyPublicDir: false,
+  },
 });
 const entry = fs.readdirSync(tmp).find((f) => /^routes\.m?js$/.test(f));
+const serverEntry = fs.readdirSync(tmp).find((f) => /^server\.m?js$/.test(f));
+const { render } = await import(pathToFileURL(path.join(tmp, serverEntry)).href);
 const {
   ROUTES,
   SITE_URL,
@@ -185,13 +194,41 @@ if (problems.length) {
   process.exit(1);
 }
 
+// --- Pre-rendered page markup ---------------------------------------------------------------------
+/** The route's markup from the pre-renderer; fails the build if it is empty or has no <h1>. */
+async function renderPage(url) {
+  // React adds <link rel="preload" as="image"> for images it renders; the <img> elements are in the
+  // markup itself, so the browser finds them anyway — dropped (no image preloads on these pages).
+  const markup = (await render(url)).replace(/<link rel="preload" as="image"[^>]*\/?>/g, "");
+  if (!markup || !/<h1[\s>]/.test(markup)) throw new Error(`pre-render of ${url} produced no page (no <h1>)`);
+  if (/<script[\s>]/.test(markup)) throw new Error(`pre-render of ${url} left inline scripts (a part was streamed in, not rendered in place)`);
+  return markup;
+}
+// The root's content is replaced whatever it holds (so re-running the script on a built dist is safe).
+const ROOT = /<div id="root">[\s\S]*<\/div>(\s*<\/body>)/;
+const withMarkup = (html, markup) => {
+  if (!ROOT.test(html)) throw new Error('index.html: <div id="root"> before </body> not found');
+  return html.replace(ROOT, (_, end) => `<div id="root">${markup}</div>${end}`);
+};
+
 // --- Write the pages --------------------------------------------------------------------------
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const shell = fs
+let shell = fs
   .readFileSync(path.join(dist, "index.html"), "utf8")
   .replace(/\s*<title>[\s\S]*?<\/title>/, "")
   .replace(/\s*<meta name="description"[^>]*>/, "");
 if (/<title>|name="description"/.test(shell)) throw new Error("dist/index.html: generic title/description not removed");
+
+// The app starts once the pre-rendered page has painted: its script is only requested after the first
+// frame, so the first screen's HTML, CSS, fonts and hero image have the connection to themselves, and
+// the first paint (and the LCP) never waits for JavaScript to download, compile and hydrate. The page
+// is complete HTML meanwhile (links work as plain links). A background tab, where frames don't run,
+// starts it on a timer.
+const APP_SCRIPT = /<script type="module" crossorigin src="(\/assets\/[^"]+\.js)"><\/script>/;
+const appStart = (src) =>
+  `<script type="module">let s=0;const go=()=>s||(s=1,import("${src}"));requestAnimationFrame(()=>setTimeout(go));setTimeout(go,1500)</script>`;
+if (!APP_SCRIPT.test(shell)) throw new Error("dist/index.html: the app's module script was not found");
+shell = shell.replace(APP_SCRIPT, (_, src) => appStart(src));
 
 for (const r of resolved) {
   const image = SITE_URL + r.ogImage;
@@ -207,7 +244,9 @@ for (const r of resolved) {
     `<meta name="twitter:card" content="summary_large_image" />`,
     scripts.get(r.path),
   ].join("\n    ");
-  const html = shell.replace(/\s*<\/head>/, `\n    ${head}\n  </head>`);
+  let html = shell.replace(/\s*<\/head>/, `\n    ${head}\n  </head>`);
+  // The page itself, pre-rendered (the browser hydrates it): visible before any JavaScript runs.
+  html = withMarkup(html, await renderPage(r.path));
   const out = r.path === "/" ? path.join(dist, "index.html") : path.join(dist, `${r.path.slice(1)}.html`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, html);
@@ -215,9 +254,12 @@ for (const r of resolved) {
 // The not-found page: same app shell (React renders the NotFound page), not indexed, no canonical.
 fs.writeFileSync(
   path.join(dist, "404.html"),
-  shell.replace(
-    /\s*<\/head>/,
-    `\n    <title>${esc(NOT_FOUND_TITLE)}</title>\n    <meta name="robots" content="noindex" />\n    ${notFoundScript}\n  </head>`
+  withMarkup(
+    shell.replace(
+      /\s*<\/head>/,
+      `\n    <title>${esc(NOT_FOUND_TITLE)}</title>\n    <meta name="robots" content="noindex" />\n    ${notFoundScript}\n  </head>`
+    ),
+    await renderPage("/404")
   )
 );
 fs.rmSync(tmp, { recursive: true, force: true });

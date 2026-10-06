@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { APPLICATIONS, PARTNERS, PRODUCTS, applicationLabel, getProduct, partnerOf } from "../data/products";
 import ProductCard from "../components/catalogue/ProductCard";
@@ -128,6 +127,7 @@ function HeroProduct() {
               width="640"
               height="900"
               fetchPriority="high"
+              loading="eager"
               decoding="async"
               className="relative h-full w-full object-contain"
             />
@@ -165,29 +165,32 @@ function HeroProduct() {
   );
 }
 
-/** Heading + intro for the current category/partner, cross-fading when the filters change. */
+/**
+ * Heading + intro for the current category/partner. When the filters change, the old heading leaves
+ * (fade, 6 px up) and only then does the new one arrive (fade, from 8 px below), 0.28 s each (CSS
+ * keyframes in index.css; under reduced motion it simply swaps).
+ */
 function CategoryHeading({ app, partner }) {
-  const reduce = useReducedMotion();
-  const copy = CATEGORY_COPY[app];
-  const p = partner === "all" ? null : partnerOf(partner);
   const key = `${app}-${partner}`;
+  // `shown` is what is on screen; while it differs from the filters the old heading is leaving.
+  const [shown, setShown] = useState({ app, partner, key, entering: false });
+  const leaving = shown.key !== key;
+  useEffect(() => {
+    if (!leaving) return;
+    const t = setTimeout(() => setShown({ app, partner, key, entering: true }), reducedMotion() ? 0 : 280);
+    return () => clearTimeout(t);
+  }, [leaving, app, partner, key]);
+  const copy = CATEGORY_COPY[shown.app];
+  const p = shown.partner === "all" ? null : partnerOf(shown.partner);
   return (
     <div className="relative min-h-[5.5rem] max-w-2xl">
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={key}
-          initial={reduce ? false : { opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6 }}
-          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <h2 className="text-2xl font-semibold tracking-tight text-ink md:text-3xl">
-            {copy.title}
-            {p && <span className="text-sage"> · {p.name}</span>}
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-graphite">{copy.text}</p>
-        </motion.div>
-      </AnimatePresence>
+      <div key={shown.key} className={leaving ? "heading-out" : shown.entering ? "heading-in" : ""}>
+        <h2 className="text-2xl font-semibold tracking-tight text-ink md:text-3xl">
+          {copy.title}
+          {p && <span className="text-sage"> · {p.name}</span>}
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-graphite">{copy.text}</p>
+      </div>
     </div>
   );
 }
@@ -390,6 +393,8 @@ export default function Products() {
                   >
                     <img
                       src={p.logo}
+                      loading="lazy"
+                      decoding="async"
                       alt=""
                       className={`${p.logoClass} w-auto max-w-[70%] object-contain transition-opacity duration-300 ${
                         on || partner === "all" ? "opacity-90 group-hover/partner:opacity-100" : "opacity-50 group-hover/partner:opacity-100"

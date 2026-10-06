@@ -31,3 +31,14 @@ export const SolutionsRoute = preloadable(() => import("./Solutions"));
 export const SolutionsUtilityRoute = preloadable(() => import("./SolutionsUtility"));
 export const SolutionsCIRoute = preloadable(() => import("./SolutionsCI"));
 export const SolutionsResidentialRoute = preloadable(() => import("./SolutionsResidential"));
+
+// Every other page except Home (the main entry page) is its own chunk too, so a visitor downloads
+// only the page they opened; each page's data (catalogue, EPC content) travels with it.
+export const AboutRoute = preloadable(() => import("./About"));
+export const BecomePartnerRoute = preloadable(() => import("./BecomePartner"));
+export const HowItWorksRoute = preloadable(() => import("./HowItWorks"));
+export const ServiceTrainingRoute = preloadable(() => import("./ServiceTraining"));
+export const WhereWeOperateRoute = preloadable(() => import("./WhereWeOperate"));
+export const ResourcesRoute = preloadable(() => import("./Resources"));
+export const ContactRoute = preloadable(() => import("./Contact"));
+export const NotFoundRoute = preloadable(() => import("./NotFound"));
