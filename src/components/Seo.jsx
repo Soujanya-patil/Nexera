@@ -29,6 +29,15 @@ export default function Seo() {
   }, []);
   if (!meta) return null;
   const route = meta.getRoute(pathname);
+  // A preview page (routes.js PREVIEW_ROUTES): its title, and noindex.
+  if (route?.noindex) {
+    return (
+      <>
+        <title>{route.title}</title>
+        <meta name="robots" content="noindex" />
+      </>
+    );
+  }
   if (!route) {
     return (
       <>

@@ -51,6 +51,7 @@ const {
   OG_IMAGE_MIN_WIDTH,
   NOT_FOUND_TITLE,
   ORGANIZATION,
+  PREVIEW_ROUTES,
 } = await import(pathToFileURL(path.join(tmp, entry)).href);
 
 // --- Checks -----------------------------------------------------------------------------------
@@ -262,7 +263,18 @@ fs.writeFileSync(
     await renderPage("/404")
   )
 );
+// Preview pages (routes.js PREVIEW_ROUTES, e.g. /home-v2): pre-rendered like any page, but not
+// indexed — title and noindex only (no description, canonical, social tags or JSON-LD), and never in
+// the sitemap. The server serves them like any route (/home-v2 -> home-v2.html).
+for (const r of PREVIEW_ROUTES) {
+  if (ROUTES.some((x) => x.path === r.path) || sitemap.includes(SITE_URL + r.path)) throw new Error(`${r.path}: a preview page must not be a sitemap route`);
+  const html = withMarkup(
+    shell.replace(/\s*<\/head>/, `\n    <title>${esc(r.title)}</title>\n    <meta name="robots" content="noindex" />\n  </head>`),
+    await renderPage(r.path)
+  );
+  fs.writeFileSync(path.join(dist, `${r.path.slice(1)}.html`), html);
+}
 fs.rmSync(tmp, { recursive: true, force: true });
 
-console.log(`\nseo-pages: ${resolved.length} route pages + 404.html written\n`);
+console.log(`\nseo-pages: ${resolved.length} route pages + 404.html + ${PREVIEW_ROUTES.length} noindex preview page(s) written\n`);
 for (const r of resolved) console.log(`  ${r.path.padEnd(38)} ${String(r.title.length).padStart(2)}  ${String(r.description.length).padStart(3)}  ${r.ogImage}`);

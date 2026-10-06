@@ -7,6 +7,7 @@ import {
   AboutRoute,
   BecomePartnerRoute,
   ContactRoute,
+  HomeV2Route,
   HowItWorksRoute,
   NotFoundRoute,
   ProductDetailRoute,
@@ -38,6 +39,7 @@ const PAGES = [
   ["/where-we-operate", WhereWeOperateRoute],
   ["/resources", ResourcesRoute],
   ["/contact", ContactRoute],
+  ["/home-v2", HomeV2Route], // preview of the new Home (noindex; routes.js PREVIEW_ROUTES)
 ];
 
 /**

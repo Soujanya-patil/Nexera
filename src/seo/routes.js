@@ -183,8 +183,15 @@ export const ROUTES = [...PAGES.slice(0, afterProducts), ...PRODUCTS.map(product
   canonical: SITE_URL + r.path,
 }));
 
+/**
+ * Preview pages: real pages that are not part of the site yet (a director's comparison). Never in the
+ * sitemap or ROUTES, never indexed: served with `noindex` and no canonical, description or JSON-LD.
+ * /home-v2 carries the current Home title until it replaces Home.
+ */
+export const PREVIEW_ROUTES = [{ path: "/home-v2", title: PAGES[0].title, noindex: true }];
+
 /** The route for a pathname ("/about" or "/about/"), or undefined. */
 export function getRoute(pathname) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
-  return ROUTES.find((r) => r.path === path);
+  return ROUTES.find((r) => r.path === path) ?? PREVIEW_ROUTES.find((r) => r.path === path);
 }
