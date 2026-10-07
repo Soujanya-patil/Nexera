@@ -1544,3 +1544,69 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     animation: none;
   }
 }
+
+/* ---- Homepage contact section (components/HomeContact.jsx) ---------------------------------------
+   The form card rises in (the section's reveal) with a soft border glow, once; the interest chips are
+   native radios; a spinner while sending; the success check mark draws itself. Reduced motion: static. */
+.contact-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgb(144 217 136 / 0.45), 0 0 40px -6px rgb(144 217 136 / 0.35);
+  opacity: 0.35;
+  pointer-events: none;
+}
+@keyframes contact-glow {
+  0% { opacity: 0; }
+  45% { opacity: 1; }
+  100% { opacity: 0.35; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .contact-card[data-glow="on"]::before {
+    animation: contact-glow 1.8s ease-out both;
+  }
+}
+.contact-chip span {
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 9999px;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  padding: 0.55rem 1rem;
+  font-size: 0.875rem;
+  color: rgb(244 247 244 / 0.9);
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.contact-chip span:hover {
+  border-color: rgb(144 217 136 / 0.7);
+}
+.contact-chip input:checked + span {
+  border-color: var(--color-signal);
+  background: var(--color-signal);
+  color: var(--color-forest);
+  font-weight: 600;
+}
+.contact-chip input:focus-visible + span {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+@keyframes contact-spin {
+  to { transform: rotate(360deg); }
+}
+.contact-spin {
+  animation: contact-spin 0.8s linear infinite;
+}
+.contact-check :is(circle, path) {
+  stroke-dasharray: 1;
+}
+@keyframes contact-draw {
+  from { stroke-dashoffset: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .contact-check circle {
+    animation: contact-draw 0.7s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .contact-check path {
+    animation: contact-draw 0.5s cubic-bezier(0.65, 0, 0.35, 1) 0.55s both;
+  }
+}

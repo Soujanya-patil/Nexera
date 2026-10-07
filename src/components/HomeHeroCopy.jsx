@@ -3,6 +3,7 @@ import { ChartNoAxesColumnIncreasing, Leaf, Zap } from "lucide-react";
 import MagneticButton from "./ui/MagneticButton";
 import { loadGsap } from "../lib/motion";
 import { isFirstLoad } from "../lib/firstLoad";
+import { scrollToId } from "../lib/scrollTo";
 
 const trust = [
   { icon: Zap, lines: ["Cleaner Energy", "Round the Clock"] },
@@ -44,8 +45,8 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
  * copy back and forward instead, driven by the story's progress.
  *
  * HOVER — Explore Solutions: magnetic pull, arrow nudge, and a soft light that follows the pointer
- * across the green; Contact Us: magnetic pull and a short green light travelling around its
- * border. Trust points: the icon lifts and fills green, a small green rule draws under the text and
+ * across the green; Contact Us (scrolls to the contact form, #contact): magnetic pull and a short
+ * green light travelling around its border. Trust points: the icon lifts and fills green, a small green rule draws under the text and
  * the text brightens.
  *
  * prefers-reduced-motion: text shows immediately; no entrance, depth or scroll motion; hover states stay.
@@ -197,7 +198,9 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             </MagneticButton>
           </span>
           <span data-a="cta" className="inline-block">
-            <MagneticButton to="/contact" variant="outline" sweep className="hover:-translate-y-0.5">
+            {/* An in-page link to the contact form (#contact): works without JavaScript; with it, glides
+                there through Lenis and clears the sticky nav. */}
+            <MagneticButton to="#contact" onClick={scrollToId("contact")} variant="outline" sweep className="hover:-translate-y-0.5">
               Contact Us
             </MagneticButton>
           </span>

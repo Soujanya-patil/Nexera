@@ -20,6 +20,8 @@ ErrorDocument 404 /404.html
   # The Our Brands page became the product catalogue (the app also redirects in the browser).
   RewriteRule ^brands/?$ /products [R=301,L]
   RewriteRule ^index\.html$ - [L]
+  # The enquiry endpoint (api/contact.php) is a real script: never rewritten to a page.
+  RewriteRule ^api/ - [L]
   # A route's own page (so /products is products.html, not the folder). index.html and 404.html are
   # files, not routes: /index and /404 must not answer as pages. Tested on the exact path, not
   # %{REQUEST_FILENAME}: for /about/ or /about/x the server resolves REQUEST_FILENAME to .../about

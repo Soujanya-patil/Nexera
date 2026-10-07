@@ -1,0 +1,9 @@
+# Rate-limit data for api/contact.php (used only when it cannot be stored outside the web root).
+# Never served.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>
