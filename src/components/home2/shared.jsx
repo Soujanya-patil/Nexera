@@ -88,3 +88,37 @@ export function SectionHead({ id, eyebrow, title, dark = false, className = "", 
     </div>
   );
 }
+
+/** The site's eyebrow: small caps, wide tracking, a short rule before it (settles in as it enters). */
+export function Eyebrow({ dark = false, children, className = "" }) {
+  return (
+    <KineticEyebrow
+      className={`text-xs font-semibold uppercase tracking-[0.22em] ${dark ? "text-signal" : "text-sage"} ${className}`}
+      ruleClass={dark ? "bg-signal" : "bg-sage"}
+    >
+      {children}
+    </KineticEyebrow>
+  );
+}
+
+/**
+ * Runs `start` once `el` comes within about a viewport of the screen (and never before), so a
+ * section's measuring work (getBoundingClientRect, path sampling) doesn't run during page load.
+ * `start` may return a cleanup.
+ */
+export function whenNear(el, start) {
+  let stop;
+  const io = new IntersectionObserver(
+    ([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      stop = start();
+    },
+    { rootMargin: "100% 0px" }
+  );
+  io.observe(el);
+  return () => {
+    io.disconnect();
+    stop?.();
+  };
+}
