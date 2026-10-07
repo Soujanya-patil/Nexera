@@ -44,7 +44,7 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
  * copy back and forward instead, driven by the story's progress.
  *
  * HOVER — Explore Solutions: magnetic pull, arrow nudge, and a soft light that follows the pointer
- * across the green; Partner with Us: magnetic pull and a short green light travelling around its
+ * across the green; Contact Us: magnetic pull and a short green light travelling around its
  * border. Trust points: the icon lifts and fills green, a small green rule draws under the text and
  * the text brightens.
  *
@@ -197,8 +197,8 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             </MagneticButton>
           </span>
           <span data-a="cta" className="inline-block">
-            <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:-translate-y-0.5">
-              Partner with Us
+            <MagneticButton to="/contact" variant="outline" sweep className="hover:-translate-y-0.5">
+              Contact Us
             </MagneticButton>
           </span>
         </div>

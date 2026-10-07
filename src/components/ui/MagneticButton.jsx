@@ -10,8 +10,8 @@ import { useMagnetic } from "../../lib/magnetic";
  * resets the CSS `scale`/`translate` properties there, which would cancel the link's own hover
  * scale/lift and press feedback.
  *
- * Reserved for hero-level calls to action (interaction hierarchy): Explore Solutions and Partner
- * with Us in the hero, Get in Touch and Become a Partner in the closing band, and a product page's
+ * Reserved for hero-level calls to action (interaction hierarchy): Explore Solutions and Contact
+ * Us in the hero, Get in Touch and Become a Partner in the closing band, and a product page's
  * Enquire button — never whole groups of buttons.
  */
 export default function MagneticButton(props) {
