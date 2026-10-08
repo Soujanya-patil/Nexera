@@ -19,6 +19,8 @@ ErrorDocument 404 /404.html
   RewriteBase /
   # The Our Brands page became the product catalogue (the app also redirects in the browser).
   RewriteRule ^brands/?$ /products [R=301,L]
+  # /partners has no page of its own (only /partners/hithium, /partners/tcl …): to the catalogue.
+  RewriteRule ^partners/?$ /products [R=301,L]
   RewriteRule ^index\.html$ - [L]
   # The enquiry endpoint (api/contact.php) is a real script: never rewritten to a page.
   RewriteRule ^api/ - [L]

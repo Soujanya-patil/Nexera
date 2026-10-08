@@ -6,15 +6,12 @@ import {
   Home,
   Leaf,
   MonitorCheck,
-  Moon,
   ShieldCheck,
-  Smartphone,
   Sun,
   CloudSun,
   Wallet,
-  Unplug,
 } from "lucide-react";
-import { RESIDENTIAL_FAQ } from "../data/solutions";
+import { RESIDENTIAL_BENEFITS, RESIDENTIAL_FAQ } from "../data/solutions";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
@@ -144,16 +141,7 @@ export default function SolutionsResidential() {
       />
 
       <Section id="why-home" push mark="Battery Storage" eyebrow="Why residential energy storage" title="Why Add Battery Storage to Your Home?">
-        <FeatureGrid
-          items={[
-            { icon: Sun, title: "Store the Solar You Generate", text: "Use excess solar energy generated during the day instead of sending it back to the grid." },
-            { icon: Moon, title: "Use Solar After Sunset", text: "Store energy during the day and use it during evening and night-time consumption." },
-            { icon: BatteryCharging, title: "Backup When You Need It", text: "Home battery backup keeps essential loads such as lights, fans, refrigerators, Wi-Fi and other selected appliances running during power interruptions." },
-            { icon: Unplug, title: "Reduce Grid Dependence", text: "Increase your self-consumption and reduce your dependence on grid electricity." },
-            { icon: Smartphone, title: "Monitor Your Energy", text: "Smart monitoring gives you visibility of solar generation, battery status, consumption and energy flows." },
-            { icon: Expand, title: "Built to Scale", text: "Start with the capacity your home needs today and expand your storage as your energy requirements grow." },
-          ]}
-        />
+        <FeatureGrid items={RESIDENTIAL_BENEFITS} />
       </Section>
 
       <Section

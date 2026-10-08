@@ -21,6 +21,7 @@
 import { PRODUCTS, partnerOf, productLabel, applicationLabel } from "../data/products";
 import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/solutions";
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
+import { partnerFaq } from "../data/partners";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -99,6 +100,41 @@ const PAGES = [
     description:
       "Explore and compare TCL, Hithium and CLOU battery energy storage systems for residential, C&I and utility-scale projects, available in India via NEXERA.",
   },
+  // Partner pages (pages/Partner.jsx, content in data/partners.js): breadcrumb Home > Products >
+  // partner, and an FAQ built from the catalogue — written as FAQPage data.
+  ...[
+    [
+      "hithium",
+      "Hithium",
+      "Hithium Energy Storage in India | NEXERA",
+      "Hithium BESS in India through NEXERA: ∞BLOCK C&I cabinets and ∞Power utility-scale containers, with sizing, commissioning and local support.",
+    ],
+    [
+      "tcl",
+      "TCL",
+      "TCL BlueArk Energy Storage in India | NEXERA",
+      "TCL BlueArk energy storage in India through NEXERA: residential and C&I systems with design, commissioning, training and after-sales support.",
+    ],
+    [
+      "clou",
+      "CLOU",
+      "CLOU Energy Storage Systems in India | NEXERA",
+      "CLOU Aqua battery energy storage in India through NEXERA: C&I and containerised utility-scale systems, with engineering and commissioning support.",
+    ],
+    [
+      "midea",
+      "Midea",
+      "Midea Home Battery Storage in India | NEXERA",
+      "Midea residential energy storage in India through NEXERA. Tell us about your home and solar setup and we'll help you choose the right system.",
+    ],
+  ].map(([id, name, title, description]) => ({
+    path: `/partners/${id}`,
+    label: name,
+    title,
+    description,
+    crumbs: [["Products", "/products"], [name, `/partners/${id}`]],
+    faq: partnerFaq(id),
+  })),
   {
     path: "/become-a-partner",
     label: "Become a Partner",

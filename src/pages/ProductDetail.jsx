@@ -232,7 +232,7 @@ function ProductView({ product }) {
                 <ChevronRight className="h-3.5 w-3.5" />
               </li>
               <li>
-                <Link to={`/products?partner=${partner.id}`} className="hover:text-white">
+                <Link to={`/partners/${partner.id}`} className="hover:text-white">
                   {partner.name}
                 </Link>
               </li>
@@ -248,7 +248,10 @@ function ProductView({ product }) {
           <div className="mt-8 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14">
             <div>
               <p data-a="eyebrow" className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
-                Technology partner · <span className="text-white">{partner.name}</span>
+                Technology partner ·{" "}
+                <Link to={`/partners/${partner.id}`} className="text-white underline-offset-4 hover:text-signal hover:underline">
+                  {partner.name}
+                </Link>
               </p>
               <h1 data-a="title" className="mt-4 text-[clamp(2rem,3.6vw,3rem)] font-semibold leading-[1.1] tracking-tight">
                 {product.name}

@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import AnimatedText from "./ui/AnimatedText";
 import { useEntrance } from "../lib/entrance";
 import { useMediaQuery } from "../lib/scrollSteps";
@@ -20,6 +21,14 @@ const logos = [
   const apps = APPLICATIONS.filter((a) => products.some((p) => p.applications.includes(a.id))).map((a) => applicationLabel(a.id));
   return { ...l, apps, count: products.length };
 });
+
+// The partners named in the description, each a link to its partner page.
+const NAMED = [
+  ["tcl", "TCL"],
+  ["hithium", "Hithium"],
+  ["clou", "CLOU"],
+  ["midea", "Midea"],
+];
 
 // Each logo rests slightly muted; on hover it comes to full presence (colour + opacity) with a short
 // lift, a green indicator draws beneath it, and the hairline divider beside it brightens.
@@ -55,6 +64,7 @@ const Logo = ({ l, index, hidden, onHover }) => (
  * logos arrive from the right partner by partner — TCL, Hithium, CLOU, ~100 ms apart.
  * Hover: the partner's logo comes to full presence (above) and the line beneath the strip shows
  * where that partner's systems fit — applications and number of systems, from the catalogue.
+ * The partner names in the description link to their partner pages (/partners/:id).
  */
 export default function HomePartners() {
   const still = useMediaQuery("(prefers-reduced-motion: reduce)");
@@ -82,8 +92,16 @@ export default function HomePartners() {
           </p>
           <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Global Technology. Local Impact.</AnimatedText>
           <p data-e="desc" className="mt-3 max-w-lg text-graphite">
-            NEXERA brings systems from world-leading BESS manufacturers — TCL, Hithium, CLOU and Midea — with products
-            across residential, C&amp;I and utility-scale segments.
+            NEXERA brings systems from world-leading BESS manufacturers —{" "}
+            {NAMED.map(([id, name], i) => (
+              <Fragment key={id}>
+                {i > 0 && (i === NAMED.length - 1 ? " and " : ", ")}
+                <Link to={`/partners/${id}`} className="font-medium text-forest underline-offset-4 hover:underline">
+                  {name}
+                </Link>
+              </Fragment>
+            ))}{" "}
+            — with products across residential, C&amp;I and utility-scale segments.
           </p>
         </div>
         <div className="min-w-0">

@@ -7,6 +7,21 @@
  * content; CLOU's Aqua C2.5S is written the way the catalogue writes it.
  */
 
+import { BatteryCharging, Expand, Moon, Smartphone, Sun, Unplug } from "lucide-react";
+
+/**
+ * "Why Add Battery Storage to Your Home?" — shown on the Residential page and on the Midea partner
+ * page (which has no catalogue products to list), so both say exactly the same.
+ */
+export const RESIDENTIAL_BENEFITS = [
+  { icon: Sun, title: "Store the Solar You Generate", text: "Use excess solar energy generated during the day instead of sending it back to the grid." },
+  { icon: Moon, title: "Use Solar After Sunset", text: "Store energy during the day and use it during evening and night-time consumption." },
+  { icon: BatteryCharging, title: "Backup When You Need It", text: "Home battery backup keeps essential loads such as lights, fans, refrigerators, Wi-Fi and other selected appliances running during power interruptions." },
+  { icon: Unplug, title: "Reduce Grid Dependence", text: "Increase your self-consumption and reduce your dependence on grid electricity." },
+  { icon: Smartphone, title: "Monitor Your Energy", text: "Smart monitoring gives you visibility of solar generation, battery status, consumption and energy flows." },
+  { icon: Expand, title: "Built to Scale", text: "Start with the capacity your home needs today and expand your storage as your energy requirements grow." },
+];
+
 /** Solutions page for each catalogue application (data/products.js `applications`). */
 export const SOLUTION_PAGES = {
   residential: { path: "/solutions/residential", label: "Residential" },

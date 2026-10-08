@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { APPLICATIONS, PARTNERS, PRODUCTS, applicationLabel, getProduct, partnerOf } from "../data/products";
 import ProductCard from "../components/catalogue/ProductCard";
@@ -190,6 +190,12 @@ function CategoryHeading({ app, partner }) {
           {p && <span className="text-sage"> · {p.name}</span>}
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-graphite">{copy.text}</p>
+        {p && (
+          <Link to={`/partners/${p.id}`} className="group/about mt-2 inline-flex items-center gap-1 text-sm font-semibold text-forest hover:text-steel">
+            About {p.name} in India
+            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover/about:translate-x-0.5" />
+          </Link>
+        )}
       </div>
     </div>
   );

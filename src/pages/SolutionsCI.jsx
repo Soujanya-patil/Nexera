@@ -276,7 +276,7 @@ export default function SolutionsCI() {
                   <Stats items={p.stats} className="mt-5 flex-1 content-start" />
                 </>
               )}
-              <ArrowLink to={`/products?partner=${p.id}`} className="mt-6 self-start">
+              <ArrowLink to={`/partners/${p.id}`} className="mt-6 self-start">
                 View {PARTNER_NAMES[p.id]} systems
               </ArrowLink>
             </article>

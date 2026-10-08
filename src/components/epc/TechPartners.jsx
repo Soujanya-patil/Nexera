@@ -132,7 +132,7 @@ export default function TechPartners() {
               ))}
             </ul>
             <Link
-              to={`/products?partner=${active}`}
+              to={`/partners/${active}`}
               className="group/all mt-5 inline-flex items-center gap-2 self-start text-sm font-semibold text-forest hover:text-steel"
             >
               View {partner.name} systems

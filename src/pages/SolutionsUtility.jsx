@@ -236,7 +236,7 @@ export default function SolutionsUtility() {
                     <h3 className="mt-5 text-2xl font-semibold tracking-tight text-ink">{p.title}</h3>
                     <p className="mt-3 leading-relaxed text-graphite">{p.copy}</p>
                     <Stats items={p.stats} />
-                    <ArrowLink to={`/products?partner=${p.id}`} className="mt-6">
+                    <ArrowLink to={`/partners/${p.id}`} className="mt-6">
                       All {p.id === "clou" ? "CLOU" : "Hithium"} systems
                     </ArrowLink>
                   </div>

@@ -48,13 +48,20 @@ export default function HomeContact() {
   const started = useRef(0);
 
   // Preselect from the URL, and land on the section for the #contact?… form (not an element id).
+  // Arriving from another page, the page above can still be settling as it renders (sections
+  // hydrate, images decode), so the landing is checked again a few times and corrected if it drifted.
   useEffect(() => {
     const pre = interestFrom(search, hash);
     if (pre) setValues((v) => ({ ...v, interest: pre }));
-    if (hash.startsWith("#contact?")) {
-      const el = root.current;
-      requestAnimationFrame(() => el && jumpTo(el.getBoundingClientRect().top + window.scrollY - 64));
-    }
+    if (!hash.startsWith("#contact?")) return;
+    const el = root.current;
+    const land = () => el && Math.abs(el.getBoundingClientRect().top - 64) > 2 && jumpTo(el.getBoundingClientRect().top + window.scrollY - 64);
+    const raf = requestAnimationFrame(land);
+    const timers = [150, 450, 900, 1600].map((ms) => setTimeout(land, ms));
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+    };
   }, [search, hash]);
 
   // The form card's soft border glow, once, as it arrives.

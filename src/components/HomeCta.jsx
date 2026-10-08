@@ -13,8 +13,10 @@ const STEPS = ["Partner", "Deploy", "Accelerate"];
  * soft green pulse. The glow behind drifts slowly (CSS, off under reduced motion). Buttons: magnetic
  * pull, arrow nudge, a pointer-following light on Get in Touch; a travelling border light and a soft
  * green glow on Become a Partner.
+ *
+ * `contactTo`: where Get in Touch leads (the partner pages send it to the homepage contact form).
  */
-export default function HomeCta() {
+export default function HomeCta({ contactTo = "/contact" }) {
   const root = useRef(null);
   const enter = useEntrance(root, ({ tl, q }) => {
     const words = q("[data-step]");
@@ -81,7 +83,7 @@ export default function HomeCta() {
           </p>
         </div>
         <div data-e="actions" className="flex shrink-0 flex-wrap items-center gap-4">
-          <MagneticButton to="/contact" arrow spotlight className="hover:scale-[1.02]">
+          <MagneticButton to={contactTo} arrow spotlight className="hover:scale-[1.02]">
             Get in Touch
           </MagneticButton>
           <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:scale-[1.02] hover:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)]">

@@ -10,6 +10,7 @@ import {
   HomeV2Route,
   HowItWorksRoute,
   NotFoundRoute,
+  PartnerRoute,
   ProductDetailRoute,
   ProductsRoute,
   ResourcesRoute,
@@ -29,6 +30,7 @@ const PAGES = [
   ["/about", AboutRoute],
   ["/products", ProductsRoute],
   ["/products/:productId", ProductDetailRoute],
+  ["/partners/:partnerId", PartnerRoute],
   ["/solutions", SolutionsRoute],
   ["/solutions/utility-scale", SolutionsUtilityRoute],
   ["/solutions/commercial-industrial", SolutionsCIRoute],
@@ -49,7 +51,7 @@ const PAGES = [
  */
 export function preloadRoute(pathname) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
-  if (path === "/" || path === "/brands") return Promise.resolve();
+  if (path === "/" || path === "/brands" || path === "/partners") return Promise.resolve();
   const hit = PAGES.find(([p]) => matchPath(p, path));
   return (hit ? hit[1] : NotFoundRoute).preload();
 }
@@ -77,6 +79,8 @@ export default function AppRoutes() {
         ))}
         {/* The catalogue replaced the Our Brands page; keep old links working. */}
         <Route path="/brands" element={<Navigate to="/products" replace />} />
+        {/* No partners hub page: /partners goes to the catalogue (also a 301 in .htaccess). */}
+        <Route path="/partners" element={<Navigate to="/products" replace />} />
         <Route
           path="*"
           element={

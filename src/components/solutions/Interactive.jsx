@@ -327,15 +327,12 @@ export function AppRail({ items, label }) {
   );
 }
 
-// Where a partner's logo leads: its systems in the catalogue; Midea (no catalogue products yet) to a
-// residential enquiry about Midea, as on the residential page.
-const PARTNER_LINK = { midea: "/contact?intent=residential&brand=midea" };
 
 /**
  * Partner logo strip ("gallery"): the logos alone (each logo already says the name; the name is its
  * alt text). Midea has no logo file, so its name is set as a wordmark at the logos' height — type, not
  * an invented logo. Logos sit in greyscale at 70% and turn full colour on hover or keyboard focus.
- * Each is a link to that partner's systems.
+ * Each is a link to that partner's page (/partners/:id).
  */
 export function PartnerStrip({ partners, label = "Technology partners", className = "" }) {
   const list = useRef(null);
@@ -348,7 +345,7 @@ export function PartnerStrip({ partners, label = "Technology partners", classNam
         return (
           <li data-sr key={id}>
             <Link
-              to={PARTNER_LINK[id] ?? `/products?partner=${id}`}
+              to={`/partners/${id}`}
               className="grid h-10 place-items-center rounded-md px-2 opacity-70 grayscale transition-[opacity,filter] duration-300 hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal motion-reduce:transition-none"
             >
               {p ? (
