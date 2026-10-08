@@ -127,7 +127,8 @@ const organization = {
   },
 };
 if (!fs.existsSync(distFile(ORGANIZATION.logo))) problems.push(`Organization logo missing: dist${ORGANIZATION.logo}`);
-const pageName = (r) => r.title.slice(0, -TITLE_SUFFIX.length);
+// A route's short name for breadcrumbs: its `label` (routes.js) where it has one, else its title.
+const pageName = (r) => r.label ?? r.title.slice(0, -TITLE_SUFFIX.length);
 const productsRoute = ROUTES.find((r) => r.path === "/products");
 /** Trail items are routes (named like their titles) or [name, path] pairs from a route's `crumbs`. */
 const breadcrumbs = (trail) => ({

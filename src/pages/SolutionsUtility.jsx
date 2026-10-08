@@ -223,7 +223,7 @@ export default function SolutionsUtility() {
         mark="One NEXERA Utility Ecosystem"
         eyebrow="Two global technology platforms"
         title="Hithium + CLOU. Two Specialists. One NEXERA Utility Ecosystem."
-        intro="NEXERA brings together two dedicated energy-storage technology platforms, so project developers, IPPs, EPCs and utilities can select the architecture that best fits their project."
+        intro="NEXERA brings together two dedicated platforms for containerised battery storage, so project developers, IPPs, EPCs and utilities can select the BESS container architecture that best fits their project."
       >
         {/* One compare selection across both partners' featured systems. */}
         <CompareProvider>

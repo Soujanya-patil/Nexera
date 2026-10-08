@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PageHeader from "../components/PageHeader";
+import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 
 export default function ServiceTraining() {
   return (
@@ -16,7 +17,7 @@ export default function ServiceTraining() {
           </h2>
           <p className="mt-3 text-graphite max-w-2xl leading-relaxed">
             Every partner gets our engineering team for sizing, single-line diagrams,
-            and on-site commissioning support.
+            and on-site support with BESS installation and BESS commissioning.
           </p>
         </div>
       </section>
@@ -43,14 +44,31 @@ export default function ServiceTraining() {
             India's Hands-On BESS Training Center for EPC Technicians
           </p>
           <p className="mt-4 text-graphite max-w-2xl leading-relaxed">
-            In Kalaburagi, technicians train on live TCL and Hithium hardware — not
-            manuals and PDFs.
+            In Kalaburagi, BESS technician training happens on live TCL and Hithium
+            hardware — not manuals and PDFs.
           </p>
           <ul className="mt-6 space-y-2 text-graphite">
             <li className="flex gap-3"><span className="text-forest">✓</span> Hands-on installation and commissioning practice</li>
             <li className="flex gap-3"><span className="text-forest">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
             <li className="flex gap-3"><span className="text-forest">✓</span> Certification path for field-ready technicians</li>
           </ul>
+        </div>
+      </section>
+
+      {/* FAQ: the same list is the page's FAQPage structured data (src/seo/routes.js), word for word. */}
+      <section className="bg-ice border-t border-line">
+        <div className="container-site py-16">
+          <h2 className="font-sans text-2xl font-semibold text-ink">
+            Frequently Asked Questions
+          </h2>
+          <dl className="mt-6 max-w-2xl space-y-6">
+            {SERVICE_TRAINING_FAQ.map(({ q, a }) => (
+              <div key={q}>
+                <dt className="font-semibold text-ink">{q}</dt>
+                <dd className="mt-2 text-graphite leading-relaxed">{a}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
     </div>

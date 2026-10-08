@@ -192,7 +192,7 @@ export const VALUES = [
   {
     title: "Technology Access",
     icon: Boxes,
-    copy: "Direct, authorized access to TCL, Hithium and CLOU — no separate brand negotiation on your side.",
+    copy: "A lithium battery distributorship with direct, authorized access to TCL, Hithium and CLOU — no separate brand negotiation on your side.",
   },
   {
     title: "Design & Technical Support",

@@ -232,7 +232,7 @@ export default function SolutionsCI() {
         mark="Your Business"
         eyebrow="Why C&I energy storage"
         title="Energy Storage Built Around Your Business"
-        intro="Electricity consumption is not constant. Your energy system shouldn't be either. Our C&I BESS solutions help businesses with:"
+        intro="Electricity consumption is not constant. Your energy system shouldn't be either. Our commercial battery storage systems help businesses with:"
       >
         <FeatureGrid
           items={[

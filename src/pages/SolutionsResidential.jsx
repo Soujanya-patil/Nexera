@@ -113,7 +113,7 @@ export default function SolutionsResidential() {
         subheading="Solar power shouldn't stop when the sun goes down."
         body={[
           "NEXERA brings next-generation residential energy storage solutions from Midea and TCL, combining solar, battery storage and intelligent energy management to help Indian homes use more of the energy they generate.",
-          "Whether you want to reduce your electricity bill, keep essential appliances running during outages, or build a more energy-independent home, our residential systems are designed to grow with your needs.",
+          "Whether you want to reduce your electricity bill, keep essential appliances running during outages, or build a more energy-independent home, our residential systems give you a solar battery for home, designed to grow with your needs.",
         ]}
         tagline="Solar + Storage + Intelligence: one complete energy solution for your home."
         cta={{ label: "Explore Our Residential Solutions", target: "home-solutions" }}
@@ -148,7 +148,7 @@ export default function SolutionsResidential() {
           items={[
             { icon: Sun, title: "Store the Solar You Generate", text: "Use excess solar energy generated during the day instead of sending it back to the grid." },
             { icon: Moon, title: "Use Solar After Sunset", text: "Store energy during the day and use it during evening and night-time consumption." },
-            { icon: BatteryCharging, title: "Backup When You Need It", text: "Keep essential loads such as lights, fans, refrigerators, Wi-Fi and other selected appliances running during power interruptions." },
+            { icon: BatteryCharging, title: "Backup When You Need It", text: "Home battery backup keeps essential loads such as lights, fans, refrigerators, Wi-Fi and other selected appliances running during power interruptions." },
             { icon: Unplug, title: "Reduce Grid Dependence", text: "Increase your self-consumption and reduce your dependence on grid electricity." },
             { icon: Smartphone, title: "Monitor Your Energy", text: "Smart monitoring gives you visibility of solar generation, battery status, consumption and energy flows." },
             { icon: Expand, title: "Built to Scale", text: "Start with the capacity your home needs today and expand your storage as your energy requirements grow." },

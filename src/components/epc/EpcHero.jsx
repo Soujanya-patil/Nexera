@@ -51,7 +51,7 @@ export default function EpcHero() {
         <div className="relative flex min-h-[min(46rem,calc(100svh-4rem))] container-site flex-col justify-center py-20 lg:py-24">
           <p data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
             <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
-            For EPCs &amp; Project Developers
+            Become a BESS Distributor
           </p>
           <h1 className="mt-5 text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
             <span data-a="line1" className="block">

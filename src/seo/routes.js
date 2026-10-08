@@ -14,9 +14,13 @@
  *
  * Limits: title < 60 characters, unique, ending "| NEXERA"; description < 155 characters, unique;
  * canonical = SITE_URL + path, no trailing slash (the homepage is the bare domain with its "/").
+ *
+ * `label`: the page's short name (as in the nav) for its breadcrumb in structured data, where the
+ * title is written for search results; without one, the breadcrumb uses the title minus " | NEXERA".
  */
 import { PRODUCTS, partnerOf, productLabel, applicationLabel } from "../data/products";
 import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/solutions";
+import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -53,51 +57,54 @@ const PAGES = [
     path: "/",
     title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
     description:
-      "Authorized distributor of TCL, Hithium, CLOU and Midea battery energy storage systems (BESS) in India — for residential, C&I and utility-scale projects.",
+      "Authorized distributor of TCL, Hithium, CLOU and Midea battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
   },
   {
     path: "/solutions",
-    title: "BESS Solutions for Homes, C&I and Utility-Scale | NEXERA",
+    label: "Solutions",
+    title: "Energy Storage Solutions: Home, C&I & Utility | NEXERA",
     description:
-      "Battery energy storage for Indian homes, C&I sites and utility-scale projects — TCL, Hithium, CLOU and Midea systems supplied by NEXERA.",
+      "Energy storage solutions for Indian homes, C&I sites and utility-scale projects: TCL, Hithium, CLOU and Midea battery storage systems supplied by NEXERA.",
   },
   // The three Solutions pages: breadcrumb Home > Solutions > page (`crumbs`, after Home), and an FAQ
   // whose text the page renders from the same data (data/solutions.js) — written as FAQPage data.
   {
     path: SOLUTION_PAGES.utility.path,
-    title: "Utility-Scale Battery Energy Storage (BESS) India | NEXERA",
+    title: "Utility-Scale BESS & Battery Containers India | NEXERA",
     description:
-      "Grid-scale BESS from Hithium and CLOU for solar, wind and grid projects in India, with sizing, engineering and commissioning support from NEXERA.",
+      "Utility-scale BESS and containerised battery storage from Hithium and CLOU, 5 MWh-class and up, with sizing, engineering and commissioning by NEXERA.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.utility.label, SOLUTION_PAGES.utility.path]],
     faq: UTILITY_FAQ,
   },
   {
     path: SOLUTION_PAGES.ci.path,
-    title: "C&I Battery Energy Storage Systems in India | NEXERA",
+    title: "Commercial & Industrial Battery Storage India | NEXERA",
     description:
-      "C&I battery energy storage for peak shaving, solar self-consumption and backup power. TCL, Hithium and CLOU systems, with project engineering by NEXERA.",
+      "Commercial battery storage systems for peak shaving, solar self-consumption and backup power. TCL, Hithium and CLOU C&I BESS with engineering by NEXERA.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.ci.label, SOLUTION_PAGES.ci.path]],
     faq: CI_FAQ,
   },
   {
     path: SOLUTION_PAGES.residential.path,
-    title: "Home Battery Storage & Solar Solutions in India | NEXERA",
+    title: "Home Energy Storage & Solar Battery Backup | NEXERA",
     description:
-      "Home battery storage from Midea and TCL: use solar after sunset, keep essential loads running in outages and cut grid dependence. Supplied by NEXERA.",
+      "Solar battery for home from Midea and TCL: store rooftop solar, keep essential loads running in power cuts and cut grid dependence. Supplied by NEXERA.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.residential.label, SOLUTION_PAGES.residential.path]],
     faq: RESIDENTIAL_FAQ,
   },
   {
     path: "/products",
-    title: "Energy Storage Systems — TCL, Hithium & CLOU | NEXERA",
+    label: "Products",
+    title: "BESS Products — TCL, Hithium & CLOU Energy Storage | NEXERA",
     description:
       "Explore and compare TCL, Hithium and CLOU battery energy storage systems for residential, C&I and utility-scale projects, available in India via NEXERA.",
   },
   {
     path: "/become-a-partner",
-    title: "BESS Partnership for EPCs in India | NEXERA",
+    label: "Become a Partner",
+    title: "Become a BESS Distributor in India | NEXERA",
     description:
-      "EPCs get authorized access to TCL, Hithium and CLOU battery storage through NEXERA — with design, commissioning, training and after-sales support.",
+      "Become an authorized BESS distributor for TCL, Hithium and CLOU in India, with design, commissioning, technician training and after-sales support.",
   },
   {
     path: "/about",
@@ -113,19 +120,23 @@ const PAGES = [
   },
   {
     path: "/service-training",
-    title: "BESS Service, Support & Technician Training | NEXERA",
+    label: "Service & Training",
+    title: "BESS Installation, Commissioning & Training | NEXERA",
     description:
-      "Design and commissioning support, after-sales and warranty service, and hands-on technician training at NEXERA's Kalaburagi training center.",
+      "BESS installation and commissioning support, sizing, warranty service and hands-on technician training at NEXERA's Kalaburagi training center.",
+    faq: SERVICE_TRAINING_FAQ,
   },
   {
     path: "/where-we-operate",
-    title: "Where We Operate in India | NEXERA",
+    label: "Where We Operate",
+    title: "Battery Energy Storage in Bangalore & India | NEXERA",
     description:
       "NEXERA is headquartered in Bangalore, with a regional office and technician training center in Kalaburagi, and planned expansion to Nagpur and Delhi.",
   },
   {
     path: "/resources",
-    title: "BESS Datasheets, FAQs & Insights | NEXERA",
+    label: "Resources",
+    title: "BESS Guides, Datasheets & FAQs | NEXERA",
     description:
       "Battery energy storage datasheets and brochures, answers to common BESS questions, and news and insights from NEXERA for projects in India.",
   },
