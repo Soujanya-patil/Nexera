@@ -1635,3 +1635,57 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     transition: opacity 0.4s ease-out, translate 0.4s cubic-bezier(0.33, 1, 0.68, 1);
   }
 }
+
+/* ---- Call-back widget (components/CallbackWidget.jsx) -------------------------------------------------
+   The floating pill's one pulse ring when it first appears; the nudge bubble (left of the pill on
+   wider screens, above it on phones) with a small tail pointing at the pill; the interest chips as a
+   2 × 2 grid in the card. Reduced motion: no ring, the nudge simply appears. */
+.cb-ring {
+  opacity: 0;
+}
+@keyframes cb-ring {
+  from { opacity: 0.7; scale: 1; }
+  to { opacity: 0; scale: 1.5; }
+}
+@keyframes cb-nudge-in {
+  from { opacity: 0; translate: 0 6px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cb-ring {
+    animation: cb-ring 1.4s ease-out 0.2s both;
+  }
+  .cb-nudge > div {
+    animation: cb-nudge-in 0.35s ease-out both;
+  }
+}
+.cb-nudge-tail {
+  position: absolute;
+  right: 1.5rem;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border-right: 1px solid rgb(255 255 255 / 0.1);
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  rotate: 45deg;
+}
+@media (width >= 40rem) {
+  .cb-nudge-tail {
+    right: -5px;
+    bottom: calc(50% - 5px);
+    rotate: -45deg;
+  }
+}
+/* Uneven columns, so the longer labels ("Business / C&I", "Becoming a distributor") stay on one line
+   in the 360px card. */
+.cb-chips {
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+}
+.cb-chips .contact-chip {
+  display: block;
+}
+.cb-chips .contact-chip span {
+  display: block;
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+}

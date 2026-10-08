@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from "react";
+import { Suspense, lazy, useEffect, useLayoutEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Nav from "./Nav";
 import Footer from "./Footer";
@@ -30,6 +30,25 @@ function useScrollOnNavigate() {
   }, [pathname, hash]);
 }
 
+// The floating call-back widget (every page) is its own chunk, loaded once the page has loaded and
+// the browser is idle: it only appears after some scrolling, and nothing of it is pre-rendered.
+const CallbackWidget = lazy(() => import("./CallbackWidget"));
+function useIdleAfterLoad() {
+  const [idle, setIdle] = useState(false);
+  useEffect(() => {
+    let id;
+    const idleCb = window.requestIdleCallback ?? ((fn) => setTimeout(fn, 1));
+    const go = () => (id = idleCb(() => setIdle(true), { timeout: 3000 }));
+    if (document.readyState === "complete") go();
+    else window.addEventListener("load", go, { once: true });
+    return () => {
+      window.removeEventListener("load", go);
+      (window.cancelIdleCallback ?? clearTimeout)(id);
+    };
+  }, []);
+  return idle;
+}
+
 // The path the page was loaded with (a direct load); any other path got here by client-side navigation.
 const firstPath = typeof window === "undefined" ? null : window.location.pathname;
 
@@ -38,6 +57,7 @@ export default function Layout() {
   // only <Outlet />'s content swaps) — the single Lenis instance the whole site scrolls through.
   useEffect(() => initSmoothScroll(), []);
   useScrollOnNavigate();
+  const widget = useIdleAfterLoad();
   const { pathname } = useLocation();
   // Any path other than the one the page was opened with was reached by client-side navigation:
   // marked here, while rendering, so the new page's first render already knows (lib/firstLoad).
@@ -65,6 +85,11 @@ export default function Layout() {
         </div>
       </main>
       <Footer />
+      {widget && (
+        <Suspense fallback={null}>
+          <CallbackWidget />
+        </Suspense>
+      )}
     </div>
   );
 }

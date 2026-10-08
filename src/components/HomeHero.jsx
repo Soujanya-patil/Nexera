@@ -513,6 +513,7 @@ export default function HomeHero() {
   return (
     <section
       ref={section}
+      data-home-hero
       className={`relative bg-night text-white ${story ? "overflow-clip" : "overflow-hidden"}`}
       style={story ? { height: `calc(100svh - 4rem + ${STORY_VH}svh)` } : undefined}
     >

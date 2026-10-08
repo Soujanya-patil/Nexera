@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
 import HomeHero from "../components/HomeHero";
-import HomeQuickEnquiry from "../components/HomeQuickEnquiry";
 import HomeStats from "../components/HomeStats";
 
 // Everything below the hero and the stat bar is its own chunk (it carries the catalogue data), so the
@@ -9,10 +8,10 @@ import HomeStats from "../components/HomeStats";
 const HomeBelow = lazy(() => import("../components/HomeBelow"));
 
 /**
- * Home, per the approved mockup (home-mockup-v2-approved.png): Hero -> quick call-back strip -> stat bar
- * -> Solutions -> Technology Partners -> Why Now -> contact section (the site Footer follows from Layout).
- * The call-back strip is part of the first chunk (pre-rendered, never lazy): a one-step enquiry right
- * under the hero, linking down to the full contact form.
+ * Home, per the approved mockup (home-mockup-v2-approved.png): Hero -> stat bar -> Solutions ->
+ * Technology Partners -> Why Now -> contact section (the site Footer follows from Layout). The quick
+ * call-back is the site-wide floating widget (CallbackWidget, in Layout); the call-back strip that sat
+ * under the hero (HomeQuickEnquiry) stays in the codebase, unmounted.
  *
  * Every section has its own interaction personality, so the page never animates the same way twice:
  *   Hero       cinematic — the pinned, scroll-driven product story
@@ -33,7 +32,6 @@ export default function Home() {
   return (
     <>
       <HomeHero />
-      <HomeQuickEnquiry />
       <HomeStats />
       <Suspense fallback={<div className="min-h-[200svh] bg-paper" />}>
         <HomeBelow />

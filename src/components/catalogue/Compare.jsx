@@ -1,15 +1,22 @@
 import { useEffect, useRef } from "react";
+import { useBottomClaim } from "../../lib/floatingBottom";
 import { Link } from "react-router-dom";
 import { ArrowRight, GitCompareArrows, X } from "lucide-react";
 import { COMPARE_FIELDS, applicationLabel, getProduct, partnerOf } from "../../data/products";
 
 export const MAX_COMPARE = 3;
 
-/** Fixed tray listing the systems picked for comparison; opens the comparison dialog. */
+/**
+ * Fixed tray listing the systems picked for comparison; opens the comparison dialog. While shown it
+ * claims its height at the bottom of the viewport, so the call-back widget sits above it.
+ */
 export function CompareTray({ ids, onRemove, onClear, onOpen }) {
   const products = ids.map(getProduct);
+  const tray = useRef(null);
+  useBottomClaim("catalogue-compare", tray, ids.length > 0);
   return (
     <div
+      ref={tray}
       className={`fixed inset-x-0 bottom-0 z-40 px-4 pb-4 transition-[transform,opacity] duration-300 ease-out sm:px-6 ${
         ids.length ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { COMPARE_FIELDS, getProduct, partnerOf } from "../../data/products";
 import { getLenis } from "../../lib/lenis";
+import { useBottomClaim } from "../../lib/floatingBottom";
 
 const fullName = (p) => `${partnerOf(p.partner).name} ${p.name}`;
 
@@ -10,7 +11,8 @@ const fullName = (p) => `${partnerOf(p.partner).name} ${p.name}`;
  * The Solutions compare tray (own chunk): from 2 ticked systems it slides up from the bottom with their
  * thumbnails, "Compare (n)" and "Clear"; "Up to 3 systems" shows as a short toast when a 4th pick has
  * replaced the oldest. It steps aside while the final CTA band or the footer is on screen, so it never
- * covers the CTA button (and it sits at the bottom, clear of the segment switcher at the top).
+ * covers the CTA button (and it sits at the bottom, clear of the segment switcher at the top). While
+ * shown it claims its height at the bottom of the viewport, so the call-back widget sits above it.
  * "Compare" opens the comparison dialog.
  */
 export default function CompareTray({ ids, replaced, onClear }) {
@@ -19,6 +21,8 @@ export default function CompareTray({ ids, replaced, onClear }) {
   const [toast, setToast] = useState(false);
   const products = ids.map(getProduct);
   const shown = ids.length >= 2 && !endInView;
+  const tray = useRef(null);
+  useBottomClaim("solutions-compare", tray, shown);
 
   useEffect(() => {
     const ends = [...document.querySelectorAll("[data-cta-band], body footer")];
@@ -45,6 +49,7 @@ export default function CompareTray({ ids, replaced, onClear }) {
   return (
     <>
       <div
+        ref={tray}
         aria-hidden={!shown || undefined}
         inert={!shown}
         className={`fixed inset-x-0 bottom-0 z-40 px-3 pb-3 transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none sm:px-6 sm:pb-5 ${

@@ -1,7 +1,7 @@
 /*
  * Website enquiries — one helper for every form that sends one (the homepage contact section, the
- * homepage quick call-back strip and the /contact page). Validation here mirrors public/api/contact.php, which validates again server-side
- * and sends the email.
+ * site-wide call-back widget and the /contact page). Validation here mirrors public/api/contact.php,
+ * which validates again server-side and sends the email.
  *
  * Optional contact details are read at build time; when they are not set, nothing is shown (no phone
  * number or email address is ever invented):
@@ -29,6 +29,12 @@ export const MIN_FILL_MS = 3000;
 /** An Indian mobile number: 10 digits starting 6–9, optionally prefixed +91 (spaces / hyphens allowed). */
 export const cleanMobile = (v = "") => v.replace(/[\s()-]/g, "");
 const MOBILE_RE = /^(?:\+91)?[6-9]\d{9}$/;
+/** For display: "+919845012345" → "+91 98450 12345"; "9845012345" → "98450 12345". */
+export function prettyMobile(v = "") {
+  const m = cleanMobile(v);
+  const d = m.slice(-10);
+  return `${m.startsWith("+91") ? "+91 " : ""}${d.slice(0, 5)} ${d.slice(5)}`;
+}
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /** The error for one field (or ""), for validation on blur. */
@@ -69,7 +75,7 @@ export function validateEnquiry(values, opts) {
 /**
  * Sends an enquiry. `startedAt` is when the visitor opened (first touched) the form. `details` carries
  * any extra context a form has (product, site, proposal …) as short strings. `source` is "full" (a full
- * enquiry form) or "quick" (the homepage call-back strip). Resolves to { ok: true } or
+ * enquiry form) or "quick" (the call-back widget: name, mobile, interest). Resolves to { ok: true } or
  * { ok: false, error } — never throws.
  */
 export async function sendEnquiry({ name, mobile, email = "", company = "", city = "", interest, message = "", website = "", startedAt, details = {}, source = "full" }) {
