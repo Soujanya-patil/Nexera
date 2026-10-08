@@ -1,7 +1,8 @@
 <?php
 /*
  * NEXERA website enquiries — POST /api/contact.php (Hostinger runs PHP; Vite copies public/ to dist/).
- * Used by the homepage contact section and the /contact page (src/lib/enquiry.js).
+ * Used by the homepage contact section, the homepage quick call-back strip and the /contact page
+ * (src/lib/enquiry.js).
  *
  * Accepts POST with a JSON body only. Answers JSON: {"ok":true} or {"ok":false,"error":"..."} with a
  * matching status code. User input is never echoed back.
@@ -12,6 +13,8 @@
  *    it (the client sends both times); at most 5 enquiries per IP per hour (file-based, stored outside
  *    the web root when the host allows it, otherwise in api/private/, which denies all web access).
  *  - One plain-text email with mail(), every header value stripped of CR/LF.
+ *  - `source` (optional): "full" (the default, a full enquiry form) or "quick" (the homepage call-back
+ *    strip: name, mobile and interest only), which gets its own subject and a source line.
  */
 
 // ↓ The one place the recipient is set.
@@ -27,6 +30,7 @@ const INTERESTS = [
     "distributor" => "Becoming a distributor",
     "oem" => "Brand / OEM partnership",
 ];
+const SOURCES = ["full", "quick"];
 const LIMITS = ["name" => 100, "mobile" => 20, "email" => 160, "company" => 120, "city" => 80, "message" => 1000, "page" => 200];
 
 header("Content-Type: application/json; charset=utf-8");
@@ -72,6 +76,7 @@ $interest = $text("interest");
 $message = $text("message");
 $page = header_safe($text("page"));
 $honeypot = $text("website");
+$source = $text("source") !== "" ? $text("source") : "full";
 $startedAt = isset($in["startedAt"]) && is_numeric($in["startedAt"]) ? (float) $in["startedAt"] : 0;
 $sentAt = isset($in["sentAt"]) && is_numeric($in["sentAt"]) ? (float) $in["sentAt"] : 0;
 
@@ -88,6 +93,7 @@ if ($name === "") $errors[] = "name";
 if (!preg_match('/^(?:\+91)?[6-9]\d{9}$/', $mobile)) $errors[] = "mobile";
 if ($email !== "" && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "email";
 if (!array_key_exists($interest, INTERESTS)) $errors[] = "interest";
+if (!in_array($source, SOURCES, true)) $errors[] = "source";
 foreach (LIMITS as $k => $max) {
     if (len((string) ${$k}) > $max && !in_array($k, $errors, true)) $errors[] = $k;
 }
@@ -150,8 +156,10 @@ fclose($fh);
 // The email.
 $when = (new DateTime("now", new DateTimeZone("Asia/Kolkata")))->format("d M Y, H:i") . " IST";
 $label = INTERESTS[$interest];
+$quick = $source === "quick";
 $lines = [
-    "New website enquiry",
+    ...($quick ? ["Source: Homepage quick call-back strip", ""] : []),
+    $quick ? "Call-back request" : "New website enquiry",
     "",
     "Name:        $name",
     "Mobile:      $mobile",
@@ -164,7 +172,7 @@ foreach ($details as $k => $v) $lines[] = str_pad(ucfirst(str_replace("_", " ", 
 array_push($lines, "", "Message:", $message !== "" ? $message : "—", "", "Page:        " . ($page !== "" ? $page : "—"), "Received:    $when");
 $body = implode("\n", $lines) . "\n";
 
-$subject = "=?UTF-8?B?" . base64_encode(header_safe("New website enquiry: $label – $name")) . "?=";
+$subject = "=?UTF-8?B?" . base64_encode(header_safe(($quick ? "Call-back request" : "New website enquiry") . ": $label – $name")) . "?=";
 $headers = [
     "From: NEXERA website <" . NEXERA_FROM . ">",
     "MIME-Version: 1.0",

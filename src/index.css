@@ -1610,3 +1610,28 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     animation: contact-draw 0.5s cubic-bezier(0.65, 0, 0.35, 1) 0.55s both;
   }
 }
+
+/* ---- Homepage quick call-back strip (components/HomeQuickEnquiry.jsx) ------------------------------
+   Rises in once (12px, 0.4s) after the hero settles (1.4s on a first load; HomeQuickEnquiry sets 1.75s
+   after a client-side navigation, when the hero's own entrance runs). Pure CSS from the pre-rendered
+   page, so it needs no JavaScript. When the strip starts below the viewport, JavaScript takes over:
+   it waits off screen ("wait") and rises as it scrolls into view ("in"), or simply shows ("done").
+   Opacity and translate only (no layout shift). Reduced motion: static. */
+@keyframes qe-rise {
+  from { opacity: 0; translate: 0 12px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .qe-reveal {
+    animation: qe-rise 0.4s cubic-bezier(0.33, 1, 0.68, 1) var(--qe-delay, 1.4s) both;
+  }
+  .qe-reveal[data-qe] {
+    animation: none;
+  }
+  .qe-reveal[data-qe="wait"] {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  .qe-reveal[data-qe="in"] {
+    transition: opacity 0.4s ease-out, translate 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+}

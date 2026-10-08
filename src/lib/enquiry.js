@@ -1,6 +1,6 @@
 /*
- * Website enquiries — one helper for every form that sends one (the homepage contact section and the
- * /contact page). Validation here mirrors public/api/contact.php, which validates again server-side
+ * Website enquiries — one helper for every form that sends one (the homepage contact section, the
+ * homepage quick call-back strip and the /contact page). Validation here mirrors public/api/contact.php, which validates again server-side
  * and sends the email.
  *
  * Optional contact details are read at build time; when they are not set, nothing is shown (no phone
@@ -68,10 +68,11 @@ export function validateEnquiry(values, opts) {
 
 /**
  * Sends an enquiry. `startedAt` is when the visitor opened (first touched) the form. `details` carries
- * any extra context a form has (product, site, proposal …) as short strings. Resolves to { ok: true }
- * or { ok: false, error } — never throws.
+ * any extra context a form has (product, site, proposal …) as short strings. `source` is "full" (a full
+ * enquiry form) or "quick" (the homepage call-back strip). Resolves to { ok: true } or
+ * { ok: false, error } — never throws.
  */
-export async function sendEnquiry({ name, mobile, email = "", company = "", city = "", interest, message = "", website = "", startedAt, details = {} }) {
+export async function sendEnquiry({ name, mobile, email = "", company = "", city = "", interest, message = "", website = "", startedAt, details = {}, source = "full" }) {
   const body = {
     name: name.trim(),
     mobile: cleanMobile(mobile),
@@ -82,6 +83,7 @@ export async function sendEnquiry({ name, mobile, email = "", company = "", city
     message: message.trim(),
     website,
     details,
+    source,
     page: window.location.pathname + window.location.search,
     startedAt,
     sentAt: Date.now(),
