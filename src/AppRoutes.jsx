@@ -5,6 +5,7 @@ import Seo from "./components/Seo";
 import Home from "./pages/Home";
 import {
   AboutRoute,
+  ArticleRoute,
   BecomePartnerRoute,
   ContactRoute,
   HomeV2Route,
@@ -40,6 +41,7 @@ const PAGES = [
   ["/service-training", ServiceTrainingRoute],
   ["/where-we-operate", WhereWeOperateRoute],
   ["/resources", ResourcesRoute],
+  ["/resources/:slug", ArticleRoute],
   ["/contact", ContactRoute],
   ["/home-v2", HomeV2Route], // preview of the new Home (noindex; routes.js PREVIEW_ROUTES)
 ];

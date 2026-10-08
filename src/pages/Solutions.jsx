@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import SceneImg from "../components/SceneImg";
 import { ArrowUnderline, PartnerStrip, Spotlight } from "../components/solutions/Interactive";
 import { SOLUTION_PAGES } from "../data/solutions";
@@ -123,6 +124,12 @@ function HubHeader({ eyebrow, title, subtitle }) {
           </h1>
           <p data-a="desc" className="mt-4 max-w-2xl leading-relaxed text-ice/75">
             {subtitle}
+          </p>
+          <p data-a="desc" className="mt-4 text-sm">
+            <Link to="/resources/what-is-bess" className="group/new inline-flex items-center gap-1.5 font-semibold text-signal underline-offset-4 hover:underline">
+              New to battery storage? Read: What Is a BESS?
+              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover/new:translate-x-0.5" />
+            </Link>
           </p>
         </div>
         {/* The ribbon's space is always in the markup (desktop only, CSS), so the hero never changes size

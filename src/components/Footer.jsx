@@ -12,6 +12,9 @@ const links = [
   { label: "Contact", href: "/contact" },
 ];
 
+// Guides (data/articles.js).
+const guides = [{ label: "What is a BESS?", href: "/resources/what-is-bess" }];
+
 // The technology partners' pages.
 const partners = [
   { label: "Hithium", href: "/partners/hithium" },
@@ -23,7 +26,7 @@ const partners = [
 export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-deep text-ice/70">
-      <div className="container-site py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+      <div className="container-site py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
         <div>
           <Wordmark className="text-lg text-white" />
           <p className="mt-3 text-sm">Bangalore, Karnataka</p>
@@ -33,6 +36,18 @@ export default function Footer() {
           <p className="text-sm font-medium text-white/90">Quick links</p>
           <ul className="mt-3 grid grid-cols-2 gap-2 text-sm">
             {links.map((l) => (
+              <li key={l.label}>
+                <Link to={l.href} className="transition-colors hover:text-signal">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="text-sm font-medium text-white/90">Resources</p>
+          <ul className="mt-3 grid gap-2 text-sm">
+            {guides.map((l) => (
               <li key={l.label}>
                 <Link to={l.href} className="transition-colors hover:text-signal">
                   {l.label}

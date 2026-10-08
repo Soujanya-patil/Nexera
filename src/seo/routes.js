@@ -22,6 +22,7 @@ import { PRODUCTS, partnerOf, productLabel, applicationLabel } from "../data/pro
 import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/solutions";
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 import { partnerFaq } from "../data/partners";
+import { ARTICLES } from "../data/articles";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -176,6 +177,16 @@ const PAGES = [
     description:
       "Battery energy storage datasheets and brochures, answers to common BESS questions, and news and insights from NEXERA for projects in India.",
   },
+  // Articles (pages/Article.jsx, content in data/articles.js): breadcrumb Home > Resources > article,
+  // Article structured data, and the article's FAQ as FAQPage data.
+  ...ARTICLES.map((a) => ({
+    path: `/resources/${a.slug}`,
+    title: a.title,
+    description: a.description,
+    crumbs: [["Resources", "/resources"], [a.shortTitle, `/resources/${a.slug}`]],
+    article: { headline: a.h1, datePublished: a.datePublished, dateModified: a.dateModified },
+    faq: a.faqs,
+  })),
   {
     path: "/contact",
     title: "Contact Us — Energy Storage Enquiries | NEXERA",

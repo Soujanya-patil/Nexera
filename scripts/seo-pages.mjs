@@ -160,7 +160,22 @@ function graphFor(r) {
       brand: { "@type": "Brand", name: r.product.brand },
     });
   }
-  // The page's visible FAQ, word for word (both come from data/solutions.js).
+  // An article (data/articles.js): written and published by the Organization.
+  if (r.article) {
+    nodes.push({
+      "@type": "Article",
+      "@id": `${r.canonical}#article`,
+      headline: r.article.headline,
+      description: r.description,
+      image: SITE_URL + r.ogImage,
+      datePublished: r.article.datePublished,
+      dateModified: r.article.dateModified,
+      author: { "@type": "Organization", "@id": ORG_ID, name: ORGANIZATION.name, url: `${SITE_URL}/` },
+      publisher: { "@type": "Organization", "@id": ORG_ID, name: ORGANIZATION.name, logo: { "@type": "ImageObject", url: SITE_URL + ORGANIZATION.logo } },
+      mainEntityOfPage: { "@type": "WebPage", "@id": r.canonical },
+    });
+  }
+  // The page's visible FAQ, word for word (both come from the same data as the page).
   if (r.faq) {
     nodes.push({
       "@type": "FAQPage",

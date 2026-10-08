@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import PageHeader from "../components/PageHeader";
+import { ARTICLES, formatDate } from "../data/articles";
 
 const datasheets = [
   "TCL BlueArk W10 — Datasheet",
@@ -27,6 +30,41 @@ export default function Resources() {
         eyebrow="Resources"
         title="Datasheets, answers, and the latest from Nexera"
       />
+
+      {/* Guides: every article (data/articles.js), newest first. */}
+      <section aria-labelledby="guides-title" className="bg-paper border-b border-line">
+        <div className="container-site py-16">
+          <h2 id="guides-title" className="font-sans text-2xl font-semibold text-ink">
+            Guides
+          </h2>
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...ARTICLES]
+              .sort((x, y) => y.datePublished.localeCompare(x.datePublished))
+              .map((a) => (
+                <li key={a.slug}>
+                  <article className="group/guide relative flex h-full flex-col rounded-2xl border border-line bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 ease-out hover:-translate-y-1 hover:border-forest/30 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)] motion-reduce:transition-none">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{a.eyebrow}</p>
+                    <h3 className="mt-3 text-lg font-semibold leading-snug text-ink">
+                      <Link
+                        to={`/resources/${a.slug}`}
+                        className="after:absolute after:inset-0 after:rounded-2xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-signal"
+                      >
+                        {a.h1}
+                      </Link>
+                    </h3>
+                    <p className="mt-2 flex-1 text-sm leading-relaxed text-graphite">{a.description}</p>
+                    <p className="mt-5 flex items-center justify-between gap-3 text-xs text-graphite">
+                      <span>
+                        <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time> · {a.readingTime} min read
+                      </span>
+                      <ArrowRight aria-hidden="true" className="h-4 w-4 text-forest transition-transform duration-300 group-hover/guide:translate-x-1" />
+                    </p>
+                  </article>
+                </li>
+              ))}
+          </ul>
+        </div>
+      </section>
 
       <section className="bg-paper border-b border-line">
         <div className="container-site py-16">

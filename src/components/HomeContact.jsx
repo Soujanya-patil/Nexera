@@ -4,6 +4,7 @@ import { ArrowRight, BadgeCheck, GraduationCap, Ruler } from "lucide-react";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { onceInView } from "../lib/inview";
 import { jumpTo } from "../lib/lenis";
+import { isFirstLoad } from "../lib/firstLoad";
 import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
 
 const TRUST = [
@@ -47,13 +48,15 @@ export default function HomeContact() {
   const [firstName, setFirstName] = useState("");
   const started = useRef(0);
 
-  // Preselect from the URL, and land on the section for the #contact?… form (not an element id).
+  // Preselect from the URL, and land on the section for the #contact?… form (not an element id), and
+  // for a plain #contact reached from another page (this section is in the homepage's second chunk,
+  // so it may not exist yet when the router looks for it; a direct load is left to the browser).
   // Arriving from another page, the page above can still be settling as it renders (sections
   // hydrate, images decode), so the landing is checked again a few times and corrected if it drifted.
   useEffect(() => {
     const pre = interestFrom(search, hash);
     if (pre) setValues((v) => ({ ...v, interest: pre }));
-    if (!hash.startsWith("#contact?")) return;
+    if (!hash.startsWith("#contact?") && !(hash === "#contact" && !isFirstLoad())) return;
     const el = root.current;
     const land = () => el && Math.abs(el.getBoundingClientRect().top - 64) > 2 && jumpTo(el.getBoundingClientRect().top + window.scrollY - 64);
     const raf = requestAnimationFrame(land);
