@@ -119,7 +119,7 @@ export default function OurBrands() {
           </div>
           <Reveal className="md:col-span-3">
             <div className="grid aspect-[7/4] place-items-center rounded-lg bg-ice ring-1 ring-ink/10">
-              <img src={clouLogo} alt="" className="h-11 w-auto" />
+              <img src={clouLogo} alt="CLOU logo" className="h-11 w-auto" />
             </div>
           </Reveal>
         </div>

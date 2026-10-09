@@ -397,11 +397,12 @@ export default function Products() {
                       on ? "border-forest shadow-[0_0_0_3px_rgba(144,217,136,0.35)]" : "border-line hover:border-forest/40"
                     }`}
                   >
+                    {/* The button is named by its aria-label; the logo still carries its own alt. */}
                     <img
                       src={p.logo}
                       loading="lazy"
                       decoding="async"
-                      alt=""
+                      alt={`${p.name} logo`}
                       className={`${p.logoClass} w-auto max-w-[70%] object-contain transition-opacity duration-300 ${
                         on || partner === "all" ? "opacity-90 group-hover/partner:opacity-100" : "opacity-50 group-hover/partner:opacity-100"
                       }`}

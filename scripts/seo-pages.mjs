@@ -292,5 +292,49 @@ for (const r of PREVIEW_ROUTES) {
 }
 fs.rmSync(tmp, { recursive: true, force: true });
 
+// --- Images: every <img> in the built pages has an alt ------------------------------------------
+// Search engines read these pages (Bing's Site Scan reports any image without a description).
+// alt="" is accepted only for an image marked presentational (role="presentation" / "none") or
+// sitting inside aria-hidden="true"; anything else fails the build, naming the page and the image.
+const VOID = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"]);
+function imageProblems(page, html) {
+  const out = [];
+  const stack = [];
+  const markup = html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, "");
+  for (const [, close, tag, attrs, selfClose] of markup.matchAll(/<(\/?)([a-zA-Z][\w-]*)\b([^>]*?)(\/?)>/g)) {
+    const name = tag.toLowerCase();
+    if (close) {
+      const i = stack.map((e) => e.name).lastIndexOf(name);
+      if (i >= 0) stack.length = i;
+      continue;
+    }
+    if (name === "img") {
+      const alt = attrs.match(/\salt="([^"]*)"/);
+      const src = (attrs.match(/\ssrc="([^"]*)"/) || [])[1] ?? "?";
+      const hidden = /\saria-hidden="true"/.test(attrs) || stack.some((e) => e.hidden);
+      if (!alt) out.push(`${page}: <img> without alt: ${src}`);
+      else if (!alt[1].trim() && !/\srole="(presentation|none)"/.test(attrs) && !hidden)
+        out.push(`${page}: <img alt=""> not marked role="presentation" or inside aria-hidden: ${src}`);
+      continue;
+    }
+    if (!VOID.has(name) && !selfClose) stack.push({ name, hidden: /\saria-hidden="true"/.test(attrs) });
+  }
+  return out;
+}
+const htmlFiles = [];
+(function walk(dir) {
+  for (const f of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, f.name);
+    if (f.isDirectory()) walk(p);
+    else if (f.name.endsWith(".html")) htmlFiles.push(p);
+  }
+})(dist);
+const imgProblems = htmlFiles.flatMap((f) => imageProblems(path.relative(dist, f).split(path.sep).join("/"), fs.readFileSync(f, "utf8")));
+if (imgProblems.length) {
+  console.error(`\nseo-pages: ${imgProblems.length} image(s) without a usable alt:\n  ${imgProblems.join("\n  ")}\n`);
+  process.exit(1);
+}
+console.log(`seo-pages: every <img> in ${htmlFiles.length} HTML files has an alt`);
+
 console.log(`\nseo-pages: ${resolved.length} route pages + 404.html + ${PREVIEW_ROUTES.length} noindex preview page(s) written\n`);
 for (const r of resolved) console.log(`  ${r.path.padEnd(38)} ${String(r.title.length).padStart(2)}  ${String(r.description.length).padStart(3)}  ${r.ogImage}`);

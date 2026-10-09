@@ -603,20 +603,23 @@ export function Stats({ items, className = "mt-6" }) {
 }
 
 /**
- * A technology partner's name: its logo where the site has one, otherwise the name in type (Midea:
- * the site has no Midea logo). `decorative` when a heading next to it already names the partner.
+ * A technology partner's name: its logo where the site has one (alt "{Partner} logo"), otherwise the
+ * name in type (Midea: the site has no Midea logo). `decorative` when a heading next to it already
+ * names the partner: hidden from screen readers then (the logo keeps its alt).
  */
 export function PartnerMark({ partner, name, decorative = false }) {
   const p = partner && partnerOf(partner);
   // self-start: inside a flex column a logo would otherwise stretch to the full card width.
   if (p)
     return (
-      <span data-sr data-wipe className="self-start">
+      // `decorative`: a heading beside it already names the partner, so screen readers skip the logo
+      // (aria-hidden) — it still carries its alt for crawlers.
+      <span data-sr data-wipe aria-hidden={decorative || undefined} className="self-start">
         <img
           src={p.logo}
           loading="lazy"
           decoding="async"
-          alt={decorative ? "" : p.name}
+          alt={`${p.name} logo`}
           className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-500 ease-out group-hover/card:scale-110`}
         />
       </span>

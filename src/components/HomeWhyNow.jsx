@@ -53,9 +53,14 @@ export default function HomeWhyNow() {
     <section ref={root} data-enter={enter} className="relative overflow-hidden bg-night text-white">
       {/* Closest existing asset to the mockup's sunset skyline (no new imagery for now).
           TODO(india-imagery): energy-night is a cityscape not identified as Indian. */}
-      <div data-e="image" className="absolute inset-0">
+      {/* A backdrop: hidden from screen readers (aria-hidden); the photo still carries a description. */}
+      <div data-e="image" aria-hidden="true" className="absolute inset-0">
         <ParallaxMedia amount={2}>
-          <SceneImg name="energy-night" className="h-full w-full object-cover object-[50%_60%]" />
+          <SceneImg
+            name="energy-night"
+            alt="City skyline at dusk, overlaid with a glowing network of connected points"
+            className="h-full w-full object-cover object-[50%_60%]"
+          />
         </ParallaxMedia>
       </div>
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-night/95 via-night/75 to-night/30" />

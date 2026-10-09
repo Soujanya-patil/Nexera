@@ -11,7 +11,9 @@ export default function SceneImg({ name, alt = "", sizes = "100vw", eager = fals
       width={s.width}
       height={s.height}
       alt={alt}
+      // No alt: decorative — hidden from assistive tech, marked presentational.
       aria-hidden={alt ? undefined : true}
+      role={alt ? undefined : "presentation"}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
       className={className}

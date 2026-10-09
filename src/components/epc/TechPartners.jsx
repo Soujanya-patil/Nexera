@@ -115,7 +115,7 @@ export default function TechPartners() {
                     <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-ice">
                       <img
                         src={x.image}
-                        alt=""
+                        alt={x.imageAlt}
                         loading="lazy"
                         decoding="async"
                         className={`object-contain transition-[scale] duration-300 group-hover/row:scale-110 ${x.imageFallback ? "h-4 w-10 opacity-80" : "h-11 w-11"}`}

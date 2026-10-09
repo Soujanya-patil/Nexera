@@ -46,7 +46,9 @@ const Logo = ({ l, index, hidden, onHover }) => (
       src={l.src}
       loading="lazy"
       decoding="async"
-      alt={hidden ? "" : l.name}
+      // The same alt in the marquee's looping copies (they sit in aria-hidden, so screen readers skip
+      // them; crawlers still see a description).
+      alt={`${l.name} logo`}
       className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-500 ease-out group-hover/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-hover/logo:grayscale-0`}
     />
     <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-signal transition-[width] duration-500 ease-out group-hover/logo:w-10" />
