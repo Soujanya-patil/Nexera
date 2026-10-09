@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import { ARTICLES, formatDate } from "../data/articles";
@@ -42,24 +41,31 @@ export default function Resources() {
               .sort((x, y) => y.datePublished.localeCompare(x.datePublished))
               .map((a) => (
                 <li key={a.slug}>
-                  <article className="group/guide relative flex h-full flex-col rounded-2xl border border-line bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 ease-out hover:-translate-y-1 hover:border-forest/30 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)] motion-reduce:transition-none">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{a.eyebrow}</p>
-                    <h3 className="mt-3 text-lg font-semibold leading-snug text-ink">
-                      <Link
-                        to={`/resources/${a.slug}`}
-                        className="after:absolute after:inset-0 after:rounded-2xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-signal"
-                      >
-                        {a.h1}
-                      </Link>
+                  {/* The whole card is one plain link (a normal page load: it works with or without the
+                      app's JavaScript); the arrow is part of it, with no click handler of its own. */}
+                  <a
+                    href={`/resources/${a.slug}`}
+                    aria-labelledby={`guide-${a.slug}-title`}
+                    aria-describedby={`guide-${a.slug}-desc`}
+                    className="group/guide flex h-full flex-col rounded-2xl border border-line bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 ease-out hover:-translate-y-1 hover:border-forest/40 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)] focus-visible:-translate-y-1 focus-visible:border-forest/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none"
+                  >
+                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{a.eyebrow}</span>
+                    <h3 id={`guide-${a.slug}-title`} className="mt-3 text-lg font-semibold leading-snug text-ink transition-colors duration-300 group-hover/guide:text-forest group-focus-visible/guide:text-forest">
+                      {a.h1}
                     </h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-graphite">{a.description}</p>
-                    <p className="mt-5 flex items-center justify-between gap-3 text-xs text-graphite">
+                    <span id={`guide-${a.slug}-desc`} className="mt-2 flex-1 text-sm leading-relaxed text-graphite">
+                      {a.description}
+                    </span>
+                    <span className="mt-5 flex items-center justify-between gap-3 text-xs text-graphite">
                       <span>
                         <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time> · {a.readingTime} min read
                       </span>
-                      <ArrowRight aria-hidden="true" className="h-4 w-4 text-forest transition-transform duration-300 group-hover/guide:translate-x-1" />
-                    </p>
-                  </article>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="h-4 w-4 text-forest transition-transform duration-300 group-hover/guide:translate-x-1 group-focus-visible/guide:translate-x-1"
+                      />
+                    </span>
+                  </a>
                 </li>
               ))}
           </ul>
