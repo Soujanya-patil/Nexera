@@ -1689,3 +1689,409 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   padding: 0.6rem 0.5rem;
   text-align: center;
 }
+
+/* ---- Article (pages/Article.jsx, components/article) ------------------------------------------------
+   Header: the h1's words (split into spans in the pre-rendered page) rise out of a mask, then the
+   intro fades up and the reading time counts in — CSS from the first paint, so nothing visible is
+   hidden by JavaScript; data-play="wait" holds it while the Guides card transition covers the page.
+   A faint energy grid draws in behind, with pulses travelling along it (paused off screen). Body:
+   heading lines, highlighter sweeps, Key-term borders (the page's reveal sets data-rv-state="wait"
+   on items still below the screen), the CTA's shine, the FAQ, Related cards, the scene stage, the
+   page curtain. Every animation sits behind prefers-reduced-motion: no-preference. */
+.article-h1-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.article-h1-word > span {
+  display: inline-block;
+}
+.article-count {
+  position: relative;
+  display: inline-block;
+}
+@property --article-n {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+@keyframes article-rise {
+  from { transform: translateY(105%); }
+}
+@keyframes article-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+}
+@keyframes article-count {
+  from { --article-n: 0; }
+  to { --article-n: var(--to); }
+}
+@keyframes article-show {
+  from { color: transparent; }
+  to { color: inherit; }
+}
+@keyframes article-hide {
+  to { visibility: hidden; }
+}
+@keyframes article-draw {
+  from { stroke-dashoffset: 1; }
+}
+@keyframes article-pulse-run {
+  0% { offset-distance: 0%; opacity: 0; }
+  8%, 88% { opacity: 0.9; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+@keyframes article-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+.article-grid-line {
+  fill: none;
+  stroke: rgba(144, 217, 136, 0.13);
+  stroke-width: 1;
+  stroke-dasharray: 1;
+}
+.article-grid-pulse {
+  fill: var(--color-signal);
+  opacity: 0;
+  offset-rotate: 0deg;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The h1's words rise only when the article is opened from a Guides card (data-reveal); on a direct
+     load the h1 — the page's largest paint — shows at once. */
+  .article-header[data-reveal][data-play="now"] .article-h1-word > span {
+    animation: article-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i) * 45ms) both;
+  }
+  .article-header[data-play="now"] .article-eyebrow {
+    animation: article-fade-up 0.5s ease-out both;
+  }
+  .article-header[data-play="now"] .article-intro {
+    animation: article-fade-up 0.6s ease-out 0.45s both;
+  }
+  .article-header[data-play="now"] .article-byline {
+    animation: article-fade-up 0.6s ease-out 0.6s both;
+  }
+  .article-header[data-play="now"] .article-count-num {
+    animation: article-show 0s linear 1.6s both;
+  }
+  .article-header[data-play="now"] .article-count::after {
+    content: counter(article-n);
+    counter-reset: article-n var(--article-n);
+    position: absolute;
+    inset: 0;
+    animation: article-count 0.9s ease-out 0.7s both, article-hide 0s linear 1.6s forwards;
+  }
+  .article-header[data-reveal][data-play="wait"] .article-h1-word > span {
+    transform: translateY(105%);
+  }
+  .article-header[data-play="wait"] :is(.article-eyebrow, .article-intro, .article-byline) {
+    opacity: 0;
+  }
+  /* (after the heading has risen: the first frames stay light) */
+  .article-header .article-grid-line {
+    animation: article-draw 1.4s ease-out calc(0.5s + var(--i) * 0.1s) both;
+  }
+  /* A few runs each (no filter: they stay cheap to paint), then the grid rests. */
+  .article-header .article-grid-pulse {
+    animation: article-pulse-run 6s linear calc(1.6s + var(--i) * 1.6s) 3;
+  }
+  .article-header[data-off] .article-grid-pulse {
+    animation-play-state: paused;
+  }
+  .article-cue svg {
+    animation: article-bob 1.6s ease-in-out infinite;
+  }
+}
+
+/* Headings: a short green line above each (drawn in by the reveal); the contents link's flash. */
+.article-h2-line {
+  display: block;
+  width: 48px;
+  height: 4px;
+  margin-bottom: 14px;
+  overflow: visible;
+}
+.article-h2-line line {
+  stroke: var(--color-signal);
+  stroke-width: 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+@keyframes article-flash {
+  0%, 100% { color: var(--color-ink); text-shadow: none; }
+  25% { color: #2f7a28; text-shadow: 0 0 18px rgba(144, 217, 136, 0.75); }
+}
+.article-flash {
+  animation: article-flash 1.4s ease-out;
+}
+
+/* Bold lead-ins: a highlighter sweep behind the words as their point arrives. */
+.article-lead {
+  background-image: linear-gradient(rgba(144, 217, 136, 0.38), rgba(144, 217, 136, 0.38));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 0.45em;
+  transition: background-size 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+[data-rv-state="wait"] .article-lead {
+  background-size: 0% 0.45em;
+}
+
+/* Key terms: a left border that fills top to bottom as it arrives, and a small 3D tilt (pointer). */
+.article-term-card {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.25s ease-out, box-shadow 0.3s;
+}
+.article-term-card:hover {
+  box-shadow: 0 18px 40px -26px rgba(7, 26, 23, 0.45);
+}
+.article-term-card::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  bottom: -1px;
+  width: 4px;
+  border-radius: 16px 0 0 16px;
+  background: var(--color-signal);
+  transform-origin: top;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+.article-term-card[data-rv-state="wait"]::before {
+  transform: scaleY(0);
+}
+/* While a card waits for its reveal, GSAP owns its transform (no tilt transition fighting it). */
+.article-term-card[data-rv-state] {
+  transition: none;
+}
+
+/* Links in the text: the underline draws and the arrow slides on hover; a link pulses while its
+   scale is on the stage. */
+.article-link > span,
+.article-link:not(:has(> span)) {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 0.35s ease;
+}
+.article-link:hover > span,
+.article-link:focus-visible > span,
+.article-link:not(:has(> span)):is(:hover, :focus-visible) {
+  background-size: 100% 1.5px;
+}
+.article-link:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+@keyframes article-link-pulse {
+  0%, 100% { text-shadow: none; }
+  40% { text-shadow: 0 0 14px rgba(144, 217, 136, 0.95); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .article-pulse {
+    animation: article-link-pulse 1.4s ease-out 2;
+  }
+}
+
+/* The CTA: a shine sweeps across every few seconds while it is on screen. */
+.article-cta {
+  overflow: hidden;
+}
+.article-cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+  transform: translateX(-120%);
+}
+@keyframes article-shine {
+  0% { transform: translateX(-120%); }
+  22%, 100% { transform: translateX(120%); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-shine][data-inview="1"] .article-cta::after {
+    animation: article-shine 4.5s ease-in-out 0.8s infinite;
+  }
+}
+
+/* FAQ: the open card glows; the "+" turns into a "×". */
+.article-faq {
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+.article-faq[open]:not([data-closing]) {
+  border-color: rgba(144, 217, 136, 0.7);
+  box-shadow: 0 0 0 1px rgba(144, 217, 136, 0.45), 0 14px 34px -16px rgba(144, 217, 136, 0.55);
+}
+.article-faq-icon {
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s;
+}
+.article-faq-icon > span {
+  position: absolute;
+  width: 12px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+.article-faq-icon > span:last-child {
+  transform: rotate(90deg);
+}
+.article-faq[open]:not([data-closing]) .article-faq-icon {
+  transform: rotate(135deg);
+  background-color: rgba(144, 217, 136, 0.25);
+}
+
+/* Related cards and the Guides card: a soft light following the pointer. */
+.article-related::before,
+.guide-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(200px circle at var(--mx, 50%) var(--my, 50%), rgba(144, 217, 136, 0.2), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.article-related:hover::before,
+.guide-card:hover::before {
+  opacity: 1;
+}
+@keyframes guide-pill {
+  0% { box-shadow: 0 0 0 0 rgba(144, 217, 136, 0.65); }
+  100% { box-shadow: 0 0 0 10px rgba(144, 217, 136, 0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .guide-pill {
+    animation: guide-pill 1.2s ease-out 0.8s 1 both;
+  }
+}
+
+/* The closing band's light lines drift slowly. */
+@keyframes article-band {
+  to { stroke-dashoffset: -440; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .article-band-line {
+    stroke-dasharray: 14 8;
+    animation: article-band 22s linear infinite;
+  }
+}
+
+/* The scene stage and the inline scenes: a dark card with a faint grid; scenes cross-fade. */
+.article-stage-grid {
+  background-image: linear-gradient(rgba(144, 217, 136, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(144, 217, 136, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(80% 70% at 50% 45%, #000 40%, transparent 100%);
+}
+/* Inline scenes (phones and tablets): not rendered until they come near the screen; their height is
+   fixed (reserved in the page), so skipping them never shifts anything. */
+.article-inline-scene {
+  content-visibility: auto;
+}
+/* Without JavaScript the scenes never mount: no empty frames then (the text says it all). */
+@media (scripting: none) {
+  .article-inline-scene,
+  .article-stage {
+    display: none !important;
+  }
+}
+.article-stage-slot {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.97) translateY(8px);
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 0.5s;
+}
+.article-stage-slot[data-on] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 0.45s ease 0.12s, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s, visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .article-stage-slot,
+  .article-stage-slot[data-on] {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Scenes: loops run only while a scene is active (data-run). */
+.article-term {
+  transition: opacity 0.4s, filter 0.4s;
+}
+.article-term.is-off {
+  opacity: 0.35;
+}
+.article-term.is-on {
+  filter: drop-shadow(0 0 8px rgba(144, 217, 136, 0.45));
+}
+.article-range {
+  accent-color: var(--color-signal);
+}
+.article-range:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.article-drain {
+  transform-origin: left;
+}
+@keyframes article-drain {
+  0% { transform: scaleX(1); }
+  85%, 100% { transform: scaleX(0.04); }
+}
+@keyframes article-stream {
+  to { stroke-dashoffset: -13; }
+}
+@keyframes article-water {
+  from { transform: scaleY(0.5); }
+  to { transform: scaleY(1); }
+}
+@keyframes article-needle {
+  from { transform: rotate(-60deg); }
+  to { transform: rotate(60deg); }
+}
+@keyframes article-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes article-nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-run] .article-drain {
+    animation: article-drain var(--drain) linear infinite;
+  }
+  [data-run] .article-stream {
+    animation: article-stream 0.6s linear infinite;
+  }
+  [data-run] .article-water {
+    animation: article-water 3s ease-in-out infinite alternate;
+  }
+  [data-run] .article-needle {
+    animation: article-needle 2.4s ease-in-out infinite alternate;
+  }
+  [data-run] .article-loop,
+  [data-run] .article-fan {
+    animation: article-spin 4s linear infinite;
+  }
+  [data-run] .article-in {
+    animation: article-nudge 1.4s ease-in-out infinite;
+  }
+  [data-run] .article-out {
+    animation: article-nudge 1.4s ease-in-out 0.7s infinite reverse;
+  }
+}
+
+/* The Guides card → article curtain (components/article/curtain.js). */
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  background: radial-gradient(60% 60% at 50% 40%, rgba(144, 217, 136, 0.16), transparent 70%), #092f27;
+}

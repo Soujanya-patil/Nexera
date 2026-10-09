@@ -6,7 +6,9 @@
  * An article:
  *   slug, title (with " | NEXERA", < 60), description (< 155), shortTitle (breadcrumb), eyebrow, h1,
  *   intro, datePublished / dateModified (ISO 8601, IST), sections, faqs, related.
- * A section: { id, h2, blocks }. Blocks:
+ * A section: { id, h2, visual, blocks }. `visual` names the animated scene beside it (or under its
+ * heading on phones) from components/article/scenes — reusable by any article. The scene follows the
+ * reader: each list item, numbered question or Key term in the section is one step of it. Blocks:
  *   { p: Rich }                         a paragraph
  *   { ul: Item[] } / { ol: Item[] }     a list; an Item is Rich, or { lead, text, link: { label, to } }
  *   { terms: [{ term, text }] }         "Key term" callouts
@@ -31,6 +33,7 @@ export const ARTICLES = [
     sections: [
       {
         id: "bess-full-form",
+        visual: "bess-letters",
         h2: "BESS full form",
         blocks: [
           {
@@ -43,6 +46,7 @@ export const ARTICLES = [
       },
       {
         id: "how-a-bess-works",
+        visual: "energy-flow",
         h2: "How does a BESS work?",
         blocks: [
           { p: "A BESS works in two directions:" },
@@ -63,6 +67,7 @@ export const ARTICLES = [
       },
       {
         id: "main-parts",
+        visual: "cabinet-parts",
         h2: "The main parts of a BESS",
         blocks: [
           {
@@ -91,6 +96,7 @@ export const ARTICLES = [
       },
       {
         id: "key-terms",
+        visual: "key-terms",
         h2: "Key terms, explained simply",
         blocks: [
           {
@@ -119,6 +125,7 @@ export const ARTICLES = [
       },
       {
         id: "types-by-scale",
+        visual: "scale-morph",
         h2: "Types of BESS by scale",
         blocks: [
           {
@@ -144,6 +151,7 @@ export const ARTICLES = [
       },
       {
         id: "uses",
+        visual: "day-dial",
         h2: "What is a BESS used for?",
         blocks: [
           {
@@ -160,6 +168,7 @@ export const ARTICLES = [
       },
       {
         id: "choosing",
+        visual: "choose-chips",
         h2: "How to choose the right BESS",
         blocks: [
           { p: "Start with four questions:" },
