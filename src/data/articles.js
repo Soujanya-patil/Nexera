@@ -233,7 +233,11 @@ function readingTime(a) {
   return Math.max(1, Math.round(words / 200));
 }
 
-export const getArticle = (slug) => ARTICLES.find((a) => a.slug === slug);
+/** The article for a URL slug — any letter case, surrounding slashes ignored (slugs are lowercase). */
+export const getArticle = (slug = "") => {
+  const s = slug.replace(/^\/+|\/+$/g, "").toLowerCase();
+  return ARTICLES.find((a) => a.slug === s);
+};
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 /** "2026-10-08T16:45:00+05:30" → "8 October 2026" (read from the ISO text itself, so the server and the browser agree). */

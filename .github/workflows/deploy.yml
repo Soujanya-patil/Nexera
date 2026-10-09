@@ -25,6 +25,19 @@ jobs:
       - name: Build Vite application
         run: npm run build
 
+      # Every sitemap URL must have its pre-rendered page in dist/ (e.g. /resources/what-is-bess ->
+      # dist/resources/what-is-bess.html), or the deploy stops here instead of publishing a 404.
+      - name: Check every sitemap page is in dist
+        run: |
+          node -e '
+            const fs = require("fs");
+            const urls = [...fs.readFileSync("dist/sitemap.xml", "utf8").matchAll(/<loc>https:\/\/[^/]+(\/[^<]*)<\/loc>/g)].map((m) => m[1]);
+            const file = (u) => "dist" + (u === "/" ? "/index.html" : u + ".html");
+            const missing = urls.filter((u) => !fs.existsSync(file(u)));
+            console.log(urls.length + " sitemap pages, " + missing.length + " missing");
+            if (missing.length) { console.error("Missing: " + missing.join(", ")); process.exit(1); }
+          '
+
       - name: Deploy dist to Hostinger
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -37,3 +50,8 @@ jobs:
           # The FTP account already starts in the site's public_html, so upload to its root. (The
           # earlier "public_html/" value created a nested public_html/public_html/ that was never served.)
           server-dir: ./
+          # The action uploads only what its state file on the server says has changed. A new state
+          # name makes the next deploy upload every file once (nothing is deleted), restoring any file
+          # a previous sync skipped; verbose logs list every file uploaded.
+          state-name: .ftp-deploy-sync-state-v2.json
+          log-level: verbose

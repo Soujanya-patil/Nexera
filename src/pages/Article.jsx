@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { ArrowRight, ChevronDown, ChevronRight } from "lucide-react";
 import { FaqList } from "../components/solutions/SolutionBlocks";
 import { Spotlight } from "../components/solutions/Interactive";
@@ -23,8 +23,11 @@ import { scrollToId } from "../lib/scrollTo";
  */
 export default function Article() {
   const { slug } = useParams();
+  const { search, hash } = useLocation();
   const article = getArticle(slug);
   if (!article) return <NotFound />;
+  // Any other spelling of the slug (e.g. /resources/What-Is-BESS) goes to the canonical lowercase URL.
+  if (slug !== article.slug) return <Navigate to={`/resources/${article.slug}${search}${hash}`} replace />;
   return <ArticlePage key={article.slug} a={article} />;
 }
 
