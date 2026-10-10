@@ -1,20 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { formatDate } from "../../data/articles";
-
-// The energy grid behind the header: faint lines (drawn in once) and the paths the green pulses run on.
-const GRID_LINES = [
-  "M0 90 H1440",
-  "M0 210 H1440",
-  "M0 330 H1440",
-  "M180 0 V420",
-  "M560 0 V420",
-  "M940 0 V420",
-  "M1260 0 V420",
-];
-// (kept to the right of the text, so nothing ever moves across the words)
-const PULSE_PATHS = ["M1460 90 H940 V440", "M940 -20 V210 H1460", "M1460 330 H1260 V-20"];
+import EnergyGrid from "./EnergyGrid";
 
 /**
  * The article's header: breadcrumb, eyebrow, the h1, the intro line and the byline, over a faint
@@ -24,19 +12,12 @@ const PULSE_PATHS = ["M1460 90 H940 V440", "M940 -20 V210 H1460", "M1460 330 H12
  * hidden and re-shown by JavaScript: the intro fades up and the reading time counts in. The h1 (the
  * page's largest paint) shows at once on a direct load; only when the article is opened from a Guides
  * card (`reveal`) do its words — split into spans right here — rise out of a mask one after another.
- * `play` holds all of it until that card's page transition has uncovered the page ("wait" → "now"). The grid's lines draw in and three pulses travel along them; the cue bounces until
- * the first scroll. Reduced motion: everything static.
+ * `play` holds all of it until that card's page transition has uncovered the page ("wait" → "now").
+ * The energy grid draws in behind (EnergyGrid); the cue bounces until the first scroll. Reduced
+ * motion: everything static.
  */
 export default function ArticleHeader({ a, play = "now", reveal = false }) {
   const [scrolled, setScrolled] = useState(false);
-  // The grid's pulses run only while the header is on screen.
-  const root = useRef(null);
-  const [off, setOff] = useState(false);
-  useEffect(() => {
-    const io = new IntersectionObserver(([e]) => setOff(!e.isIntersecting));
-    io.observe(root.current);
-    return () => io.disconnect();
-  }, []);
   useEffect(() => {
     const on = () => {
       if (window.scrollY > 24) setScrolled(true);
@@ -48,16 +29,9 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
   const words = a.h1.split(" ");
 
   return (
-    <section ref={root} data-play={play} data-reveal={reveal || undefined} data-off={off || undefined} className="article-header relative overflow-hidden bg-night text-white">
+    <section data-play={play} data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-night text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, rgba(144,217,136,0.10), transparent 70%)" }} />
-      <svg aria-hidden="true" className="article-grid pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 1440 420" preserveAspectRatio="xMidYMid slice">
-        {GRID_LINES.map((d, i) => (
-          <path key={d} d={d} pathLength="1" className="article-grid-line" style={{ "--i": i }} />
-        ))}
-        {PULSE_PATHS.map((d, i) => (
-          <circle key={d} r="3.5" className="article-grid-pulse" style={{ offsetPath: `path("${d}")`, "--i": i }} />
-        ))}
-      </svg>
+      <EnergyGrid />
 
       <div className="relative container-site pb-16 pt-14 lg:pb-24 lg:pt-20">
         <nav aria-label="Breadcrumb" className="text-xs text-ice/75">

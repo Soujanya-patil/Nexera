@@ -237,13 +237,15 @@ let shell = fs
 if (/<title>|name="description"/.test(shell)) throw new Error("dist/index.html: generic title/description not removed");
 
 // The app starts once the pre-rendered page has painted: its script is only requested after the first
-// frame, so the first screen's HTML, CSS, fonts and hero image have the connection to themselves, and
-// the first paint (and the LCP) never waits for JavaScript to download, compile and hydrate. The page
-// is complete HTML meanwhile (links work as plain links). A background tab, where frames don't run,
-// starts it on a timer.
+// contentful paint has reached the screen (the paint timing entry — not merely the first frame begun,
+// which on a page heavy to draw can be presented much later), so the first screen's HTML, CSS, fonts
+// and hero image have the connection to themselves, and the first paint (and the LCP) never waits for
+// JavaScript to download, compile and hydrate. The page is complete HTML meanwhile (links work as plain
+// links). Without paint timing it starts after the first frame; a background tab, where nothing
+// paints, starts it on a timer.
 const APP_SCRIPT = /<script type="module" crossorigin src="(\/assets\/[^"]+\.js)"><\/script>/;
 const appStart = (src) =>
-  `<script type="module">let s=0;const go=()=>s||(s=1,import("${src}"));requestAnimationFrame(()=>setTimeout(go));setTimeout(go,1500)</script>`;
+  `<script type="module">let s=0;const go=()=>s||(s=1,import("${src}"));try{if(!PerformanceObserver.supportedEntryTypes.includes("paint"))throw 0;new PerformanceObserver(l=>{l.getEntries().some(e=>e.name==="first-contentful-paint")&&setTimeout(go)}).observe({type:"paint",buffered:!0})}catch{requestAnimationFrame(()=>setTimeout(go))}setTimeout(go,1500)</script>`;
 if (!APP_SCRIPT.test(shell)) throw new Error("dist/index.html: the app's module script was not found");
 shell = shell.replace(APP_SCRIPT, (_, src) => appStart(src));
 

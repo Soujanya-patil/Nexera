@@ -1789,14 +1789,14 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     opacity: 0;
   }
   /* (after the heading has risen: the first frames stay light) */
-  .article-header .article-grid-line {
+  .article-grid .article-grid-line {
     animation: article-draw 1.4s ease-out calc(0.5s + var(--i) * 0.1s) both;
   }
   /* A few runs each (no filter: they stay cheap to paint), then the grid rests. */
-  .article-header .article-grid-pulse {
+  .article-grid .article-grid-pulse {
     animation: article-pulse-run 6s linear calc(1.6s + var(--i) * 1.6s) 3;
   }
-  .article-header[data-off] .article-grid-pulse {
+  .article-grid[data-off] .article-grid-pulse {
     animation-play-state: paused;
   }
   .article-cue svg {
@@ -2094,4 +2094,71 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   z-index: 80;
   pointer-events: none;
   background: radial-gradient(60% 60% at 50% 40%, rgba(144, 217, 136, 0.16), transparent 70%), #092f27;
+}
+
+/* ---- Resources hub (pages/Resources.jsx, components/resources) --------------------------------------
+   The hero reuses the article header's styles (.article-header) and grid; here: the count chips fading
+   up, the body's soft tone shift between white and light grey (data-tone, set by the section being
+   read), the featured guide's tilt and the "Coming soon" cards' shimmer border (only while on screen,
+   data-run). Reduced motion: all static. */
+.resources-body {
+  background-color: var(--color-paper);
+  transition: background-color 0.8s ease;
+}
+.resources-body[data-tone="grey"] {
+  background-color: var(--color-ice);
+}
+/* Below Guides, a section (and the closing band, with its drifting lines) is laid out and painted only
+   as it nears the screen; it stays in the page for search, find-in-page and screen readers. */
+.resources-body > section:not(:first-child),
+.resources-body ~ .article-band {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .resources-chips > li {
+    animation: article-fade-up 0.5s ease-out calc(0.3s + var(--i) * 0.08s) both;
+  }
+  .guide-featured {
+    transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  }
+}
+
+/* "Coming soon" cards: a soft light running along the border. */
+.insight-soon {
+  border: 1px solid var(--color-line);
+}
+.insight-soon::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 35%, rgba(144, 217, 136, 0.85) 50%, transparent 65%);
+  background-size: 260% 100%;
+  background-position: 150% 0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+}
+@keyframes insight-shimmer {
+  from { background-position: 150% 0; }
+  to { background-position: -60% 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-run] .insight-soon::before {
+    opacity: 1;
+    animation: insight-shimmer 3.6s linear infinite;
+  }
+  [data-run] li:nth-child(2) .insight-soon::before {
+    animation-delay: 0.6s;
+  }
+  [data-run] li:nth-child(3) .insight-soon::before {
+    animation-delay: 1.2s;
+  }
+  [data-run] li:nth-child(4) .insight-soon::before {
+    animation-delay: 1.8s;
+  }
 }

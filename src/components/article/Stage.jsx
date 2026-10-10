@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { SCENES } from "./scenes";
-import { DESKTOP_Q, loadArticleMotion, matches } from "./motion";
+import { DESKTOP_Q, matches } from "./motion";
 
 /** True once (and while) the media query matches — false on the server and in the first render. */
 export function useMedia(q) {
@@ -15,21 +15,7 @@ export function useMedia(q) {
   return on;
 }
 
-/** The article motion bundle once it has loaded (null until then, and always under reduced motion). */
-export function useArticleMotion(enabled = true) {
-  const [motion, setMotion] = useState(null);
-  useEffect(() => {
-    if (!enabled) return;
-    let live = true;
-    loadArticleMotion()
-      .then((m) => live && setMotion(m))
-      .catch(() => {});
-    return () => {
-      live = false;
-    };
-  }, [enabled]);
-  return motion;
-}
+export { useArticleMotion } from "./useArticleMotion";
 
 /** Whether `ref` is at least partly on screen (one IntersectionObserver). */
 function useOnScreen(ref, rootMargin = "0px") {

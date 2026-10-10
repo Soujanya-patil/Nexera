@@ -14,11 +14,25 @@ const TRUST = [
 ];
 const EMPTY = { name: "", mobile: "", email: "", company: "", city: "", interest: "", message: "", website: "" };
 
+/** A parameter from #contact?… (first) or ?… */
+function param(search, hash, key) {
+  const fromHash = hash.startsWith("#contact?") ? new URLSearchParams(hash.slice("#contact?".length)).get(key) : null;
+  return fromHash ?? new URLSearchParams(search).get(key);
+}
 /** ?interest=ci or #contact?interest=ci → "ci" (only the four homepage values). */
 function interestFrom(search, hash) {
-  const fromHash = hash.startsWith("#contact?") ? new URLSearchParams(hash.slice("#contact?".length)).get("interest") : null;
-  const v = fromHash ?? new URLSearchParams(search).get("interest");
+  const v = param(search, hash, "interest");
   return INTERESTS.some((i) => i.id === v) ? v : "";
+}
+/**
+ * #contact?doc=TCL BlueArk W10 (&kind=brochure) — the /resources document cards — → the message
+ * "Please send me the datasheet for TCL BlueArk W10." (or "brochure"); "" without a doc.
+ */
+function docRequestFrom(search, hash) {
+  const doc = (param(search, hash, "doc") ?? "").replace(/[\x00-\x1F\x7F]+/g, " ").trim().slice(0, 120);
+  if (!doc) return "";
+  const kind = param(search, hash, "kind") === "brochure" ? "brochure" : "datasheet";
+  return `Please send me the ${kind} for ${doc}.`;
 }
 
 /**
@@ -27,7 +41,9 @@ function interestFrom(search, hash) {
  * and trust lines on the left, the enquiry form on the right (stacked on phones).
  *
  * The hero's "Contact Us" links here (#contact). /#contact?interest=ci or /?interest=ci#contact
- * preselects the interest (home, ci, utility, distributor) and lands on the section.
+ * preselects the interest (home, ci, utility, distributor) and lands on the section; &doc=<product>
+ * (and &kind=brochure) — the /resources document cards — pre-fills an editable message asking for
+ * that product's datasheet (or brochure).
  *
  * The form validates on blur and on submit (errors under each field, announced politely), sends through
  * the shared helper (lib/enquiry → /api/contact.php), shows a spinner while sending, then a thank-you
@@ -47,6 +63,7 @@ export default function HomeContact() {
   const [status, setStatus] = useState("idle"); // idle | sending | done | error
   const [firstName, setFirstName] = useState("");
   const started = useRef(0);
+  const askedFor = useRef("");
 
   // Preselect from the URL, and land on the section for the #contact?… form (not an element id), and
   // for a plain #contact reached from another page (this section is in the homepage's second chunk,
@@ -56,6 +73,12 @@ export default function HomeContact() {
   useEffect(() => {
     const pre = interestFrom(search, hash);
     if (pre) setValues((v) => ({ ...v, interest: pre }));
+    // A document request pre-fills the message, and an untouched pre-fill follows the URL (cleared by a
+    // link without one) — never over what the visitor has written.
+    const ask = docRequestFrom(search, hash);
+    const prev = askedFor.current;
+    if (ask || prev) setValues((v) => (v.message === "" || v.message === prev ? { ...v, message: ask } : v));
+    askedFor.current = ask;
     if (!hash.startsWith("#contact?") && !(hash === "#contact" && !isFirstLoad())) return;
     const el = root.current;
     const land = () => el && Math.abs(el.getBoundingClientRect().top - 64) > 2 && jumpTo(el.getBoundingClientRect().top + window.scrollY - 64);

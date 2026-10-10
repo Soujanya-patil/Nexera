@@ -1,57 +1,23 @@
-import { useLayoutEffect, useState } from "react";
-import { useNavigate, useNavigationType } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import PageHeader from "../components/PageHeader";
-import { ARTICLES, formatDate } from "../data/articles";
-import { ArticleRoute } from "./lazy";
-import { coverBack, coverFrom, dropCurtain, returningTo } from "../components/article/curtain";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigationType } from "react-router-dom";
+import { ARTICLES } from "../data/articles";
+import { coverBack, returningTo } from "../components/article/curtain";
+import { useArticleMotion } from "../components/article/useArticleMotion";
+import { useArticleReveal } from "../components/article/useArticleReveal";
+import ArticleFaq from "../components/article/ArticleFaq";
+import ArticleClosingBand from "../components/article/ArticleClosingBand";
+import ResourcesHero from "../components/resources/ResourcesHero";
+import FilterBar from "../components/resources/FilterBar";
+import GuidesBento from "../components/resources/GuidesBento";
+import DatasheetCards from "../components/resources/DatasheetCards";
+import InsightCards from "../components/resources/InsightCards";
+import { isFirstLoad } from "../lib/firstLoad";
 
-/** A soft light that follows the pointer across a Guides card (mouse / pen only). */
-const spotlight = (e) => {
-  if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
-  const r = e.currentTarget.getBoundingClientRect();
-  e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-  e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
-};
-
-/**
- * A Guides card is a real link to its article. A plain click (with motion allowed) plays the page
- * transition — a curtain grows from the card to the full screen while the article loads, then the
- * article lifts it — and opens the article in the app. Anything else (a modified click, reduced motion,
- * no JavaScript) is the link's own normal navigation, and if the transition can't finish (the article
- * fails to load, or takes over 6 s) the click becomes a normal page load, so it never "does nothing".
- */
-function useOpenGuide() {
-  const navigate = useNavigate();
-  return (e) => {
-    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !document.body.animate) return;
-    e.preventDefault();
-    const card = e.currentTarget;
-    const href = card.getAttribute("href");
-    let gone = false;
-    const hard = () => {
-      if (gone) return;
-      gone = true;
-      dropCurtain();
-      window.location.assign(href);
-    };
-    const timer = setTimeout(hard, 6000);
-    Promise.all([coverFrom(card, card.dataset.slug), ArticleRoute.preload()])
-      .then(() => {
-        if (gone) return;
-        gone = true;
-        clearTimeout(timer);
-        navigate(href);
-      })
-      .catch(hard);
-  };
-}
-
+// The documents on offer: a product (data/products.js) and which document it is.
 const datasheets = [
-  "TCL BlueArk W10 — Datasheet",
-  "Hithium 261kWh Liquid-Cooled C&I Cabinet — Datasheet",
-  "Hithium 6.25MWh Utility Block — Brochure",
+  { product: "tcl-blueark-w10", kind: "Datasheet" },
+  { product: "hithium-block-261", kind: "Datasheet" },
+  { product: "hithium-power-625", kind: "Brochure" },
 ];
 
 const faqs = [
@@ -67,8 +33,105 @@ const articles = [
   "Liquid-Cooled vs Air-Cooled BESS: What EPCs Should Know",
 ];
 
+const TITLE = "Datasheets, answers, and the latest from Nexera";
+// The hub's sections, in page order, and the tone the page shifts to while each is read.
+const SECTIONS = [
+  { id: "guides", label: "Guides", tone: "white" },
+  { id: "datasheets", label: "Datasheets", tone: "grey" },
+  { id: "faqs", label: "FAQs", tone: "white" },
+  { id: "insights", label: "Insights", tone: "grey" },
+];
+/** "Guide" / "Guides" for a count. */
+const noun = (n, one) => (n === 1 ? one : `${one}s`);
+
+/**
+ * The section being read: the last section whose top has passed a line 30% down the screen ("all"
+ * above the first). Read from the four sections' positions at most once per frame while scrolling
+ * (reliable after a jump too, unlike an observer that only reports crossings).
+ */
+function useSectionSpy(ids) {
+  const [active, setActive] = useState("all");
+  const key = ids.join(",");
+  useEffect(() => {
+    const els = key.split(",").map((id) => document.getElementById(id)).filter(Boolean);
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.3;
+      let current = "all";
+      for (const el of els) if (el.getBoundingClientRect().top <= line) current = el.id;
+      setActive(current);
+    };
+    const onScroll = () => (raf ||= requestAnimationFrame(update));
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [key]);
+  return active;
+}
+
+/**
+ * When to load the page's motion. Arriving from the site: at once (the h1 reveal needs it). On a
+ * direct load, everything above the fold is already final, so it waits for the reader to scroll, tap or
+ * press a key — or a few seconds after load — keeping the first paint's main thread free.
+ */
+const MOTION_EVENTS = ["scroll", "wheel", "touchstart", "pointerdown", "keydown"];
+function useWanted(now) {
+  const [wanted, setWanted] = useState(now);
+  useEffect(() => {
+    if (wanted) return;
+    const go = () => setWanted(true);
+    MOTION_EVENTS.forEach((t) => window.addEventListener(t, go, { once: true, passive: true }));
+    const t = setTimeout(go, 3500);
+    return () => {
+      clearTimeout(t);
+      MOTION_EVENTS.forEach((t) => window.removeEventListener(t, go));
+    };
+  }, [wanted]);
+  return wanted;
+}
+
+/** A section heading: a short green line that draws in, then the heading rising word by word. */
+function Heading({ id, children }) {
+  return (
+    <div data-rv="h2">
+      <svg aria-hidden="true" className="article-h2-line" viewBox="0 0 64 4" preserveAspectRatio="none">
+        <line x1="1" y1="2" x2="63" y2="2" />
+      </svg>
+      <h2 id={id} className="article-h2 text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-tight tracking-tight text-ink">
+        {children}
+      </h2>
+    </div>
+  );
+}
+
+/**
+ * /resources — the Knowledge Hub. A dark hero (energy grid, the h1, count chips from the data), a
+ * sticky section bar (FilterBar: glides to a section, follows the one being read), then:
+ *   Guides               a bento: the newest guide as a featured card with its live scene, a
+ *                        "Start here" panel into its sections, any other guides (GuidesBento)
+ *   Datasheets           product cards, each asking for its document on the contact form (DatasheetCards)
+ *   FAQs                 the article's animated accordion (ArticleFaq), same words
+ *   News & Insights      numbered cards — "Coming soon" while a title has no page (InsightCards)
+ * and the article's closing band. The page's background shifts softly between white and light grey
+ * as you move through the sections (no hard edges). Headings draw a line and rise word by word,
+ * content fades up once (useArticleReveal, once the page's motion has loaded, below the screen only).
+ *
+ * Every word is in the pre-rendered page and readable without JavaScript; reduced motion is static.
+ * Back from a guide opened here: the curtain shrinks back into its card.
+ */
 export default function Resources() {
-  const openGuide = useOpenGuide();
+  const page = useRef(null);
+  const [arrived] = useState(() => typeof window !== "undefined" && !isFirstLoad());
+  const motion = useArticleMotion(useWanted(arrived));
+  useArticleReveal(page, motion);
+  const active = useSectionSpy(SECTIONS.map((s) => s.id));
+
   // Back from an article opened from a Guides card: the curtain shrinks back into that card.
   const navType = useNavigationType();
   useLayoutEffect(() => {
@@ -78,151 +141,50 @@ export default function Resources() {
     if (card) coverBack(card);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // The count chips, from the page's own data: guides, each kind of download, FAQs.
+  const kinds = datasheets.map((d) => d.kind);
+  const chips = [
+    { n: ARTICLES.length, label: noun(ARTICLES.length, "Guide") },
+    ...[...new Set(kinds)].map((k) => {
+      const n = kinds.filter((x) => x === k).length;
+      return { n, label: noun(n, k) };
+    }),
+    { n: faqs.length, label: noun(faqs.length, "FAQ") },
+  ];
+  const tone = SECTIONS.find((s) => s.id === active)?.tone ?? "white";
+
   return (
-    <div>
-      <PageHeader
-        eyebrow="Resources"
-        title="Datasheets, answers, and the latest from Nexera"
-      />
+    <div ref={page}>
+      <ResourcesHero id="hub" eyebrow="Resources" title={TITLE} chips={chips} reveal={arrived} />
+      <FilterBar active={active} items={[{ id: "all", label: "All", target: "hub" }, ...SECTIONS.map((s) => ({ id: s.id, label: s.label, target: s.id }))]} />
 
-      {/* Guides: every article (data/articles.js), newest first. */}
-      <section aria-labelledby="guides-title" className="bg-paper border-b border-line">
-        <div className="container-site py-16">
-          <h2 id="guides-title" className="font-sans text-2xl font-semibold text-ink">
-            Guides
-          </h2>
-          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[...ARTICLES]
-              .sort((x, y) => y.datePublished.localeCompare(x.datePublished))
-              .map((a) => (
-                <li key={a.slug}>
-                  {/* The whole card is one real link (the arrow part of it); a plain click plays the page
-                      transition, everything else is the link's own navigation (useOpenGuide). */}
-                  <a
-                    href={`/resources/${a.slug}`}
-                    data-slug={a.slug}
-                    onClick={openGuide}
-                    onPointerMove={spotlight}
-                    aria-labelledby={`guide-${a.slug}-title`}
-                    aria-describedby={`guide-${a.slug}-desc`}
-                    className="guide-card group/guide relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 ease-out hover:-translate-y-1 hover:border-forest/40 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)] focus-visible:-translate-y-1 focus-visible:border-forest/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none"
-                  >
-                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{a.eyebrow}</span>
-                    <h3 id={`guide-${a.slug}-title`} className="mt-3 text-lg font-semibold leading-snug text-ink transition-colors duration-300 group-hover/guide:text-forest group-focus-visible/guide:text-forest">
-                      {a.h1}
-                    </h3>
-                    <span id={`guide-${a.slug}-desc`} className="mt-2 flex-1 text-sm leading-relaxed text-graphite">
-                      {a.description}
-                    </span>
-                    <span className="mt-5 flex items-center justify-between gap-3 text-xs text-graphite">
-                      <span className="flex flex-wrap items-center gap-2">
-                        <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time>
-                        <span className="guide-pill rounded-full bg-signal/20 px-2.5 py-1 font-semibold text-forest">{a.readingTime} min read</span>
-                      </span>
-                      <ArrowRight
-                        aria-hidden="true"
-                        className="h-4 w-4 text-forest transition-transform duration-300 group-hover/guide:translate-x-1 group-focus-visible/guide:translate-x-1"
-                      />
-                    </span>
-                  </a>
-                </li>
-              ))}
-          </ul>
-        </div>
-      </section>
-
-      <section className="bg-paper border-b border-line">
-        <div className="container-site py-16">
-          <h2 className="font-sans text-2xl font-semibold text-ink">
-            Datasheets & Brochures
-          </h2>
-          <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {datasheets.map((d) => (
-              <GatedDownload key={d} title={d} />
-            ))}
+      <div data-tone={tone} className="resources-body">
+        <section id="guides" aria-labelledby="guides-title" className="scroll-mt-32 py-14 lg:py-20">
+          <div className="container-site">
+            <Heading id="guides-title">Guides</Heading>
+            <GuidesBento articles={[...ARTICLES].sort((x, y) => y.datePublished.localeCompare(x.datePublished))} motion={motion} />
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="bg-ice border-b border-line">
-        <div className="mx-auto max-w-3xl px-6 py-16">
-          <h2 className="font-sans text-2xl font-semibold text-ink">FAQs</h2>
-          <div className="mt-6 space-y-3">
-            {faqs.map((f) => (
-              <FaqItem key={f.q} {...f} />
-            ))}
+        <section id="datasheets" aria-labelledby="datasheets-title" className="scroll-mt-32 py-14 lg:py-20">
+          <div className="container-site">
+            <Heading id="datasheets-title">Datasheets &amp; Brochures</Heading>
+            <DatasheetCards items={datasheets} />
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="bg-paper">
-        <div className="mx-auto max-w-3xl px-6 py-16">
-          <h2 className="font-sans text-2xl font-semibold text-ink">News & Insights</h2>
-          <ul className="mt-6 space-y-4">
-            {articles.map((a) => (
-              <li key={a} className="text-graphite border-b border-line pb-4 last:border-0">
-                {a}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    </div>
-  );
-}
+        <ArticleFaq id="faqs" title="FAQs" items={faqs} tone="none" />
 
-function GatedDownload({ title }) {
-  const [email, setEmail] = useState("");
-  const [unlocked, setUnlocked] = useState(false);
+        <section id="insights" aria-labelledby="insights-title" className="scroll-mt-32 py-14 lg:py-20">
+          <div className="container-site">
+            <Heading id="insights-title">News &amp; Insights</Heading>
+            <InsightCards items={articles} />
+          </div>
+        </section>
+      </div>
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (email) setUnlocked(true);
-  }
-
-  return (
-    <div className="rounded-lg border border-line bg-white p-5">
-      <p className="font-medium text-ink text-sm">{title}</p>
-      {unlocked ? (
-        <p className="mt-3 text-sm text-forest">Download link sent to {email}</p>
-      ) : (
-        <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
-          <input
-            type="email"
-            required
-            placeholder="Work email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="min-w-0 flex-1 rounded-md border border-line px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-steel/40"
-          />
-          <button
-            type="submit"
-            className="shrink-0 rounded-md bg-ink px-3 py-2 text-xs font-medium text-white hover:bg-ink/90 transition-colors"
-          >
-            Get it
-          </button>
-        </form>
-      )}
-    </div>
-  );
-}
-
-function FaqItem({ q, a }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="rounded-lg border border-line bg-white overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="w-full flex items-center justify-between px-5 py-4 text-left"
-      >
-        <span className="font-medium text-ink text-sm">{q}</span>
-        <span className="text-graphite text-lg leading-none">{open ? "–" : "+"}</span>
-      </button>
-      {open && (
-        <p className="px-5 pb-4 text-sm text-graphite leading-relaxed">{a}</p>
-      )}
+      <ArticleClosingBand />
     </div>
   );
 }

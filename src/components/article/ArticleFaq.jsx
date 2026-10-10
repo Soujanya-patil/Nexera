@@ -39,9 +39,10 @@ function toggle(e) {
  * smoothly, the "+" turns into a "×", and the open card gets a soft green glow. The questions rise in
  * one after another as the section arrives (the page's reveal, data-rv). The first starts open.
  */
-export default function ArticleFaq({ id, title, items }) {
+export default function ArticleFaq({ id, title, items, tone = "ice" }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-24 bg-ice py-14 lg:py-20">
+    // tone="none": no background of its own (a page that shifts its sections' tone itself, /resources)
+    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "ice" ? "scroll-mt-24 bg-ice" : "scroll-mt-32"} py-14 lg:py-20`}>
       <div className="container-site">
         <div data-rv="h2">
           <svg aria-hidden="true" className="article-h2-line" viewBox="0 0 64 4" preserveAspectRatio="none">
