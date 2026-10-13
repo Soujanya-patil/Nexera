@@ -21,8 +21,10 @@ ErrorDocument 404 /404.html
   RewriteRule ^brands/?$ /products [R=301,L]
   # /partners has no page of its own (only /partners/hithium, /partners/tcl …): to the catalogue.
   RewriteRule ^partners/?$ /products [R=301,L]
-  # The articles moved from Resources to the Blog: /resources/<slug> -> /blog/<slug> (/resources stays).
-  RewriteRule ^resources/([^/]+)/?$ /blog/$1 [R=301,L]
+  # The articles moved from Resources to the Blog: /resources/<slug> (also .html or a trailing slash)
+  # -> /blog/<slug>; /resources itself stays. Keep this above the rules that serve files: it redirects
+  # even where an old resources/<slug>.html is still on the server.
+  RewriteRule ^resources/([^/.]+)(?:\.html)?/?$ /blog/$1 [R=301,L]
   RewriteRule ^index\.html$ - [L]
   # The enquiry endpoint (api/contact.php) is a real script: never rewritten to a page.
   RewriteRule ^api/ - [L]

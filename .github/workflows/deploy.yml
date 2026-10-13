@@ -53,5 +53,5 @@ jobs:
           # The action uploads only what its state file on the server says has changed. A new state
           # name makes the next deploy upload every file once (nothing is deleted), restoring any file
           # a previous sync skipped; verbose logs list every file uploaded.
-          state-name: .ftp-deploy-sync-state-v2.json
+          state-name: .ftp-deploy-sync-state-v3.json
           log-level: verbose
