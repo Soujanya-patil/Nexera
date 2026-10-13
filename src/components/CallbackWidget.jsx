@@ -5,11 +5,11 @@ import { loadGsap } from "../lib/motion";
 import { getLenis, jumpTo } from "../lib/lenis";
 import { scrollToId } from "../lib/scrollTo";
 import { useBottomInset } from "../lib/floatingBottom";
-import { INTERESTS, LIMITS, MIN_FILL_MS, fieldError, prettyMobile, sendEnquiry } from "../lib/enquiry";
+import { INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, prettyMobile, sendEnquiry } from "../lib/enquiry";
 
 const EMPTY = { name: "", mobile: "", interest: "", website: "" };
 const FIELDS = ["name", "mobile", "interest"];
-const SHORT = { mobile: "Please enter a valid 10-digit mobile number.", interest: "Please choose one." };
+const SHORT = { interest: "Please choose one." };
 const NUDGE_KEY = "nexera-callback-nudge"; // sessionStorage: the nudge has been shown this session
 const NUDGE_AFTER_MS = 25000;
 const AUTO_CLOSE_MS = 4000;
@@ -296,7 +296,13 @@ export default function CallbackWidget() {
   const set = (k) => (e) => {
     const v = e.target.value;
     setValues((s) => ({ ...s, [k]: v }));
-    if (tried && k !== "website") setErrors((er) => ({ ...er, [k]: check(k, v) || undefined }));
+    if ((tried || errors[k]) && k !== "website") setErrors((er) => ({ ...er, [k]: check(k, v) || undefined }));
+  };
+  // A field is checked as the visitor leaves it (an empty one only once they've tried to send).
+  const blur = (k) => () => {
+    if (!values[k] && !tried) return;
+    const e = check(k, values[k]);
+    afterPress(() => setErrors((er) => ({ ...er, [k]: e || undefined })));
   };
 
   const submit = async (e) => {
@@ -321,6 +327,13 @@ export default function CallbackWidget() {
     if (res.ok) {
       setSent({ firstName: values.name.trim().split(/\s+/)[0], mobile: prettyMobile(values.mobile) });
       setStatus("done");
+    } else if (res.fields) {
+      // The API's own field errors (should it ever disagree with the page) go under their fields.
+      setErrors(res.fields);
+      setStatus("idle");
+      const bad = FIELDS.find((k) => res.fields[k]);
+      if (bad) card.current.querySelector(bad === "interest" ? 'input[name="interest"]' : `#${uid}-${bad}`)?.focus();
+      else setStatus("error");
     } else setStatus("error");
   };
 
@@ -464,6 +477,7 @@ export default function CallbackWidget() {
                     maxLength={LIMITS.name}
                     value={values.name}
                     onChange={set("name")}
+                    onBlur={blur("name")}
                     aria-invalid={!!errors.name || undefined}
                     aria-describedby={`${uid}-name-err`}
                     className={input}
@@ -484,6 +498,7 @@ export default function CallbackWidget() {
                     maxLength={LIMITS.mobile}
                     value={values.mobile}
                     onChange={set("mobile")}
+                    onBlur={blur("mobile")}
                     aria-invalid={!!errors.mobile || undefined}
                     aria-describedby={`${uid}-mobile-err`}
                     className={input}

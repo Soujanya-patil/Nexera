@@ -10,7 +10,7 @@ import { INTERESTS, LIMITS, MIN_FILL_MS, cleanMobile, fieldError, sendEnquiry } 
 const EMPTY = { name: "", mobile: "", interest: "", website: "" };
 const FIELDS = ["name", "mobile", "interest"];
 // Shorter wording than the full form's, so an error fits the strip's one-line band under its field.
-const SHORT = { mobile: "Please enter a valid 10-digit mobile number.", interest: "Please choose one." };
+const SHORT = { interest: "Please choose one." };
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** ?interest=ci or #contact?interest=ci → "ci" (the four homepage values, as the full form reads them). */

@@ -7,14 +7,19 @@
  * Accepts POST with a JSON body only. Answers JSON: {"ok":true} or {"ok":false,"error":"..."} with a
  * matching status code. User input is never echoed back.
  *
- *  - Validation: name and mobile required; mobile is an Indian 10-digit number (optional +91); email
- *    valid if given; interest one of the allowed values; a length limit on every field.
+ *  - Validation: the same rules and messages as the forms (src/lib/enquiry.js), so a request that
+ *    skips the page is held to them too. Values are trimmed and repeated spaces collapsed first; a
+ *    filled field must pass its rule (name, company, email, mobile, city, requirement, message — see
+ *    valid_field below); name and interest are always required, mobile too except on the partner
+ *    form, and the partner form also requires email, company and city (the OEM path: company). A
+ *    failed check answers 422 {"ok":false,"error":"validation","fields":{"<field>":"<message>"}}.
  *  - Spam: the honeypot (`website`) must be empty; at least 3 s between opening the form and sending
  *    it (the client sends both times); at most 5 enquiries per IP per hour (file-based, stored outside
  *    the web root when the host allows it, otherwise in api/private/, which denies all web access).
  *  - One plain-text email with mail(), every header value stripped of CR/LF.
- *  - `source` (optional): "full" (the default, a full enquiry form) or "quick" (the homepage call-back
- *    strip: name, mobile and interest only), which gets its own subject and a source line.
+ *  - `source` (optional): "full" (the default, a full enquiry form), "quick" (the call-back widget:
+ *    name, mobile and interest only) or "partner" (the Become a Partner form), each with its own
+ *    subject and source line.
  */
 
 // ↓ The one place the recipient is set.
@@ -29,9 +34,23 @@ const INTERESTS = [
     "utility" => "Utility-scale",
     "distributor" => "Becoming a distributor",
     "oem" => "Brand / OEM partnership",
+    "epc" => "EPC / project partnership",
 ];
-const SOURCES = ["full", "quick"];
-const LIMITS = ["name" => 100, "mobile" => 20, "email" => 160, "company" => 120, "city" => 80, "message" => 1000, "page" => 200];
+const SOURCES = ["full", "quick", "partner"];
+// The field rules (as in src/lib/enquiry.js): length limits, minimum lengths and letters.
+const LIMITS = ["name" => 60, "mobile" => 20, "email" => 160, "company" => 100, "city" => 80, "requirement" => 100, "message" => 1000, "page" => 200];
+const MIN_LEN = ["name" => 2, "company" => 2, "city" => 2, "requirement" => 2, "message" => 10];
+const MIN_LETTERS = ["name" => 2, "company" => 2, "city" => 3, "requirement" => 2, "message" => 5];
+const MESSAGES = [
+    "name" => "Please enter your full name.",
+    "company" => "Please enter your company name.",
+    "email" => "Please enter a valid email address.",
+    "mobile" => "Please enter a valid mobile number.",
+    "city" => "Please enter your city or location.",
+    "requirement" => "Please add a unit, e.g. 500 kWh, 2 MW or 3 systems.",
+    "message" => "Please write a few words about your requirement.",
+    "interest" => "Please choose what you're interested in.",
+];
 
 header("Content-Type: application/json; charset=utf-8");
 header("X-Content-Type-Options: nosniff");
@@ -48,6 +67,49 @@ function len(string $s): int {
 /** A header-safe value: no CR / LF / other control characters. */
 function header_safe(string $s): string {
     return trim(preg_replace('/[\x00-\x1F\x7F]+/', " ", $s) ?? "");
+}
+/** Trimmed, with runs of spaces collapsed (a multi-line value keeps its line breaks). */
+function tidy(string $s, bool $multiline = false): string {
+    $s = preg_replace($multiline ? '/[^\S\n]+/u' : '/\s+/u', " ", $s) ?? "";
+    return trim(preg_replace('/ ?\n ?/u', "\n", $s) ?? "");
+}
+function letters(string $s): int {
+    return (int) preg_match_all('/\p{L}/u', $s);
+}
+/** One digit repeated, or each digit one more than the last (1234567890, 0123456789). */
+function junk_digits(string $d): bool {
+    if (preg_match('/^(\d)\1+$/', $d)) return true;
+    for ($i = 1; $i < strlen($d); $i++) {
+        if ((int) $d[$i] !== ((int) $d[$i - 1] + 1) % 10) return false;
+    }
+    return true;
+}
+/** An Indian mobile (+91 / 91 / 0 and 10 digits from 6–9) or an international +<8–15 digits>. */
+function valid_mobile(string $m): bool {
+    if (preg_match('/^(?:\+91|91|0)?([6-9]\d{9})$/', $m, $x)) return !junk_digits($x[1]);
+    // +91 is India: held to the Indian rule above, never accepted as "international".
+    if (preg_match('/^\+(?!91)\d{8,15}$/', $m)) return !junk_digits(substr($m, 1));
+    return false;
+}
+/** Whether a filled-in value passes its field's rule (src/lib/enquiry.js `passes`). */
+function valid_field(string $k, string $v): bool {
+    switch ($k) {
+        case "name":
+            return len($v) >= MIN_LEN["name"] && len($v) <= LIMITS["name"] && preg_match("/^[\\p{L}\\p{M} .'’-]+$/u", $v) && letters($v) >= MIN_LETTERS["name"];
+        case "email":
+            if (len($v) > LIMITS["email"] || !preg_match('/^[A-Za-z0-9!#$%&\'*+\/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&\'*+\/=?^_`{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/', $v)) return false;
+            $at = strrpos($v, "@");
+            // Gmail's own rule: 6–30 characters before the @ (a +tag after the username doesn't count).
+            if (in_array(strtolower(substr($v, $at + 1)), ["gmail.com", "googlemail.com"], true)) {
+                $user = explode("+", substr($v, 0, $at))[0];
+                return strlen($user) >= 6 && strlen($user) <= 30;
+            }
+            return true;
+        case "mobile":
+            return valid_mobile($v);
+        default: // company, city, requirement, message
+            return len($v) >= MIN_LEN[$k] && len($v) <= LIMITS[$k] && letters($v) >= MIN_LETTERS[$k];
+    }
 }
 
 if (($_SERVER["REQUEST_METHOD"] ?? "") !== "POST") {
@@ -67,13 +129,14 @@ $text = function (string $k) use ($in): string {
     return trim(preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', "", $v) ?? "");
 };
 // Single-line fields never span lines (header_safe); only the message keeps its line breaks.
-$name = header_safe($text("name"));
-$mobile = preg_replace('/[\s()\-]/', "", $text("mobile")) ?? "";
-$email = header_safe($text("email"));
-$company = header_safe($text("company"));
-$city = header_safe($text("city"));
+$name = tidy(header_safe($text("name")));
+$mobile = preg_replace('/[\s().\-]/', "", $text("mobile")) ?? "";
+$email = tidy(header_safe($text("email")));
+$company = tidy(header_safe($text("company")));
+$city = tidy(header_safe($text("city")));
+$requirement = tidy(header_safe($text("requirement")));
 $interest = $text("interest");
-$message = $text("message");
+$message = tidy($text("message"), true);
 $page = header_safe($text("page"));
 $honeypot = $text("website");
 $source = $text("source") !== "" ? $text("source") : "full";
@@ -87,16 +150,17 @@ if ($startedAt <= 0 || $sentAt <= 0 || $elapsed < MIN_FILL_MS || $elapsed > 8640
     respond(400, ["ok" => false, "error" => "too_fast"]);
 }
 
-// Validation.
+// Validation: { field: message }, the forms' own messages.
 $errors = [];
-if ($name === "") $errors[] = "name";
-if (!preg_match('/^(?:\+91)?[6-9]\d{9}$/', $mobile)) $errors[] = "mobile";
-if ($email !== "" && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "email";
-if (!array_key_exists($interest, INTERESTS)) $errors[] = "interest";
-if (!in_array($source, SOURCES, true)) $errors[] = "source";
-foreach (LIMITS as $k => $max) {
-    if (len((string) ${$k}) > $max && !in_array($k, $errors, true)) $errors[] = $k;
+$partner = $source === "partner";
+$required = ["name" => true, "mobile" => !$partner, "email" => $partner, "company" => $partner || $interest === "oem", "city" => $partner];
+foreach (["name", "company", "email", "mobile", "city", "requirement", "message"] as $k) {
+    $v = (string) ${$k};
+    if ($v === "" ? !empty($required[$k]) : !valid_field($k, $v)) $errors[$k] = MESSAGES[$k];
 }
+if (!array_key_exists($interest, INTERESTS)) $errors["interest"] = MESSAGES["interest"];
+if (!in_array($source, SOURCES, true)) $errors["source"] = "Please reload the page and try again.";
+if (len($page) > LIMITS["page"]) $errors["page"] = "Please reload the page and try again.";
 // Extra context from a form (product, site, proposal …): short string values only.
 $details = [];
 if (isset($in["details"]) && is_array($in["details"])) {
@@ -105,11 +169,11 @@ if (isset($in["details"]) && is_array($in["details"])) {
         $key = substr(preg_replace('/[^a-z0-9_]/i', "", $k) ?? "", 0, 30);
         $val = trim(preg_replace('/[\x00-\x1F\x7F]+/', " ", (string) $v) ?? "");
         if ($key === "" || $val === "") continue;
-        if (len($val) > 500) $errors[] = "details";
+        if (len($val) > 500) $errors["details"] = "Please shorten your answers and try again.";
         $details[$key] = $val;
     }
 }
-if ($errors) respond(422, ["ok" => false, "error" => "validation", "fields" => array_values(array_unique($errors))]);
+if ($errors) respond(422, ["ok" => false, "error" => "validation", "fields" => $errors]);
 
 // Rate limit: 5 per IP per hour. Stored outside the web root when possible.
 function rate_dir(): ?string {
@@ -157,22 +221,25 @@ fclose($fh);
 $when = (new DateTime("now", new DateTimeZone("Asia/Kolkata")))->format("d M Y, H:i") . " IST";
 $label = INTERESTS[$interest];
 $quick = $source === "quick";
+$kind = $quick ? "Call-back request" : ($partner ? "Partner enquiry" : "New website enquiry");
 $lines = [
     ...($quick ? ["Source: Homepage quick call-back strip", ""] : []),
-    $quick ? "Call-back request" : "New website enquiry",
+    ...($partner ? ["Source: Become a Partner form", ""] : []),
+    $kind,
     "",
     "Name:        $name",
-    "Mobile:      $mobile",
+    "Mobile:      " . ($mobile !== "" ? $mobile : "—"),
     "Email:       " . ($email !== "" ? $email : "—"),
     "Company:     " . ($company !== "" ? $company : "—"),
     "City:        " . ($city !== "" ? $city : "—"),
     "Interest:    $label",
+    ...($requirement !== "" ? ["Requirement: $requirement"] : []),
 ];
 foreach ($details as $k => $v) $lines[] = str_pad(ucfirst(str_replace("_", " ", $k)) . ":", 13) . $v;
 array_push($lines, "", "Message:", $message !== "" ? $message : "—", "", "Page:        " . ($page !== "" ? $page : "—"), "Received:    $when");
 $body = implode("\n", $lines) . "\n";
 
-$subject = "=?UTF-8?B?" . base64_encode(header_safe(($quick ? "Call-back request" : "New website enquiry") . ": $label – $name")) . "?=";
+$subject = "=?UTF-8?B?" . base64_encode(header_safe("$kind: $label – $name")) . "?=";
 $headers = [
     "From: NEXERA website <" . NEXERA_FROM . ">",
     "MIME-Version: 1.0",

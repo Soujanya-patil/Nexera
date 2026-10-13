@@ -5,7 +5,7 @@ import { useScrollReveal } from "../lib/scrollReveal";
 import { onceInView } from "../lib/inview";
 import { jumpTo } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
-import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
+import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
 
 const TRUST = [
   { icon: BadgeCheck, text: "Authorized partner for TCL, Hithium, CLOU and Midea" },
@@ -105,7 +105,16 @@ export default function HomeContact() {
   };
   const blur = (k) => () => {
     const e = fieldError(k, values[k]);
-    setErrors((er) => ({ ...er, [k]: e || undefined }));
+    afterPress(() => setErrors((er) => ({ ...er, [k]: e || undefined })));
+  };
+
+  /** Focuses the first field with an error (in the form's order); whether there was one. */
+  const focusFirst = (er) => {
+    const firstBad = ["name", "mobile", "email", "company", "city", "interest", "message"].find((k) => er[k]);
+    if (!firstBad) return false;
+    const target = firstBad === "interest" ? form.current.querySelector('input[name="interest"]') : form.current.querySelector(`#${uid}-${firstBad}`);
+    target?.focus();
+    return true;
   };
 
   const submit = async (e) => {
@@ -113,12 +122,7 @@ export default function HomeContact() {
     begin();
     const er = validateEnquiry(values);
     setErrors(er);
-    const firstBad = ["name", "mobile", "email", "company", "city", "interest", "message"].find((k) => er[k]);
-    if (firstBad) {
-      const target = firstBad === "interest" ? form.current.querySelector('input[name="interest"]') : form.current.querySelector(`#${uid}-${firstBad}`);
-      target?.focus();
-      return;
-    }
+    if (focusFirst(er)) return;
     setStatus("sending");
     // Never sooner than the API's minimum fill time.
     const wait = MIN_FILL_MS - (Date.now() - started.current);
@@ -128,6 +132,11 @@ export default function HomeContact() {
       setFirstName(values.name.trim().split(/\s+/)[0]);
       setValues(EMPTY);
       setStatus("done");
+    } else if (res.fields) {
+      // The API's own field errors (should it ever disagree with the page) go under their fields.
+      setErrors(res.fields);
+      setStatus("idle");
+      focusFirst(res.fields);
     } else setStatus("error");
   };
   const again = () => {

@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import { applicationLabel, getProduct, productLabel } from "../data/products";
 import { topicLabels } from "../data/solutionTopics";
-import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
+import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
 
 // The customer enquiry types as the enquiry API's interest values.
 const INTEREST_OF = { residential: "home", ci: "ci", utility: "utility" };
@@ -48,16 +48,23 @@ export default function Contact() {
         ? `I'd like help with: ${topics.join(", ")}`
         : undefined;
 
-  // One check per field, the same rules as the API (lib/enquiry); email stays required on this page.
+  // One check per field, the same rules as the API (lib/enquiry): email is required on this page, and
+  // the company on the brand / OEM path. The proposal is sent as the message, so it has the message's rule.
+  const required = path === "oem" ? { email: true, company: true } : { email: true };
   const check = (name, value) => {
     if (name === "enquiry_type") return value ? "" : "Please choose an enquiry type.";
-    if (["company", "brand"].includes(name) && path === "oem" && !value.trim()) return "Please fill this in.";
-    return fieldError(name, value, { emailRequired: true });
+    if (name === "brand" && path === "oem" && !value.trim()) return "Please fill this in.";
+    return fieldError(name === "proposal" ? "message" : name, value, { required });
   };
   const onBlur = (e) => {
     const { name, value } = e.target;
     if (!name || name === "website") return;
-    setErrors((er) => ({ ...er, [name]: check(name, value) || undefined }));
+    afterPress(() => setErrors((er) => ({ ...er, [name]: check(name, value) || undefined })));
+  };
+  // Once a field shows an error, it is checked again as the visitor fixes it.
+  const onInput = (e) => {
+    const { name, value } = e.target;
+    if (name && errors[name]) setErrors((er) => ({ ...er, [name]: check(name, value) || undefined }));
   };
 
   // Sends through the shared helper (lib/enquiry -> /api/contact.php), with everything the form knows.
@@ -66,7 +73,7 @@ export default function Contact() {
     started.current ||= Date.now();
     const form = e.currentTarget;
     const f = Object.fromEntries(new FormData(form));
-    const names = path === "general" ? ["name", "email", "mobile", "enquiry_type", "message"] : ["name", "email", "mobile", "company", "brand"];
+    const names = path === "general" ? ["name", "email", "mobile", "enquiry_type", "message"] : ["name", "email", "mobile", "company", "brand", "proposal"];
     const er = {};
     for (const n of names) {
       const m = check(n, f[n] ?? "");
@@ -105,6 +112,17 @@ export default function Contact() {
       startedAt: started.current,
       details,
     });
+    // The API's own field errors (should it ever disagree with the page) go under their fields.
+    if (res.fields) {
+      const er = {};
+      for (const [k, m] of Object.entries(res.fields)) er[k === "message" && path === "oem" ? "proposal" : k] = m;
+      setErrors(er);
+      setStatus("idle");
+      const first = names.find((n) => er[n]);
+      if (first) form.elements[first]?.focus();
+      else setStatus("error");
+      return;
+    }
     setStatus(res.ok ? "done" : "error");
   }
 
@@ -159,7 +177,7 @@ export default function Contact() {
               </p>
             </div>
           ) : (
-            <form method="post" key={path} onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} noValidate className="relative mt-8 space-y-5">
+            <form method="post" key={path} onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} onInput={onInput} noValidate className="relative mt-8 space-y-5">
               <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
               <div className="grid sm:grid-cols-2 gap-5">
                 <Field label="Name" name="name" required error={errors.name} />
@@ -215,7 +233,7 @@ export default function Contact() {
                     <Field label="Purpose" name="purpose" />
                     <Field label="Scale" name="scale" />
                   </div>
-                  <Field label="Message" name="message" as="textarea" defaultValue={starter} />
+                  <Field label="Message" name="message" as="textarea" defaultValue={starter} error={errors.message} />
                 </>
               )}
 
@@ -229,7 +247,7 @@ export default function Contact() {
                     <Field label="Company name" name="company" required error={errors.company} />
                     <Field label="Brand / product you represent" name="brand" required error={errors.brand} />
                   </div>
-                  <Field label="Partnership proposal" name="proposal" as="textarea" />
+                  <Field label="Partnership proposal" name="proposal" as="textarea" error={errors.proposal} />
                 </>
               )}
 
