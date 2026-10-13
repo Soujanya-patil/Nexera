@@ -54,6 +54,7 @@ const links = [
   { label: "Products", href: "/products" },
   { label: "For EPCs", href: "/become-a-partner" },
   { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
   { label: "Resources", href: "/resources" },
 ];
 

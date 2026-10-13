@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { formatDate } from "../../data/articles";
 import BessLetters from "../article/scenes/BessLetters";
+import CellCompare from "../article/scenes/CellCompare";
 import { trackCard, untrackCard, useOpenGuide } from "./useOpenGuide";
 
 /** While `ref` is on screen, a counter that ticks every `ms` (the featured scene's loop); 0 otherwise. */
@@ -35,8 +36,8 @@ const META = (a) => (
 
 /**
  * Guides as a bento: the newest article as a large featured card (about two thirds wide on desktop)
- * with the article's "BESS → Battery Energy Storage System" scene playing in a loop inside it (while on
- * screen, once the page's motion has loaded; static otherwise), and beside it a "Start here" panel
+ * with that article's scene playing in a loop inside it (while on screen, once the page's motion has
+ * loaded; static otherwise) — the two cells for LFP vs NMC, "BESS → Battery Energy Storage System" otherwise — and beside it a "Start here" panel
  * listing that article's sections as links straight into them. Any further guides follow as cards.
  *
  * Every card is a real link (its title, description, date and arrow inside); a plain click plays the
@@ -52,7 +53,7 @@ export default function GuidesBento({ articles, motion }) {
   return (
     <div className="mt-8 grid gap-6 lg:grid-cols-3">
       <a
-        href={`/resources/${featured.slug}`}
+        href={`/blog/${featured.slug}`}
         data-slug={featured.slug}
         data-rv="text"
         onClick={open}
@@ -64,9 +65,17 @@ export default function GuidesBento({ articles, motion }) {
       >
         <div ref={stage} className="relative h-56 overflow-hidden bg-night text-white sm:h-64">
           <div aria-hidden="true" className="article-stage-grid pointer-events-none absolute inset-0" />
-          <div className="relative mx-auto h-full w-fit">
-            <BessLetters key={loop} active={loop > 0} motion={motion} mode="inline" />
-          </div>
+          {/* The featured guide's own scene (data/articles.js `card`): the two cells for LFP vs NMC, the
+              BESS letters otherwise. */}
+          {featured.card === "cells" ? (
+            <div className="relative mx-auto h-full w-full max-w-md">
+              <CellCompare key={loop} active={loop > 0} motion={motion} mode="inline" focus="family" />
+            </div>
+          ) : (
+            <div className="relative mx-auto h-full w-fit">
+              <BessLetters key={loop} active={loop > 0} motion={motion} mode="inline" />
+            </div>
+          )}
         </div>
         <span className="flex flex-1 flex-col p-6 sm:p-8">
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{featured.eyebrow}</span>
@@ -93,7 +102,7 @@ export default function GuidesBento({ articles, motion }) {
           {featured.sections.map((s) => (
             <li key={s.id}>
               <a
-                href={`/resources/${featured.slug}#${s.id}`}
+                href={`/blog/${featured.slug}#${s.id}`}
                 className="group/start flex min-h-11 items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm font-medium text-ink transition-colors duration-200 hover:bg-paper hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-signal"
               >
                 {s.h2}
@@ -107,7 +116,7 @@ export default function GuidesBento({ articles, motion }) {
       {rest.map((a) => (
         <a
           key={a.slug}
-          href={`/resources/${a.slug}`}
+          href={`/blog/${a.slug}`}
           data-slug={a.slug}
           data-rv="text"
           onClick={open}

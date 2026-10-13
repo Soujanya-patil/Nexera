@@ -27,8 +27,9 @@ export const ProductsRoute = preloadable(() => import("./Products"));
 export const ProductDetailRoute = preloadable(() => import("./ProductDetail"));
 // Partner pages (/partners/:partnerId): one template for every technology partner.
 export const PartnerRoute = preloadable(() => import("./Partner"));
-// Articles (/resources/:slug): one template for every guide.
+// Articles (/blog/:slug): one template for every article; /blog lists them.
 export const ArticleRoute = preloadable(() => import("./Article"));
+export const BlogRoute = preloadable(() => import("./Blog"));
 
 // The three Solutions pages are long and only needed on their own routes, so they load on demand too.
 export const SolutionsRoute = preloadable(() => import("./Solutions"));

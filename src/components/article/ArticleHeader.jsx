@@ -45,8 +45,8 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
               <ChevronRight className="h-3.5 w-3.5" />
             </li>
             <li>
-              <Link to="/resources" className="hover:text-white">
-                Resources
+              <Link to="/blog" className="hover:text-white">
+                Blog
               </Link>
             </li>
             <li aria-hidden="true">

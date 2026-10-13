@@ -1,13 +1,14 @@
 import EnergyGrid from "../article/EnergyGrid";
 
 /**
- * The Resources hero: dark, like the homepage's, over the article's animated energy grid. Eyebrow,
- * the h1 and count chips built from the page's own data (so they follow it). The h1 (the page's
+ * The Resources (and Blog) hero: dark, like the homepage's, over the article's animated energy grid.
+ * Eyebrow, the h1, then an intro line and/or count chips built from the page's own data (so they
+ * follow it). The h1 (the page's
  * largest paint) shows at once on a direct load; arriving from another page of the site (`reveal`)
  * its words rise out of a mask one after another — CSS (the article header's), so nothing pre-rendered
  * is ever hidden by JavaScript. The chips fade up in turn. Reduced motion: static.
  */
-export default function ResourcesHero({ id, eyebrow, title, chips, reveal }) {
+export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], reveal }) {
   const words = title.split(" ");
   return (
     <section id={id} data-play="now" data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-night text-white">
@@ -25,13 +26,16 @@ export default function ResourcesHero({ id, eyebrow, title, chips, reveal }) {
             </span>
           ))}
         </h1>
-        <ul aria-label="On this page" className="resources-chips mt-8 flex flex-wrap gap-2.5">
-          {chips.map((c, i) => (
-            <li key={c.label} style={{ "--i": i }} className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-sm font-medium text-ice/90 backdrop-blur-sm">
-              <span className="font-semibold text-signal">{c.n}</span> {c.label}
-            </li>
-          ))}
-        </ul>
+        {intro && <p className="article-intro mt-6 max-w-2xl text-lg leading-relaxed text-ice/90">{intro}</p>}
+        {chips.length > 0 && (
+          <ul aria-label="On this page" className="resources-chips mt-8 flex flex-wrap gap-2.5">
+            {chips.map((c, i) => (
+              <li key={c.label} style={{ "--i": i }} className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-sm font-medium text-ice/90 backdrop-blur-sm">
+                <span className="font-semibold text-signal">{c.n}</span> {c.label}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );

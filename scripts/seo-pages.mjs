@@ -175,6 +175,17 @@ function graphFor(r) {
       mainEntityOfPage: { "@type": "WebPage", "@id": r.canonical },
     });
   }
+  // The Blog (/blog): a Blog listing each article as a BlogPosting (the cards the page shows).
+  if (r.blog) {
+    nodes.push({
+      "@type": "Blog",
+      "@id": `${r.canonical}#blog`,
+      name: pageName(r),
+      url: r.canonical,
+      publisher: { "@id": ORG_ID },
+      blogPost: r.blog.map((p) => ({ "@type": "BlogPosting", headline: p.headline, url: SITE_URL + p.path, datePublished: p.datePublished })),
+    });
+  }
   // The page's visible FAQ, word for word (both come from the same data as the page).
   if (r.faq) {
     nodes.push({

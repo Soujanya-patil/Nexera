@@ -1,5 +1,5 @@
 import { StrictMode, Suspense } from "react";
-import { matchPath, Navigate, Route, Routes } from "react-router-dom";
+import { matchPath, Navigate, Route, Routes, useParams } from "react-router-dom";
 import Layout from "./components/Layout";
 import Seo from "./components/Seo";
 import Home from "./pages/Home";
@@ -7,6 +7,7 @@ import {
   AboutRoute,
   ArticleRoute,
   BecomePartnerRoute,
+  BlogRoute,
   ContactRoute,
   HomeV2Route,
   HowItWorksRoute,
@@ -41,7 +42,8 @@ const PAGES = [
   ["/service-training", ServiceTrainingRoute],
   ["/where-we-operate", WhereWeOperateRoute],
   ["/resources", ResourcesRoute],
-  ["/resources/:slug", ArticleRoute],
+  ["/blog", BlogRoute],
+  ["/blog/:slug", ArticleRoute],
   ["/contact", ContactRoute],
   ["/home-v2", HomeV2Route], // preview of the new Home (noindex; routes.js PREVIEW_ROUTES)
 ];
@@ -56,6 +58,12 @@ export function preloadRoute(pathname) {
   if (path === "/" || path === "/brands" || path === "/partners") return Promise.resolve();
   const hit = PAGES.find(([p]) => matchPath(p, path));
   return (hit ? hit[1] : NotFoundRoute).preload();
+}
+
+/** An article's old address (/resources/<slug>) -> its Blog address. */
+function ToBlog() {
+  const { slug } = useParams();
+  return <Navigate to={`/blog/${slug}`} replace />;
 }
 
 /**
@@ -83,6 +91,8 @@ export default function AppRoutes() {
         <Route path="/brands" element={<Navigate to="/products" replace />} />
         {/* No partners hub page: /partners goes to the catalogue (also a 301 in .htaccess). */}
         <Route path="/partners" element={<Navigate to="/products" replace />} />
+        {/* The articles moved to the Blog: /resources/<slug> -> /blog/<slug> (also a 301 in .htaccess). */}
+        <Route path="/resources/:slug" element={<ToBlog />} />
         <Route
           path="*"
           element={

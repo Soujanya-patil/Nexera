@@ -1865,6 +1865,107 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
 .article-term-card[data-rv-state] {
   transition: none;
 }
+/* LFP vs NMC "at a glance" scene: a row's values settle in as they change. */
+@keyframes glance-value {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+.article-glance-value {
+  animation: glance-value 0.4s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .article-glance-value {
+    animation: none;
+  }
+}
+/* A "Key point" callout: a Key term's look for a longer note (no tilt). */
+.article-callout:hover {
+  box-shadow: none;
+}
+
+/* Comparison table (Article.jsx GlanceTable): hairline rows; the row being read is tinted (its scene
+   shows the same row). Phones (< 640px): each row a card — its label, then each value under its
+   column's name (data-label); the header row is kept for screen readers only. */
+.article-table th,
+.article-table td {
+  border-top: 1px solid var(--color-line);
+}
+.article-table thead th {
+  border-top: 0;
+}
+.article-table-row > * {
+  transition: background-color 0.4s ease;
+}
+.article-table-row[data-on] > * {
+  background-color: rgb(144 217 136 / 0.12);
+}
+.article-table-row > :first-child {
+  padding-left: 0.75rem;
+  border-radius: 10px 0 0 10px;
+}
+.article-table-row > :last-child {
+  border-radius: 0 10px 10px 0;
+}
+@media (max-width: 639.98px) {
+  .article-table,
+  .article-table tbody,
+  .article-table tr,
+  .article-table th,
+  .article-table td {
+    display: block;
+  }
+  .article-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .article-table tbody {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .article-table-row {
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--color-ice) 60%, transparent);
+    padding: 0.875rem 1rem;
+    transition: border-color 0.4s ease;
+  }
+  .article-table-row[data-on] {
+    border-color: rgb(144 217 136 / 0.7);
+  }
+  .article-table-row > *,
+  .article-table-row[data-on] > * {
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    background: none;
+  }
+  .article-table-row > :first-child {
+    padding: 0 0 0.375rem;
+  }
+  .article-table-row td + td {
+    margin-top: 0.5rem;
+  }
+  .article-table-row td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-sage);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .article-table-row > *,
+  .article-table-row {
+    transition: none;
+  }
+}
 
 /* Links in the text: the underline draws and the arrow slides on hover; a link pulses while its
    scale is on the stage. */

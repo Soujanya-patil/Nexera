@@ -193,14 +193,26 @@ const PAGES = [
     description:
       "Battery energy storage datasheets and brochures, answers to common BESS questions, and news and insights from NEXERA for projects in India.",
   },
-  // Articles (pages/Article.jsx, content in data/articles.js): breadcrumb Home > Resources > article,
+  // The Blog (pages/Blog.jsx): every article, newest first — written as a Blog with its BlogPostings.
+  {
+    path: "/blog",
+    h1: "NEXERA Blog",
+    label: "Blog",
+    title: "BESS Blog: Guides on Battery Energy Storage | NEXERA",
+    description:
+      "Plain guides on battery energy storage in India: what a BESS is, battery chemistries, sizing, safety and costs, from NEXERA Powertech.",
+    blog: [...ARTICLES]
+      .sort((x, y) => y.datePublished.localeCompare(x.datePublished))
+      .map((a) => ({ headline: a.h1, path: `/blog/${a.slug}`, datePublished: a.datePublished })),
+  },
+  // Articles (pages/Article.jsx, content in data/articles.js): breadcrumb Home > Blog > article,
   // Article structured data, and the article's FAQ as FAQPage data.
   ...ARTICLES.map((a) => ({
-    path: `/resources/${a.slug}`,
+    path: `/blog/${a.slug}`,
     h1: a.h1,
     title: a.title,
     description: a.description,
-    crumbs: [["Resources", "/resources"], [a.shortTitle, `/resources/${a.slug}`]],
+    crumbs: [["Blog", "/blog"], [a.shortTitle, `/blog/${a.slug}`]],
     article: { headline: a.h1, datePublished: a.datePublished, dateModified: a.dateModified },
     faq: a.faqs,
   })),

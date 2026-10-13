@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { isHiddenArticle } from "../../data/articles";
 
 // A line icon for each related page (drawn in as the cards arrive).
 const ICONS = {
@@ -7,6 +8,8 @@ const ICONS = {
   "/solutions/commercial-industrial": "M4 28 V14 L11 18 V14 L18 18 V14 L25 18 V6 H30 V28 Z M9 23 H13 M17 23 H21",
   "/solutions/utility-scale": "M3 10 H33 V26 H3 Z M9 10 V26 M15 10 V26 M21 10 V26 M27 10 V26",
   "/products": "M5 5 H15 V15 H5 Z M21 5 H31 V15 H21 Z M5 21 H15 V31 H5 Z M21 21 H31 V31 H21 Z",
+  // a guide: an open page with lines of text
+  "/blog/what-is-bess": "M8 4 H24 L30 10 V30 H8 Z M24 4 V10 H30 M13 16 H25 M13 21 H25 M13 26 H20",
 };
 
 /** A soft light that follows the pointer across a card (mouse / pen only). */
@@ -34,7 +37,7 @@ export default function ArticleRelated({ items }) {
           </h2>
         </div>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {items.map((r) => (
+          {items.filter((r) => !isHiddenArticle(r.to)).map((r) => (
             <li key={r.to} data-rv="card">
               <Link
                 to={r.to}

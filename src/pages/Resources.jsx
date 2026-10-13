@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useNavigationType } from "react-router-dom";
+import { Link, useNavigationType } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { ARTICLES } from "../data/articles";
 import { coverBack, returningTo } from "../components/article/curtain";
 import { useArticleMotion } from "../components/article/useArticleMotion";
@@ -11,6 +12,7 @@ import FilterBar from "../components/resources/FilterBar";
 import GuidesBento from "../components/resources/GuidesBento";
 import DatasheetCards from "../components/resources/DatasheetCards";
 import InsightCards from "../components/resources/InsightCards";
+import { useWanted } from "../components/resources/useWanted";
 import { isFirstLoad } from "../lib/firstLoad";
 
 // The documents on offer: a product (data/products.js) and which document it is.
@@ -36,11 +38,13 @@ const articles = [
 const TITLE = "Datasheets, answers, and the latest from Nexera";
 // The hub's sections, in page order, and the tone the page shifts to while each is read.
 const SECTIONS = [
-  { id: "guides", label: "Guides", tone: "white" },
+  { id: "guides", label: "Blog", tone: "white" },
   { id: "datasheets", label: "Datasheets", tone: "grey" },
   { id: "faqs", label: "FAQs", tone: "white" },
   { id: "insights", label: "Insights", tone: "grey" },
 ];
+/** How many of the latest articles "From the blog" shows (the Blog has them all). */
+const LATEST = 3;
 /** "Guide" / "Guides" for a count. */
 const noun = (n, one) => (n === 1 ? one : `${one}s`);
 
@@ -75,27 +79,6 @@ function useSectionSpy(ids) {
   return active;
 }
 
-/**
- * When to load the page's motion. Arriving from the site: at once (the h1 reveal needs it). On a
- * direct load, everything above the fold is already final, so it waits for the reader to scroll, tap or
- * press a key — or a few seconds after load — keeping the first paint's main thread free.
- */
-const MOTION_EVENTS = ["scroll", "wheel", "touchstart", "pointerdown", "keydown"];
-function useWanted(now) {
-  const [wanted, setWanted] = useState(now);
-  useEffect(() => {
-    if (wanted) return;
-    const go = () => setWanted(true);
-    MOTION_EVENTS.forEach((t) => window.addEventListener(t, go, { once: true, passive: true }));
-    const t = setTimeout(go, 3500);
-    return () => {
-      clearTimeout(t);
-      MOTION_EVENTS.forEach((t) => window.removeEventListener(t, go));
-    };
-  }, [wanted]);
-  return wanted;
-}
-
 /** A section heading: a short green line that draws in, then the heading rising word by word. */
 function Heading({ id, children }) {
   return (
@@ -113,8 +96,9 @@ function Heading({ id, children }) {
 /**
  * /resources — the Knowledge Hub. A dark hero (energy grid, the h1, count chips from the data), a
  * sticky section bar (FilterBar: glides to a section, follows the one being read), then:
- *   Guides               a bento: the newest guide as a featured card with its live scene, a
- *                        "Start here" panel into its sections, any other guides (GuidesBento)
+ *   From the blog        the latest articles (/blog/…) as on the Blog: the newest as a featured card
+ *                        with its live scene and a "Start here" panel, the next ones as cards
+ *                        (GuidesBento), and "View all articles" -> /blog
  *   Datasheets           product cards, each asking for its document on the contact form (DatasheetCards)
  *   FAQs                 the article's animated accordion (ArticleFaq), same words
  *   News & Insights      numbered cards — "Coming soon" while a title has no page (InsightCards)
@@ -162,8 +146,14 @@ export default function Resources() {
       <div data-tone={tone} className="resources-body">
         <section id="guides" aria-labelledby="guides-title" className="scroll-mt-32 py-14 lg:py-20">
           <div className="container-site">
-            <Heading id="guides-title">Guides</Heading>
-            <GuidesBento articles={[...ARTICLES].sort((x, y) => y.datePublished.localeCompare(x.datePublished))} motion={motion} />
+            <Heading id="guides-title">From the blog</Heading>
+            <GuidesBento articles={[...ARTICLES].sort((x, y) => y.datePublished.localeCompare(x.datePublished)).slice(0, LATEST)} motion={motion} />
+            <p data-rv="text" className="mt-8">
+              <Link to="/blog" className="article-link group/all inline-flex items-center gap-1.5 text-base font-semibold text-forest">
+                <span>View all articles</span>
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/all:translate-x-1" />
+              </Link>
+            </p>
           </div>
         </section>
 

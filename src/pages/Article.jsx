@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import MagneticButton from "../components/ui/MagneticButton";
 import NotFound from "./NotFound";
-import { getArticle } from "../data/articles";
+import { getArticle, isHiddenArticle } from "../data/articles";
 import { scrollToId } from "../lib/scrollTo";
 import ArticleHeader from "../components/article/ArticleHeader";
 import ReadingProgress from "../components/article/ReadingProgress";
@@ -16,7 +16,7 @@ import { useArticleReveal } from "../components/article/useArticleReveal";
 import { underCurtain, uncover } from "../components/article/curtain";
 
 /**
- * /resources/:slug — one article (data/articles.js), told as a guided story:
+ * /blog/:slug — one article (data/articles.js), told as a guided story:
  *
  *   header      the h1's words rise in, the intro and byline follow, over a drawing energy grid
  *               (components/article/ArticleHeader); a reading progress bar under the site header
@@ -38,8 +38,8 @@ export default function Article() {
   const { search, hash } = useLocation();
   const article = getArticle(slug);
   if (!article) return <NotFound />;
-  // Any other spelling of the slug (e.g. /resources/What-Is-BESS) goes to the canonical lowercase URL.
-  if (slug !== article.slug) return <Navigate to={`/resources/${article.slug}${search}${hash}`} replace />;
+  // Any other spelling of the slug (e.g. /blog/What-Is-BESS) goes to the canonical lowercase URL.
+  if (slug !== article.slug) return <Navigate to={`/blog/${article.slug}${search}${hash}`} replace />;
   return <ArticlePage key={article.slug} a={article} />;
 }
 
@@ -210,12 +210,59 @@ function TocList({ items, active, indicator = false, className = "" }) {
   );
 }
 
-/** A Rich value: a string, or strings with { b } (bold) and { a, to } (link) pieces. */
+/**
+ * A comparison table (data/articles.js `table`). Each row is a step of the section's scene, and the row
+ * being read is tinted. Phones (< 640px): each row becomes a card — its label, then each column's value
+ * under that column's name (index.css .article-table). The ARIA roles keep it a table for screen
+ * readers when the layout changes it to blocks.
+ */
+function GlanceTable({ t, section, reading }) {
+  const [, ...heads] = t.cols;
+  const current = reading.section === section ? reading.step : -1;
+  return (
+    <div data-rv="text" className="mt-6">
+      <table role="table" className="article-table w-full border-separate border-spacing-0 text-left text-base leading-relaxed">
+        <thead role="rowgroup">
+          <tr role="row">
+            {/* The row labels' column has no heading (as in the article's text). */}
+            <td role="cell" className="w-[26%] pb-3 pr-4" />
+            {heads.map((h) => (
+              <th key={h} role="columnheader" scope="col" className="pb-3 pr-4 align-bottom text-sm font-semibold text-ink">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          {t.rows.map(([label, ...cells], i) => (
+            <tr key={label} role="row" data-step={i} data-of={section} data-on={current === i || undefined} className="article-table-row">
+              <th role="rowheader" scope="row" className="py-3 pr-4 align-top text-sm font-semibold text-ink">
+                {label}
+              </th>
+              {cells.map((c, k) => (
+                <td key={k} role="cell" data-label={heads[k]} className="py-3 pr-4 align-top">
+                  {c}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/**
+ * A Rich value: a string, or strings with { b } (bold) and { a, to } (link) pieces. A link to an
+ * article that isn't published (a draft: data/articles.js) is its plain text.
+ */
 function Rich({ r }) {
   if (typeof r === "string") return r;
   return r.map((x, i) =>
     typeof x === "string" ? (
       <Fragment key={i}>{x}</Fragment>
+    ) : x.a && isHiddenArticle(x.to) ? (
+      <Fragment key={i}>{x.a}</Fragment>
     ) : x.b ? (
       <strong key={i} className="article-lead font-semibold text-ink">
         {x.b}
@@ -232,7 +279,7 @@ function Item({ it, pulse }) {
   if (typeof it === "string" || Array.isArray(it)) return <Rich r={it} />;
   return (
     <>
-      <strong className="article-lead font-semibold text-ink">{it.lead}</strong> {it.text}
+      <strong className="article-lead font-semibold text-ink">{it.lead}</strong> <Rich r={it.text} />
       {it.link && (
         <>
           {" "}
@@ -246,13 +293,26 @@ function Item({ it, pulse }) {
   );
 }
 
-function Block({ b, section, ctx }) {
+function Block({ b, section, ctx, inCallout = false }) {
   const { reading, setHover } = ctx;
   if (b.p) {
     return (
-      <p data-rv="text" className="mt-5">
+      <p data-rv={inCallout ? undefined : "text"} className={inCallout ? "mt-2" : "mt-5"}>
         <Rich r={b.p} />
       </p>
+    );
+  }
+  if (b.table) return <GlanceTable t={b.table} section={section} reading={reading} />;
+  if (b.callout) {
+    return (
+      <div role="note" aria-label={b.callout.label} data-rv="term" className="article-term-card article-callout relative mt-6 rounded-2xl border border-line bg-ice/70 py-5 pl-6 pr-5">
+        <p data-label className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">
+          {b.callout.label}
+        </p>
+        {b.callout.blocks.map((x, j) => (
+          <Block key={j} b={x} section={section} ctx={ctx} inCallout />
+        ))}
+      </div>
     );
   }
   if (b.ul || b.ol) {
@@ -263,7 +323,8 @@ function Block({ b, section, ctx }) {
         {(b.ul ?? b.ol).map((it, i) => (
           <li
             key={i}
-            data-rv="text"
+            // Inside a callout the callout itself fades in; its items don't again.
+            data-rv={inCallout ? undefined : "text"}
             data-step={i}
             data-of={section}
             onPointerEnter={hoverable ? () => setHover(i) : undefined}

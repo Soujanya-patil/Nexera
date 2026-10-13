@@ -1,5 +1,5 @@
 /*
- * Articles (/resources/:slug, pages/Article.jsx) — the guides listed on /resources. Each article is
+ * Articles (/blog/:slug, pages/Article.jsx) — listed on /blog and, the latest, on /resources. Each article is
  * data, so the page, its structured data (src/seo/routes.js → scripts/seo-pages.mjs: Article and
  * FAQPage) and the Resources cards all read the same words.
  *
@@ -10,15 +10,221 @@
  * heading on phones) from components/article/scenes — reusable by any article. The scene follows the
  * reader: each list item, numbered question or Key term in the section is one step of it. Blocks:
  *   { p: Rich }                         a paragraph
- *   { ul: Item[] } / { ol: Item[] }     a list; an Item is Rich, or { lead, text, link: { label, to } }
+ *   { ul: Item[] } / { ol: Item[] }     a list; an Item is Rich, or { lead, text: Rich, link: { label, to } }
  *   { terms: [{ term, text }] }         "Key term" callouts
+ *   { table: { cols, rows } }           a comparison table (stacked cards on phones); each row is a step
+ *   { callout: { label, blocks } }      a labelled callout ("Key point") holding paragraphs and lists
  *   { actions: [{ label, to, primary }] }  buttons / links at the end of a section
  * Rich: a string, or an array of strings and { b: "bold" } / { a: "label", to: "/path" } pieces.
+ * `card` (optional): the scene in the article's featured Guides card (resources/GuidesBento).
  *
  * readingTime is computed from the word count (200 words a minute).
  */
 
-export const ARTICLES = [
+/**
+ * "LFP vs NMC at a glance" — the table, and the words its scene shows row by row (article/scenes/
+ * GlanceRows), so the two always match. `cols`: the header row (the first, the row labels', is empty).
+ */
+export const LFP_NMC_GLANCE = {
+  cols: ["", "LFP (lithium iron phosphate)", "NMC (nickel manganese cobalt)"],
+  rows: [
+    ["Thermal stability", "Higher: more resistant to overheating", "Lower: needs stricter thermal management"],
+    ["Cycle life", "Generally longer", "Generally shorter"],
+    ["Energy density", "Lower: larger and heavier for the same energy", "Higher: more compact and lighter"],
+    ["Nominal cell voltage", "About 3.2 V", "About 3.6–3.7 V"],
+    ["Cathode materials", "Iron and phosphate; no nickel or cobalt", "Nickel, manganese and cobalt"],
+    ["Typical use", "Stationary energy storage", "Electric vehicles and portable devices"],
+  ],
+};
+
+/**
+ * Draft articles (`draft: true`): written and kept here, but not published. They exist only in
+ * development (`npm run dev`), where each can be reviewed at its own URL; a production build leaves
+ * them out entirely (import.meta.env.DEV is false there, so the draft — text and all — is compiled
+ * away): no page, no pre-render, no sitemap entry, not on /blog, the Resources strip, the footer, the
+ * Blog's structured data or any Related links, and a link to one in an article's text shows as plain
+ * text. To publish one: remove its `draft: true` and move it from DRAFTS into the ALL list.
+ */
+const LFP_VS_NMC = {
+  slug: "lfp-vs-nmc",
+  // Waiting for the director's review: not published (see DRAFTS above ARTICLES).
+  draft: true,
+  title: "LFP vs NMC Batteries for Energy Storage | NEXERA",
+  description:
+    "LFP vs NMC: how lithium iron phosphate (LiFePO4) and NMC batteries compare on safety, cycle life, energy density and cost for home and business storage.",
+  shortTitle: "LFP vs NMC",
+  eyebrow: "Guide",
+  h1: "LFP vs NMC: Which Battery Chemistry Suits Energy Storage?",
+  intro: "A plain comparison of the two most common lithium-ion battery chemistries, and why most stationary storage systems use LFP.",
+  // The Guides card's scene when this is the featured guide (components/resources/GuidesBento).
+  card: "cells",
+  datePublished: "2026-10-13T06:04:00+05:30",
+  dateModified: "2026-10-13T06:04:00+05:30",
+  sections: [
+    {
+      id: "what-is-lfp",
+      visual: "cells-lfp",
+      h2: "What is an LFP (LiFePO4) battery?",
+      blocks: [
+        {
+          p: [
+            { b: "LFP stands for lithium iron phosphate (LiFePO₄)." },
+            " It is a type of lithium-ion battery whose cathode is made from iron phosphate. LFP cells contain no nickel or cobalt, and they are known for thermal stability and long cycle life. That is why LFP is widely used in home, commercial and utility-scale battery energy storage systems.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "what-is-nmc",
+      visual: "cells-nmc",
+      h2: "What is an NMC battery?",
+      blocks: [
+        {
+          p: [
+            { b: "NMC stands for nickel manganese cobalt." },
+            " It is also a lithium-ion battery, but its cathode uses a mix of nickel, manganese and cobalt. NMC packs more energy into the same weight and space, which is why it is widely used in electric vehicles, where every kilogram matters.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "is-lfp-lithium-ion",
+      visual: "cells-family",
+      h2: "Is LFP a lithium-ion battery?",
+      blocks: [
+        {
+          p: 'Yes. LFP and NMC are both lithium-ion batteries. "Lithium-ion" describes the family; LFP and NMC describe the cathode chemistry inside the cell. So the real comparison is not "LFP vs lithium-ion" but LFP vs other lithium-ion chemistries such as NMC.',
+        },
+      ],
+    },
+    {
+      id: "at-a-glance",
+      visual: "glance-rows",
+      h2: "LFP vs NMC at a glance",
+      blocks: [{ table: LFP_NMC_GLANCE }],
+    },
+    {
+      id: "why-lfp",
+      visual: "why-lfp",
+      h2: "Why most energy storage systems use LFP",
+      blocks: [
+        {
+          p: "A battery energy storage system usually sits in one place, at a home, a factory or a grid site, so a little extra size and weight matter less than in a car. What matters more is:",
+        },
+        {
+          ul: [
+            [{ b: "Safety:" }, " LFP's thermal stability suits batteries installed near people and buildings."],
+            [{ b: "Long life:" }, " storage systems often charge and discharge every day, so cycle life drives the cost over the system's lifetime."],
+            [{ b: "Materials:" }, " no nickel or cobalt in the cathode."],
+          ],
+        },
+      ],
+    },
+    {
+      id: "how-long",
+      visual: "cycle-loop",
+      h2: "How long does an LFP battery last?",
+      blocks: [
+        {
+          p: [
+            "Battery life is measured in ",
+            { b: "cycles" },
+            ": one full charge and discharge. How many cycles a battery delivers depends on the cell model, the depth of discharge, the temperature and how the system is operated. Always check the specification of the exact product.",
+          ],
+        },
+        { p: "For example, on our product pages:" },
+        {
+          ul: [
+            [{ a: "TCL BlueArk W10", to: "/products/tcl-blueark-w10" }, " lists an 8,000-cycle specification at 70% state of health, with 95% depth of discharge."],
+            [{ a: "Hithium", to: "/partners/hithium" }, "'s cell portfolio includes cycle-life specifications of up to 11,000 cycles, depending on the cell model."],
+          ],
+        },
+      ],
+    },
+    {
+      id: "indoor-safety",
+      visual: "safety-layers",
+      h2: "Is LFP safer than NMC for indoor installation?",
+      blocks: [
+        {
+          callout: {
+            label: "Key point",
+            blocks: [
+              {
+                p: [
+                  "LFP cells are more thermally stable than NMC cells, which is an advantage for batteries installed in or near buildings. But safety depends on the ",
+                  { b: "whole system" },
+                  ", not the chemistry alone:",
+                ],
+              },
+              {
+                ul: [
+                  "a Battery Management System (BMS) that monitors every cell;",
+                  "thermal management (liquid or air cooling);",
+                  "fire detection and suppression;",
+                  "correct installation, following the manufacturer's requirements and local rules.",
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      id: "nexera-lfp",
+      visual: "nexera-lfp",
+      h2: "Which NEXERA systems use LFP?",
+      blocks: [
+        { p: "Many of the systems NEXERA offers use LFP cells, including:" },
+        {
+          ul: [
+            [{ b: "TCL BlueArk W10" }, " (314 Ah LFP cells);"],
+            [{ b: "Hithium ∞BLOCK C&I" }, " (314 Ah LFP cells);"],
+            [{ b: "Midea home batteries" }, " (LiFePO₄ cells)."],
+          ],
+        },
+        { p: "Check each product page for its exact specification." },
+        {
+          actions: [
+            { label: "Talk to an expert", to: "/#contact?interest=ci", primary: true },
+            { label: "Browse BESS products", to: "/products" },
+          ],
+        },
+      ],
+    },
+  ],
+  faqs: [
+    {
+      q: "What is the full form of LFP?",
+      a: "LFP stands for lithium iron phosphate (LiFePO₄), a lithium-ion battery chemistry with an iron phosphate cathode.",
+    },
+    {
+      q: "Is LFP better than NMC?",
+      a: "It depends on the use. For stationary energy storage, LFP is usually preferred for its thermal stability and longer cycle life. NMC is preferred where compact size and low weight matter most, such as in electric vehicles.",
+    },
+    {
+      q: "Is an LFP battery a lithium-ion battery?",
+      a: "Yes. LFP is one type of lithium-ion battery. NMC is another.",
+    },
+    {
+      q: "How long does an LFP battery last?",
+      a: "It depends on the cell model, depth of discharge, temperature and operation. Battery life is measured in cycles, so check the cycle-life specification of the exact product.",
+    },
+    {
+      q: "Is LFP safer than NMC for a battery installed indoors?",
+      a: "LFP is more thermally stable than NMC. But overall safety depends on the complete system, including the BMS, thermal management, fire protection and correct installation.",
+    },
+  ],
+  related: [
+    { label: "What Is a BESS?", to: "/blog/what-is-bess" },
+    { label: "Home battery storage", to: "/solutions/residential" },
+    { label: "C&I battery storage", to: "/solutions/commercial-industrial" },
+    { label: "BESS products", to: "/products" },
+  ],
+};
+const DRAFTS = import.meta.env.DEV ? [LFP_VS_NMC] : [];
+
+const ALL = [
   {
     slug: "what-is-bess",
     title: "What Is a BESS? Battery Energy Storage Explained | NEXERA",
@@ -74,7 +280,11 @@ export const ARTICLES = [
             ul: [
               {
                 lead: "Battery modules:",
-                text: "battery cells grouped into modules and racks that store the energy. Many of the systems NEXERA offers, including TCL BlueArk W10, Hithium 261 and Midea home batteries, use LFP (lithium iron phosphate) cells.",
+                text: [
+                  "battery cells grouped into modules and racks that store the energy. Many of the systems NEXERA offers, including TCL BlueArk W10, Hithium 261 and Midea home batteries, use ",
+                  { a: "LFP (lithium iron phosphate)", to: "/blog/lfp-vs-nmc" },
+                  " cells.",
+                ],
               },
               {
                 lead: "Battery Management System (BMS):",
@@ -219,34 +429,48 @@ export const ARTICLES = [
       { label: "BESS products", to: "/products" },
     ],
   },
+  ...DRAFTS,
 ].map((a) => ({ ...a, readingTime: readingTime(a) }));
+
+/** The published articles: the ones /blog, the Resources strip, the sitemap and the routes list. */
+export const ARTICLES = ALL.filter((a) => !a.draft);
 
 /** Plain text of a Rich value (string, or strings and { b } / { a } pieces). */
 export function richText(r) {
   return typeof r === "string" ? r : r.map((x) => (typeof x === "string" ? x : x.b ?? x.a)).join("");
 }
 
-/** Minutes to read, at 200 words a minute: intro, sections (headings, text, lists, terms) and FAQ. */
+/** Minutes to read, at 200 words a minute: intro, sections (headings, text, lists, terms, tables, callouts) and FAQ. */
 function readingTime(a) {
   const parts = [a.intro];
+  const blocks = (list) => {
+    for (const b of list) {
+      if (b.p) parts.push(richText(b.p));
+      for (const it of b.ul ?? b.ol ?? []) parts.push(typeof it === "string" || Array.isArray(it) ? richText(it) : `${it.lead} ${richText(it.text)}`);
+      for (const t of b.terms ?? []) parts.push(`${t.term} ${t.text}`);
+      if (b.table) parts.push(...b.table.cols, ...b.table.rows.flat());
+      if (b.callout) blocks(b.callout.blocks);
+    }
+  };
   for (const s of a.sections) {
     parts.push(s.h2);
-    for (const b of s.blocks) {
-      if (b.p) parts.push(richText(b.p));
-      for (const it of b.ul ?? b.ol ?? []) parts.push(typeof it === "string" || Array.isArray(it) ? richText(it) : `${it.lead} ${it.text}`);
-      for (const t of b.terms ?? []) parts.push(`${t.term} ${t.text}`);
-    }
+    blocks(s.blocks);
   }
   for (const f of a.faqs) parts.push(`${f.q} ${f.a}`);
   const words = parts.join(" ").split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
 }
 
-/** The article for a URL slug — any letter case, surrounding slashes ignored (slugs are lowercase). */
+/**
+ * The article for a URL slug — any letter case, surrounding slashes ignored (slugs are lowercase).
+ * A draft is found only in development (it isn't in a production build at all).
+ */
 export const getArticle = (slug = "") => {
   const s = slug.replace(/^\/+|\/+$/g, "").toLowerCase();
-  return ARTICLES.find((a) => a.slug === s);
+  return ALL.find((a) => a.slug === s);
 };
+/** Whether a site path is an article that can't be shown (a draft, in a production build). */
+export const isHiddenArticle = (to = "") => to.startsWith("/blog/") && !getArticle(to.slice("/blog/".length).split(/[?#]/)[0]);
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 /** "2026-10-08T16:45:00+05:30" → "8 October 2026" (read from the ISO text itself, so the server and the browser agree). */

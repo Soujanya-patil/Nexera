@@ -126,7 +126,7 @@ function HubHeader({ eyebrow, title, subtitle }) {
             {subtitle}
           </p>
           <p data-a="desc" className="mt-4 text-sm">
-            <Link to="/resources/what-is-bess" className="group/new inline-flex items-center gap-1.5 font-semibold text-signal underline-offset-4 hover:underline">
+            <Link to="/blog/what-is-bess" className="group/new inline-flex items-center gap-1.5 font-semibold text-signal underline-offset-4 hover:underline">
               New to battery storage? Read: What Is a BESS?
               <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover/new:translate-x-0.5" />
             </Link>

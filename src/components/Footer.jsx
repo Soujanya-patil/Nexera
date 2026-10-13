@@ -12,8 +12,11 @@ const links = [
   { label: "Contact", href: "/contact" },
 ];
 
-// Guides (data/articles.js).
-const guides = [{ label: "What is a BESS?", href: "/resources/what-is-bess" }];
+// The Blog and its published articles (data/articles.js; drafts are never listed).
+const guides = [
+  { label: "Blog", href: "/blog" },
+  { label: "What is a BESS?", href: "/blog/what-is-bess" },
+];
 
 // The technology partners' pages.
 const partners = [
