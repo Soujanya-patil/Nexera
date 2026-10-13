@@ -6,6 +6,7 @@ import { onceInView } from "../lib/inview";
 import { jumpTo } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
 import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
+import { ADDRESS } from "../data/business";
 
 const TRUST = [
   { icon: BadgeCheck, text: "Authorized partner for TCL, Hithium, CLOU and Midea" },
@@ -228,6 +229,9 @@ export default function HomeContact() {
               )}
             </p>
           )}
+          <address data-sr className="mt-3 max-w-md text-sm not-italic leading-relaxed text-ice/75">
+            {ADDRESS}
+          </address>
           <p data-sr className="mt-8 text-sm text-ice/75">
             Want to become a distributor?{" "}
             <Link to="/become-a-partner" className="group inline-flex items-center gap-1 font-semibold text-signal underline-offset-4 hover:underline">

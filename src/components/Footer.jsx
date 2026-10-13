@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Wordmark from "./Wordmark";
+import { ADDRESS, PHONE, phoneHref } from "../data/business";
 
 const links = [
   { label: "About", href: "/about" },
@@ -32,7 +33,14 @@ export default function Footer() {
       <div className="container-site py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
         <div>
           <Wordmark className="text-lg text-white" />
-          <p className="mt-3 text-sm">Bangalore, Karnataka</p>
+          <address className="mt-3 text-sm not-italic">{ADDRESS}</address>
+          {PHONE && (
+            <p className="mt-1 text-sm">
+              <a href={phoneHref(PHONE)} className="transition-colors hover:text-signal">
+                {PHONE}
+              </a>
+            </p>
+          )}
           <p className="mt-1 text-sm">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
         </div>
         <div>

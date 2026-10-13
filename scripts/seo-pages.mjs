@@ -51,6 +51,7 @@ const {
   OG_IMAGE_MIN_WIDTH,
   NOT_FOUND_TITLE,
   ORGANIZATION,
+  LOCAL_BUSINESS,
   PREVIEW_ROUTES,
 } = await import(pathToFileURL(path.join(tmp, entry)).href);
 
@@ -121,9 +122,27 @@ const organization = {
   description: ORGANIZATION.description,
   address: {
     "@type": "PostalAddress",
+    streetAddress: ORGANIZATION.address.street,
     addressLocality: ORGANIZATION.address.locality,
     addressRegion: ORGANIZATION.address.region,
+    postalCode: ORGANIZATION.address.postalCode,
     addressCountry: ORGANIZATION.address.country,
+  },
+  ...(ORGANIZATION.telephone ? { telephone: ORGANIZATION.telephone } : {}),
+};
+// The homepage and the contact page: the same node is also the LocalBusiness (the Google Business
+// Profile's name, the address and phone, the opening hours).
+const localBusiness = {
+  ...organization,
+  "@type": ["Organization", "LocalBusiness"],
+  name: LOCAL_BUSINESS.name,
+  alternateName: ORGANIZATION.name,
+  image: SITE_URL + DEFAULT_OG_IMAGE,
+  openingHoursSpecification: {
+    "@type": "OpeningHoursSpecification",
+    dayOfWeek: LOCAL_BUSINESS.hours.days,
+    opens: LOCAL_BUSINESS.hours.opens,
+    closes: LOCAL_BUSINESS.hours.closes,
   },
 };
 if (!fs.existsSync(distFile(ORGANIZATION.logo))) problems.push(`Organization logo missing: dist${ORGANIZATION.logo}`);
@@ -142,7 +161,7 @@ const breadcrumbs = (trail) => ({
 });
 const home = ROUTES.find((r) => r.path === "/");
 function graphFor(r) {
-  const nodes = [organization];
+  const nodes = [r?.localBusiness ? localBusiness : organization];
   if (!r) return nodes; // 404.html
   if (r.path === "/") {
     nodes.push({ "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: ORGANIZATION.name, url: `${SITE_URL}/`, publisher: { "@id": ORG_ID } });

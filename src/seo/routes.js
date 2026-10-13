@@ -26,6 +26,7 @@ import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/so
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 import { partnerFaq } from "../data/partners";
 import { ARTICLES, DRAFT_ARTICLES } from "../data/articles";
+import { ADDRESS_PARTS, BUSINESS_NAME, HOURS, PHONE } from "../data/business";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -40,15 +41,19 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
 
 /**
  * The Organization for structured data (scripts/seo-pages.mjs puts it on every page). Only facts the
- * site itself states: the address is the Footer's; the site shows no email, phone or social
- * profiles, so none are given. The logo is the NEXERA mark (the wordmark's green X on the ink
+ * site itself states: the address and phone are the Footer's (data/business, as on the Google
+ * Business Profile); the site shows no email or social profiles, so none are given. On the homepage
+ * and the contact page (`localBusiness` routes) the same node is also the LocalBusiness: the Business
+ * Profile's name and opening hours. The logo is the NEXERA mark (the wordmark's green X on the ink
  * ground) as the 180x180 public/apple-touch-icon.png, the same mark as public/favicon.svg.
  */
+export const LOCAL_BUSINESS = { name: BUSINESS_NAME, hours: HOURS };
 export const ORGANIZATION = {
   name: "NEXERA Powertech",
   description:
     "Authorized distributor and solution provider for TCL, Hithium, CLOU and Midea battery energy storage systems in India, with design, commissioning, training and after-sales support.",
-  address: { locality: "Bangalore", region: "Karnataka", country: "IN" },
+  address: ADDRESS_PARTS,
+  telephone: PHONE,
   logo: "/apple-touch-icon.png",
 };
 
@@ -60,6 +65,7 @@ export const OG_IMAGE_MIN_WIDTH = 600;
 const PAGES = [
   {
     path: "/",
+    localBusiness: true,
     h1: "Battery Energy Storage Systems Powering India’s Transition to Smart Energy Storage",
     title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
     description:
@@ -218,6 +224,7 @@ const PAGES = [
   })),
   {
     path: "/contact",
+    localBusiness: true,
     h1: "Talk to Nexera",
     title: "Contact Us — Energy Storage Enquiries | NEXERA",
     description:

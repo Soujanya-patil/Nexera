@@ -4,6 +4,7 @@ import PageHeader from "../components/PageHeader";
 import { applicationLabel, getProduct, productLabel } from "../data/products";
 import { topicLabels } from "../data/solutionTopics";
 import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
+import { ADDRESS } from "../data/business";
 
 // The customer enquiry types as the enquiry API's interest values.
 const INTEREST_OF = { residential: "home", ci: "ci", utility: "utility" };
@@ -136,6 +137,18 @@ export default function Contact() {
 
       <section className="bg-paper">
         <div className="mx-auto max-w-2xl px-6 py-16">
+          {/* Where to find and call us (data/business: as on the Google Business Profile). */}
+          <address className="mb-8 rounded-lg border border-line bg-ice px-5 py-4 text-sm not-italic leading-relaxed text-graphite">
+            <span className="block font-medium text-ink">{ADDRESS}</span>
+            {CONTACT_PHONE && (
+              <span className="mt-1 block">
+                Call{" "}
+                <a href={telHref(CONTACT_PHONE)} className="font-semibold text-forest underline-offset-4 hover:underline">
+                  {CONTACT_PHONE}
+                </a>
+              </span>
+            )}
+          </address>
           {/* Path selector — distributor intent routes straight to the real application page;
               the two form paths below are genuinely different audiences with different fields. */}
           <div className="flex flex-wrap gap-2">

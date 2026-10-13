@@ -24,6 +24,9 @@ jobs:
 
       - name: Build Vite application
         run: npm run build
+        env:
+          # NEXERA's phone (src/data/business.js, src/lib/enquiry.js), as on its Google Business Profile.
+          VITE_CONTACT_PHONE: "+91 97423 53341"
 
       # Every sitemap URL must have its pre-rendered page in dist/ (e.g. /resources/what-is-bess ->
       # dist/resources/what-is-bess.html), or the deploy stops here instead of publishing a 404.
