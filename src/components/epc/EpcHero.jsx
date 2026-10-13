@@ -84,6 +84,11 @@ export default function EpcHero() {
                 Talk to NEXERA
               </MagneticButton>
             </span>
+            <span data-a="cta" className="inline-block">
+              <MagneticButton to="/how-it-works" variant="outline" arrow className="hover:-translate-y-0.5">
+                See how the partnership works
+              </MagneticButton>
+            </span>
           </div>
         </div>
 
