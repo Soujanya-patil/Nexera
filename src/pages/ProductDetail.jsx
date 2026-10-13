@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { PRODUCTS, SPEC_GROUPS, applicationLabel, getProduct, partnerOf } from "../data/products";
 import { SOLUTION_PAGES } from "../data/solutions";
+import { PARTNER_LINE } from "../data/partners";
 import PillLink from "../components/PillLink";
 import AnimatedTabs from "@/components/smoothui/animated-tabs";
 import MagneticButton from "../components/ui/MagneticButton";
@@ -279,8 +280,9 @@ function ProductView({ product }) {
                   </Fragment>
                 ))}
               </p>
+              {/* The summary, then where to get it: the partner pages' own line (data/partners.js). */}
               <p data-a="desc" className="mt-6 max-w-lg leading-relaxed text-ice/80">
-                {product.summary}
+                {product.summary} {PARTNER_LINE}
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <span data-a="cta" className="inline-block">

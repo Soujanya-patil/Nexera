@@ -150,20 +150,26 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
             </ol>
           </nav>
           <div className="mt-10 max-w-2xl">
-            <p data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
-              <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
-              {eyebrow}
-            </p>
-            <h1 className="mt-5 text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
-              <span className="line-mask">
-                <span data-a="line" className="block">
-                  {line1}
-                </span>
+            {/* The eyebrow is the heading's first line (it names the segment, the headline doesn't); it
+                looks as before. The h1 itself has no classes: leading/tracking set inherited variables
+                that would reach the eyebrow (and .solutions-page balances h1 text), so the headline's
+                styles sit on its own span. */}
+            <h1>
+              <span data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal [text-wrap:wrap]">
+                <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
+                {eyebrow}
               </span>{" "}
-              <span className="line-mask">
-                <span data-a="line" className="block">
-                  <span ref={accent} className="text-signal">
-                    {line2}
+              <span className="mt-5 block text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
+                <span className="line-mask">
+                  <span data-a="line" className="block">
+                    {line1}
+                  </span>
+                </span>{" "}
+                <span className="line-mask">
+                  <span data-a="line" className="block">
+                    <span ref={accent} className="text-signal">
+                      {line2}
+                    </span>
                   </span>
                 </span>
               </span>

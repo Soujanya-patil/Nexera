@@ -49,18 +49,23 @@ export default function EpcHero() {
         </div>
 
         <div className="relative flex min-h-[min(46rem,calc(100svh-4rem))] container-site flex-col justify-center py-20 lg:py-24">
-          <p data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
-            <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
-            Become a BESS Distributor
-          </p>
-          <h1 className="mt-5 text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-            <span data-a="line1" className="block">
-              Build More.
-            </span>
-            {/* Keeps the lines' words apart in the heading's text; between block lines it renders nothing. */}
-            {" "}
-            <span data-a="line2" className="block text-signal">
-              Store Smarter.
+          {/* The eyebrow is the heading's first line (it names what the page offers, the headline
+              doesn't); it looks as before. The h1 itself has no classes: leading/tracking set inherited
+              variables that would reach the eyebrow, so the headline's styles sit on its own span. */}
+          <h1>
+            <span data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
+              <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
+              Become a BESS Distributor
+            </span>{" "}
+            <span className="mt-5 block text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+              <span data-a="line1" className="block">
+                Build More.
+              </span>
+              {/* Keeps the lines' words apart in the heading's text; between block lines it renders nothing. */}
+              {" "}
+              <span data-a="line2" className="block text-signal">
+                Store Smarter.
+              </span>
             </span>
           </h1>
           <p data-a="desc" className="mt-6 max-w-lg text-base leading-relaxed text-ice/80 md:text-lg">

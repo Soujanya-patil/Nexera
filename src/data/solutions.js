@@ -10,8 +10,8 @@
 import { BatteryCharging, Expand, Moon, Smartphone, Sun, Unplug } from "lucide-react";
 
 /**
- * "Why Add Battery Storage to Your Home?" — shown on the Residential page and on the Midea partner
- * page (which has no catalogue products to list), so both say exactly the same.
+ * The benefits under "Why Add Solar Battery Storage to Your Home?" — shown on the Residential page
+ * and on the Midea partner page (which has no catalogue products to list), so both say exactly the same.
  */
 export const RESIDENTIAL_BENEFITS = [
   { icon: Sun, title: "Store the Solar You Generate", text: "Use excess solar energy generated during the day instead of sending it back to the grid." },
@@ -82,10 +82,10 @@ export const RESIDENTIAL_FAQ = [
   },
   {
     q: "Can I use solar power at night?",
-    a: "Yes, with a battery. Excess solar from the day is stored and used after sunset, so you draw less from the grid.",
+    a: "Yes, with a solar battery for your home. Excess solar from the day is stored and used after sunset, so you draw less from the grid.",
   },
   {
-    q: "Will a home battery keep my appliances running during a power cut?",
+    q: "Will home battery backup keep my appliances running during a power cut?",
     a: "A system with backup capability keeps selected essential loads such as lights, fans, refrigerators and Wi-Fi running. How long depends on battery size and connected load, which NEXERA helps you plan.",
   },
   {

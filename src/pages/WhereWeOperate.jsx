@@ -14,6 +14,7 @@ export default function WhereWeOperate() {
       <PageHeader
         eyebrow="Where We Operate"
         title="A growing footprint across India"
+        subtitle="NEXERA, an authorized distributor of TCL, Hithium, CLOU and Midea battery energy storage systems, is headquartered in Bangalore, with a regional office and technician training center in Kalaburagi, Karnataka."
       />
 
       <section className="bg-paper">

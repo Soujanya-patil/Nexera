@@ -140,7 +140,7 @@ export default function SolutionsResidential() {
         items={["Store Solar Energy", "Use Solar After Sunset", "Backup During Outages", "Smart Monitoring", "Built to Scale", "LFP Battery Technology"]}
       />
 
-      <Section id="why-home" push mark="Battery Storage" eyebrow="Why residential energy storage" title="Why Add Battery Storage to Your Home?">
+      <Section id="why-home" push mark="Battery Storage" eyebrow="Why residential energy storage" title="Why Add Solar Battery Storage to Your Home?">
         <FeatureGrid items={RESIDENTIAL_BENEFITS} />
       </Section>
 

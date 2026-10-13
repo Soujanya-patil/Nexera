@@ -60,7 +60,7 @@ export const OG_IMAGE_MIN_WIDTH = 600;
 const PAGES = [
   {
     path: "/",
-    h1: "Powering India’s Transition to Smart Energy Storage",
+    h1: "Battery Energy Storage Systems Powering India’s Transition to Smart Energy Storage",
     title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
     description:
       "Authorized distributor of TCL, Hithium, CLOU and Midea battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
@@ -77,7 +77,7 @@ const PAGES = [
   // whose text the page renders from the same data (data/solutions.js) — written as FAQPage data.
   {
     path: SOLUTION_PAGES.utility.path,
-    h1: "Powering the Grid of Tomorrow.",
+    h1: "Utility-Scale Energy Storage Powering the Grid of Tomorrow.",
     title: "Utility-Scale BESS & Battery Containers India | NEXERA",
     description:
       "Utility-scale BESS and containerised battery storage from Hithium and CLOU, 5 MWh-class and up, with sizing, engineering and commissioning by NEXERA.",
@@ -86,7 +86,7 @@ const PAGES = [
   },
   {
     path: SOLUTION_PAGES.ci.path,
-    h1: "Power Your Business. Smarter.",
+    h1: "Commercial & Industrial Energy Solutions Power Your Business. Smarter.",
     title: "Commercial & Industrial Battery Storage India | NEXERA",
     description:
       "Commercial battery storage systems for peak shaving, solar self-consumption and backup power. TCL, Hithium and CLOU C&I BESS with engineering by NEXERA.",
@@ -95,7 +95,7 @@ const PAGES = [
   },
   {
     path: SOLUTION_PAGES.residential.path,
-    h1: "Power Your Home. Smarter.",
+    h1: "Residential Energy Solutions Power Your Home. Smarter.",
     title: "Home Energy Storage & Solar Battery Backup | NEXERA",
     description:
       "Solar battery for home from Midea and TCL: store rooftop solar, keep essential loads running in power cuts and cut grid dependence. Supplied by NEXERA.",
@@ -148,7 +148,7 @@ const PAGES = [
   })),
   {
     path: "/become-a-partner",
-    h1: "Build More. Store Smarter.",
+    h1: "Become a BESS Distributor Build More. Store Smarter.",
     label: "Become a Partner",
     title: "Become a BESS Distributor in India | NEXERA",
     description:

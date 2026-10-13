@@ -142,50 +142,55 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
   return (
     <div ref={column} data-intro={intro} className="relative z-10 max-w-xl origin-left lg:max-w-none">
       <div className={`transition-opacity duration-700 ease-out ${subdued ? "lg:opacity-75" : "opacity-100"}`}>
-        <p data-a="eyebrow" className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
-          Battery Energy Storage Systems
-        </p>
-        <h1
-          style={depth(3)}
-          className="mt-5 text-[clamp(2.1rem,3.9vw,3.2rem)] font-semibold leading-[1.1] tracking-tight [--depth:0.5] xl:[--depth:1]"
-        >
-          {LINES.map((line, i) => {
-            // The space sits between the word spans, not inside them: trailing whitespace inside an
-            // inline-block collapses, which would run the words together while they animate.
-            const words = line.words.map((w, j) => (
-              <Fragment key={w}>
-                {j > 0 && " "}
-                {/* inline-block only while the words animate; plain inline afterwards so the
-                    accent's background-clipped sheen covers them as ordinary text. */}
-                <span data-word className={intro === "done" ? undefined : "inline-block"}>
-                  {w}
-                </span>
-              </Fragment>
-            ));
-            if (!line.accent) {
-              // The trailing space keeps this line's last word apart from the next line's first in
-              // the heading's text (what crawlers and screen readers read); at the end of a block
-              // line it renders nothing.
+        {/* The eyebrow is the heading's first line (it names the page's subject, the headline doesn't);
+            it looks as before. The h1 itself has no classes: leading/tracking set inherited variables
+            that would reach the eyebrow, so the headline's styles sit on its own span. */}
+        <h1>
+          <span data-a="eyebrow" className="block text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
+            Battery Energy Storage Systems
+          </span>{" "}
+          <span
+            style={depth(3)}
+            className="mt-5 block text-[clamp(2.1rem,3.9vw,3.2rem)] font-semibold leading-[1.1] tracking-tight [--depth:0.5] xl:[--depth:1]"
+          >
+            {LINES.map((line, i) => {
+              // The space sits between the word spans, not inside them: trailing whitespace inside an
+              // inline-block collapses, which would run the words together while they animate.
+              const words = line.words.map((w, j) => (
+                <Fragment key={w}>
+                  {j > 0 && " "}
+                  {/* inline-block only while the words animate; plain inline afterwards so the
+                      accent's background-clipped sheen covers them as ordinary text. */}
+                  <span data-word className={intro === "done" ? undefined : "inline-block"}>
+                    {w}
+                  </span>
+                </Fragment>
+              ));
+              if (!line.accent) {
+                // The trailing space keeps this line's last word apart from the next line's first in
+                // the heading's text (what crawlers and screen readers read); at the end of a block
+                // line it renders nothing.
+                return (
+                  <span key={i} data-line={i} className="block">
+                    {words}{" "}
+                  </span>
+                );
+              }
               return (
-                <span key={i} data-line={i} className="block">
-                  {words}{" "}
+                // Extra depth on the focal line (its transform), hover lift on `translate` — separate
+                // properties, so the two never override each other.
+                <span key={i} data-line={i} className="block" style={depth(2)}>
+                  <span
+                    className={`inline-block text-signal transition-[filter,translate] duration-500 ease-out hover:-translate-y-0.5 hover:brightness-110 ${
+                      intro === "done" ? "hero-accent-sheen" : ""
+                    }`}
+                  >
+                    {words}
+                  </span>
                 </span>
               );
-            }
-            return (
-              // Extra depth on the focal line (its transform), hover lift on `translate` — separate
-              // properties, so the two never override each other.
-              <span key={i} data-line={i} className="block" style={depth(2)}>
-                <span
-                  className={`inline-block text-signal transition-[filter,translate] duration-500 ease-out hover:-translate-y-0.5 hover:brightness-110 ${
-                    intro === "done" ? "hero-accent-sheen" : ""
-                  }`}
-                >
-                  {words}
-                </span>
-              </span>
-            );
-          })}
+            })}
+          </span>
         </h1>
         <p data-a="para" className="mt-6 max-w-md text-base leading-relaxed text-ice/80">
           Bridging world-class BESS technology with India&rsquo;s solar ecosystem through distribution, design,
