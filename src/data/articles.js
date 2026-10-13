@@ -37,6 +37,18 @@ export const LFP_NMC_GLANCE = {
   ],
 };
 
+/** "AC-coupled vs DC-coupled at a glance" — the table, and the words its scene shows (GlanceRows). */
+export const AC_DC_GLANCE = {
+  cols: ["", "DC-coupled", "AC-coupled"],
+  rows: [
+    ["Where the battery connects", "DC side, sharing a hybrid inverter with solar", "AC side, with its own inverter (PCS)"],
+    ["Conversions when storing solar", "None between DC and AC", "Two (DC → AC → DC)"],
+    ["Adding to an existing solar plant", "Usually means changing the inverter", "Added alongside the existing system"],
+    ["Sizing", "Battery and solar sized together", "Battery sized independently"],
+    ["Typical fit", "New solar + storage projects", "Retrofits and larger commercial sites"],
+  ],
+};
+
 /**
  * Draft articles (`draft: true`): written and kept here, but not published. They exist only in
  * development (`npm run dev`), where each can be reviewed at its own URL; a production build leaves
@@ -222,7 +234,173 @@ const LFP_VS_NMC = {
     { label: "BESS products", to: "/products" },
   ],
 };
-const DRAFTS = import.meta.env.DEV ? [LFP_VS_NMC] : [];
+const AC_VS_DC = {
+  slug: "ac-vs-dc-coupled",
+  // Waiting for the director's review: not published (see DRAFTS above ARTICLES). Dates: set at publish.
+  draft: true,
+  title: "AC-Coupled vs DC-Coupled Battery Storage | NEXERA",
+  description:
+    "AC-coupled vs DC-coupled battery storage explained: how each connects to solar, efficiency, retrofits, hybrid inverters and which suits your project.",
+  shortTitle: "AC vs DC Coupled",
+  eyebrow: "Guide",
+  h1: "AC-Coupled vs DC-Coupled Battery Storage: Which Fits Your Project?",
+  intro: "Two ways to connect a battery to a solar system, and how to choose between them for a new or existing plant.",
+  datePublished: "2026-10-13T12:00:00+05:30",
+  dateModified: "2026-10-13T12:00:00+05:30",
+  sections: [
+    {
+      id: "what-is-coupling",
+      visual: "coupling",
+      h2: 'What does "coupling" mean?',
+      blocks: [
+        {
+          p: [
+            "Solar panels produce DC (direct current) electricity. Batteries also store energy as DC. But homes, factories and the grid run on AC (alternating current). ",
+            { b: '"Coupling" describes where the battery connects to the system: on the DC side, before the inverter, or on the AC side, after it.' },
+            " That choice affects efficiency, cost and how easily storage can be added.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "dc-coupled",
+      visual: "dc-coupled",
+      h2: "What is DC-coupled battery storage?",
+      blocks: [
+        {
+          p: [
+            "In a DC-coupled system, the solar panels and the battery connect on the DC side and share one inverter, usually a ",
+            { b: "hybrid inverter" },
+            ". Solar power can charge the battery directly as DC, without first being converted to AC.",
+          ],
+        },
+        {
+          ul: [
+            "Fewer conversions between DC and AC, so less energy is lost when storing solar power.",
+            "One inverter manages both solar and battery.",
+            "Best planned from the start, because the inverter must be designed for both.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "ac-coupled",
+      visual: "ac-coupled",
+      h2: "What is AC-coupled battery storage?",
+      blocks: [
+        {
+          p: "In an AC-coupled system, the battery has its own inverter (a Power Conversion System, or PCS) and connects on the AC side, alongside the existing solar inverter. Solar power is converted to AC first, then converted back to DC to charge the battery.",
+        },
+        {
+          ul: [
+            "Two extra conversion steps when storing solar power: DC to AC, then back to DC.",
+            ["The battery system is independent of the solar inverter, so it can be ", { b: "added to an existing solar plant" }, " without replacing the solar inverter."],
+            "The battery can also charge from the grid, and its size can be chosen separately from the solar system.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "at-a-glance",
+      visual: "glance-acdc",
+      h2: "AC-coupled vs DC-coupled at a glance",
+      blocks: [{ table: AC_DC_GLANCE }],
+    },
+    {
+      id: "existing-plant",
+      visual: "existing-plant",
+      h2: "Which is better for an existing solar plant?",
+      blocks: [
+        {
+          p: [
+            "For a plant that is already running, ",
+            { b: "AC-coupled storage is usually the simpler choice" },
+            ". The existing solar inverter stays in place, and the battery system connects on the AC side with its own PCS. This is why many commercial and industrial sites add storage this way.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "new-project",
+      visual: "dc-coupled",
+      h2: "Which is better for a new solar + storage project?",
+      blocks: [
+        {
+          p: [
+            "For a new project designed from day one, ",
+            { b: "DC-coupled storage with a hybrid inverter" },
+            " can store solar energy with fewer conversions, and one inverter handles both jobs. AC-coupled designs remain a good option when the battery needs to be sized or expanded separately, or charged from the grid.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "hybrid-system",
+      visual: "hybrid-system",
+      h2: "What is a hybrid energy storage system?",
+      blocks: [
+        {
+          p: [
+            "A hybrid energy storage system usually means ",
+            { b: "solar, a battery and a hybrid inverter working together" },
+            ": the inverter manages solar generation, battery charging and discharging, and the connection to the grid and your loads. Hybrid systems are a common form of DC-coupled storage, especially for homes.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "nexera-fit",
+      visual: "coupling",
+      h2: "Both options in NEXERA's C&I range",
+      blocks: [
+        {
+          p: [
+            "NEXERA's C&I range includes both approaches. The ",
+            { a: "Hithium ∞BLOCK C&I", to: "/products/hithium-block-261" },
+            " cabinet has a built-in 125 kW PCS and a 400 V AC connection, so it connects on the AC side. The ",
+            { a: "TCL BlueArk X5", to: "/products/tcl-blueark-x5" },
+            " is an all-in-one, DC-coupled system for small and medium C&I sites.",
+          ],
+        },
+        {
+          actions: [
+            { label: "Talk to an expert", to: "/#contact?interest=ci", primary: true },
+            { label: "C&I battery storage", to: "/solutions/commercial-industrial" },
+          ],
+        },
+      ],
+    },
+  ],
+  faqs: [
+    {
+      q: "What is the difference between AC-coupled and DC-coupled batteries?",
+      a: "It is where the battery connects. A DC-coupled battery shares a hybrid inverter with the solar panels on the DC side. An AC-coupled battery has its own inverter and connects on the AC side.",
+    },
+    {
+      q: "Can I add a battery to my existing solar plant?",
+      a: "Usually, yes. AC-coupled storage connects alongside the existing solar inverter, so the solar system can stay as it is.",
+    },
+    {
+      q: "Is DC-coupled storage more efficient?",
+      a: "When storing solar energy, DC-coupled storage involves fewer conversions between DC and AC, so less energy is lost in conversion.",
+    },
+    {
+      q: "What is a hybrid inverter?",
+      a: "A hybrid inverter manages both solar panels and a battery in one unit, converting power between DC and AC for your loads and the grid.",
+    },
+    {
+      q: "Which coupling is better for a factory or commercial site?",
+      a: "It depends on whether solar is already installed and how the battery will be used. AC-coupled storage is common for existing sites. Our engineers can help you choose.",
+    },
+  ],
+  related: [
+    { label: "What Is a BESS?", to: "/blog/what-is-bess" },
+    { label: "C&I battery storage", to: "/solutions/commercial-industrial" },
+    { label: "Home battery storage", to: "/solutions/residential" },
+    { label: "BESS products", to: "/products" },
+  ],
+};
+const DRAFTS = import.meta.env.DEV ? [LFP_VS_NMC, AC_VS_DC] : [];
 
 const ALL = [
   {
@@ -434,6 +612,8 @@ const ALL = [
 
 /** The published articles: the ones /blog, the Resources strip, the sitemap and the routes list. */
 export const ARTICLES = ALL.filter((a) => !a.draft);
+/** The drafts (development only; none in a production build). */
+export const DRAFT_ARTICLES = ALL.filter((a) => a.draft);
 
 /** Plain text of a Rich value (string, or strings and { b } / { a } pieces). */
 export function richText(r) {

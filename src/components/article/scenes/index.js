@@ -12,11 +12,21 @@ import WhyLfp from "./WhyLfp";
 import CycleLoop from "./CycleLoop";
 import SafetyLayers from "./SafetyLayers";
 import NexeraLfp from "./NexeraLfp";
+import Coupling from "./Coupling";
+import CouplingFlow from "./CouplingFlow";
+import ExistingPlant from "./ExistingPlant";
+import HybridSystem from "./HybridSystem";
+import { Building2, Plug, Repeat, Ruler, Wrench } from "lucide-react";
+import { AC_DC_GLANCE } from "../../../data/articles";
 
 // The two-cells scene, focused on LFP, on NMC, or on both (the lithium-ion family).
 const CellsLfp = (props) => createElement(CellCompare, { ...props, focus: "lfp" });
 const CellsNmc = (props) => createElement(CellCompare, { ...props, focus: "nmc" });
 const CellsFamily = (props) => createElement(CellCompare, { ...props, focus: "family" });
+// AC vs DC coupled: the two flows, and the at-a-glance table with an icon per row.
+const DcCoupled = (props) => createElement(CouplingFlow, { ...props, kind: "dc" });
+const AcCoupled = (props) => createElement(CouplingFlow, { ...props, kind: "ac" });
+const GlanceAcDc = (props) => createElement(GlanceRows, { ...props, table: AC_DC_GLANCE, icons: [Plug, Repeat, Wrench, Ruler, Building2], names: ["DC-coupled", "AC-coupled"] });
 
 /**
  * Article scenes by `visual` id (data/articles.js sections). `inline` is the height each one keeps
@@ -32,7 +42,8 @@ export const SCENES = {
   "scale-morph": { Scene: ScaleMorph, inline: 260 },
   "day-dial": { Scene: DayDial, inline: 300 },
   "choose-chips": { Scene: ChooseChips, inline: 300 },
-  // LFP vs NMC — a draft (data/articles.js): its scenes exist in development only, like the article.
+  // Draft articles' scenes (data/articles.js): in development only, like the articles themselves.
+  // LFP vs NMC.
   ...(import.meta.env.DEV
     ? {
         "cells-lfp": { Scene: CellsLfp, inline: 260 },
@@ -43,6 +54,13 @@ export const SCENES = {
         "cycle-loop": { Scene: CycleLoop, inline: 280 },
         "safety-layers": { Scene: SafetyLayers, inline: 280 },
         "nexera-lfp": { Scene: NexeraLfp, inline: 240 },
+        // AC vs DC coupled — also a draft.
+        coupling: { Scene: Coupling, inline: 260 },
+        "dc-coupled": { Scene: DcCoupled, inline: 280 },
+        "ac-coupled": { Scene: AcCoupled, inline: 280 },
+        "glance-acdc": { Scene: GlanceAcDc, inline: 340 },
+        "existing-plant": { Scene: ExistingPlant, inline: 260 },
+        "hybrid-system": { Scene: HybridSystem, inline: 280 },
       }
     : {}),
 };

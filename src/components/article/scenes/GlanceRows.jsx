@@ -9,19 +9,20 @@ const ICONS = [Thermometer, Repeat, Box, Zap, FlaskConical, Building2];
 const lead = (v) => v.split(/[:;]/)[0];
 
 /**
- * "LFP vs NMC at a glance": the table's six rows, each with a small icon, lit one at a time as its
- * row is read (phones: they take turns while the scene is in view); below, that row's LFP and NMC
- * values in the table's own words (their lead words only — no figures beyond the table's). Arrival:
- * the rows slide in. Final state: every row shown, the first row's values below.
+ * An article's "at a glance" table (LFP vs NMC by default; `table`, `icons` and `names` for another):
+ * its rows, each with a small icon, lit one at a time as its row is read (phones: they take turns
+ * while the scene is in view); below, that row's two values in the table's own words (their lead
+ * words only — no figures beyond the table's). Arrival: the rows slide in. Final state: every row
+ * shown, the first row's values below.
  */
-export default function GlanceRows({ active, motion, mode, step }) {
+export default function GlanceRows({ active, motion, mode, step, table = LFP_NMC_GLANCE, icons = ICONS, names = ["LFP", "NMC"] }) {
   const root = useRef(null);
   const [tour, setTour] = useState(-1);
   useEffect(() => {
     if (mode !== "inline" || !motion || !active) return;
     let i = 0;
     setTour(0);
-    const t = setInterval(() => setTour((i = (i + 1) % LFP_NMC_GLANCE.rows.length)), 1800);
+    const t = setInterval(() => setTour((i = (i + 1) % table.rows.length)), 1800);
     return () => clearInterval(t);
   }, [mode, motion, active]);
 
@@ -35,15 +36,15 @@ export default function GlanceRows({ active, motion, mode, step }) {
   const lit = mode === "inline" ? tour : step;
   const any = motion && lit >= 0;
   const shown = any ? lit : 0;
-  const [, lfp, nmc] = LFP_NMC_GLANCE.rows[shown];
+  const [, lfp, nmc] = table.rows[shown];
   const compact = mode === "inline";
 
   return (
     <div ref={root} className={`flex h-full flex-col justify-center ${compact ? "gap-3 px-4" : "gap-5 px-7"}`}>
-      <div role="img" aria-label={`LFP vs NMC, row by row: ${LFP_NMC_GLANCE.rows.map((r) => r[0]).join(", ")}. Shown: ${LFP_NMC_GLANCE.rows[shown][0]}, LFP ${lead(lfp)}, NMC ${lead(nmc)}.`}>
+      <div role="img" aria-label={`${names[0]} vs ${names[1]}, row by row: ${table.rows.map((r) => r[0]).join(", ")}. Shown: ${table.rows[shown][0]}, ${names[0]} ${lead(lfp)}, ${names[1]} ${lead(nmc)}.`}>
         <ul aria-hidden="true" className={`grid ${compact ? "grid-cols-2 gap-1.5" : "gap-1.5"}`}>
-          {LFP_NMC_GLANCE.rows.map(([label], i) => {
-            const Icon = ICONS[i];
+          {table.rows.map(([label], i) => {
+            const Icon = icons[i];
             const on = any && i === lit;
             return (
               <li
@@ -61,8 +62,8 @@ export default function GlanceRows({ active, motion, mode, step }) {
         </ul>
         <div aria-hidden="true" className={`grid grid-cols-2 gap-2.5 ${compact ? "mt-3" : "mt-5"}`}>
           {[
-            ["LFP", lfp],
-            ["NMC", nmc],
+            [names[0], lfp],
+            [names[1], nmc],
           ].map(([name, v]) => (
             <div key={name} data-pair className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-signal">{name}</p>

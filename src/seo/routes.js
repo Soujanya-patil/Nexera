@@ -25,7 +25,7 @@ import { PRODUCTS, partnerOf, productLabel, applicationLabel } from "../data/pro
 import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/solutions";
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 import { partnerFaq } from "../data/partners";
-import { ARTICLES } from "../data/articles";
+import { ARTICLES, DRAFT_ARTICLES } from "../data/articles";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -277,7 +277,11 @@ export const ROUTES = [...PAGES.slice(0, afterProducts), ...PRODUCTS.map(product
  * sitemap or ROUTES, never indexed: served with `noindex` and no canonical, description or JSON-LD.
  * /home-v2 carries the current Home title until it replaces Home.
  */
-export const PREVIEW_ROUTES = [{ path: "/home-v2", title: PAGES[0].title, noindex: true }];
+export const PREVIEW_ROUTES = [
+  { path: "/home-v2", title: PAGES[0].title, noindex: true },
+  // Draft articles (data/articles.js), in development only: their own title and noindex for review.
+  ...DRAFT_ARTICLES.map((a) => ({ path: `/blog/${a.slug}`, title: a.title, noindex: true })),
+];
 
 /** The route for a pathname ("/about" or "/about/"), or undefined. */
 export function getRoute(pathname) {
