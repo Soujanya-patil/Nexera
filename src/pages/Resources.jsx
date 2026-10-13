@@ -1,15 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Link, useNavigationType } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import { ARTICLES } from "../data/articles";
-import { coverBack, returningTo } from "../components/article/curtain";
+import { useEffect, useRef, useState } from "react";
 import { useArticleMotion } from "../components/article/useArticleMotion";
 import { useArticleReveal } from "../components/article/useArticleReveal";
 import ArticleFaq from "../components/article/ArticleFaq";
 import ArticleClosingBand from "../components/article/ArticleClosingBand";
 import ResourcesHero from "../components/resources/ResourcesHero";
 import FilterBar from "../components/resources/FilterBar";
-import GuidesBento from "../components/resources/GuidesBento";
 import DatasheetCards from "../components/resources/DatasheetCards";
 import InsightCards from "../components/resources/InsightCards";
 import { useWanted } from "../components/resources/useWanted";
@@ -38,13 +33,10 @@ const articles = [
 const TITLE = "Datasheets, answers, and the latest from Nexera";
 // The hub's sections, in page order, and the tone the page shifts to while each is read.
 const SECTIONS = [
-  { id: "guides", label: "Blog", tone: "white" },
   { id: "datasheets", label: "Datasheets", tone: "grey" },
   { id: "faqs", label: "FAQs", tone: "white" },
   { id: "insights", label: "Insights", tone: "grey" },
 ];
-/** How many of the latest articles "From the blog" shows (the Blog has them all). */
-const LATEST = 3;
 /** "Guide" / "Guides" for a count. */
 const noun = (n, one) => (n === 1 ? one : `${one}s`);
 
@@ -96,9 +88,6 @@ function Heading({ id, children }) {
 /**
  * /resources — the Knowledge Hub. A dark hero (energy grid, the h1, count chips from the data), a
  * sticky section bar (FilterBar: glides to a section, follows the one being read), then:
- *   From the blog        the latest articles (/blog/…) as on the Blog: the newest as a featured card
- *                        with its live scene and a "Start here" panel, the next ones as cards
- *                        (GuidesBento), and "View all articles" -> /blog
  *   Datasheets           product cards, each asking for its document on the contact form (DatasheetCards)
  *   FAQs                 the article's animated accordion (ArticleFaq), same words
  *   News & Insights      numbered cards — "Coming soon" while a title has no page (InsightCards)
@@ -107,7 +96,7 @@ function Heading({ id, children }) {
  * content fades up once (useArticleReveal, once the page's motion has loaded, below the screen only).
  *
  * Every word is in the pre-rendered page and readable without JavaScript; reduced motion is static.
- * Back from a guide opened here: the curtain shrinks back into its card.
+ * The articles live on the Blog (/blog), reached from the header and footer.
  */
 export default function Resources() {
   const page = useRef(null);
@@ -116,20 +105,9 @@ export default function Resources() {
   useArticleReveal(page, motion);
   const active = useSectionSpy(SECTIONS.map((s) => s.id));
 
-  // Back from an article opened from a Guides card: the curtain shrinks back into that card.
-  const navType = useNavigationType();
-  useLayoutEffect(() => {
-    if (navType !== "POP") return;
-    const back = ARTICLES.find((a) => returningTo(a.slug));
-    const card = back && document.querySelector(`[data-slug="${back.slug}"]`);
-    if (card) coverBack(card);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // The count chips, from the page's own data: guides, each kind of download, FAQs.
+  // The count chips, from the page's own data: each kind of download, FAQs.
   const kinds = datasheets.map((d) => d.kind);
   const chips = [
-    { n: ARTICLES.length, label: noun(ARTICLES.length, "Guide") },
     ...[...new Set(kinds)].map((k) => {
       const n = kinds.filter((x) => x === k).length;
       return { n, label: noun(n, k) };
@@ -144,19 +122,6 @@ export default function Resources() {
       <FilterBar active={active} items={[{ id: "all", label: "All", target: "hub" }, ...SECTIONS.map((s) => ({ id: s.id, label: s.label, target: s.id }))]} />
 
       <div data-tone={tone} className="resources-body">
-        <section id="guides" aria-labelledby="guides-title" className="scroll-mt-32 py-14 lg:py-20">
-          <div className="container-site">
-            <Heading id="guides-title">From the blog</Heading>
-            <GuidesBento articles={[...ARTICLES].sort((x, y) => y.datePublished.localeCompare(x.datePublished)).slice(0, LATEST)} motion={motion} />
-            <p data-rv="text" className="mt-8">
-              <Link to="/blog" className="article-link group/all inline-flex items-center gap-1.5 text-base font-semibold text-forest">
-                <span>View all articles</span>
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/all:translate-x-1" />
-              </Link>
-            </p>
-          </div>
-        </section>
-
         <section id="datasheets" aria-labelledby="datasheets-title" className="scroll-mt-32 py-14 lg:py-20">
           <div className="container-site">
             <Heading id="datasheets-title">Datasheets &amp; Brochures</Heading>
