@@ -37,7 +37,8 @@ export default function Enquire() {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form method="post" onSubmit={handleSubmit} className="space-y-5">
+              <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label="Name" name="name" required />
                 <Field label="Company" name="company" />

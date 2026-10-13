@@ -2162,3 +2162,89 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     animation-delay: 1.8s;
   }
 }
+
+/* ---- App fallback (components/StartupBoundary: <html data-app-error>) and no JavaScript ------------
+   The page as served, without the app. Phones and tablets: the header's links — normally behind the
+   menu button, which needs JavaScript — show in wrapped rows under the logo (44px targets), the
+   Contact button shows beside the logo, the menu button is hidden, and the taller header scrolls
+   away instead of staying stuck to the top. A form that can't send is dimmed and carries a note
+   (.app-fallback-note, added by StartupBoundary) in its own text colour. */
+@media (max-width: 1023.98px) {
+  html[data-app-error] [data-nav-toggle] {
+    display: none;
+  }
+  html[data-app-error] header:has([data-nav-links]) {
+    position: static;
+  }
+  html[data-app-error] header > nav {
+    height: auto;
+    flex-wrap: wrap;
+    padding-block: 0.625rem;
+  }
+  html[data-app-error] [data-nav-cta] {
+    display: inline-block;
+  }
+  html[data-app-error] [data-nav-links] {
+    order: 1;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0 1.25rem;
+  }
+  html[data-app-error] :is([data-nav-links], [data-nav-cta]) a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  html[data-app-error] [data-nav-links] a::after {
+    display: none;
+  }
+}
+@media (max-width: 1023.98px) and (scripting: none) {
+  [data-nav-toggle] {
+    display: none;
+  }
+  header:has([data-nav-links]) {
+    position: static;
+  }
+  header > nav {
+    height: auto;
+    flex-wrap: wrap;
+    padding-block: 0.625rem;
+  }
+  [data-nav-cta] {
+    display: inline-block;
+  }
+  [data-nav-links] {
+    order: 1;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0 1.25rem;
+  }
+  :is([data-nav-links], [data-nav-cta]) a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  [data-nav-links] a::after {
+    display: none;
+  }
+}
+/* The switched-off forms look it (StartupBoundary disables their controls). */
+html[data-app-error] form :disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.app-fallback-note {
+  border: 1px solid currentColor;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.app-fallback-note a {
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

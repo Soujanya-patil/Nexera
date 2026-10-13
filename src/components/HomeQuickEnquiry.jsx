@@ -167,6 +167,7 @@ export default function HomeQuickEnquiry() {
       />
       <div ref={content} className="qe-reveal relative container-site grid py-6 lg:py-3" style={first ? undefined : { "--qe-delay": "1.75s" }}>
         <form
+          method="post"
           ref={form}
           onSubmit={submit}
           noValidate
@@ -180,6 +181,7 @@ export default function HomeQuickEnquiry() {
             done ? "invisible opacity-0 transition-[opacity,visibility]" : "visible opacity-100 transition-opacity"
           }`}
         >
+          <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
           <div className="col-span-2 lg:col-span-1 lg:flex lg:h-[52px] lg:flex-col lg:justify-center">
             <p id={`${uid}-title`} className="text-base font-semibold leading-tight text-white">
               Get a call back

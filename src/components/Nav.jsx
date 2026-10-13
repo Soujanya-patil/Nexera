@@ -91,7 +91,9 @@ export default function Nav() {
             Power tomorrow
           </p>
         </div>
-        <ul className="hidden items-center gap-8 lg:flex">
+        {/* data-nav-links / -cta / -toggle: without JavaScript (or the app stopped), phones show these
+            links and the Contact button, and hide the menu button (index.css, "App fallback"). */}
+        <ul data-nav-links className="hidden items-center gap-8 lg:flex">
           {links.map((link) => (
             <li key={link.label}>
               <Magnetic>
@@ -102,7 +104,7 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <span className="hidden lg:inline-block">
+        <span data-nav-cta className="hidden lg:inline-block">
           <Magnetic max={5}>
             <Link
               to="/contact"
@@ -118,6 +120,7 @@ export default function Nav() {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
+          data-nav-toggle
           aria-label={open ? "Close menu" : "Open menu"}
           className="inline-flex h-9 w-9 flex-col items-center justify-center gap-1.5 lg:hidden"
         >

@@ -83,7 +83,8 @@ export default function PartnerForm() {
               <p className="mt-1.5 text-sm text-graphite">Our team will review your details and get back to you.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form method="post" onSubmit={handleSubmit} className="space-y-5">
+              <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
               <Select label="Enquiry type" name="enquiryType" defaultValue={type} options={ENQUIRY_TYPES.map((t) => ({ value: t, label: t }))} />
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label="Name" name="name" autoComplete="name" required />

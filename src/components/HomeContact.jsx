@@ -245,7 +245,8 @@ export default function HomeContact() {
                 </button>
               </div>
             ) : (
-              <form ref={form} onSubmit={submit} onFocusCapture={begin} noValidate className="space-y-5">
+              <form method="post" ref={form} onSubmit={submit} onFocusCapture={begin} noValidate className="space-y-5">
+                <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
                 <div className="grid gap-5 sm:grid-cols-2">
                   {field("name", "Name", { required: true, autoComplete: "name" })}
                   {field("mobile", "Mobile number", { type: "tel", required: true, autoComplete: "tel", inputMode: "tel" })}

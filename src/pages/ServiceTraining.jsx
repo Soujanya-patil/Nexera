@@ -106,7 +106,8 @@ function FileComplaint() {
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form method="post" onSubmit={handleSubmit} className="space-y-4">
+          <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
           <p className="text-sm text-graphite">Tracked by email.</p>
           <Field label="Name" name="name" required />
           <Field label="Number" name="number" />

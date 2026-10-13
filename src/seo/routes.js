@@ -17,6 +17,9 @@
  *
  * `label`: the page's short name (as in the nav) for its breadcrumb in structured data, where the
  * title is written for search results; without one, the breadcrumb uses the title minus " | NEXERA".
+ *
+ * `h1`: the page's one heading, as it renders. The build checks each pre-rendered page has exactly this
+ * one <h1> (scripts/seo-pages.mjs), so a page that stops rendering its heading fails the build.
  */
 import { PRODUCTS, partnerOf, productLabel, applicationLabel } from "../data/products";
 import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/solutions";
@@ -57,12 +60,14 @@ export const OG_IMAGE_MIN_WIDTH = 600;
 const PAGES = [
   {
     path: "/",
+    h1: "Powering India’s Transition to Smart Energy Storage",
     title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
     description:
       "Authorized distributor of TCL, Hithium, CLOU and Midea battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
   },
   {
     path: "/solutions",
+    h1: "Storage built for how you'll actually use it",
     label: "Solutions",
     title: "Energy Storage Solutions: Home, C&I & Utility | NEXERA",
     description:
@@ -72,6 +77,7 @@ const PAGES = [
   // whose text the page renders from the same data (data/solutions.js) — written as FAQPage data.
   {
     path: SOLUTION_PAGES.utility.path,
+    h1: "Powering the Grid of Tomorrow.",
     title: "Utility-Scale BESS & Battery Containers India | NEXERA",
     description:
       "Utility-scale BESS and containerised battery storage from Hithium and CLOU, 5 MWh-class and up, with sizing, engineering and commissioning by NEXERA.",
@@ -80,6 +86,7 @@ const PAGES = [
   },
   {
     path: SOLUTION_PAGES.ci.path,
+    h1: "Power Your Business. Smarter.",
     title: "Commercial & Industrial Battery Storage India | NEXERA",
     description:
       "Commercial battery storage systems for peak shaving, solar self-consumption and backup power. TCL, Hithium and CLOU C&I BESS with engineering by NEXERA.",
@@ -88,6 +95,7 @@ const PAGES = [
   },
   {
     path: SOLUTION_PAGES.residential.path,
+    h1: "Power Your Home. Smarter.",
     title: "Home Energy Storage & Solar Battery Backup | NEXERA",
     description:
       "Solar battery for home from Midea and TCL: store rooftop solar, keep essential loads running in power cuts and cut grid dependence. Supplied by NEXERA.",
@@ -96,6 +104,7 @@ const PAGES = [
   },
   {
     path: "/products",
+    h1: "Energy Storage, Built to Scale.",
     label: "Products",
     title: "BESS Products — TCL, Hithium & CLOU Energy Storage | NEXERA",
     description:
@@ -130,6 +139,7 @@ const PAGES = [
     ],
   ].map(([id, name, title, description]) => ({
     path: `/partners/${id}`,
+    h1: `${name} energy storage in India`,
     label: name,
     title,
     description,
@@ -138,6 +148,7 @@ const PAGES = [
   })),
   {
     path: "/become-a-partner",
+    h1: "Build More. Store Smarter.",
     label: "Become a Partner",
     title: "Become a BESS Distributor in India | NEXERA",
     description:
@@ -145,18 +156,21 @@ const PAGES = [
   },
   {
     path: "/about",
+    h1: "Built by an EPC, for EPCs",
     title: "About Us — Built by an EPC, for EPCs | NEXERA",
     description:
       "NEXERA is an authorized TCL, Hithium, CLOU and Midea partner built by EPCs, with design and commissioning support and a Kalaburagi training center.",
   },
   {
     path: "/how-it-works",
+    h1: "From First Call to Fully Operational Distributor",
     title: "How It Works — The Distributor Journey | NEXERA",
     description:
       "From first call to fully operational distributor: market review, product training, sizing and commissioning support, then after-sales and warranty.",
   },
   {
     path: "/service-training",
+    h1: "We don't just supply the battery. We train the hands that install it.",
     label: "Service & Training",
     title: "BESS Installation, Commissioning & Training | NEXERA",
     description:
@@ -165,6 +179,7 @@ const PAGES = [
   },
   {
     path: "/where-we-operate",
+    h1: "A growing footprint across India",
     label: "Where We Operate",
     title: "Battery Energy Storage in Bangalore & India | NEXERA",
     description:
@@ -172,6 +187,7 @@ const PAGES = [
   },
   {
     path: "/resources",
+    h1: "Datasheets, answers, and the latest from Nexera",
     label: "Resources",
     title: "BESS Guides, Datasheets & FAQs | NEXERA",
     description:
@@ -181,6 +197,7 @@ const PAGES = [
   // Article structured data, and the article's FAQ as FAQPage data.
   ...ARTICLES.map((a) => ({
     path: `/resources/${a.slug}`,
+    h1: a.h1,
     title: a.title,
     description: a.description,
     crumbs: [["Resources", "/resources"], [a.shortTitle, `/resources/${a.slug}`]],
@@ -189,6 +206,7 @@ const PAGES = [
   })),
   {
     path: "/contact",
+    h1: "Talk to Nexera",
     title: "Contact Us — Energy Storage Enquiries | NEXERA",
     description:
       "Talk to NEXERA about battery energy storage for your home, business or project. Tell us what you need and we'll route it to the right team.",
@@ -211,6 +229,7 @@ function productPage(p) {
   const available = " Available in India through NEXERA.";
   return {
     path: `/products/${p.id}`,
+    h1: p.name,
     title: firstFitting(
       [`${label} — ${shortType}${TITLE_SUFFIX}`, `${label} — ${apps} Energy Storage${TITLE_SUFFIX}`, `${label}${TITLE_SUFFIX}`],
       TITLE_MAX

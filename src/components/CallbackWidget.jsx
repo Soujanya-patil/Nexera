@@ -449,7 +449,8 @@ export default function CallbackWidget() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={submit} noValidate className="relative mt-4 space-y-3.5">
+              <form method="post" onSubmit={submit} noValidate className="relative mt-4 space-y-3.5">
+                <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
                 <div>
                   <label htmlFor={`${uid}-name`} className={label}>
                     Name<span className="text-signal"> *</span>

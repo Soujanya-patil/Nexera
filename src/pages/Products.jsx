@@ -11,6 +11,7 @@ import { depth, usePointerDepth } from "../lib/pointerDepth";
 import { useIntro } from "../lib/intro";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { getLenis } from "../lib/lenis";
+import { isFirstLoad } from "../lib/firstLoad";
 import { ProductDetailRoute } from "./lazy";
 
 const APP_OPTIONS = [{ id: "all", label: "All" }, ...APPLICATIONS];
@@ -218,8 +219,13 @@ function CategoryHeading({ app, partner }) {
  */
 export default function Products() {
   const [params, setParams] = useSearchParams();
-  const app = APP_OPTIONS.some((o) => o.id === params.get("app")) ? params.get("app") : "all";
-  const partner = PARTNERS.some((p) => p.id === params.get("partner")) ? params.get("partner") : "all";
+  // /products?app=… and ?partner=… are served the pre-rendered "all products" page (canonical
+  // /products): the first render on a direct load matches it, then the URL's filters apply before the
+  // first paint after hydration. Reached by client-side navigation, they apply from the first render.
+  const [urlFilters, setUrlFilters] = useState(() => !isFirstLoad());
+  useLayoutEffect(() => setUrlFilters(true), []);
+  const app = urlFilters && APP_OPTIONS.some((o) => o.id === params.get("app")) ? params.get("app") : "all";
+  const partner = urlFilters && PARTNERS.some((p) => p.id === params.get("partner")) ? params.get("partner") : "all";
 
   const matches = useCallback(
     (p) => (app === "all" || p.applications.includes(app)) && (partner === "all" || p.partner === partner),

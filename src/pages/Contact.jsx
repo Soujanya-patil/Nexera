@@ -159,7 +159,8 @@ export default function Contact() {
               </p>
             </div>
           ) : (
-            <form key={path} onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} noValidate className="relative mt-8 space-y-5">
+            <form method="post" key={path} onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} noValidate className="relative mt-8 space-y-5">
+              <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
               <div className="grid sm:grid-cols-2 gap-5">
                 <Field label="Name" name="name" required error={errors.name} />
                 <Field label="Email" name="email" type="email" required error={errors.email} />
