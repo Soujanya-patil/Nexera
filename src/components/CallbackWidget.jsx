@@ -14,6 +14,20 @@ const NUDGE_KEY = "nexera-callback-nudge"; // sessionStorage: the nudge has been
 const NUDGE_AFTER_MS = 25000;
 const AUTO_CLOSE_MS = 4000;
 const NUDGE_PHONE_MS = 6000; // phones: the nudge hides by itself after this long
+const DRAG_PX = 6; // a press that moves further than this is a drag, not a tap
+const EDGE = 8; // a dragged pill stays this far inside the viewport (and below the site header)
+const GAP = 12; // between a dragged pill and its card
+const CARD_W = 360; // the card's width from sm up
+
+/** The bottom of the site header (fixed / sticky at the top), the highest a dragged pill may go. */
+const headerBottom = () => Math.max(0, document.querySelector("header")?.getBoundingClientRect().bottom ?? 64);
+/** A pill position kept fully on screen: EDGE from every side, below the header. */
+const clampPos = ({ x, y, w, h }) => ({
+  x: Math.min(Math.max(EDGE, x), window.innerWidth - w - EDGE),
+  y: Math.min(Math.max(headerBottom() + EDGE, y), window.innerHeight - h - EDGE),
+  w,
+  h,
+});
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const phone = () => window.matchMedia("(max-width: 639.98px)").matches;
@@ -55,6 +69,13 @@ const lockScroll = (on) => {
  * "Thank you, {first name}. We'll call you on {mobile}.", then it closes by itself after 4 s. Failure
  * keeps every value.
  *
+ * The pill can be dragged (mouse, touch, pen): a press that moves more than 6px drags it, and it stays
+ * exactly where it is dropped, kept on screen (8px from the edges, below the header; again on resize).
+ * The dropped place lasts only for that page — it is back in its default corner on every route change
+ * (nothing is stored). Once dragged, its place wins over the lift above a compare tray, and the card
+ * opens beside it, above or below, left or right, whichever fits (phones keep the bottom sheet). A tap
+ * (or Enter / Space) opens the card as before; the release that ends a drag doesn't.
+ *
  * One nudge per browser session: after 25 s on a page or half-way down it, a small bubble beside the
  * pill ("Need help choosing a battery? We'll call you.") until it is dismissed (✕) or the card opens
  * (tapping it opens the card); on phones (< 768px) it also hides by itself after 6 s. Never on /contact.
@@ -67,7 +88,10 @@ export default function CallbackWidget() {
   const navigate = useNavigate();
   const inset = useBottomInset();
   const pill = useRef(null);
+  const dock = useRef(null);
   const card = useRef(null);
+  const drag = useRef(null); // the press in progress: where it started, and whether it became a drag
+  const swallowClick = useRef(false); // the click that follows a drag's release
   const scrim = useRef(null);
   const thanks = useRef(null);
   const started = useRef(0);
@@ -85,6 +109,8 @@ export default function CallbackWidget() {
   const [tried, setTried] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | sending | done | error
   const [sent, setSent] = useState({ firstName: "", mobile: "" });
+  const [pos, setPos] = useState(null); // where the pill was dropped ({ x, y, w, h }), or null: its corner
+  const [dragging, setDragging] = useState(false);
 
   const shown = open || (past && !blocked);
   isOpen.current = open;
@@ -274,6 +300,82 @@ export default function CallbackWidget() {
     };
   }, [open, close]);
 
+  // A dragged place lasts only for its page: every route change puts the pill back in its corner.
+  useEffect(() => {
+    setPos(null);
+    setDragging(false);
+    drag.current = null;
+  }, [pathname]);
+  // Resize / rotation: a dragged pill is kept on screen.
+  useEffect(() => {
+    if (!pos) return;
+    const fit = () => setPos((p) => (p ? clampPos(p) : p));
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+    // (Re-subscribed only when the pill is dragged or put back, not on every move.)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!pos]);
+
+  // Dragging the pill (pointer events: mouse, touch, pen). The pill has touch-action: none, so a drag
+  // on it never scrolls the page; everywhere else scrolls as usual.
+  const onPointerDown = (e) => {
+    if (e.button !== 0 || !dock.current) return;
+    const r = dock.current.getBoundingClientRect();
+    drag.current = { id: e.pointerId, sx: e.clientX, sy: e.clientY, x: r.left, y: r.top, w: r.width, h: r.height, moved: false };
+    // Every move of this press comes to the pill, even one that has already left it (a quick flick);
+    // the release still lands here, so a tap is still a click.
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const onPointerMove = (e) => {
+    const d = drag.current;
+    if (!d || e.pointerId !== d.id) return;
+    const dx = e.clientX - d.sx;
+    const dy = e.clientY - d.sy;
+    if (!d.moved) {
+      if (Math.hypot(dx, dy) <= DRAG_PX) return;
+      d.moved = true;
+      setDragging(true);
+    }
+    setPos(clampPos({ x: d.x + dx, y: d.y + dy, w: d.w, h: d.h }));
+  };
+  const onPointerEnd = (e) => {
+    const d = drag.current;
+    if (!d || e.pointerId !== d.id) return;
+    drag.current = null;
+    if (!d.moved) return;
+    setDragging(false);
+    // The click that follows this release (dispatched in the same task) doesn't open the card.
+    swallowClick.current = true;
+    setTimeout(() => (swallowClick.current = false));
+  };
+  const onPillClick = () => {
+    if (swallowClick.current) {
+      swallowClick.current = false;
+      return;
+    }
+    toggle();
+  };
+
+  // A dragged pill's card (from sm up): beside it, on the side with more room (above or below), lined
+  // up with its right edge when that fits, else its left; always fully on screen.
+  const cardPlace = () => {
+    if (!pos || phone()) return null;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const above = pos.y - GAP - (headerBottom() + EDGE);
+    const below = vh - (pos.y + pos.h) - GAP - EDGE;
+    const up = above >= below;
+    const left = pos.x + pos.w - CARD_W >= EDGE ? pos.x + pos.w - CARD_W : Math.min(Math.max(EDGE, pos.x), vw - CARD_W - EDGE);
+    return {
+      left,
+      right: "auto",
+      ...(up ? { bottom: vh - pos.y + GAP, top: "auto", maxHeight: above } : { top: pos.y + pos.h + GAP, bottom: "auto", maxHeight: below }),
+      transformOrigin: `${left + CARD_W / 2 < pos.x + pos.w / 2 ? "right" : "left"} ${up ? "bottom" : "top"}`,
+    };
+  };
+  // A pill dragged into the left half has its nudge on its right.
+  const nudgeRight = pos && pos.x + pos.w / 2 < window.innerWidth / 2;
+
   // Leaving the page closes the card at once.
   useEffect(() => () => close({ returnFocus: false, instant: true }), [pathname, close]);
   useEffect(() => () => lockScroll(false), []);
@@ -379,15 +481,27 @@ export default function CallbackWidget() {
     <>
       {/* The pill (and the nudge beside it). Lifted above a compare tray while one is shown. */}
       <div
+        ref={dock}
         className={`cb-dock fixed bottom-4 right-4 z-[45] transition-[opacity,translate] duration-300 ease-out motion-reduce:transition-none sm:bottom-6 sm:right-6 ${
           shown ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
-        style={{ ...lift, translate: `0 calc(${shown ? "0px" : "12px"} - var(--cb-lift))` }}
+        style={
+          pos
+            ? // Dropped: exactly there (the lift above a compare tray no longer applies on this page).
+              { left: pos.x, top: pos.y, right: "auto", bottom: "auto", translate: `0 ${shown ? "0px" : "12px"}` }
+            : { ...lift, translate: `0 calc(${shown ? "0px" : "12px"} - var(--cb-lift))` }
+        }
         aria-hidden={!shown || undefined}
         inert={!shown}
       >
-        {nudge && !open && (
-          <div role="status" className="cb-nudge absolute bottom-full right-0 mb-3 w-max max-w-[15rem] sm:bottom-1/2 sm:right-full sm:mb-0 sm:mr-3 sm:translate-y-1/2">
+        {nudge && !open && !dragging && (
+          <div
+            role="status"
+            data-side={nudgeRight ? "right" : undefined}
+            className={`cb-nudge absolute bottom-full mb-3 w-max max-w-[15rem] sm:bottom-1/2 sm:mb-0 sm:translate-y-1/2 ${
+              nudgeRight ? "left-0 sm:left-full sm:ml-3" : "right-0 sm:right-full sm:mr-3"
+            }`}
+          >
             <div className="relative flex items-start gap-1 rounded-2xl border border-white/10 bg-ink py-2.5 pl-4 pr-1.5 text-sm leading-snug text-white shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)]">
               <button type="button" onClick={toggle} className="text-left focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal">
                 Need help choosing a battery? We&rsquo;ll call you.
@@ -407,11 +521,16 @@ export default function CallbackWidget() {
         <button
           ref={pill}
           type="button"
-          onClick={toggle}
+          onClick={onPillClick}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerEnd}
+          onPointerCancel={onPointerEnd}
+          style={dragging ? { scale: "1.05", boxShadow: "0 24px 44px -14px rgba(7,26,23,0.65)", cursor: "grabbing" } : undefined}
           aria-expanded={open}
           aria-controls={`${uid}-card`}
           aria-haspopup="dialog"
-          className="group/cb relative inline-flex h-12 items-center gap-2 rounded-full bg-signal pl-4 pr-5 text-sm font-semibold text-forest shadow-[0_12px_30px_-10px_rgba(7,26,23,0.55)] transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.03] hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none sm:h-[52px]"
+          className="group/cb relative inline-flex h-12 touch-none select-none items-center gap-2 rounded-full bg-signal pl-4 pr-5 text-sm font-semibold text-forest sm:cursor-grab shadow-[0_12px_30px_-10px_rgba(7,26,23,0.55)] transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.03] hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none sm:h-[52px]"
         >
           {pulse && <span aria-hidden="true" className="cb-ring pointer-events-none absolute inset-0 rounded-full border-2 border-signal" onAnimationEnd={() => setPulse(false)} />}
           {open ? <X aria-hidden="true" className="h-4 w-4" strokeWidth={2.2} /> : <Phone aria-hidden="true" className="h-4 w-4" strokeWidth={2.2} />}
@@ -430,7 +549,7 @@ export default function CallbackWidget() {
             aria-modal="true"
             aria-labelledby={`${uid}-title`}
             data-lenis-prevent
-            style={{ ...lift, opacity: 0 }}
+            style={{ ...lift, opacity: 0, ...cardPlace() }}
             className="fixed inset-x-0 bottom-0 z-[60] max-h-[88svh] overflow-y-auto overscroll-contain rounded-t-3xl border border-white/10 bg-night p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-white shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:bottom-[calc(1.5rem+52px+0.75rem+var(--cb-lift))] sm:right-6 sm:max-h-[calc(100svh-4rem-1.5rem-52px-0.75rem-var(--cb-lift)-1rem)] sm:w-[360px] sm:origin-bottom-right sm:rounded-3xl sm:pb-5 sm:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]"
           >
             <span aria-hidden="true" className="mx-auto -mt-1 mb-3 block h-1 w-10 rounded-full bg-white/20 sm:hidden" />

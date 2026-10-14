@@ -1676,6 +1676,17 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     rotate: -45deg;
   }
 }
+/* A pill dragged into the left half: the nudge sits on its other side, its tail pointing back at it. */
+.cb-nudge[data-side="right"] .cb-nudge-tail {
+  right: auto;
+  left: 1.5rem;
+}
+@media (width >= 40rem) {
+  .cb-nudge[data-side="right"] .cb-nudge-tail {
+    left: -5px;
+    rotate: 135deg;
+  }
+}
 /* Uneven columns, so the longer labels ("Business / C&I", "Becoming a distributor") stay on one line
    in the 360px card. */
 .cb-chips {
