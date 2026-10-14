@@ -15,7 +15,9 @@
  *
  * Listed without a product photo (`imageFallback: true` — `image` is the partner's logo, shown
  * small on the usual plinth, and never used as a product image in search or share data):
- *   - Hithium ∞Power 5.016 MWh: the brochure's only render is a 288px thumbnail, too small to use.
+ *   - Hithium ∞Power 5.016 MWh: no image in the repo or the Hithium brochure is labelled as this system
+ *     (the brochure's ∞Power container renders carry no capacity), so it is also left out of the
+ *     /products listing (`listed: false`). Its product page, and the Utility page's link to it, remain.
  * Their data comes from the director-approved Solutions content (checked against the CLOU BESS deck
  * and the Hithium brochure), and is limited to what that content states.
  *
@@ -393,6 +395,7 @@ export const PRODUCTS = [
     applications: ["utility"],
     image: hithiumLogo,
     imageFallback: true,
+    listed: false,
     imageAlt: "Hithium logo (product photo not available)",
     summary: "A high-density, liquid-cooled energy storage platform for utility-scale applications.",
     cardSpecs: ["5.016 MWh", "Liquid-cooled"],

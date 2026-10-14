@@ -217,6 +217,10 @@ function CategoryHeading({ app, partner }) {
  *   that transition never waits.
  * Reduced motion: no entrance, depth, Flip or reveals — the page is simply there.
  */
+// The catalogue cards: every product except those kept off the listing (data/products.js `listed: false`,
+// which still have their product page).
+const LISTED = PRODUCTS.filter((p) => p.listed !== false);
+
 export default function Products() {
   const [params, setParams] = useSearchParams();
   // /products?app=… and ?partner=… are served the pre-rendered "all products" page (canonical
@@ -231,7 +235,7 @@ export default function Products() {
     (p) => (app === "all" || p.applications.includes(app)) && (partner === "all" || p.partner === partner),
     [app, partner]
   );
-  const visibleCount = useMemo(() => PRODUCTS.filter(matches).length, [matches]);
+  const visibleCount = useMemo(() => LISTED.filter(matches).length, [matches]);
 
   // --- Hero ---------------------------------------------------------------------------------------
   const hero = useRef(null);
@@ -432,7 +436,7 @@ export default function Products() {
         <div className="container-site">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <CategoryHeading app={app} partner={partner} />
-            <LiveCount count={visibleCount} total={PRODUCTS.length} />
+            <LiveCount count={visibleCount} total={LISTED.length} />
           </div>
           <p className="mt-3 max-w-2xl text-xs leading-relaxed text-sage">
             NEXERA is an authorized solution provider and distributor. Every system here is designed and manufactured by
@@ -440,7 +444,7 @@ export default function Products() {
           </p>
 
           <ul ref={grid} data-sr-state={reveal} className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {PRODUCTS.map((p) => {
+            {LISTED.map((p) => {
               const dim = peek && p.partner !== peek;
               return (
                 <li key={p.id} data-card data-flip-id={p.id} hidden={!matches(p)}>
