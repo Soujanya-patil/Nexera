@@ -7,7 +7,7 @@
 # shows .html and never gets a trailing slash. Only those routes and real files answer 200; any other
 # URL gets 404.html with a real 404 status (React renders the NotFound page there, marked noindex).
 # Hashed build files under /assets/ are real files or nothing, so a missing one is a plain 404 too.
-Options -MultiViews
+Options -MultiViews -Indexes
 ErrorDocument 404 /404.html
 # /products is both products.html and the folder products/ (the product pages): never answer a
 # folder name with a redirect to its trailing-slash form.
@@ -26,6 +26,12 @@ ErrorDocument 404 /404.html
   # even where an old resources/<slug>.html is still on the server.
   RewriteRule ^resources/([^/.]+)(?:\.html)?/?$ /blog/$1 [R=301,L]
   RewriteRule ^index\.html$ - [L]
+  # Pages that share their name with a folder of their sub-pages — /blog (blog/), /products (products/),
+  # /solutions (solutions/) and /resources (on the server: the old resources/ articles): the page file,
+  # with or without a trailing slash, matched first and by name, so the URL is never handled as the
+  # folder (a directory redirect, index or listing) whatever the server's directory handling.
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(blog|products|solutions|resources)/?$ $1.html [L]
   # The enquiry endpoint (api/contact.php) is a real script: never rewritten to a page.
   RewriteRule ^api/ - [L]
   # A route's own page (so /products is products.html, not the folder). index.html and 404.html are

@@ -368,7 +368,8 @@ if (imgProblems.length) {
 }
 console.log(`seo-pages: every <img> in ${htmlFiles.length} HTML files has an alt`);
 
-// --- Page content: every sitemap route's file has its page in #root and exactly its one <h1> --------
+// --- Page content: every sitemap route's file has its page in #root, exactly its one <h1>, and exactly
+// one non-empty <title> and meta description in its <head> -----------------------------------------
 // Read back from the files as written (what gets deployed). A crawler that doesn't run JavaScript sees
 // only this, so an empty root, a missing or second <h1>, or a heading other than the route's `h1`
 // (routes.js) fails the build, naming the page and the reason.
@@ -386,6 +387,11 @@ const pageProblems = [];
 for (const r of resolved) {
   const file = r.path === "/" ? "index.html" : `${r.path.slice(1)}.html`;
   const html = fs.readFileSync(path.join(dist, file), "utf8");
+  const headPart = html.slice(0, html.indexOf("</head>"));
+  const titles = [...headPart.matchAll(/<title>([\s\S]*?)<\/title>/g)].map((m) => m[1].trim());
+  const descriptions = [...headPart.matchAll(/<meta name="description" content="([^"]*)"/g)].map((m) => m[1].trim());
+  if (titles.length !== 1 || !titles[0]) pageProblems.push(`${r.path} (${file}): ${titles.length} <title> in <head>${titles.length === 1 ? " (empty)" : ""} (expected exactly 1, not empty)`);
+  if (descriptions.length !== 1 || !descriptions[0]) pageProblems.push(`${r.path} (${file}): ${descriptions.length} meta description in <head>${descriptions.length === 1 ? " (empty)" : ""} (expected exactly 1, not empty)`);
   const root = html.match(/<div id="root">([\s\S]*)<\/div>\s*<\/body>/);
   if (!root || !plain(root[1])) pageProblems.push(`${r.path} (${file}): #root is empty`);
   const h1s = [...html.matchAll(/<h1[\s>][\s\S]*?<\/h1>/g)].map((m) => plain(m[0]));
@@ -397,7 +403,7 @@ if (pageProblems.length) {
   console.error(`\nseo-pages: ${pageProblems.length} page(s) without their content or heading:\n  ${pageProblems.join("\n  ")}\n`);
   process.exit(1);
 }
-console.log(`seo-pages: every sitemap page (${resolved.length}) has its content in #root and exactly its one <h1>`);
+console.log(`seo-pages: every sitemap page (${resolved.length}) has its content in #root, exactly its one <h1>, and one non-empty <title> and description`);
 
 console.log(`\nseo-pages: ${resolved.length} route pages + 404.html + ${PREVIEW_ROUTES.length} noindex preview page(s) written\n`);
 for (const r of resolved) console.log(`  ${r.path.padEnd(38)} ${String(r.title.length).padStart(2)}  ${String(r.description.length).padStart(3)}  ${r.ogImage}`);
