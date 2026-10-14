@@ -170,9 +170,9 @@ const PAGES = [
   {
     path: "/how-it-works",
     h1: "From First Call to Fully Operational Distributor",
-    title: "How It Works — The Distributor Journey | NEXERA",
+    title: "How to Become a BESS Distributor in India | NEXERA",
     description:
-      "From first call to fully operational distributor: market review, product training, sizing and commissioning support, then after-sales and warranty.",
+      "How NEXERA's BESS distributor partnership works, step by step: from application and onboarding to technician training, commissioning and support.",
   },
   {
     path: "/service-training",
