@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { BatteryFull } from "lucide-react";
 import { useSceneMotion } from "./useScene";
 
 // The section's three systems, in its order, with the cell wording the article gives each. `product`:
@@ -15,6 +16,11 @@ const SYSTEMS = [
  * their existing alt text, and Midea's name in type — fading in one after another; the one being read
  * is lit (phones: in turn while in view). The catalogue (images) is fetched when the scene mounts, not
  * with the article. Final state: all three shown.
+ *
+ * Each tile's white block is the same fixed size and clips: the photo is pinned inside it (absolute,
+ * object-fit: contain, centred, padded), so it never spills onto the name below. A tile without a photo
+ * (Midea; or any tile while the catalogue loads) shows a battery icon and the partner's name instead of
+ * an empty block. The lit tile gets a border and a glow only — nothing is scaled.
  */
 export default function NexeraLfp({ active, motion, mode, step }) {
   const root = useRef(null);
@@ -61,12 +67,21 @@ export default function NexeraLfp({ active, motion, mode, step }) {
                 on ? "border-signal/70 shadow-[0_0_26px_rgba(144,217,136,0.3)]" : any ? "border-white/10 opacity-55" : "border-white/15"
               }`}
             >
-              <div className={`grid place-items-center bg-ice ${compact ? "h-24" : "h-36"}`}>
+              <div className={`relative shrink-0 overflow-hidden bg-ice ${compact ? "h-24" : "h-36"}`}>
                 {p ? (
-                  <img src={p.image} alt={p.imageAlt} loading="lazy" decoding="async" className="h-full w-full object-contain p-2" />
-                ) : s.wordmark ? (
-                  <span className={`font-bold uppercase tracking-tight text-ink ${compact ? "text-lg" : "text-2xl"}`}>{s.wordmark}</span>
-                ) : null}
+                  <img
+                    src={p.image}
+                    alt={p.imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className={`absolute inset-0 h-full w-full object-contain object-center ${compact ? "p-2" : "p-3"}`}
+                  />
+                ) : (
+                  <span aria-hidden="true" className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-ink">
+                    <BatteryFull className={compact ? "h-6 w-6 text-forest" : "h-8 w-8 text-forest"} strokeWidth={1.6} />
+                    {s.wordmark && <span className={`font-bold uppercase leading-none tracking-tight ${compact ? "text-sm" : "text-lg"}`}>{s.wordmark}</span>}
+                  </span>
+                )}
               </div>
               <div className={compact ? "p-2" : "p-3"}>
                 <p className={`font-semibold leading-snug text-white ${compact ? "text-[11px]" : "text-[13px]"}`}>{s.name}</p>
