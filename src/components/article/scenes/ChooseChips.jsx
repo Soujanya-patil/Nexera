@@ -7,21 +7,22 @@ import { useSceneMotion } from "./useScene";
 const CHIPS = ["Energy to store (kWh)", "Power at once (kW)", "What it's mainly for", "Where it will be installed"];
 
 /**
- * "How to choose the right BESS": the four questions as chips, each ticking as its question is read;
+ * "How to choose the right BESS" (and, with `chips` / `title` / `to`, another article's questions): the
+ * questions as chips, each ticking as its question is read;
  * with all four answered, a glowing "Talk to an expert" prompt. Final state: all ticked, the prompt on.
  */
-export default function ChooseChips({ active, motion, mode, step }) {
+export default function ChooseChips({ active, motion, mode, step, chips = CHIPS, title = "Four questions to choose a BESS", to = "/#contact" }) {
   const root = useRef(null);
   const [tour, setTour] = useState(-1);
   useEffect(() => {
     if (mode !== "inline" || !motion || !active) return;
     let i = -1;
     setTour(-1);
-    const t = setInterval(() => setTour((i = Math.min(i + 1, CHIPS.length))), 900);
+    const t = setInterval(() => setTour((i = Math.min(i + 1, chips.length))), 900);
     return () => clearInterval(t);
   }, [mode, motion, active]);
-  const done = !motion ? CHIPS.length - 1 : mode === "inline" ? tour : step;
-  const all = done >= CHIPS.length - 1;
+  const done = !motion ? chips.length - 1 : mode === "inline" ? tour : step;
+  const all = done >= chips.length - 1;
 
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
     gsap.timeline().from(el.querySelectorAll("[data-chip]"), { opacity: 0, x: -14, duration: 0.4, stagger: 0.08, ease: "power2.out" })
@@ -29,9 +30,9 @@ export default function ChooseChips({ active, motion, mode, step }) {
 
   return (
     <div ref={root} className="flex h-full flex-col justify-center gap-4 px-6">
-      <div role="img" aria-label={`Four questions to choose a BESS: ${CHIPS.join(", ")}. ${Math.max(0, done + 1)} of 4 answered.`}>
+      <div role="img" aria-label={`${title}: ${chips.join(", ")}. ${Math.max(0, done + 1)} of ${chips.length} answered.`}>
         <ul aria-hidden="true" className="space-y-2.5">
-          {CHIPS.map((c, i) => {
+          {chips.map((c, i) => {
             const ticked = i <= done;
             return (
               <li
@@ -55,7 +56,7 @@ export default function ChooseChips({ active, motion, mode, step }) {
         </ul>
       </div>
       <Link
-        to="/#contact"
+        to={to}
         tabIndex={all ? 0 : -1}
         aria-hidden={all ? undefined : true}
         className={`article-expert inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-signal px-5 text-sm font-semibold text-forest transition-[opacity,translate] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${

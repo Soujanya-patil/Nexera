@@ -40,7 +40,7 @@ export default function NexeraLfp({ active, motion, mode, step }) {
     root,
     motion,
     active,
-    ({ gsap }, el) => gsap.timeline().from(el.querySelectorAll("[data-tile]"), { opacity: 0, y: 16, duration: 0.5, stagger: 0.18, ease: "power2.out" }),
+    ({ gsap }, el) => gsap.timeline().from(el.querySelectorAll("[data-tile]"), { opacity: 0, y: 16, duration: 0.5, stagger: 0.18, ease: "power2.out", clearProps: "opacity,transform" }),
     [!!catalogue]
   );
 
@@ -57,7 +57,7 @@ export default function NexeraLfp({ active, motion, mode, step }) {
             <li
               key={s.name}
               data-tile
-              className={`flex flex-col overflow-hidden rounded-2xl border transition-[border-color,opacity,box-shadow] duration-500 ${
+              className={`flex flex-col overflow-hidden rounded-2xl border transition-[border-color,box-shadow] duration-500 ${
                 on ? "border-signal/70 shadow-[0_0_26px_rgba(144,217,136,0.3)]" : any ? "border-white/10 opacity-55" : "border-white/15"
               }`}
             >

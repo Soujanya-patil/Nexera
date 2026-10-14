@@ -400,7 +400,183 @@ const AC_VS_DC = {
     { label: "BESS products", to: "/products" },
   ],
 };
-const DRAFTS = import.meta.env.DEV ? [LFP_VS_NMC, AC_VS_DC] : [];
+const SAFETY = {
+  slug: "bess-safety-standards-india",
+  // Waiting for the director's review and a final check of the official CEA notification: not
+  // published (see DRAFTS above ARTICLES). Dates: set at publish.
+  draft: true,
+  title: "BESS Safety Standards & Certification in India | NEXERA",
+  description:
+    "BESS safety in India explained: BIS registration, IEC 62619, IEC 62933, UL 9540A fire testing and the CEA safety rules for battery energy storage.",
+  shortTitle: "BESS Safety Standards",
+  eyebrow: "Guide",
+  h1: "BESS Safety Standards and Certification in India",
+  intro: "A plain guide to the standards, tests and rules that make a battery energy storage system safe, and what to ask for before you buy.",
+  datePublished: "2026-10-14T12:00:00+05:30",
+  dateModified: "2026-10-14T12:00:00+05:30",
+  sections: [
+    {
+      id: "why-safety-matters",
+      visual: "thermal-runaway",
+      h2: "Why BESS safety matters",
+      blocks: [
+        {
+          p: [
+            "A battery energy storage system holds a large amount of energy in one place. If a cell overheats or is damaged, it can lead to ",
+            { b: "thermal runaway" },
+            ": a chain reaction in which heat builds faster than it can escape. Good systems are designed so that a single fault is detected early, isolated and contained. Safety comes from the cells, the system design, testing and correct installation working together.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "safety-standards",
+      visual: "standards-stack",
+      h2: "The main safety standards for battery storage",
+      blocks: [
+        {
+          terms: [
+            { term: "IEC 62619", text: "safety requirements for lithium cells and batteries used in industrial applications, including stationary energy storage." },
+            { term: "IEC 62933-5-2", text: "safety requirements for grid-integrated electrochemical energy storage systems, covering the system as a whole." },
+            { term: "UL 9540", text: "a safety standard for energy storage systems and equipment." },
+            { term: "UL 9540A", text: "a test method that shows how a fire would spread if a cell goes into thermal runaway: within a module, a rack or an installation." },
+            { term: "IEC 62477-1", text: "safety requirements for power electronic converters, such as the Power Conversion System (PCS)." },
+            { term: "UN 38.3", text: "transport tests that lithium batteries must pass before they can be shipped." },
+          ],
+        },
+      ],
+    },
+    {
+      id: "bis-certification",
+      visual: "bis-stamp",
+      h2: "BIS certification for lithium batteries in India",
+      blocks: [
+        {
+          p: [
+            "The Bureau of Indian Standards (BIS) runs a ",
+            { b: "Compulsory Registration Scheme" },
+            " for many electronic products. For lithium cells and batteries, BIS requires registration of ",
+            { b: "portable, sealed lithium cells and batteries under IS 16046 (Part 2)" },
+            ", which corresponds to IEC 62133-2.",
+          ],
+        },
+        {
+          p: [
+            "Large-format lithium cells and batteries for industrial and stationary use are tested to ",
+            { b: "IEC 62619" },
+            ". Requirements can change, so always check with BIS which registration applies to a specific product before import or sale.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "cea-rules",
+      visual: "cea-container",
+      h2: "The CEA safety rules for BESS",
+      blocks: [
+        {
+          p: [
+            "The Central Electricity Authority (CEA) has notified the ",
+            { b: "Central Electricity Authority (Measures relating to Safety and Electric Supply) Amendment Regulations, 2026" },
+            ", which add safety requirements for battery energy storage systems. As reported, the rules apply to BESS installations above 650 volts and come into force on ",
+            { b: "1 April 2027" },
+            ". They cover areas such as:",
+          ],
+        },
+        {
+          ul: [
+            "system design that remains safe after two independent faults;",
+            "continuous battery monitoring with automatic alarms and shutdown;",
+            "fire and gas detection, and automatic fire suppression in battery containers;",
+            "ventilation, minimum spacing from nearby buildings, and emergency stops;",
+            "an independent third-party fire safety audit.",
+          ],
+        },
+        { p: "The CEA will publish a separate list of applicable technical standards. Always refer to the official CEA notification for the exact requirements." },
+      ],
+    },
+    {
+      id: "safety-features",
+      visual: "safety-cabinet",
+      h2: "Safety features to look for in a BESS",
+      blocks: [
+        {
+          ul: [
+            { lead: "Battery Management System (BMS):", text: "monitors every cell's voltage, current and temperature, and shuts down safely if limits are crossed." },
+            { lead: "Thermal management:", text: "liquid or air cooling that keeps cells in their ideal range." },
+            { lead: "Fire detection and suppression:", text: "smoke, heat and gas detection, with suppression inside the enclosure." },
+            // The link shows only once LFP vs NMC is published (a link to a draft is plain text).
+            { lead: "Safe cell chemistry:", text: [{ a: "LFP (lithium iron phosphate)", to: "/blog/lfp-vs-nmc" }, " cells are known for thermal stability."] },
+            { lead: "Explosion protection and ventilation:", text: "venting or deflagration protection for containerised systems." },
+            { lead: "Emergency stop:", text: "easy-to-reach manual shutdown." },
+          ],
+        },
+      ],
+    },
+    {
+      id: "supplier-questions",
+      visual: "question-chips",
+      h2: "What to ask your BESS supplier",
+      blocks: [
+        {
+          ol: [
+            "Which safety standards are the cells and the complete system certified to?",
+            "Has the system been through UL 9540A or equivalent fire-propagation testing?",
+            "Which BIS registrations apply to this product in India?",
+            "What fire detection and suppression is built in?",
+            "Who handles commissioning, safety checks and after-sales support?",
+          ],
+        },
+        { p: "NEXERA supplies systems from TCL, Hithium, CLOU and Midea, and supports sizing, commissioning and technician training." },
+        {
+          actions: [
+            { label: "Talk to an expert", to: "/#contact?interest=ci", primary: true },
+            { label: "Browse BESS products", to: "/products" },
+          ],
+        },
+      ],
+    },
+    {
+      id: "a-note",
+      visual: "standards-stack",
+      h2: "A note on this guide",
+      blocks: [
+        {
+          p: "This guide is general information, not legal or compliance advice. Standards and regulations are updated over time, so check the latest official notifications from BIS and the CEA, and the certificates for the exact product you buy.",
+        },
+      ],
+    },
+  ],
+  faqs: [
+    {
+      q: "What safety standards apply to battery energy storage systems?",
+      a: "Common standards include IEC 62619 for industrial lithium cells and batteries, IEC 62933-5-2 for grid-integrated storage systems, UL 9540 for energy storage systems and UL 9540A for fire-propagation testing.",
+    },
+    {
+      q: "Is BIS certification required for lithium batteries in India?",
+      a: "BIS requires registration of portable, sealed lithium cells and batteries under IS 16046 (Part 2). Check with BIS which registration applies to a specific industrial or stationary product.",
+    },
+    {
+      q: "What is UL 9540A?",
+      a: "UL 9540A is a test method that shows how a fire would spread from a cell in thermal runaway to the rest of a module, rack or installation.",
+    },
+    {
+      q: "What are the CEA safety rules for BESS?",
+      a: "The CEA has notified safety regulations for battery energy storage systems, reported to apply above 650 volts from 1 April 2027. They cover fault tolerance, monitoring, fire protection, spacing and fire safety audits.",
+    },
+    {
+      q: "What is thermal runaway?",
+      a: "Thermal runaway is a chain reaction in a battery cell in which heat builds faster than it can escape. Safe systems detect it early and stop it spreading.",
+    },
+  ],
+  related: [
+    { label: "What Is a BESS?", to: "/blog/what-is-bess" },
+    { label: "C&I battery storage", to: "/solutions/commercial-industrial" },
+    { label: "Utility-scale BESS", to: "/solutions/utility-scale" },
+    { label: "BESS products", to: "/products" },
+  ],
+};
+const DRAFTS = import.meta.env.DEV ? [LFP_VS_NMC, AC_VS_DC, SAFETY] : [];
 
 const ALL = [
   {

@@ -29,8 +29,8 @@ export default function GlanceRows({ active, motion, mode, step, table = LFP_NMC
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
     gsap
       .timeline()
-      .from(el.querySelectorAll("[data-row]"), { opacity: 0, x: -14, duration: 0.4, stagger: 0.06, ease: "power2.out" })
-      .from(el.querySelectorAll("[data-pair]"), { opacity: 0, y: 10, duration: 0.4, stagger: 0.1, ease: "power2.out" }, 0.35)
+      .from(el.querySelectorAll("[data-row]"), { opacity: 0, x: -14, duration: 0.4, stagger: 0.06, ease: "power2.out", clearProps: "opacity,transform" })
+      .from(el.querySelectorAll("[data-pair]"), { opacity: 0, y: 10, duration: 0.4, stagger: 0.1, ease: "power2.out", clearProps: "opacity,transform" }, 0.35)
   );
 
   const lit = mode === "inline" ? tour : step;
@@ -50,7 +50,7 @@ export default function GlanceRows({ active, motion, mode, step, table = LFP_NMC
               <li
                 key={label}
                 data-row
-                className={`flex items-center gap-2.5 rounded-xl border px-3 font-semibold transition-[border-color,background-color,color,opacity] duration-500 ${compact ? "py-1.5 text-[12px]" : "py-2 text-sm"} ${
+                className={`flex items-center gap-2.5 rounded-xl border px-3 font-semibold transition-[border-color,background-color,color] duration-500 ${compact ? "py-1.5 text-[12px]" : "py-2 text-sm"} ${
                   on ? "border-signal/60 bg-signal/10 text-white" : any ? "border-white/10 text-white/45" : "border-white/10 text-white/80"
                 }`}
               >
