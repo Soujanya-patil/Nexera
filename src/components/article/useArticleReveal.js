@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { onceInView } from "../../lib/inview";
 import { FINE_POINTER_Q, matches } from "./motion";
+import { DUR, EASE, STAGGER } from "../../lib/tokens";
 
 const MAX_STAGGER = 0.2;
 const each = (n, step) => (n > 1 ? Math.min(step, MAX_STAGGER / (n - 1)) : 0);
@@ -63,15 +64,15 @@ export function useArticleReveal(ref, motion) {
         for (const el of heads) {
           const tl = gsap.timeline({ onComplete: () => done(el) });
           const line = el.querySelector(".article-h2-line line");
-          if (line) tl.to(line, { drawSVG: "100%", duration: 0.45, ease: "power2.inOut" });
-          tl.to(words(el), { yPercent: 0, duration: 0.55, stagger: 0.035, ease: "power3.out" }, line ? 0.2 : 0);
+          if (line) tl.to(line, { drawSVG: "100%", duration: DUR.base, ease: EASE.inOut });
+          tl.to(words(el), { yPercent: 0, duration: DUR.base, stagger: STAGGER, ease: EASE.emphasized }, line ? 0.2 : 0);
         }
         if (rest.length)
           gsap.to(rest, {
             opacity: 1,
             y: 0,
-            duration: 0.35,
-            ease: "power2.out",
+            duration: DUR.base,
+            ease: EASE.standard,
             stagger: each(rest.length, 0.06),
             clearProps: "opacity,transform",
           });
@@ -80,9 +81,9 @@ export function useArticleReveal(ref, motion) {
           gsap.delayedCall(at, () => delete el.dataset.rvState);
           if (el.dataset.rv === "term") {
             const label = el.querySelector("[data-label]");
-            if (label) gsap.to(label, { delay: at, duration: 0.6, scrambleText: { text: "{original}", chars: "KEYTRMABCDE", speed: 0.5 } });
+            if (label) gsap.to(label, { delay: at, duration: DUR.base, scrambleText: { text: "{original}", chars: "KEYTRMABCDE", speed: 0.5 } });
           }
-          if (el.dataset.rv === "card") gsap.to(el.querySelector("[data-icon]"), { drawSVG: "100%", delay: at + 0.15, duration: 0.7, ease: "power2.inOut" });
+          if (el.dataset.rv === "card") gsap.to(el.querySelector("[data-icon]"), { drawSVG: "100%", delay: at + 0.15, duration: DUR.slow, ease: EASE.inOut });
         });
       };
       for (const el of items) offs.push(onceInView(el, { enter, show: () => show(el), below: () => wait(el) }));

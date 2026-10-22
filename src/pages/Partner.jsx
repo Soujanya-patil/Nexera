@@ -13,6 +13,7 @@ import { PARTNER_LINE, PARTNER_WHY, getPartnerPage, partnerFaq, partnerProducts 
 import { useIntro } from "../lib/intro";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { scrollToId } from "../lib/scrollTo";
+import { DUR, EASE, STAGGER } from "../lib/tokens";
 
 const WHY_ICONS = [BadgeCheck, Ruler, GraduationCap, Wrench];
 
@@ -39,7 +40,7 @@ function PartnerPage({ page }) {
   const products = partnerProducts(id);
   const contact = `/#contact?interest=${interest}`;
   const list = useRef(null);
-  const reveal = useScrollReveal(list, { stagger: 0.08 });
+  const reveal = useScrollReveal(list);
 
   return (
     <div>
@@ -68,7 +69,7 @@ function PartnerPage({ page }) {
           <>
             <FeatureGrid items={RESIDENTIAL_BENEFITS} />
             <div className="mt-12">
-              <MagneticButton to={contact} arrow spotlight className="hover:scale-[1.02]">
+              <MagneticButton to={contact} arrow spotlight>
                 Talk to us about {name} home storage
               </MagneticButton>
             </div>
@@ -97,10 +98,10 @@ function PartnerHero({ id, name, contact }) {
   const logo = partnerOf(id);
   const intro = useIntro(root, ({ tl, q }) => {
     const done = { clearProps: "all" };
-    tl.fromTo(q('[data-a="logo"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", ...done }, 0)
-      .fromTo(q('[data-a="line"]'), { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: 0.65, ease: "expo.out", stagger: 0.09, ...done }, 0.1)
-      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", ...done }, 0.3)
-      .fromTo(q('[data-a="cta"]'), { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.45, stagger: 0.08, ease: "power2.out", ...done }, 0.5);
+    tl.fromTo(q('[data-a="logo"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, ...done }, 0)
+      .fromTo(q('[data-a="line"]'), { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: DUR.slow, ease: EASE.emphasized, stagger: STAGGER, ...done }, 0.1)
+      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, ...done }, 0.3)
+      .fromTo(q('[data-a="cta"]'), { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: DUR.base, stagger: STAGGER, ease: EASE.standard, ...done }, 0.5);
   });
 
   return (
@@ -108,10 +109,10 @@ function PartnerHero({ id, name, contact }) {
       <Spotlight />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, rgba(144,217,136,0.10), transparent 70%)" }} />
       <div data-intro={intro} className="relative container-site py-14 lg:py-20">
-        <nav aria-label="Breadcrumb" className="text-xs text-ice/75">
+        <nav aria-label="Breadcrumb" className="text-micro text-ice/75">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
-              <Link to="/products" className="hover:text-white">
+              <Link to="/products" className="hit-area hover:text-white focus-visible:text-white">
                 Products
               </Link>
             </li>
@@ -130,10 +131,10 @@ function PartnerHero({ id, name, contact }) {
               <img src={logo.logo} alt={name} decoding="async" className={`${id === "clou" ? "h-8" : "h-6"} w-auto`} />
             ) : (
               // The site's typeset wordmark for a partner without a logo file (as PartnerMark sets it).
-              <span className="text-2xl font-bold uppercase leading-6 tracking-tight text-ink">{name}</span>
+              <span className="text-2xl font-semibold uppercase leading-6 tracking-tight text-ink">{name}</span>
             )}
           </div>
-          <h1 className="mt-6 text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
+          <h1 className="mt-6 text-display font-semibold">
             <span className="line-mask">
               <span data-a="line" className="block">
                 {name} energy storage
@@ -145,17 +146,17 @@ function PartnerHero({ id, name, contact }) {
               </span>
             </span>
           </h1>
-          <p data-a="desc" className="mt-6 max-w-xl text-lg leading-relaxed text-ice/90">
+          <p data-a="desc" className="mt-6 max-w-xl text-lead text-ice/90">
             {PARTNER_LINE}
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <span data-a="cta" className="inline-block">
-              <MagneticButton to="#systems" onClick={scrollToId("systems")} arrow spotlight className="hover:scale-[1.02]">
+              <MagneticButton to="#systems" onClick={scrollToId("systems")} arrow spotlight>
                 See {name} systems
               </MagneticButton>
             </span>
             <span data-a="cta" className="inline-block">
-              <MagneticButton to={contact} variant="outline" sweep className="hover:-translate-y-0.5">
+              <MagneticButton to={contact} variant="outline" sweep>
                 Contact Us
               </MagneticButton>
             </span>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR } from "../../../lib/tokens";
 
 // The six uses, in the article's order: an icon around the dial for each.
 const USES = [
@@ -42,15 +43,15 @@ export default function DayDial({ active, motion, mode, step }) {
     const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
     tl.set(night, { opacity: 0.15 })
       .fromTo(sun, { opacity: 1 }, { motionPath: { path: el.querySelector("[data-arc]"), align: el.querySelector("[data-arc]"), alignOrigin: [0.5, 0.5] }, duration: 4, ease: "none" }, 0)
-      .to(sun, { opacity: 0, duration: 0.4 }, 3.7)
-      .to(night, { opacity: 0.85, duration: 0.8 }, 3.6)
-      .to(battery, { opacity: 1, scale: 1.08, duration: 0.5, transformOrigin: "50% 50%" }, 4)
+      .to(sun, { opacity: 0, duration: DUR.base }, 3.7)
+      .to(night, { opacity: 0.85, duration: DUR.slow }, 3.6)
+      .to(battery, { opacity: 1, scale: 1.08, duration: DUR.base, transformOrigin: "50% 50%" }, 4)
       // the power cut: the lights flicker, then the backup holds them on
-      .to(windowLight, { opacity: 0.15, duration: 0.08, repeat: 3, yoyo: true }, 4.6)
-      .to(windowLight, { opacity: 1, duration: 0.2 }, 5.1)
-      .to(battery, { scale: 1, duration: 0.6 }, 6.2)
-      .to(night, { opacity: 0.15, duration: 0.8 }, 6.6)
-      .to(battery, { opacity: 0.55, duration: 0.6 }, 6.6);
+      .to(windowLight, { opacity: 0.15, duration: DUR.fast, repeat: 3, yoyo: true }, 4.6)
+      .to(windowLight, { opacity: 1, duration: DUR.fast }, 5.1)
+      .to(battery, { scale: 1, duration: DUR.base }, 6.2)
+      .to(night, { opacity: 0.15, duration: DUR.slow }, 6.6)
+      .to(battery, { opacity: 0.55, duration: DUR.base }, 6.6);
     return tl;
   });
 

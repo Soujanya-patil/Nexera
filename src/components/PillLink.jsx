@@ -45,7 +45,7 @@ export default function PillLink({ to, variant = "solid", arrow = false, spotlig
       to={to}
       onPointerMove={spotlight ? trackPointer : undefined}
       onPointerDown={ripple ? addRipple : undefined}
-      className={`group/pill inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-[background-color,border-color,box-shadow,scale,translate] duration-300 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${
+      className={`group/pill btn-motion inline-flex min-h-11 items-center gap-2 rounded-full px-6 py-3 text-button font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 ${
         extra ? `relative isolate${ripple ? " overflow-hidden" : ""}` : ""
       } ${VARIANTS[variant]} ${className}`}
       {...rest}
@@ -53,7 +53,7 @@ export default function PillLink({ to, variant = "solid", arrow = false, spotlig
       {spotlight && (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 rounded-full opacity-0 transition-opacity duration-300 group-hover/pill:opacity-100"
+          className="pointer-events-none absolute inset-0 -z-10 rounded-full opacity-0 transition-opacity duration-fast group-hover/pill:opacity-100 group-focus-visible/pill:opacity-100 group-focus-within/pill:opacity-100"
           style={{ background: "radial-gradient(60% 120% at var(--sx, 50%) var(--sy, 50%), rgba(255,255,255,0.42), transparent 70%)" }}
         />
       )}
@@ -62,7 +62,7 @@ export default function PillLink({ to, variant = "solid", arrow = false, spotlig
       {arrow && (
         <ArrowRight
           aria-hidden="true"
-          className="h-4 w-4 transition-transform duration-300 ease-out group-hover/pill:translate-x-1"
+          className="h-4 w-4 transition-transform duration-fast ease-standard group-hover/pill:translate-x-1 group-focus-within/pill:translate-x-1 group-focus-visible/pill:translate-x-1"
           strokeWidth={2}
         />
       )}

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Leaf, Repeat, ShieldCheck } from "lucide-react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // The section's three reasons, in its order (the bullets' lead words).
 const REASONS = [
@@ -26,7 +27,7 @@ export default function WhyLfp({ active, motion, mode, step }) {
   }, [mode, motion, active]);
 
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
-    gsap.timeline().from(el.querySelectorAll("[data-reason]"), { opacity: 0, y: 18, scale: 0.92, duration: 0.5, stagger: 0.1, ease: "back.out(1.6)" })
+    gsap.timeline().from(el.querySelectorAll("[data-reason]"), { opacity: 0, y: 18, scale: 0.92, duration: DUR.base, stagger: STAGGER, ease: EASE.emphasized })
   );
 
   // Without motion every reason is lit; with it, those read so far.

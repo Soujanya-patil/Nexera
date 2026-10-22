@@ -90,7 +90,7 @@ function Logo({ id, name }) {
       {p ? (
         <img src={p.logo} alt={name} loading="lazy" decoding="async" className={`${id === "clou" ? "h-7" : "h-5"} w-auto`} />
       ) : (
-        <span className="text-xl font-bold uppercase tracking-[0.02em] text-forest">{name}</span>
+        <span className="text-xl font-semibold uppercase tracking-[0.02em] text-forest">{name}</span>
       )}
     </span>
   );
@@ -190,7 +190,7 @@ export default function Ledger() {
           <div
             ref={spine}
             aria-hidden="true"
-            className="absolute inset-x-0 bottom-0 grid h-9 place-items-center rounded-full border border-signal/40 bg-signal/10 text-xs font-bold uppercase tracking-[0.5em] text-signal lg:inset-x-auto lg:bottom-0 lg:right-0 lg:top-0 lg:h-auto lg:w-11 lg:[writing-mode:vertical-rl]"
+            className="absolute inset-x-0 bottom-0 grid h-9 place-items-center rounded-full border border-signal/40 bg-signal/10 text-xs font-semibold uppercase tracking-[0.5em] text-signal lg:inset-x-auto lg:bottom-0 lg:right-0 lg:top-0 lg:h-auto lg:w-11 lg:[writing-mode:vertical-rl]"
           >
             NEXERA
           </div>

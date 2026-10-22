@@ -52,7 +52,7 @@ export default function CompareTray({ ids, replaced, onClear }) {
         ref={tray}
         aria-hidden={!shown || undefined}
         inert={!shown}
-        className={`fixed inset-x-0 bottom-0 z-40 px-3 pb-3 transition-[transform,opacity] duration-300 ease-out motion-reduce:transition-none sm:px-6 sm:pb-5 ${
+        className={`fixed inset-x-0 bottom-0 z-40 px-3 pb-3 transition-[transform,opacity] duration-fast ease-standard motion-reduce:transition-none sm:px-6 sm:pb-5 ${
           shown ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
         }`}
       >
@@ -66,26 +66,26 @@ export default function CompareTray({ ids, replaced, onClear }) {
                 <img src={p.image} alt={fullName(p)} className={p.imageFallback ? "h-auto w-[70%] opacity-80" : "h-[88%] w-[88%] object-contain"} />
               </li>
             ))}
-            <li className="hidden self-center pl-1 text-xs text-ice/60 sm:block">Up to 3 systems</li>
+            <li className="hidden self-center pl-1 text-micro text-ice/60 sm:block">Up to 3 systems</li>
           </ul>
           <button
             type="button"
             onClick={onClear}
-            className="shrink-0 rounded-full px-3 py-2 text-xs font-semibold text-ice/75 hover:text-white focus-visible:outline-2 focus-visible:outline-signal"
+            className="shrink-0 rounded-full px-3 py-2 text-micro font-semibold text-ice/75 hover:text-white focus-visible:text-white focus-visible:outline-2"
           >
             Clear
           </button>
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="shrink-0 rounded-full bg-signal px-4 py-2.5 text-sm font-semibold text-forest transition-[background-color,scale] duration-200 hover:bg-[#a4e39d] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none"
+            className="btn-motion min-h-11 shrink-0 rounded-full bg-signal px-4 py-2.5 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
           >
             Compare ({ids.length})
           </button>
         </section>
         <p
           role="status"
-          className={`pointer-events-none mx-auto mt-2 w-max rounded-full bg-ink px-3 py-1.5 text-xs font-medium text-white shadow transition-opacity duration-300 ${toast ? "opacity-100" : "opacity-0"}`}
+          className={`pointer-events-none mx-auto mt-2 w-max rounded-full bg-ink px-3 py-1.5 text-micro font-medium text-white shadow transition-opacity duration-fast ${toast ? "opacity-100" : "opacity-0"}`}
         >
           {toast ? "Up to 3 systems" : ""}
         </p>
@@ -155,20 +155,20 @@ function CompareDialog({ products, open, onClose }) {
     >
       <div className="flex max-h-[88svh] flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
-          <h2 id="sol-compare-title" className="text-lg font-semibold tracking-tight">
+          <h2 id="sol-compare-title" className="text-h4 font-semibold">
             Compare
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="grid h-10 w-10 place-items-center rounded-full text-graphite hover:bg-ice hover:text-ink focus-visible:outline-2 focus-visible:outline-signal"
+            className="grid h-10 w-10 place-items-center rounded-full text-graphite hover:bg-ice focus-visible:bg-ice hover:text-ink focus-visible:text-ink focus-visible:outline-2"
           >
             <X aria-hidden="true" className="h-5 w-5" />
           </button>
         </div>
         <div data-lenis-prevent className="overflow-auto">
-          <table className="w-full min-w-[34rem] table-fixed border-collapse text-left text-sm">
+          <table className="w-full min-w-[34rem] table-fixed border-collapse text-left text-small">
             <thead>
               <tr>
                 <td className="w-32 px-5 py-4 sm:w-40 sm:px-6" />
@@ -181,7 +181,7 @@ function CompareDialog({ products, open, onClose }) {
                         className={`absolute inset-0 m-auto object-contain ${p.imageFallback ? "h-[18%] w-[50%] opacity-80" : "h-[80%] w-[80%]"}`}
                       />
                     </div>
-                    <span className="block text-xs font-semibold uppercase tracking-[0.16em] text-sage">{partnerOf(p.partner).name}</span>
+                    <span className="block eyebrow text-sage">{partnerOf(p.partner).name}</span>
                     <span className="mt-0.5 block font-semibold text-ink">{p.name}</span>
                   </th>
                 ))}
@@ -190,7 +190,7 @@ function CompareDialog({ products, open, onClose }) {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id} className="border-t border-line">
-                  <th scope="row" className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-sage sm:px-6">
+                  <th scope="row" className="px-5 py-3 eyebrow text-sage sm:px-6">
                     {r.label}
                   </th>
                   {products.map((p) => (
@@ -208,13 +208,13 @@ function CompareDialog({ products, open, onClose }) {
                 <td className="px-5 py-4 sm:px-6" />
                 {products.map((p) => (
                   <td key={p.id} className="space-y-2 px-4 py-4">
-                    <Link to={`/products/${p.id}`} onClick={onClose} className="block text-sm font-semibold text-forest hover:text-steel focus-visible:outline-2 focus-visible:outline-signal">
+                    <Link to={`/products/${p.id}`} onClick={onClose} className="block text-button font-semibold text-forest hover:text-steel focus-visible:text-steel focus-visible:outline-2">
                       Explore<span className="sr-only"> {fullName(p)}</span>
                     </Link>
                     <Link
                       to={`/contact?product=${p.id}&intent=quote`}
                       onClick={onClose}
-                      className="block text-sm font-semibold text-forest hover:text-steel focus-visible:outline-2 focus-visible:outline-signal"
+                      className="block text-button font-semibold text-forest hover:text-steel focus-visible:text-steel focus-visible:outline-2"
                     >
                       Request a quote<span className="sr-only"> for {fullName(p)}</span>
                     </Link>

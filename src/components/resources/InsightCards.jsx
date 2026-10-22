@@ -32,16 +32,16 @@ export default function InsightCards({ items }) {
         const body = (
           <>
             <span className="flex items-start justify-between gap-3">
-              <span className="text-xs font-semibold tracking-[0.2em] text-sage">{String(i + 1).padStart(2, "0")}</span>
+              <span className="text-micro font-semibold tracking-[0.2em] text-sage">{String(i + 1).padStart(2, "0")}</span>
               <svg aria-hidden="true" viewBox="0 0 36 34" className="h-9 w-9 text-forest" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <path data-icon d={ICONS[i % ICONS.length]} />
               </svg>
             </span>
-            <span className="mt-5 flex-1 font-semibold leading-snug text-ink">{title}</span>
+            <span className="mt-5 flex-1 text-h4 font-semibold text-ink">{title}</span>
             {to ? (
-              <ArrowRight aria-hidden="true" className="mt-5 h-4 w-4 text-forest transition-transform duration-300 group-hover/ins:translate-x-1" />
+              <ArrowRight aria-hidden="true" className="mt-5 h-4 w-4 text-forest transition-transform duration-fast group-hover/ins:translate-x-1 group-focus-visible/ins:translate-x-1 group-focus-within/ins:translate-x-1" />
             ) : (
-              <span className="mt-5 self-start rounded-full border border-forest/20 bg-ice px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-forest">Coming soon</span>
+              <span className="mt-5 self-start rounded-full border border-forest/20 bg-ice px-2.5 py-1 eyebrow text-forest">Coming soon</span>
             )}
           </>
         );
@@ -50,7 +50,7 @@ export default function InsightCards({ items }) {
             {to ? (
               <a
                 href={to}
-                className="guide-card group/ins relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-1 hover:border-forest/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+                className="guide-card group/ins relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-paper p-6 card-hover focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 {body}
               </a>

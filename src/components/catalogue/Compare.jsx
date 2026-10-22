@@ -17,16 +17,16 @@ export function CompareTray({ ids, onRemove, onClear, onOpen }) {
   return (
     <div
       ref={tray}
-      className={`fixed inset-x-0 bottom-0 z-40 px-4 pb-4 transition-[transform,opacity] duration-300 ease-out sm:px-6 ${
+      className={`fixed inset-x-0 bottom-0 z-40 px-4 pb-4 transition-[transform,opacity] duration-fast ease-standard sm:px-6 ${
         ids.length ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
       aria-hidden={!ids.length}
     >
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-ink/95 px-4 py-3 text-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur sm:flex-nowrap sm:px-5">
-        <p className="hidden shrink-0 text-xs font-semibold uppercase tracking-[0.18em] text-ice/70 md:block">Compare</p>
+        <p className="hidden shrink-0 eyebrow text-ice/70 md:block">Compare</p>
         <ul className="flex min-w-0 flex-1 flex-wrap gap-2">
           {products.map((p) => (
-            <li key={p.id} className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-white/10 py-1 pl-3 pr-1 text-xs">
+            <li key={p.id} className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-white/10 py-1 pl-3 pr-1 text-micro">
               <span className="truncate">
                 {partnerOf(p.partner).name} {p.name}
               </span>
@@ -35,16 +35,16 @@ export function CompareTray({ ids, onRemove, onClear, onOpen }) {
                 onClick={() => onRemove(p.id)}
                 tabIndex={ids.length ? 0 : -1}
                 aria-label={`Remove ${p.name} from comparison`}
-                className="grid h-5 w-5 place-items-center rounded-full text-ice/70 hover:bg-white/15 hover:text-white"
+                className="grid h-5 w-5 place-items-center rounded-full text-ice/70 hover:bg-white/15 focus-visible:bg-white/15 hover:text-white focus-visible:text-white"
               >
                 <X aria-hidden="true" className="h-3 w-3" />
               </button>
             </li>
           ))}
-          {ids.length < 2 && <li className="self-center text-xs text-ice/60">Select at least one more system</li>}
+          {ids.length < 2 && <li className="self-center text-micro text-ice/60">Select at least one more system</li>}
         </ul>
         <div className="flex shrink-0 items-center gap-2">
-          <button type="button" onClick={onClear} tabIndex={ids.length ? 0 : -1} className="rounded-full px-3 py-2 text-xs text-ice/70 hover:text-white">
+          <button type="button" onClick={onClear} tabIndex={ids.length ? 0 : -1} className="rounded-full px-3 py-2 text-micro text-ice/70 hover:text-white focus-visible:text-white">
             Clear
           </button>
           <button
@@ -52,11 +52,11 @@ export function CompareTray({ ids, onRemove, onClear, onOpen }) {
             onClick={onOpen}
             disabled={ids.length < 2}
             tabIndex={ids.length ? 0 : -1}
-            className="group/cmp inline-flex items-center gap-2 rounded-full bg-signal px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-forest transition-[background-color,scale] duration-300 hover:bg-[#a4e39d] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
+            className="group/cmp btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-signal px-4 py-2 text-micro font-semibold uppercase tracking-[0.08em] text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <GitCompareArrows aria-hidden="true" className="h-4 w-4" />
             Compare {ids.length} {ids.length === 1 ? "system" : "systems"}
-            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover/cmp:translate-x-1" />
+            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/cmp:translate-x-1 group-focus-visible/cmp:translate-x-1 group-focus-within/cmp:translate-x-1" />
           </button>
         </div>
       </div>
@@ -94,18 +94,18 @@ export function CompareDialog({ ids, open, onClose }) {
     >
       <div className="flex max-h-[88svh] flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
-          <h2 id="compare-title" className="text-lg font-semibold tracking-tight">
+          <h2 id="compare-title" className="text-h4 font-semibold">
             Compare systems
           </h2>
-          <button type="button" onClick={onClose} aria-label="Close comparison" className="grid h-9 w-9 place-items-center rounded-full text-graphite hover:bg-ice hover:text-ink">
+          <button type="button" onClick={onClose} aria-label="Close comparison" className="grid h-9 w-9 place-items-center rounded-full text-graphite hover:bg-ice focus-visible:bg-ice hover:text-ink focus-visible:text-ink">
             <X aria-hidden="true" className="h-5 w-5" />
           </button>
         </div>
         <div data-lenis-prevent className="overflow-auto">
-          <table className="w-full min-w-[36rem] table-fixed border-collapse text-left text-sm">
+          <table className="w-full min-w-[36rem] table-fixed border-collapse text-left text-small">
             <thead>
               <tr>
-                <th scope="col" className="w-36 px-5 py-4 align-bottom sm:w-44 text-xs font-semibold uppercase tracking-[0.14em] text-sage sm:px-6">
+                <th scope="col" className="w-36 px-5 py-4 align-bottom sm:w-44 eyebrow text-sage sm:px-6">
                   <span className="sr-only">Specification</span>
                 </th>
                 {products.map((p) => (
@@ -119,7 +119,7 @@ export function CompareDialog({ ids, open, onClose }) {
                         className={`absolute inset-0 m-auto object-contain ${p.imageFallback ? "h-[18%] w-[50%] opacity-80" : "h-[80%] w-[80%]"}`}
                       />
                     </div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sage">{partnerOf(p.partner).name}</p>
+                    <p className="eyebrow text-sage">{partnerOf(p.partner).name}</p>
                     <p className="mt-0.5 font-semibold text-ink">{p.name}</p>
                   </th>
                 ))}
@@ -128,7 +128,7 @@ export function CompareDialog({ ids, open, onClose }) {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id} className="border-t border-line">
-                  <th scope="row" className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-sage sm:px-6">
+                  <th scope="row" className="px-5 py-3 eyebrow text-sage sm:px-6">
                     {r.label}
                   </th>
                   {products.map((p) => (
@@ -142,7 +142,7 @@ export function CompareDialog({ ids, open, onClose }) {
                 <td className="px-5 py-4 sm:px-6" />
                 {products.map((p) => (
                   <td key={p.id} className="px-4 py-4">
-                    <Link to={`/products/${p.id}`} onClick={onClose} className="inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:text-steel">
+                    <Link to={`/products/${p.id}`} onClick={onClose} className="inline-flex items-center gap-1.5 text-button font-semibold text-forest hover:text-steel focus-visible:text-steel">
                       View product <ArrowRight aria-hidden="true" className="h-4 w-4" />
                     </Link>
                   </td>
@@ -151,7 +151,7 @@ export function CompareDialog({ ids, open, onClose }) {
             </tbody>
           </table>
         </div>
-        <p className="border-t border-line px-5 py-3 text-xs text-graphite sm:px-6">
+        <p className="border-t border-line px-5 py-3 text-micro text-graphite sm:px-6">
           — means the value isn't stated in the manufacturer's documentation available to us. Ask NEXERA for full specifications.
         </p>
       </div>

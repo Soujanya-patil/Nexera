@@ -21,13 +21,13 @@ export default function LiveCount({ count, total }) {
   }, [shown.n, shown.prev]);
 
   return (
-    <p className="flex shrink-0 items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-sage">
+    <p className="flex shrink-0 items-center gap-2 eyebrow text-sage">
       <span aria-hidden="true" className="relative inline-flex h-2 w-2">
         <span className="absolute inset-0 rounded-full bg-signal/50 motion-safe:animate-ping [animation-duration:2.4s]" />
         <span className="relative h-2 w-2 rounded-full bg-signal" />
       </span>
       <span aria-hidden="true">Showing</span>
-      <span aria-hidden="true" className="relative inline-flex h-[1.4em] min-w-[1.2ch] items-center justify-center overflow-hidden text-base text-forest">
+      <span aria-hidden="true" className="relative inline-flex h-[1.4em] min-w-[1.2ch] items-center justify-center overflow-hidden text-body text-forest">
         {shown.prev !== null && (
           <span key={`out-${shown.n}`} className="count-out absolute tabular-nums">
             {shown.prev}

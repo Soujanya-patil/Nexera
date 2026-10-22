@@ -8,6 +8,7 @@ import { APPLICATIONS, PRODUCTS, applicationLabel } from "../data/products";
 import tclLogo from "../assets/partners/tcl-logo.png";
 import hithiumLogo from "../assets/partners/hithium-logo.png";
 import clouLogo from "../assets/partners/clou-logo.png";
+import { DUR, EASE } from "../lib/tokens";
 
 // Equal treatment for all three: the CLOU agreement is signed, so the earlier text-only rule is gone.
 // Heights are set per logo so the three read at a similar optical size (the source PNGs differ).
@@ -41,7 +42,7 @@ const Logo = ({ l, index, hidden, onHover }) => (
     onPointerLeave={() => onHover(null)}
     className="group/logo relative flex shrink-0 items-center px-6 sm:px-8"
   >
-    <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-300 group-hover/logo:bg-signal/60" />
+    <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-fast group-hover/logo:bg-signal/60 group-focus-visible/logo:bg-signal/60 group-focus-within/logo:bg-signal/60" />
     <img
       src={l.src}
       loading="lazy"
@@ -49,9 +50,9 @@ const Logo = ({ l, index, hidden, onHover }) => (
       // The same alt in the marquee's looping copies (they sit in aria-hidden, so screen readers skip
       // them; crawlers still see a description).
       alt={`${l.name} logo`}
-      className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-500 ease-out group-hover/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-hover/logo:grayscale-0`}
+      className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-base ease-standard group-hover/logo:-translate-y-0.5 group-focus-visible/logo:-translate-y-0.5 group-focus-within/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-focus-visible/logo:opacity-100 group-focus-within/logo:opacity-100 group-hover/logo:grayscale-0 group-focus-visible/logo:grayscale-0 group-focus-within/logo:grayscale-0`}
     />
-    <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-signal transition-[width] duration-500 ease-out group-hover/logo:w-10" />
+    <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 scale-x-0 rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover/logo:scale-x-100 group-focus-visible/logo:scale-x-100 group-focus-within/logo:scale-x-100" />
   </li>
 );
 
@@ -73,15 +74,15 @@ export default function HomePartners() {
   const [hot, setHot] = useState(null);
   const root = useRef(null);
   const enter = useEntrance(root, ({ tl, q }) => {
-    tl.fromTo(q('[data-e="eyebrow"]'), { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.55, clearProps: "all" }, 0)
-      .fromTo(q('[data-e="desc"]'), { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.6, clearProps: "all" }, 0.3)
+    tl.fromTo(q('[data-e="eyebrow"]'), { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: DUR.base, clearProps: "all" }, 0)
+      .fromTo(q('[data-e="desc"]'), { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: DUR.base, clearProps: "all" }, 0.3)
       .fromTo(
         q("[data-logo]"),
         { opacity: 0, x: 28 },
-        { opacity: 1, x: 0, duration: 0.7, ease: "power3.out", stagger: (i, el) => Number(el.dataset.logo) * 0.1, clearProps: "all" },
+        { opacity: 1, x: 0, duration: DUR.slow, ease: EASE.emphasized, stagger: (i, el) => Number(el.dataset.logo) * 0.1, clearProps: "all" },
         0.45
       )
-      .fromTo(q('[data-e="fit"]'), { opacity: 0 }, { opacity: 1, duration: 0.5, clearProps: "all" }, 0.85);
+      .fromTo(q('[data-e="fit"]'), { opacity: 0 }, { opacity: 1, duration: DUR.base, clearProps: "all" }, 0.85);
   });
   const partner = logos.find((l) => l.id === hot);
 
@@ -89,16 +90,16 @@ export default function HomePartners() {
     <section ref={root} data-enter={enter} className="border-y border-line bg-paper py-16 md:py-20">
       <div className="grid container-site items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p data-e="eyebrow" className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">
+          <p data-e="eyebrow" className="eyebrow text-sage">
             Our Technology Partners
           </p>
-          <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Global Technology. Local Impact.</AnimatedText>
+          <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Global Technology. Local Impact.</AnimatedText>
           <p data-e="desc" className="mt-3 max-w-lg text-graphite">
             NEXERA brings systems from world-leading BESS manufacturers —{" "}
             {NAMED.map(([id, name], i) => (
               <Fragment key={id}>
                 {i > 0 && (i === NAMED.length - 1 ? " and " : ", ")}
-                <Link to={`/partners/${id}`} className="font-medium text-forest underline-offset-4 hover:underline">
+                <Link to={`/partners/${id}`} className="font-medium text-forest underline-offset-4 hover:underline focus-visible:underline">
                   {name}
                 </Link>
               </Fragment>
@@ -137,8 +138,8 @@ export default function HomePartners() {
             </>
           )}
           {/* Where the hovered partner's systems fit (fixed height: hovering never shifts the layout) */}
-          <p data-e="fit" aria-hidden="true" className="mt-3 flex h-5 items-center justify-center gap-2 text-xs text-graphite">
-            <span className={`h-1.5 w-1.5 rounded-full transition-colors duration-300 ${partner ? "bg-signal" : "bg-line"}`} />
+          <p data-e="fit" aria-hidden="true" className="mt-3 flex h-5 items-center justify-center gap-2 text-micro text-graphite">
+            <span className={`h-1.5 w-1.5 rounded-full transition-colors duration-fast ${partner ? "bg-signal" : "bg-line"}`} />
             <span key={hot ?? "all"} className="journey-detail">
               {partner ? (
                 <>

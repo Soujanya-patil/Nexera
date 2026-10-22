@@ -1,15 +1,31 @@
+import { useRef } from "react";
+import { useIntro } from "../lib/intro";
+import { DUR, RISE, STAGGER } from "../lib/tokens";
+
+/**
+ * The plain pages' hero (About, How It Works, Service & Training, Where We Operate, Contact). On a
+ * client-side visit the eyebrow, title and subtitle rise in one after another (useIntro, motion
+ * tokens); on a direct load the pre-rendered hero is simply there — the h1 (the page's largest paint)
+ * is never hidden.
+ */
 export default function PageHeader({ eyebrow, title, subtitle }) {
+  const root = useRef(null);
+  const intro = useIntro(root, ({ tl, q }) => {
+    tl.fromTo(q("[data-a]"), { opacity: 0, y: RISE }, { opacity: 1, y: 0, duration: DUR.slow, stagger: STAGGER, clearProps: "all" });
+  });
   return (
-    <section className="bg-ink text-white">
-      <div className="container-site py-16 md:py-20">
+    <section ref={root} data-intro={intro} className="bg-ink text-white">
+      <div className="container-site py-16 md:py-24">
         {eyebrow && (
-          <p className="text-sm text-signal font-medium mb-3">{eyebrow}</p>
+          <p data-a className="eyebrow text-signal">
+            {eyebrow}
+          </p>
         )}
-        <h1 className="font-sans text-3xl md:text-4xl font-semibold max-w-2xl">
+        <h1 data-a className="mt-eyebrow max-w-3xl text-h1 font-semibold">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-4 text-ice/75 max-w-2xl leading-relaxed">
+          <p data-a className="mt-heading max-w-measure text-lead text-ice/80">
             {subtitle}
           </p>
         )}

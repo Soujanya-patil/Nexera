@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Building2, FlaskConical, Repeat, Thermometer, Zap } from "lucide-react";
 import { LFP_NMC_GLANCE } from "../../../data/articles";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // One small icon per table row, in the table's order.
 const ICONS = [Thermometer, Repeat, Box, Zap, FlaskConical, Building2];
@@ -29,8 +30,8 @@ export default function GlanceRows({ active, motion, mode, step, table = LFP_NMC
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
     gsap
       .timeline()
-      .from(el.querySelectorAll("[data-row]"), { opacity: 0, x: -14, duration: 0.4, stagger: 0.06, ease: "power2.out", clearProps: "opacity,transform" })
-      .from(el.querySelectorAll("[data-pair]"), { opacity: 0, y: 10, duration: 0.4, stagger: 0.1, ease: "power2.out", clearProps: "opacity,transform" }, 0.35)
+      .from(el.querySelectorAll("[data-row]"), { opacity: 0, x: -14, duration: DUR.base, stagger: STAGGER, ease: EASE.standard, clearProps: "opacity,transform" })
+      .from(el.querySelectorAll("[data-pair]"), { opacity: 0, y: 10, duration: DUR.base, stagger: STAGGER, ease: EASE.standard, clearProps: "opacity,transform" }, 0.35)
   );
 
   const lit = mode === "inline" ? tour : step;

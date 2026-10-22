@@ -9,7 +9,7 @@
 export default function Wordmark({ className = "" }) {
   return (
     <span className={`inline-flex flex-col leading-[0.95] ${className}`}>
-      <span className="font-sans font-bold uppercase tracking-tight">
+      <span className="font-sans font-semibold uppercase tracking-tight">
         NE<span className="text-signal">X</span>ERA
       </span>
       <span className="mt-1 font-sans font-normal uppercase tracking-[0.3em] text-[0.4em] text-current/70">

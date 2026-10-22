@@ -4,6 +4,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { partnerOf } from "../../data/products";
 import { getLenis } from "../../lib/lenis";
 import { useScrollReveal } from "../../lib/scrollReveal";
+import { SCROLL_DUR } from "../../lib/tokens";
 
 /*
  * Interaction layer for the Solutions pages. Desktop-only effects check FINE_POINTER (and motion) at
@@ -30,7 +31,7 @@ export function ArrowLink({ to, children, className = "", ...rest }) {
   return (
     <Link
       to={to}
-      className={`group/arrow inline-flex items-center gap-1.5 text-sm font-semibold text-forest hover:text-steel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal ${className}`}
+      className={`group/arrow inline-flex items-center gap-1.5 text-button font-semibold text-forest hover:text-steel focus-visible:text-steel focus-visible:outline-2 focus-visible:outline-offset-4 ${className}`}
       {...rest}
     >
       <ArrowUnderline>{children}</ArrowUnderline>
@@ -56,10 +57,10 @@ export function ArrowUnderline({ children, group = "arrow" }) {
         {children}
         <span
           aria-hidden="true"
-          className={`absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-current transition-transform duration-[250ms] ease-out motion-reduce:transition-none ${line}`}
+          className={`absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-current transition-transform duration-fast ease-standard motion-reduce:transition-none ${line}`}
         />
       </span>
-      <ArrowRight aria-hidden="true" className={`h-4 w-4 shrink-0 transition-transform duration-[250ms] ease-out motion-reduce:transition-none ${nudge}`} />
+      <ArrowRight aria-hidden="true" className={`h-4 w-4 shrink-0 transition-transform duration-fast ease-standard motion-reduce:transition-none ${nudge}`} />
     </>
   );
 }
@@ -104,7 +105,7 @@ export function Spotlight() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="pointer-events-none absolute left-0 top-0 h-[840px] w-[840px] rounded-full opacity-0 transition-opacity duration-500"
+      className="pointer-events-none absolute left-0 top-0 h-[840px] w-[840px] rounded-full opacity-0 transition-opacity duration-base"
       style={{ background: "radial-gradient(closest-side, rgba(226,246,221,0.075), rgba(144,217,136,0.035) 55%, transparent)" }}
     />
   );
@@ -172,7 +173,7 @@ export function KeywordTicker({ items, label }) {
   const list = (hidden) => (
     <ul aria-hidden={hidden || undefined} className="ticker-track flex shrink-0 items-center">
       {items.map((k) => (
-        <li key={k} className="flex items-center whitespace-nowrap px-5 text-sm font-medium tracking-wide text-ice/80">
+        <li key={k} className="flex items-center whitespace-nowrap px-5 text-small font-medium text-ice/80">
           <span aria-hidden="true" className="mr-10 h-1 w-1 rounded-full bg-signal/80" />
           {k}
         </li>
@@ -276,13 +277,13 @@ export function AppRail({ items, label }) {
         {items.map(({ icon: Icon, title, text }) => (
           <li
             key={title}
-            className="group/app w-[16.5rem] shrink-0 snap-start select-none rounded-2xl border border-line bg-paper p-6 transition-[border-color,translate,box-shadow] duration-300 hover:-translate-y-1 hover:border-forest/25 hover:shadow-[0_18px_40px_-28px_rgba(7,26,23,0.45)] sm:w-[18rem]"
+            className="group/app w-[16.5rem] shrink-0 snap-start select-none rounded-2xl border border-line bg-paper p-6 card-hover sm:w-[18rem]"
           >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-ice text-forest transition-colors duration-300 group-hover/app:bg-signal/30">
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-ice text-forest transition-colors duration-fast group-hover/app:bg-signal/30 group-focus-visible/app:bg-signal/30 group-focus-within/app:bg-signal/30">
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <h3 className="mt-5 font-semibold text-ink">{title}</h3>
-            <p className="mt-1.5 text-sm leading-relaxed text-graphite">{text}</p>
+            <p className="mt-1.5 text-small text-graphite">{text}</p>
           </li>
         ))}
       </ul>
@@ -295,10 +296,10 @@ export function AppRail({ items, label }) {
               onClick={() => go(i)}
               aria-label={`Show ${it.title}`}
               aria-current={i === active || undefined}
-              className="grid h-6 w-6 place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-signal"
+              className="hit-area grid h-6 w-6 place-items-center rounded-full focus-visible:outline-2"
             >
               <span
-                className={`block h-1.5 w-5 origin-center rounded-full transition-[scale,background-color] duration-300 motion-reduce:transition-none ${
+                className={`block h-1.5 w-5 origin-center rounded-full transition-[scale,background-color] duration-fast motion-reduce:transition-none ${
                   i === active ? "scale-x-100 bg-forest" : "scale-x-[0.3] bg-forest/25"
                 }`}
               />
@@ -316,7 +317,7 @@ export function AppRail({ items, label }) {
               onClick={() => go(active + d)}
               aria-label={name}
               disabled={d < 0 ? active === 0 : active === items.length - 1}
-              className="grid h-11 w-11 place-items-center rounded-full border border-line bg-paper text-forest transition-colors hover:border-forest/40 disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+              className="grid h-11 w-11 place-items-center rounded-full border border-line bg-paper text-forest transition-colors hover:border-forest/40 focus-visible:border-forest/40 disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               <Icon aria-hidden="true" className="h-5 w-5" />
             </button>
@@ -346,12 +347,12 @@ export function PartnerStrip({ partners, label = "Technology partners", classNam
           <li data-sr key={id}>
             <Link
               to={`/partners/${id}`}
-              className="grid h-10 place-items-center rounded-md px-2 opacity-70 grayscale transition-[opacity,filter] duration-300 hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal motion-reduce:transition-none"
+              className="grid h-11 place-items-center rounded-md px-2 opacity-70 grayscale transition-[opacity,filter] duration-fast hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
             >
               {p ? (
                 <img src={p.logo} alt={name} loading="lazy" decoding="async" className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto`} />
               ) : (
-                <span className="text-[1.6rem] font-bold uppercase leading-6 tracking-[0.02em] text-forest">
+                <span className="text-[1.6rem] font-semibold uppercase leading-6 tracking-[0.02em] text-forest">
                   {name}
                 </span>
               )}
@@ -405,7 +406,7 @@ export function SectionRail() {
     const lenis = getLenis();
     // A position, not the element: Lenis would also subtract the section's scroll-margin-top.
     const top = el.getBoundingClientRect().top + window.scrollY + SEGMENT_OFFSET;
-    if (lenis) lenis.scrollTo(top, { duration: 1 });
+    if (lenis) lenis.scrollTo(top, { duration: SCROLL_DUR });
     else window.scrollTo({ top, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
   return (
@@ -417,14 +418,14 @@ export function SectionRail() {
               type="button"
               onClick={() => go(s.el)}
               aria-current={i === active ? "location" : undefined}
-              className="group/dot grid h-6 w-6 place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-signal"
+              className="group/dot grid h-6 w-6 place-items-center rounded-full focus-visible:outline-2"
             >
               <span
-                className={`block h-2.5 w-2.5 rounded-full transition-[scale,background-color] duration-300 motion-reduce:transition-none ${
-                  i === active ? "scale-100 bg-signal ring-2 ring-forest/70" : "scale-[0.6] bg-forest/35 group-hover/dot:bg-forest"
+                className={`block h-2.5 w-2.5 rounded-full transition-[scale,background-color] duration-fast motion-reduce:transition-none ${
+                  i === active ? "scale-100 bg-signal ring-2 ring-forest/70" : "scale-[0.6] bg-forest/35 group-hover/dot:bg-forest group-focus-visible/dot:bg-forest group-focus-within/dot:bg-forest"
                 }`}
               />
-              <span className="pointer-events-none absolute right-full mr-3 max-w-[16rem] truncate whitespace-nowrap rounded-md bg-ink px-2.5 py-1 text-xs font-medium text-white opacity-0 transition-opacity duration-200 group-hover/dot:opacity-100 group-focus-visible/dot:opacity-100 motion-reduce:transition-none">
+              <span className="pointer-events-none absolute right-full mr-3 max-w-[16rem] truncate whitespace-nowrap rounded-md bg-ink px-2.5 py-1 text-micro font-medium text-white opacity-0 transition-opacity duration-fast group-hover/dot:opacity-100 group-focus-within/dot:opacity-100 group-focus-visible/dot:opacity-100 motion-reduce:transition-none">
                 {s.label}
               </span>
             </button>

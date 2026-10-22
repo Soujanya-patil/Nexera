@@ -7,6 +7,7 @@ import { useMediaQuery, useScrollSteps } from "../../lib/scrollSteps";
 import { loadGsap } from "../../lib/motion";
 import { useScrollReveal } from "../../lib/scrollReveal";
 import { getLenis } from "../../lib/lenis";
+import { SCROLL_DUR, STAGGER } from "../../lib/tokens";
 
 // Pinned, scroll-driven track from tablet width up, at any viewport height (the cards size to the
 // height); motion must be allowed.
@@ -39,7 +40,7 @@ export default function SupportCapabilities() {
   const viewport = useRef(null);
   const track = useRef(null);
   const active = useScrollSteps(root, CAPABILITIES.length, { start: "top 64px", end: "bottom bottom", enabled: pinned });
-  const reveal = useScrollReveal(track, { stagger: 0.08, y: 20 });
+  const reveal = useScrollReveal(track);
 
   // Horizontal travel = how far the row overflows its viewport; the section's height is the pinned
   // viewport plus that travel x SLOW.
@@ -76,7 +77,7 @@ export default function SupportCapabilities() {
     const p = HOLD + move * (1 - 2 * HOLD);
     const y = root.current.getBoundingClientRect().top + window.scrollY - 64 + p * travel * SLOW;
     const lenis = getLenis();
-    if (lenis) lenis.scrollTo(y, { duration: 0.6 });
+    if (lenis) lenis.scrollTo(y, { duration: SCROLL_DUR });
     else window.scrollTo({ top: y });
   };
 
@@ -95,8 +96,8 @@ export default function SupportCapabilities() {
         <div className="container-site">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">What NEXERA brings</p>
-              <AnimatedText id="capabilities-title" className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+              <p className="eyebrow text-sage">What NEXERA brings</p>
+              <AnimatedText id="capabilities-title" className="mt-3 text-h2 font-semibold text-ink">
                 One Partner. Through the Project.
               </AnimatedText>
             </div>
@@ -104,7 +105,7 @@ export default function SupportCapabilities() {
               <p className="max-w-sm text-graphite">Technology access, engineering support and service — not just at the sale.</p>
               {pinned && (
                 <div className="mt-4 flex items-center gap-4 md:justify-end" aria-hidden="true">
-                  <span className="text-xs font-semibold tracking-[0.18em] text-sage">
+                  <span className="text-micro font-semibold tracking-[0.18em] text-sage">
                     <span className="text-forest">{pad(active + 1)}</span> / {pad(CAPABILITIES.length)}
                   </span>
                   <span className="relative h-0.5 w-32 overflow-hidden rounded-full bg-forest/10">
@@ -138,19 +139,19 @@ export default function SupportCapabilities() {
                   data-sr={pinned ? undefined : ""}
                   className={
                     pinned
-                      ? `w-[22rem] shrink-0 transition-[opacity,scale] duration-500 ease-out lg:w-[24rem] ${dim ? "scale-[0.97] opacity-60" : "scale-100 opacity-100"}`
+                      ? `w-[22rem] shrink-0 transition-[opacity,scale] duration-base ease-standard lg:w-[24rem] ${dim ? "scale-[0.97] opacity-60" : "scale-100 opacity-100"}`
                       : undefined
                   }
                 >
                   <Link
                     to={c.to}
                     onFocus={showCard}
-                    className={`group relative flex ${pinned ? "h-[clamp(16.5rem,calc(100svh-19rem),24rem)]" : "h-full min-h-[17rem]"} flex-col overflow-hidden rounded-2xl border border-line bg-ice/60 p-8 transition-[translate,border-color,box-shadow,background-color] duration-300 ease-out hover:-translate-y-1 hover:border-forest/25 hover:bg-paper hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)] focus-visible:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal`}
+                    className={`group relative flex ${pinned ? "h-[clamp(16.5rem,calc(100svh-19rem),24rem)]" : "h-full min-h-[17rem]"} flex-col overflow-hidden rounded-2xl border border-line bg-ice/60 p-8 card-hover hover:bg-paper focus-visible:bg-paper focus-visible:outline-2 focus-visible:outline-offset-2`}
                   >
                     {/* Background: faint grid + soft light, sliding in on hover */}
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 translate-x-6 opacity-0 transition-[opacity,translate] duration-700 ease-out group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+                      className="pointer-events-none absolute inset-0 translate-x-6 opacity-0 transition-[opacity,translate] duration-slow ease-standard group-hover:translate-x-0 group-focus-within:translate-x-0 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
                       style={{
                         backgroundImage:
                           "radial-gradient(60% 70% at 100% 0%, rgba(144,217,136,0.16), transparent 70%), linear-gradient(rgba(9,47,39,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(9,47,39,0.05) 1px, transparent 1px)",
@@ -159,21 +160,21 @@ export default function SupportCapabilities() {
                         WebkitMaskImage: "linear-gradient(to left, #000, transparent 85%)",
                       }}
                     />
-                    <span aria-hidden="true" className="absolute left-8 top-0 h-0.5 w-0 rounded-full bg-signal transition-[width] duration-500 ease-out group-hover:w-14 group-focus-visible:w-14" />
+                    <span aria-hidden="true" className="absolute left-8 top-0 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-within:scale-x-100 group-focus-visible:scale-x-100" />
 
                     <div className="relative flex items-start justify-between">
-                      <span className="text-5xl font-semibold leading-none tracking-tight text-forest/15 transition-colors duration-300 group-hover:text-forest/30">
+                      <span className="text-display tabular-nums font-semibold leading-none text-forest/15 transition-colors duration-fast group-hover:text-forest/30 group-focus-visible:text-forest/30 group-focus-within:text-forest/30">
                         {pad(i + 1)}
                       </span>
-                      <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-paper text-forest transition-[background-color,border-color] duration-300 group-hover:border-signal group-hover:bg-signal">
-                        <Icon aria-hidden="true" className="h-5 w-5 transition-transform duration-500 ease-out group-hover:-translate-y-0.5 group-hover:rotate-[-6deg]" strokeWidth={1.75} />
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-paper text-forest transition-[background-color,border-color] duration-fast group-hover:border-signal group-focus-visible:border-signal group-focus-within:border-signal group-hover:bg-signal group-focus-visible:bg-signal group-focus-within:bg-signal">
+                        <Icon aria-hidden="true" className="h-5 w-5 transition-transform duration-base ease-standard group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5 group-focus-within:-translate-y-0.5 group-hover:rotate-[-6deg] group-focus-visible:rotate-[-6deg] group-focus-within:rotate-[-6deg]" strokeWidth={1.75} />
                       </span>
                     </div>
-                    <h3 className="relative mt-auto text-xl font-semibold uppercase tracking-[0.06em] text-ink">{c.title}</h3>
-                    <p className="relative mt-3 text-[0.9375rem] leading-relaxed text-graphite">{c.copy}</p>
-                    <span className="relative mt-6 inline-flex items-center gap-2 text-sm font-semibold text-forest">
+                    <h3 className="relative mt-auto text-h3 font-semibold uppercase tracking-[0.06em] text-ink">{c.title}</h3>
+                    <p className="relative mt-3 text-body text-graphite">{c.copy}</p>
+                    <span className="relative mt-6 inline-flex items-center gap-2 text-small font-semibold text-forest">
                       {c.cta}
-                      <ArrowRight aria-hidden="true" className="h-4 w-4 -translate-x-1 opacity-60 transition-[translate,opacity] duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
+                      <ArrowRight aria-hidden="true" className="h-4 w-4 -translate-x-1 opacity-60 transition-[translate,opacity] duration-fast group-hover:translate-x-1 group-focus-visible:translate-x-1 group-focus-within:translate-x-1 group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" />
                     </span>
                   </Link>
                 </li>

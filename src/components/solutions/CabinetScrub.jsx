@@ -48,16 +48,16 @@ export default function CabinetScrub() {
 
   return (
     <section ref={section} id="inside-cabinet" aria-labelledby="inside-cabinet-title" className="relative overflow-hidden bg-night text-white">
-      <div className={scrub ? "flex h-[calc(100svh-4rem)] items-center py-8" : "py-14 lg:py-20"}>
+      <div className={scrub ? "flex h-[calc(100svh-3.5rem)] items-center py-8" : "py-14 lg:py-20"}>
         <div className="grid w-full container-site items-center gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
           <div>
-            <KineticHeading id="inside-cabinet-title" className="sol-h2 font-semibold">
+            <KineticHeading id="inside-cabinet-title" className="text-h2 font-semibold">
               Inside a C&I Energy Storage Cabinet
             </KineticHeading>
-            <p className="mt-4 max-w-md leading-relaxed text-ice/75">
+            <p className="mt-4 max-w-md text-body text-ice/75">
               Scroll to open the cabinet: battery modules, power electronics and protection, engineered as one system.
             </p>
-            <p className="mt-8 max-w-md text-xs leading-relaxed text-ice/50">
+            <p className="mt-8 max-w-md text-micro text-ice/50">
               Representative cabinet shown. See each product page for exact specifications.
             </p>
           </div>
@@ -98,7 +98,7 @@ export default function CabinetScrub() {
               <figcaption className="sr-only">Protection components</figcaption>
               <ul aria-label="Protection components" className="mt-5 grid gap-2 sm:grid-cols-2">
                 {CALLOUTS.map((c) => (
-                  <li key={c.label} className="flex items-center gap-3 text-sm text-ice/85">
+                  <li key={c.label} className="flex items-center gap-3 text-small text-ice/85">
                     <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" />
                     {c.label}
                   </li>

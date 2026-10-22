@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const GREEN = "#90D988";
 const LINE = "#F4F7F4";
@@ -29,8 +30,8 @@ export default function SafetyCabinet({ active, motion, mode, step }) {
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
     gsap
       .timeline()
-      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.9, stagger: 0.04, ease: "power2.inOut" })
-      .from(el.querySelectorAll("[data-label]"), { opacity: 0, x: 10, duration: 0.35, stagger: 0.05, clearProps: "opacity,transform" }, 0.5)
+      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
+      .from(el.querySelectorAll("[data-label]"), { opacity: 0, x: 10, duration: DUR.base, stagger: STAGGER, clearProps: "opacity,transform" }, 0.5)
   );
 
   const lit = mode === "inline" ? tour : step;

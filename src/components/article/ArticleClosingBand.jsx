@@ -28,7 +28,7 @@ export default function ArticleClosingBand() {
 
       <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
+          <p className="flex items-center gap-3 eyebrow text-ice/80">
             {STEPS.map((w, i) => (
               <Fragment key={w}>
                 {i > 0 && <span aria-hidden="true" className="inline-block h-3 w-px bg-ice/40" />}
@@ -36,18 +36,18 @@ export default function ArticleClosingBand() {
               </Fragment>
             ))}
           </p>
-          <h2 data-rv="split" className="mt-4 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+          <h2 data-rv="split" className="mt-4 text-h2 font-semibold">
             Let&rsquo;s Build India&rsquo;s Energy Storage Future Together
           </h2>
-          <p data-rv="text" className="mt-4 max-w-xl leading-relaxed text-ice/80">
+          <p data-rv="text" className="mt-4 max-w-xl text-body text-ice/80">
             Whether you&rsquo;re a solar EPC looking to partner, or an end customer exploring a solution, Nexera is your trusted partner for BESS.
           </p>
         </div>
         <div data-rv="text" className="flex shrink-0 flex-wrap items-center gap-4">
-          <MagneticButton to="/#contact" arrow spotlight className="hover:scale-[1.02]">
+          <MagneticButton to="/#contact" arrow spotlight>
             Get in Touch
           </MagneticButton>
-          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:scale-[1.02] hover:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)]">
+          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)] focus-visible:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)]">
             Become a Partner
           </MagneticButton>
         </div>

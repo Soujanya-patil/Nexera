@@ -48,7 +48,9 @@ export function initSmoothScroll() {
     // Guard against a second instance (StrictMode re-runs effects; the first run is cancelled).
     if (cancelled || active) return;
     // Wheel inside [data-lenis-prevent] (modals, horizontally scrolling rows) scrolls natively.
-    lenis = new Lenis();
+    // One tuning for every page (spelled out rather than left to the library's defaults): a gentle
+    // wheel glide, native touch scrolling on phones (smoothing a finger feels laggy).
+    lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1, smoothWheel: true, syncTouch: false });
     active = lenis;
     gsapRef = gsap;
     lenis.on("scroll", ScrollTrigger.update);

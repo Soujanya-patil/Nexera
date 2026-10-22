@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const WORDS = [
   ["B", "attery"],
@@ -18,13 +19,13 @@ export default function BessLetters({ active, motion, mode }) {
     const letters = el.querySelectorAll("[data-letter]");
     const rests = el.querySelectorAll("[data-rest]");
     const rule = el.querySelector("[data-rule]");
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    const tl = gsap.timeline({ defaults: { ease: EASE.emphasized } });
     tl.set(rests, { clipPath: "inset(0 100% 0 0)", opacity: 0 })
       .set(rule, { scaleX: 0 })
-      .fromTo(letters, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.08 }, 0)
-      .to(letters, { duration: 0.7, stagger: 0.1, scrambleText: { text: "{original}", chars: "BESYTMNRG01", revealDelay: 0.35, speed: 0.6 } }, 0)
-      .to(rests, { clipPath: "inset(0 0% 0 0)", opacity: 1, duration: 0.55, stagger: 0.12 }, 0.85)
-      .to(rule, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 1.1);
+      .fromTo(letters, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: DUR.base, stagger: STAGGER }, 0)
+      .to(letters, { duration: DUR.slow, stagger: STAGGER, scrambleText: { text: "{original}", chars: "BESYTMNRG01", revealDelay: 0.35, speed: 0.6 } }, 0)
+      .to(rests, { clipPath: "inset(0 0% 0 0)", opacity: 1, duration: DUR.base, stagger: STAGGER }, 0.85)
+      .to(rule, { scaleX: 1, duration: DUR.base, ease: EASE.inOut }, 1.1);
     return tl;
   });
 

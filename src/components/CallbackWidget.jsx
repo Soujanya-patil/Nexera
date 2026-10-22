@@ -6,6 +6,7 @@ import { getLenis, jumpTo } from "../lib/lenis";
 import { scrollToId } from "../lib/scrollTo";
 import { useBottomInset } from "../lib/floatingBottom";
 import { INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, prettyMobile, sendEnquiry } from "../lib/enquiry";
+import { DUR, EASE } from "../lib/tokens";
 
 const EMPTY = { name: "", mobile: "", interest: "", website: "" };
 const FIELDS = ["name", "mobile", "interest"];
@@ -236,8 +237,8 @@ export default function CallbackWidget() {
     if (!el || instant || reduced()) return finish();
     loadGsap()
       .then(({ gsap }) => {
-        if (scrim.current) gsap.to(scrim.current, { opacity: 0, duration: 0.25 });
-        gsap.to(el, phone() ? { yPercent: 100, duration: 0.28, ease: "power2.in", onComplete: finish } : { opacity: 0, y: 10, scale: 0.95, duration: 0.2, ease: "power2.in", onComplete: finish });
+        if (scrim.current) gsap.to(scrim.current, { opacity: 0, duration: DUR.fast });
+        gsap.to(el, phone() ? { yPercent: 100, duration: DUR.base, ease: EASE.in, onComplete: finish } : { opacity: 0, y: 10, scale: 0.95, duration: DUR.fast, ease: EASE.in, onComplete: finish });
       })
       .catch(finish);
   }, []);
@@ -261,9 +262,9 @@ export default function CallbackWidget() {
     }
     loadGsap()
       .then(({ gsap }) => {
-        if (scrim.current) gsap.fromTo(scrim.current, { opacity: 0 }, { opacity: 1, duration: 0.3 });
-        if (phone()) gsap.fromTo(el, { yPercent: 100, opacity: 1 }, { yPercent: 0, duration: 0.55, ease: "back.out(1.1)" });
-        else gsap.fromTo(el, { opacity: 0, y: 16, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.7)" });
+        if (scrim.current) gsap.fromTo(scrim.current, { opacity: 0 }, { opacity: 1, duration: DUR.base });
+        if (phone()) gsap.fromTo(el, { yPercent: 100, opacity: 1 }, { yPercent: 0, duration: DUR.base, ease: EASE.emphasized });
+        else gsap.fromTo(el, { opacity: 0, y: 16, scale: 0.92 }, { opacity: 1, y: 0, scale: 1, duration: DUR.base, ease: EASE.emphasized });
       })
       .catch(() => (el.style.opacity = ""));
   }, [open]);

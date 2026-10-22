@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const DC = "#90D988";
 const AC = "#F2C46D";
@@ -22,19 +23,19 @@ export default function Coupling({ active, motion }) {
     gsap.set(el.querySelectorAll("[data-static]"), { opacity: 0 });
     gsap.set(bat, { opacity: 1, x: SLOT.dc });
     const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
-    tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.7, stagger: 0.05, ease: "power2.inOut" })
+    tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
       .set([toDc, toAc, lDc, lAc], { opacity: 0 })
-      .to(bat, { x: SLOT.dc, duration: 0.5, ease: "power2.out" })
-      .to(toDc, { opacity: 1, duration: 0.3 })
-      .to(lDc, { opacity: 1, duration: 0.3 }, "<")
-      .to({}, { duration: 1.2 })
-      .to([toDc, lDc], { opacity: 0, duration: 0.25 })
-      .to(bat, { x: SLOT.ac, duration: 0.8, ease: "power2.inOut" })
-      .to(toAc, { opacity: 1, duration: 0.3 })
-      .to(lAc, { opacity: 1, duration: 0.3 }, "<")
-      .to({}, { duration: 1.2 })
-      .to([toAc, lAc], { opacity: 0, duration: 0.25 })
-      .to(bat, { x: SLOT.dc, duration: 0.8, ease: "power2.inOut" });
+      .to(bat, { x: SLOT.dc, duration: DUR.base, ease: EASE.standard })
+      .to(toDc, { opacity: 1, duration: DUR.base })
+      .to(lDc, { opacity: 1, duration: DUR.base }, "<")
+      .to({}, { duration: DUR.slow })
+      .to([toDc, lDc], { opacity: 0, duration: DUR.fast })
+      .to(bat, { x: SLOT.ac, duration: DUR.slow, ease: EASE.inOut })
+      .to(toAc, { opacity: 1, duration: DUR.base })
+      .to(lAc, { opacity: 1, duration: DUR.base }, "<")
+      .to({}, { duration: DUR.slow })
+      .to([toAc, lAc], { opacity: 0, duration: DUR.fast })
+      .to(bat, { x: SLOT.dc, duration: DUR.slow, ease: EASE.inOut });
     return tl;
   });
 

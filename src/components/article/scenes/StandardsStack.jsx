@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // Top to bottom, the layers a BESS is tested at, with the standards the article names for each.
 const LAYERS = [
@@ -29,7 +30,7 @@ export default function StandardsStack({ active, motion, mode, step }) {
   }, [mode, motion, active]);
 
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
-    gsap.timeline().from([...el.querySelectorAll("[data-layer]")].reverse(), { opacity: 0, y: 16, duration: 0.45, stagger: 0.1, ease: "power2.out", clearProps: "opacity,transform" })
+    gsap.timeline().from([...el.querySelectorAll("[data-layer]")].reverse(), { opacity: 0, y: 16, duration: DUR.base, stagger: STAGGER, ease: EASE.standard, clearProps: "opacity,transform" })
   );
 
   const lit = !motion ? -1 : mode === "inline" ? tour : step >= 0 ? TERM_LAYER[step] ?? -1 : -1;

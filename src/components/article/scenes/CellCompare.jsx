@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // The two cells and the cathode materials the article names for each.
 const CELLS = [
@@ -27,12 +28,12 @@ export default function CellCompare({ active, motion, mode, focus = "family" }) 
     active,
     ({ gsap }, el) => {
       const lit = (sel) => [...el.querySelectorAll(sel)].filter((n) => family || n.closest("[data-cell]")?.dataset.cell === focus);
-      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-      tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.8, stagger: 0.04, ease: "power2.inOut" })
-        .from(lit("[data-fill]"), { scaleX: 0, transformOrigin: "left center", duration: 0.6, stagger: 0.15 }, 0.45)
-        .from(lit("[data-chip]"), { opacity: 0, scale: 0.6, transformOrigin: "center", duration: 0.35, stagger: 0.08, ease: "back.out(2)" }, 0.75)
-        .from(el.querySelectorAll("[data-name]"), { opacity: 0, y: 8, duration: 0.4, stagger: 0.1 }, 0.3);
-      if (family) tl.from(el.querySelectorAll("[data-bracket]"), { drawSVG: "50% 50%", duration: 0.6, ease: "power2.inOut" }, 1).from(el.querySelectorAll("[data-family]"), { opacity: 0, y: -6, duration: 0.4 }, 1.3);
+      const tl = gsap.timeline({ defaults: { ease: EASE.standard } });
+      tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
+        .from(lit("[data-fill]"), { scaleX: 0, transformOrigin: "left center", duration: DUR.base, stagger: STAGGER }, 0.45)
+        .from(lit("[data-chip]"), { opacity: 0, scale: 0.6, transformOrigin: "center", duration: DUR.base, stagger: STAGGER, ease: EASE.emphasized }, 0.75)
+        .from(el.querySelectorAll("[data-name]"), { opacity: 0, y: 8, duration: DUR.base, stagger: STAGGER }, 0.3);
+      if (family) tl.from(el.querySelectorAll("[data-bracket]"), { drawSVG: "50% 50%", duration: DUR.base, ease: EASE.inOut }, 1).from(el.querySelectorAll("[data-family]"), { opacity: 0, y: -6, duration: DUR.base }, 1.3);
       return tl;
     },
     [focus]

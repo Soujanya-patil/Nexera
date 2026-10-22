@@ -13,6 +13,7 @@ import { useScrollReveal } from "../lib/scrollReveal";
 import { getLenis } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
 import { ProductDetailRoute } from "./lazy";
+import { DUR, EASE, SCROLL_DUR, STAGGER } from "../lib/tokens";
 
 const APP_OPTIONS = [{ id: "all", label: "All" }, ...APPLICATIONS];
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -48,7 +49,7 @@ function Segmented({ options, value, onChange, label }) {
       {box && (
         <span
           aria-hidden="true"
-          className="absolute bottom-1 left-0 top-1 rounded-full bg-ink shadow-[0_6px_16px_-8px_rgba(7,26,23,0.6)] transition-[transform,width] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className="absolute bottom-1 left-0 top-1 rounded-full bg-ink shadow-[0_6px_16px_-8px_rgba(7,26,23,0.6)] transition-[transform,width] duration-base ease-emphasized"
           style={{ width: box.w, transform: `translateX(${box.x}px)` }}
         />
       )}
@@ -62,13 +63,13 @@ function Segmented({ options, value, onChange, label }) {
             role="radio"
             aria-checked={on}
             onClick={() => onChange(o.id)}
-            className={`relative z-10 rounded-full py-2 pl-5 pr-4 text-xs font-semibold uppercase tracking-[0.12em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal sm:pl-6 sm:pr-5 ${
-              on ? "text-white" : "text-graphite hover:text-ink"
+            className={`relative z-10 rounded-full py-2 pl-5 pr-4 eyebrow pointer-coarse:min-h-11 transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 sm:pl-6 sm:pr-5 ${
+              on ? "text-white" : "text-graphite hover:text-ink focus-visible:text-ink"
             }`}
           >
             <span
               aria-hidden="true"
-              className={`absolute left-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-signal transition-[scale,opacity] duration-300 sm:left-2.5 ${
+              className={`absolute left-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-signal transition-[scale,opacity] duration-fast sm:left-2.5 ${
                 on ? "scale-100 opacity-100" : "scale-0 opacity-0"
               }`}
             />
@@ -120,7 +121,7 @@ function HeroProduct() {
         </div>
 
         <div style={depth(6, 5)}>
-          <div className="relative aspect-[640/900] h-[22rem] transition-[scale] duration-700 ease-out group-hover/product:scale-[1.015] sm:h-[26rem] lg:h-[min(30rem,62vh)]">
+          <div className="relative aspect-[640/900] h-[22rem] transition-[scale] duration-slow ease-standard group-hover/product:scale-[1.015] group-focus-visible/product:scale-[1.015] group-focus-within/product:scale-[1.015] sm:h-[26rem] lg:h-[min(30rem,62vh)]">
             <span aria-hidden="true" className="absolute inset-x-[4%] -bottom-[1%] h-[5%] rounded-[100%] bg-black/60 blur-lg" />
             <img
               src={product.image}
@@ -137,21 +138,21 @@ function HeroProduct() {
                 opening into the free space left of the product on desktop, over it on phones. */}
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute left-[20%] top-[14%] transition-opacity duration-300 ${tag ? "opacity-100" : "opacity-0"}`}
+              className={`pointer-events-none absolute left-[20%] top-[14%] transition-opacity duration-fast ${tag ? "opacity-100" : "opacity-0"}`}
             >
               <span className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-signal ring-2 ring-deep/70" />
               <span
-                className="absolute left-0 top-0 h-px w-10 origin-left bg-signal/70 transition-[scale] duration-500 ease-out lg:left-auto lg:right-0 lg:origin-right"
+                className="absolute left-0 top-0 h-px w-10 origin-left bg-signal/70 transition-[scale] duration-base ease-standard lg:left-auto lg:right-0 lg:origin-right"
                 style={{ scale: tag ? "1 1" : "0 1" }}
               />
               <div
-                className={`absolute -top-[1.85rem] left-11 w-max rounded-[3px] border border-signal/35 bg-deep/85 px-3 py-2 leading-tight backdrop-blur-sm transition-[opacity,scale] duration-500 ease-out lg:left-auto lg:right-11 ${
+                className={`absolute -top-[1.85rem] left-11 w-max rounded-[3px] border border-signal/35 bg-deep/85 px-3 py-2 leading-tight backdrop-blur-sm transition-[opacity,scale] duration-base ease-standard lg:left-auto lg:right-11 ${
                   tag ? "scale-100 opacity-100 delay-150" : "scale-95 opacity-0"
                 }`}
               >
-                <p className="text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-signal">{partner.name}</p>
-                <p className="mt-0.5 text-sm font-semibold text-white">{product.cardSpecs[0]}</p>
-                <p className="mt-0.5 text-[0.625rem] uppercase tracking-[0.12em] text-ice/70">
+                <p className="eyebrow text-signal">{partner.name}</p>
+                <p className="mt-0.5 text-small font-semibold text-white">{product.cardSpecs[0]}</p>
+                <p className="mt-0.5 eyebrow text-ice/70">
                   {product.applications.map(applicationLabel).join(" · ")}
                 </p>
               </div>
@@ -159,7 +160,7 @@ function HeroProduct() {
           </div>
         </div>
       </div>
-      <figcaption className="mt-5 text-[0.6875rem] tracking-[0.16em] text-ice/50">
+      <figcaption className="mt-5 text-micro tracking-[0.16em] text-ice/50">
         <span className="uppercase">{partner.name}</span> {product.name}
       </figcaption>
     </figure>
@@ -186,15 +187,15 @@ function CategoryHeading({ app, partner }) {
   return (
     <div className="relative min-h-[5.5rem] max-w-2xl">
       <div key={shown.key} className={leaving ? "heading-out" : shown.entering ? "heading-in" : ""}>
-        <h2 className="text-2xl font-semibold tracking-tight text-ink md:text-3xl">
+        <h2 className="text-h2 font-semibold text-ink">
           {copy.title}
           {p && <span className="text-sage"> · {p.name}</span>}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-graphite">{copy.text}</p>
+        <p className="mt-2 text-small text-graphite">{copy.text}</p>
         {p && (
-          <Link to={`/partners/${p.id}`} className="group/about mt-2 inline-flex items-center gap-1 text-sm font-semibold text-forest hover:text-steel">
+          <Link to={`/partners/${p.id}`} className="group/about mt-2 inline-flex items-center gap-1 text-button font-semibold text-forest hover:text-steel focus-visible:text-steel">
             About {p.name} in India
-            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover/about:translate-x-0.5" />
+            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/about:translate-x-0.5 group-focus-visible/about:translate-x-0.5 group-focus-within/about:translate-x-0.5" />
           </Link>
         )}
       </div>
@@ -242,17 +243,17 @@ export default function Products() {
   usePointerDepth(hero);
   const intro = useIntro(hero, ({ tl, q }) => {
     const done = { clearProps: "all" };
-    tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.6, ...done }, 0)
-      .fromTo(q('[data-a="line1"]'), { opacity: 0, y: 42, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.85, ...done }, 0.12)
+    tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: DUR.base, ...done }, 0)
+      .fromTo(q('[data-a="line1"]'), { opacity: 0, y: 42 }, { opacity: 1, y: 0, duration: DUR.slow, ...done }, 0.12)
       .fromTo(
         q('[data-a="line2"]'),
-        { opacity: 0, y: 48, scale: 0.97, filter: "blur(8px)", textShadow: "0 0 26px rgba(144,217,136,0.6)" },
-        { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", textShadow: "0 0 0px rgba(144,217,136,0)", duration: 1, ease: "expo.out", ...done },
+        { opacity: 0, y: 48, scale: 0.97 },
+        { opacity: 1, y: 0, scale: 1, duration: DUR.slow, ease: EASE.emphasized, ...done },
         0.26
       )
-      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 16, filter: "blur(4px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power2.out", ...done }, 0.5)
-      .fromTo(q('[data-a="product"]'), { opacity: 0, y: 26, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: "expo.out", ...done }, 0.6)
-      .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ...done }, 0.95);
+      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, ...done }, 0.5)
+      .fromTo(q('[data-a="product"]'), { opacity: 0, y: 26, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: DUR.slow, ease: EASE.emphasized, ...done }, 0.6)
+      .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: DUR.base, ...done }, 0.95);
   });
 
   const toCatalogue = () => {
@@ -261,7 +262,7 @@ export default function Products() {
     const lenis = getLenis();
     // A position, not the element: given an element, Lenis also subtracts its scroll-margin-top
     // (scroll-mt-16), which doubled the clearance under the sticky header.
-    if (lenis) lenis.scrollTo(target.getBoundingClientRect().top + window.scrollY - 64, { duration: 1.1 });
+    if (lenis) lenis.scrollTo(target.getBoundingClientRect().top + window.scrollY - 64, { duration: SCROLL_DUR });
     else target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
   };
 
@@ -305,18 +306,18 @@ export default function Products() {
     if (!state || !f) return;
     pending.current = null;
     f.Flip.from(state, {
-      duration: 0.55,
-      ease: "power2.inOut",
+      duration: DUR.base,
+      ease: EASE.inOut,
       absolute: true,
-      stagger: 0.02,
+      stagger: STAGGER,
       onEnter: (els) =>
-        f.gsap.fromTo(els, { opacity: 0, y: 18, scale: 1 }, { opacity: 1, y: 0, duration: 0.45, delay: 0.12, stagger: 0.06, ease: "power2.out", clearProps: "transform" }),
-      onLeave: (els) => f.gsap.to(els, { opacity: 0, scale: 0.96, duration: 0.25, ease: "power1.in" }),
+        f.gsap.fromTo(els, { opacity: 0, y: 18, scale: 1 }, { opacity: 1, y: 0, duration: DUR.base, delay: 0.12, stagger: STAGGER, ease: EASE.standard, clearProps: "transform" }),
+      onLeave: (els) => f.gsap.to(els, { opacity: 0, scale: 0.96, duration: DUR.fast, ease: EASE.in }),
     });
   }, [app, partner]);
 
   // --- Card reveal -------------------------------------------------------------------------------
-  const reveal = useScrollReveal(grid, { stagger: 0.09 });
+  const reveal = useScrollReveal(grid);
 
   // --- Partner hover highlight ---------------------------------------------------------------------
   const [peek, setPeek] = useState(null);
@@ -349,10 +350,10 @@ export default function Products() {
         </div>
         <div data-intro={intro} className="relative grid container-site items-center gap-10 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:py-16">
           <div>
-            <p data-a="eyebrow" className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
+            <p data-a="eyebrow" className="eyebrow text-ice/80">
               Energy Storage Systems
             </p>
-            <h1 className="mt-5 text-[clamp(2.1rem,3.9vw,3.2rem)] font-semibold leading-[1.1] tracking-tight">
+            <h1 className="mt-5 text-h1 font-semibold">
               <span data-a="line1" className="block">
                 Energy Storage,
               </span>
@@ -362,17 +363,17 @@ export default function Products() {
                 Built to Scale.
               </span>
             </h1>
-            <p data-a="desc" className="mt-6 max-w-md leading-relaxed text-ice/80">
+            <p data-a="desc" className="mt-6 max-w-md text-body text-ice/80">
               Explore BESS solutions from NEXERA&rsquo;s technology partners for residential, commercial &amp; industrial, and utility-scale applications.
             </p>
             <div data-a="cta" className="mt-8 inline-block">
               <button
                 type="button"
                 onClick={toCatalogue}
-                className="group/pill inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3 text-sm font-semibold text-forest transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.02] hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+                className="group/pill btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-signal px-6 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 Explore Systems
-                <ArrowDown aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/pill:translate-y-0.5" strokeWidth={2} />
+                <ArrowDown aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/pill:translate-y-0.5 group-focus-visible/pill:translate-y-0.5 group-focus-within/pill:translate-y-0.5" strokeWidth={2} />
               </button>
             </div>
           </div>
@@ -387,7 +388,7 @@ export default function Products() {
             <Segmented label="Application" options={APP_OPTIONS} value={app} onChange={(v) => setFilter("app", v)} />
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sage">Technology partner</p>
+            <p className="eyebrow text-sage">Technology partner</p>
             <div role="radiogroup" aria-label="Technology partner" className="-mx-6 flex gap-2 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0">
               {PARTNERS.map((p) => {
                 const on = partner === p.id;
@@ -403,8 +404,8 @@ export default function Products() {
                     onPointerLeave={() => setPeek(null)}
                     onFocus={() => setPeek(p.id)}
                     onBlur={() => setPeek(null)}
-                    className={`group/partner relative grid h-10 w-24 shrink-0 place-items-center rounded-full border bg-paper transition-[border-color,box-shadow] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${
-                      on ? "border-forest shadow-[0_0_0_3px_rgba(144,217,136,0.35)]" : "border-line hover:border-forest/40"
+                    className={`group/partner relative grid h-11 w-24 shrink-0 place-items-center rounded-full border bg-paper transition-[border-color,box-shadow] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                      on ? "border-forest shadow-[0_0_0_3px_rgba(144,217,136,0.35)]" : "border-line hover:border-forest/40 focus-visible:border-forest/40"
                     }`}
                   >
                     {/* The button is named by its aria-label; the logo still carries its own alt. */}
@@ -413,14 +414,14 @@ export default function Products() {
                       loading="lazy"
                       decoding="async"
                       alt={`${p.name} logo`}
-                      className={`${p.logoClass} w-auto max-w-[70%] object-contain transition-opacity duration-300 ${
-                        on || partner === "all" ? "opacity-90 group-hover/partner:opacity-100" : "opacity-50 group-hover/partner:opacity-100"
+                      className={`${p.logoClass} w-auto max-w-[70%] object-contain transition-opacity duration-fast ${
+                        on || partner === "all" ? "opacity-90 group-hover/partner:opacity-100 group-focus-visible/partner:opacity-100 group-focus-within/partner:opacity-100" : "opacity-50 group-hover/partner:opacity-100"
                       }`}
                     />
                     <span
                       aria-hidden="true"
-                      className={`absolute -bottom-2 left-1/2 h-0.5 -translate-x-1/2 rounded-full bg-signal transition-[width] duration-300 ${
-                        on ? "w-8" : "w-0 group-hover/partner:w-5"
+                      className={`absolute -bottom-2 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-signal transition-[scale] duration-fast ${
+                        on ? "" : "scale-x-0 group-hover/partner:scale-x-[0.625] group-focus-visible/partner:scale-x-[0.625] group-focus-within/partner:scale-x-[0.625]"
                       }`}
                     />
                   </button>
@@ -438,7 +439,7 @@ export default function Products() {
             <CategoryHeading app={app} partner={partner} />
             <LiveCount count={visibleCount} total={LISTED.length} />
           </div>
-          <p className="mt-3 max-w-2xl text-xs leading-relaxed text-sage">
+          <p className="mt-3 max-w-2xl text-micro text-sage">
             NEXERA is an authorized solution provider and distributor. Every system here is designed and manufactured by
             the technology partner named on it.
           </p>
@@ -449,7 +450,7 @@ export default function Products() {
               return (
                 <li key={p.id} data-card data-flip-id={p.id} hidden={!matches(p)}>
                   <div data-sr className="h-full">
-                    <div className={`h-full transition-opacity duration-300 ${dim ? "opacity-40" : "opacity-100"}`}>
+                    <div className={`h-full transition-opacity duration-fast ${dim ? "opacity-40" : "opacity-100"}`}>
                       <TiltSurface className="h-full" degrees={2}>
                         <ProductCard
                           product={p}
@@ -467,15 +468,15 @@ export default function Products() {
 
           {visibleCount === 0 && (
             <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper px-6 py-14 text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">No systems found</p>
-              <p className="mt-2 text-sm text-graphite">No system in the catalogue matches this application and partner.</p>
+              <p className="eyebrow text-sage">No systems found</p>
+              <p className="mt-2 text-small text-graphite">No system in the catalogue matches this application and partner.</p>
               <button
                 type="button"
                 onClick={() => applyParams(new URLSearchParams())}
-                className="group/clear mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition-[background-color,scale] duration-300 hover:bg-ink/90 active:scale-[0.97]"
+                className="group/clear btn-motion mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-button font-semibold text-white hover:bg-ink/90 focus-visible:bg-ink/90"
               >
                 Clear Filters
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/clear:translate-x-1" />
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/clear:translate-x-1 group-focus-visible/clear:translate-x-1 group-focus-within/clear:translate-x-1" />
               </button>
             </div>
           )}

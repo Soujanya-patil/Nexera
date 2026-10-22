@@ -33,22 +33,22 @@ export default function Footer() {
       <div className="container-site py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
         <div>
           <Wordmark className="text-lg text-white" />
-          <address className="mt-3 text-sm not-italic">{ADDRESS}</address>
+          <address className="mt-3 text-small not-italic">{ADDRESS}</address>
           {PHONE && (
-            <p className="mt-1 text-sm">
-              <a href={phoneHref(PHONE)} className="transition-colors hover:text-signal">
+            <p className="mt-1 text-small">
+              <a href={phoneHref(PHONE)} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                 {PHONE}
               </a>
             </p>
           )}
-          <p className="mt-1 text-sm">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
+          <p className="mt-1 text-small">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
         </div>
         <div>
-          <p className="text-sm font-medium text-white/90">Quick links</p>
-          <ul className="mt-3 grid grid-cols-2 gap-2 text-sm">
+          <p className="text-small font-medium text-white/90">Quick links</p>
+          <ul className="mt-3 grid grid-cols-2 gap-2 text-small pointer-coarse:gap-0">
             {links.map((l) => (
               <li key={l.label}>
-                <Link to={l.href} className="transition-colors hover:text-signal">
+                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                   {l.label}
                 </Link>
               </li>
@@ -56,11 +56,11 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-medium text-white/90">Resources</p>
-          <ul className="mt-3 grid gap-2 text-sm">
+          <p className="text-small font-medium text-white/90">Resources</p>
+          <ul className="mt-3 grid gap-2 text-small pointer-coarse:gap-0">
             {guides.map((l) => (
               <li key={l.label}>
-                <Link to={l.href} className="transition-colors hover:text-signal">
+                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                   {l.label}
                 </Link>
               </li>
@@ -68,11 +68,11 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <p className="text-sm font-medium text-white/90">Partners</p>
-          <ul className="mt-3 grid gap-2 text-sm">
+          <p className="text-small font-medium text-white/90">Partners</p>
+          <ul className="mt-3 grid gap-2 text-small pointer-coarse:gap-0">
             {partners.map((l) => (
               <li key={l.label}>
-                <Link to={l.href} className="transition-colors hover:text-signal">
+                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                   {l.label}
                 </Link>
               </li>
@@ -81,7 +81,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <p className="container-site py-5 text-xs text-ice/50">
+        <p className="container-site py-5 text-micro text-ice/50">
           © {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.
         </p>
       </div>

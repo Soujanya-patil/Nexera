@@ -78,7 +78,7 @@ function Heading({ id, children }) {
       <svg aria-hidden="true" className="article-h2-line" viewBox="0 0 64 4" preserveAspectRatio="none">
         <line x1="1" y1="2" x2="63" y2="2" />
       </svg>
-      <h2 id={id} className="article-h2 text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-tight tracking-tight text-ink">
+      <h2 id={id} className="article-h2 text-h2 font-semibold text-ink">
         {children}
       </h2>
     </div>

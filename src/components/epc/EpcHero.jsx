@@ -4,6 +4,7 @@ import SceneImg from "../SceneImg";
 import { depth, usePointerDepth } from "../../lib/pointerDepth";
 import { useIntro } from "../../lib/intro";
 import { scrollToId } from "../../lib/scrollTo";
+import { DUR, EASE, STAGGER } from "../../lib/tokens";
 
 /**
  * For EPCs hero. One real deployment image (Hithium outdoor cabinets on site) fills the right of the
@@ -16,17 +17,17 @@ export default function EpcHero() {
   usePointerDepth(root);
   const intro = useIntro(root, ({ tl, q }) => {
     const done = { clearProps: "all" };
-    tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ...done }, 0)
-      .fromTo(q('[data-a="line1"]'), { opacity: 0, y: 40, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.85, ...done }, 0.12)
+    tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: DUR.base, ...done }, 0)
+      .fromTo(q('[data-a="line1"]'), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: DUR.slow, ...done }, 0.12)
       .fromTo(
         q('[data-a="line2"]'),
-        { opacity: 0, y: 44, filter: "blur(8px)", textShadow: "0 0 26px rgba(144,217,136,0.55)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", textShadow: "0 0 0px rgba(144,217,136,0)", duration: 1, ease: "expo.out", ...done },
+        { opacity: 0, y: 44 },
+        { opacity: 1, y: 0, duration: DUR.slow, ease: EASE.emphasized, ...done },
         0.26
       )
-      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out", ...done }, 0.5)
-      .fromTo(q('[data-a="image"]'), { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.5, ease: "power2.out", ...done }, 0.58)
-      .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ...done }, 0.95);
+      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, ...done }, 0.5)
+      .fromTo(q('[data-a="image"]'), { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.5, ease: EASE.standard, ...done }, 0.58)
+      .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: DUR.base, stagger: STAGGER, ...done }, 0.95);
   });
 
   return (
@@ -53,11 +54,11 @@ export default function EpcHero() {
               doesn't); it looks as before. The h1 itself has no classes: leading/tracking set inherited
               variables that would reach the eyebrow, so the headline's styles sit on its own span. */}
           <h1>
-            <span data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
+            <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-signal">
               <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
               Become a BESS Distributor
             </span>{" "}
-            <span className="mt-5 block text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+            <span className="mt-5 block text-display font-semibold">
               <span data-a="line1" className="block">
                 Build More.
               </span>
@@ -68,31 +69,31 @@ export default function EpcHero() {
               </span>
             </span>
           </h1>
-          <p data-a="desc" className="mt-6 max-w-lg text-base leading-relaxed text-ice/80 md:text-lg">
+          <p data-a="desc" className="mt-6 max-w-lg text-body text-ice/80">
             NEXERA gives EPCs authorized access to TCL, Hithium and CLOU battery storage — with design, commissioning,
             training and after-sales support — so you can add BESS to your projects without building a supply chain from
             scratch.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <span data-a="cta" className="inline-block">
-              <MagneticButton to="#apply" onClick={scrollToId("apply")} arrow className="hover:scale-[1.02]">
+              <MagneticButton to="#apply" onClick={scrollToId("apply")} arrow>
                 Become a Partner
               </MagneticButton>
             </span>
             <span data-a="cta" className="inline-block">
-              <MagneticButton to="/contact" variant="outline" arrow className="hover:-translate-y-0.5">
+              <MagneticButton to="/contact" variant="outline" arrow>
                 Talk to NEXERA
               </MagneticButton>
             </span>
             <span data-a="cta" className="inline-block">
-              <MagneticButton to="/how-it-works" variant="outline" arrow className="hover:-translate-y-0.5">
+              <MagneticButton to="/how-it-works" variant="outline" arrow>
                 See how the partnership works
               </MagneticButton>
             </span>
           </div>
         </div>
 
-        <p className="absolute bottom-4 right-6 hidden text-[0.6875rem] tracking-[0.14em] text-ice/45 lg:block">
+        <p className="absolute bottom-4 right-6 hidden text-micro tracking-[0.14em] text-ice/60 lg:block">
           <span className="uppercase">Hithium</span> outdoor storage cabinets · technology partner imagery
         </p>
       </div>

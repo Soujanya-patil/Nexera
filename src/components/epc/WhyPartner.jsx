@@ -20,12 +20,12 @@ export default function WhyPartner() {
       <div className="container-site">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Why partner with NEXERA</p>
-            <AnimatedText id="why-partner" className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+            <p className="eyebrow text-sage">Why partner with NEXERA</p>
+            <AnimatedText id="why-partner" className="mt-3 text-h2 font-semibold text-ink">
               Built by an EPC, for EPCs.
             </AnimatedText>
           </div>
-          <p className="max-w-xl leading-relaxed text-graphite">
+          <p className="max-w-xl text-body text-graphite">
             NEXERA was founded to solve a problem we lived ourselves as a solar EPC: getting reliable battery storage into
             Indian projects, backed by service that actually shows up. As an authorized TCL, Hithium and CLOU partner, we
             work with you from technology access to long-term partnership.
@@ -45,12 +45,12 @@ export default function WhyPartner() {
               <li key={label} className="flex items-center gap-4 md:flex-col md:items-center md:gap-4 md:text-center">
                 <span
                   aria-hidden="true"
-                  className={`relative h-[15px] w-[15px] shrink-0 rounded-full border-2 transition-[background-color,border-color,scale] duration-500 ${
+                  className={`relative h-[15px] w-[15px] shrink-0 rounded-full border-2 transition-[background-color,border-color,scale] duration-base ${
                     lit(i) ? "scale-100 border-signal bg-signal" : "scale-90 border-forest/25 bg-ice"
                   }`}
                 />
                 <span
-                  className={`text-xs font-semibold uppercase leading-snug tracking-[0.14em] transition-colors duration-500 ${
+                  className={`eyebrow transition-colors duration-base ${
                     lit(i) ? "text-ink" : "text-sage/70"
                   }`}
                 >

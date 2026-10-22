@@ -1,9 +1,8 @@
 import { cn } from "@/lib/utils";
 import { useCallback, useId, useLayoutEffect, useRef, useState } from "react";
 
-// The indicator's slide: 0.25 s, settling with the faintest overshoot (what the original 0.25 s spring
-// with bounce 0.05 looked like).
-const SLIDE = "transform 250ms cubic-bezier(0.25, 1.06, 0.5, 1)";
+// The indicator's slide: the base duration and emphasized ease (lib/tokens.js, index.css).
+const SLIDE = "transform var(--dur-base) var(--ease-emphasized)";
 
 export default function AnimatedTabs({
   tabs,
@@ -77,8 +76,8 @@ export default function AnimatedTabs({
 
   const getTabStyles = (isActive) =>
     cn(
-      "relative z-10 flex cursor-pointer items-center justify-center gap-2 px-4 py-2 font-medium text-sm transition-colors",
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "relative z-10 flex cursor-pointer items-center justify-center gap-2 px-4 py-2 font-medium text-small transition-colors duration-fast pointer-coarse:min-h-11",
+      "focus-visible:outline-2 focus-visible:outline-offset-2",
       variant === "underline" && [
         "rounded-t-md",
         isActive

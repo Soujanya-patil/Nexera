@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadGsap } from "../../lib/motion";
 import { onceInView } from "../../lib/inview";
+import { DUR, EASE, STAGGER } from "../../lib/tokens";
 
 /*
  * Illustrative day curves for the Solutions pages: shapes only — no numbers, no units, no values. The
@@ -124,7 +125,7 @@ export default function LoadShiftChart({ variant = "ci" }) {
       };
       off = onceInView(el, {
         initial: true,
-        enter: () => gsap.to(strokes, { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut", stagger: 0.1, onComplete: done }),
+        enter: () => gsap.to(strokes, { strokeDashoffset: 0, duration: DUR.slow, ease: EASE.inOut, stagger: STAGGER, onComplete: done }),
         show: done,
       });
     });
@@ -147,12 +148,12 @@ export default function LoadShiftChart({ variant = "ci" }) {
       line.current.setAttribute("d", d);
       return;
     }
-    const tween = gsap.to(line.current, { attr: { d }, duration: 0.6, ease: "power2.inOut" });
+    const tween = gsap.to(line.current, { attr: { d }, duration: DUR.base, ease: EASE.inOut });
     return () => tween.kill();
   }, [on, variant, paths]);
 
   const fade = (show) => ({ opacity: show ? 1 : 0, transition: "opacity 0.6s cubic-bezier(0.45, 0, 0.55, 1)" });
-  const label = "pointer-events-none absolute whitespace-nowrap text-[0.6875rem] font-semibold leading-tight sm:text-xs";
+  const label = "pointer-events-none absolute whitespace-nowrap text-micro font-semibold";
 
   return (
     <figure ref={root} className="flex aspect-[4/3] w-full flex-col rounded-2xl border border-line bg-paper p-4 sm:aspect-[16/10] sm:p-6">
@@ -164,8 +165,8 @@ export default function LoadShiftChart({ variant = "ci" }) {
               type="button"
               aria-pressed={on === value}
               onClick={() => setOn(value)}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal sm:text-sm ${
-                on === value ? "bg-forest text-white" : "text-forest hover:text-ink"
+              className={`hit-area rounded-full px-3.5 py-1.5 text-micro font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                on === value ? "bg-forest text-white" : "text-forest hover:text-ink focus-visible:text-ink"
               }`}
             >
               {text}
@@ -173,7 +174,7 @@ export default function LoadShiftChart({ variant = "ci" }) {
           ))}
         </div>
         {v.legend && (
-          <ul className="flex gap-4 text-xs text-graphite">
+          <ul className="flex gap-4 text-micro text-graphite">
             {v.legend.map(([t, c]) => (
               <li key={t} className="flex items-center gap-1.5">
                 <span aria-hidden="true" className={`h-0.5 w-4 rounded-full ${c}`} />
@@ -246,14 +247,14 @@ export default function LoadShiftChart({ variant = "ci" }) {
           </>
         )}
 
-        <span className="absolute bottom-0 right-0 translate-y-full pt-1 text-[0.6875rem] text-graphite sm:text-xs">{v.xLabel}</span>
+        <span className="absolute bottom-0 right-0 translate-y-full pt-1 text-micro text-graphite">{v.xLabel}</span>
         {v.yLabel && (
-          <span className="absolute left-0 top-0 origin-top-left -translate-x-1 translate-y-[4.5rem] -rotate-90 whitespace-nowrap text-[0.6875rem] text-graphite sm:text-xs">
+          <span className="absolute left-0 top-0 origin-top-left -translate-x-1 translate-y-[4.5rem] -rotate-90 whitespace-nowrap text-micro text-graphite">
             {v.yLabel}
           </span>
         )}
       </div>
-      <figcaption className="mt-6 text-xs text-graphite">{v.caption}</figcaption>
+      <figcaption className="mt-6 text-micro text-graphite">{v.caption}</figcaption>
     </figure>
   );
 }

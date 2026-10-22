@@ -32,7 +32,7 @@ export default function ArticleRelated({ items }) {
           <svg aria-hidden="true" className="article-h2-line" viewBox="0 0 64 4" preserveAspectRatio="none">
             <line x1="1" y1="2" x2="63" y2="2" />
           </svg>
-          <h2 id="related-title" className="article-h2 text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-tight tracking-tight text-ink">
+          <h2 id="related-title" className="article-h2 text-h2 font-semibold text-ink">
             Related
           </h2>
         </div>
@@ -42,14 +42,14 @@ export default function ArticleRelated({ items }) {
               <Link
                 to={r.to}
                 onPointerMove={spotlight}
-                className="article-related group/rel relative flex h-full min-h-28 flex-col justify-between gap-6 overflow-hidden rounded-2xl border border-line bg-paper p-5 font-semibold text-ink transition-[border-color,box-shadow,translate] duration-300 ease-out hover:-translate-y-1 hover:border-forest/30 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none"
+                className="article-related group/rel relative flex h-full min-h-28 flex-col justify-between gap-6 overflow-hidden rounded-2xl border border-line bg-paper p-5 font-semibold text-ink card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
               >
                 <svg aria-hidden="true" viewBox="0 0 36 32" className="h-8 w-9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path data-icon d={ICONS[r.to] ?? ICONS["/products"]} className="text-forest" />
                 </svg>
                 <span className="flex items-center justify-between gap-3">
                   {r.label}
-                  <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-forest transition-transform duration-300 group-hover/rel:translate-x-1.5 group-focus-visible/rel:translate-x-1.5" />
+                  <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-forest transition-transform duration-fast group-hover/rel:translate-x-1.5 group-focus-within/rel:translate-x-1.5 group-focus-visible/rel:translate-x-1.5" />
                 </span>
               </Link>
             </li>

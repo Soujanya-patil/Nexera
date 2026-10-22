@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { loadGsap } from "./motion";
+import { DUR, EASE } from "./tokens";
 
 const RADIUS = 60; // px beyond the button's edge where the pull starts
 const MAX_OFFSET = 8; // px — "a few px max," reads as premium, not bouncy
@@ -25,8 +26,8 @@ export function useMagnetic({ max = MAX_OFFSET, radius = RADIUS } = {}) {
 
     loadGsap().then(({ gsap }) => {
       if (cancelled) return;
-      const xTo = gsap.quickTo(el, "x", { duration: 0.4, ease: "power3" });
-      const yTo = gsap.quickTo(el, "y", { duration: 0.4, ease: "power3" });
+      const xTo = gsap.quickTo(el, "x", { duration: DUR.base, ease: EASE.emphasized });
+      const yTo = gsap.quickTo(el, "y", { duration: DUR.base, ease: EASE.emphasized });
 
       const onMove = (e) => {
         // Measured from the button's edge, not its centre, so wide pills engage as the cursor

@@ -2,6 +2,7 @@ import { useRef } from "react";
 import MagneticButton from "../ui/MagneticButton";
 import AnimatedText from "../ui/AnimatedText";
 import { useScrollReveal } from "../../lib/scrollReveal";
+import { STAGGER } from "../../lib/tokens";
 
 /**
  * Closing band for the catalogue and product pages: help choosing, or go straight to a quote.
@@ -11,7 +12,7 @@ import { useScrollReveal } from "../../lib/scrollReveal";
  */
 export default function ChooseCta({ productId }) {
   const root = useRef(null);
-  const reveal = useScrollReveal(root, { stagger: 0.1, y: 16, start: "top 85%" });
+  const reveal = useScrollReveal(root);
   const quote = `/contact?intent=quote${productId ? `&product=${productId}` : ""}`;
   return (
     <section ref={root} data-sr-state={reveal} className="relative overflow-hidden bg-deep text-white">
@@ -22,19 +23,19 @@ export default function ChooseCta({ productId }) {
       />
       <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
-          <p data-sr className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
+          <p data-sr className="eyebrow text-ice/80">
             Talk to an engineer
           </p>
-          <AnimatedText className="mt-4 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">Need help choosing the right system?</AnimatedText>
-          <p data-sr className="mt-4 max-w-xl leading-relaxed text-ice/80">
+          <AnimatedText className="mt-4 text-h2 font-semibold">Need help choosing the right system?</AnimatedText>
+          <p data-sr className="mt-4 max-w-xl text-body text-ice/80">
             Tell us about your site and load. NEXERA&rsquo;s team will recommend and size a system from our technology partners.
           </p>
         </div>
         <div data-sr className="flex shrink-0 flex-wrap items-center gap-4">
-          <MagneticButton to="/contact" arrow className="hover:scale-[1.02]">
+          <MagneticButton to="/contact" arrow>
             Talk to NEXERA
           </MagneticButton>
-          <MagneticButton to={quote} variant="outline" arrow className="hover:scale-[1.02]">
+          <MagneticButton to={quote} variant="outline" arrow>
             Request a Quote
           </MagneticButton>
         </div>

@@ -28,11 +28,11 @@ export default function NetworkMap() {
     <section aria-labelledby="network-title" className="relative overflow-hidden bg-deep py-20 text-white md:py-28">
       <div className="grid container-site items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-signal">Our network</p>
-          <AnimatedText id="network-title" className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+          <p className="eyebrow text-signal">Our network</p>
+          <AnimatedText id="network-title" className="mt-3 text-h2 font-semibold">
             Rooted in Karnataka. Growing Across India.
           </AnimatedText>
-          <p className="mt-4 max-w-md leading-relaxed text-ice/75">
+          <p className="mt-4 max-w-md text-body text-ice/75">
             Headquartered in Bangalore, with a regional office and technician training center in Kalaburagi. Nagpur and
             Delhi are planned expansions.
           </p>
@@ -48,21 +48,21 @@ export default function NetworkMap() {
                     onPointerEnter={(e) => e.pointerType === "mouse" && setActive(o.id)}
                     onFocus={() => setActive(o.id)}
                     onClick={() => setActive(o.id)}
-                    className="group flex w-full items-center gap-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+                    className="group flex w-full items-center gap-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-offset-2"
                   >
                     <span
                       aria-hidden="true"
                       className={`h-2.5 w-2.5 shrink-0 rounded-full ${o.status === "active" ? "bg-signal" : "border border-signal/70"}`}
                     />
                     <span className="min-w-0 flex-1">
-                      <span className={`block font-semibold transition-colors ${on ? "text-signal" : "text-white group-hover:text-signal"}`}>{o.city}</span>
-                      <span className="block text-sm text-ice/60">
+                      <span className={`block font-semibold transition-colors ${on ? "text-signal" : "text-white group-hover:text-signal group-focus-visible:text-signal group-focus-within:text-signal"}`}>{o.city}</span>
+                      <span className="block text-small text-ice/60">
                         {o.role}
                         {o.detail && ` · ${o.detail}`}
                       </span>
                     </span>
                     <span
-                      className={`shrink-0 rounded-full px-2.5 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-[0.12em] ${
+                      className={`shrink-0 rounded-full px-2.5 py-0.5 eyebrow ${
                         o.status === "active" ? "bg-signal/15 text-signal" : "bg-white/8 text-ice/60"
                       }`}
                     >
@@ -121,13 +121,13 @@ export default function NetworkMap() {
                   <span className="relative flex h-8 w-8 cursor-pointer items-center justify-center">
                     {on && <span className="animate-hotspot-pulse absolute h-3.5 w-3.5 rounded-full bg-signal/60" />}
                     <span
-                      className={`relative rounded-full transition-[scale] duration-300 ${on ? "scale-125" : ""} ${
+                      className={`relative rounded-full transition-[scale] duration-fast ${on ? "scale-125" : ""} ${
                         o.status === "active" ? "h-3.5 w-3.5 bg-signal ring-4 ring-signal/15" : "h-3 w-3 border-[1.5px] border-signal/80 bg-deep"
                       }`}
                     />
                   </span>
                   <span
-                    className={`absolute left-8 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs font-semibold tracking-[0.06em] transition-[color,opacity] ${
+                    className={`absolute left-8 top-1/2 -translate-y-1/2 whitespace-nowrap text-micro font-semibold tracking-[0.06em] transition-[color,opacity] ${
                       on ? `text-white ${p.x > 52 ? "" : "sm:opacity-0"}` : "text-ice/55"
                     }`}
                   >
@@ -154,7 +154,7 @@ export default function NetworkMap() {
           <div key={`m-${current.id}`} className="journey-detail mt-4 rounded-lg border border-white/12 bg-night/90 p-3.5 sm:hidden">
             <OfficeCard office={current} />
           </div>
-          <p className="mt-4 text-center text-[0.6875rem] uppercase tracking-[0.16em] text-ice/40">
+          <p className="mt-4 text-center eyebrow text-ice/40">
             Schematic · relative positions, not a map
           </p>
         </div>
@@ -166,11 +166,11 @@ export default function NetworkMap() {
 function OfficeCard({ office }) {
   return (
     <>
-      <p className="text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-signal">
+      <p className="eyebrow text-signal">
         {office.status === "active" ? office.role : "Planned expansion"}
       </p>
-      <p className="mt-1 text-sm font-semibold text-white">{office.city}</p>
-      {office.detail && <p className="mt-1 text-xs leading-snug text-ice/70">{office.detail}</p>}
+      <p className="mt-1 text-small font-semibold text-white">{office.city}</p>
+      {office.detail && <p className="mt-1 text-micro text-ice/70">{office.detail}</p>}
     </>
   );
 }

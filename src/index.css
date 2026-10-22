@@ -49,6 +49,27 @@
   src: url("/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+/* Metric-matched fallback: while a Plex face loads, text is set in the local Arial scaled to Plex's
+   average glyph width and given Plex's ascent/descent (measured from the shipped woff2 files and
+   Windows' Arial / Arial Bold with fontTools), so the swap to Plex moves no line and no box. */
+@font-face {
+  font-family: "IBM Plex Sans Fallback";
+  font-weight: 100 549;
+  src: local("Arial"), local("ArialMT"), local("Arimo"), local("Liberation Sans");
+  size-adjust: 99.05%;
+  ascent-override: 103.48%;
+  descent-override: 27.76%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "IBM Plex Sans Fallback";
+  font-weight: 550 900;
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Arimo Bold"), local("Liberation Sans Bold");
+  size-adjust: 98.11%;
+  ascent-override: 104.47%;
+  descent-override: 28.03%;
+  line-gap-override: 0%;
+}
 
 @theme {
   /* Color system — accents sampled from the approved Home mockup (home-mockup-v2-approved.png);
@@ -75,7 +96,225 @@
   /* Type — IBM Plex: an engineering-documentation typeface family,
      a deliberate fit for a technical hardware brand, not a generic pairing */
   --font-serif: "Georgia", serif; /* only in components no page mounts (IBM Plex Serif removed) */
-  --font-sans: "IBM Plex Sans", "Segoe UI", sans-serif;
+  --font-sans: "IBM Plex Sans", "IBM Plex Sans Fallback", "Segoe UI", sans-serif;
+
+  /* Type scale — one fluid scale for every page (utilities text-display … text-micro). Each step sets
+     its size, line-height and letter-spacing: tighter for large headings, normal for reading text.
+     Sizes at 390 → 1440 px wide:
+       display  40 → 72   hero h1 of the immersive heroes (Solutions segments, partner, For EPCs)
+       h1       34 → 52   every other page's h1
+       h2       28 → 48   section headings
+       h3       20 → 24   card and sub-section headings (and an article's in-text section heading)
+       h4       18        small headings, panel titles
+       lead     17 → 20   intros under a heading
+       body     16 → 18   reading text
+       small    14        card copy, meta, form labels
+       eyebrow  12        uppercase labels above headings (the `eyebrow` utility adds case + weight)
+       micro    11        chart and diagram labels, badges (the smallest text on the site)
+       button   14        every button and pill label */
+  --text-display: clamp(2.5rem, 1.55rem + 3.9vw, 4.5rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.025em;
+  --text-h1: clamp(2.125rem, 1.6rem + 2.2vw, 3.25rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: clamp(1.75rem, 1.2rem + 2vw, 3rem);
+  --text-h2--line-height: 1.12;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --text-h3--line-height: 1.25;
+  --text-h3--letter-spacing: -0.012em;
+  --text-h4: 1.125rem;
+  --text-h4--line-height: 1.35;
+  --text-h4--letter-spacing: -0.005em;
+  --text-lead: clamp(1.0625rem, 0.98rem + 0.35vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+  --text-body: clamp(1rem, 0.94rem + 0.25vw, 1.125rem);
+  --text-body--line-height: 1.7;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.6;
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.2em;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.35;
+  --text-micro--letter-spacing: 0.02em;
+  --text-button: 0.875rem;
+  --text-button--line-height: 1.25;
+  --text-button--letter-spacing: 0.01em;
+
+  /* Spacing rhythm between a heading and what follows it, the same on every page:
+     eyebrow → heading (mt-eyebrow), heading → paragraph (mt-heading). */
+  --spacing-eyebrow: 0.75rem;
+  --spacing-heading: 1rem;
+  /* Reading measure for paragraphs: about 65 characters a line (max-w-measure). */
+  --container-measure: 65ch;
+
+  /* Motion easings (utilities ease-standard / ease-emphasized / ease-in-out). The same curves as
+     lib/tokens.js EASE, which GSAP uses. */
+  --ease-standard: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Motion durations (lib/tokens.js DUR): fast for hovers and presses, base for reveals, menus and
+   accordions, slow for media and hero entrances. */
+:root {
+  --dur-fast: 200ms;
+  --dur-base: 450ms;
+  --dur-slow: 800ms;
+}
+@utility duration-fast {
+  transition-duration: var(--dur-fast);
+}
+@utility duration-base {
+  transition-duration: var(--dur-base);
+}
+@utility duration-slow {
+  transition-duration: var(--dur-slow);
+}
+/* The one eyebrow style: small uppercase label with wide tracking. Colour comes from the context
+   (text-sage on light grounds, text-signal on dark). */
+@utility eyebrow {
+  font-size: var(--text-eyebrow);
+  line-height: var(--text-eyebrow--line-height);
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+/* The one text-link style for standalone links ("View all …", footer, cards): an underline that
+   draws from the left on hover and keyboard focus (a transform, so nothing re-lays out). Inline links
+   inside paragraphs keep a static underline (`link-inline`) so they wrap normally. */
+@utility link {
+  position: relative;
+  text-decoration: none;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.15em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-base) var(--ease-emphasized);
+  }
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+/* Touch screens: a small control (breadcrumb link, chip, chart switch, hotspot) gets an invisible tap
+   area of at least 44 × 44 px around it — its drawn box and the layout stay exactly as they are. */
+@utility hit-area {
+  position: relative;
+  @media (pointer: coarse) {
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      translate: -50% -50%;
+    }
+  }
+}
+@media (pointer: coarse) {
+  .contact-chip span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+/* The one button interaction (PillLink and every other pill / CTA button): a 2 px lift on hover and
+   keyboard focus, a 0.98 press, colours and glow easing alongside. Its arrow (group/pill) nudges
+   forward at the same time. */
+@utility btn-motion {
+  transition-property: background-color, border-color, box-shadow, color, translate, scale;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-standard);
+  @media (hover: hover) {
+    &:hover {
+      translate: 0 -2px;
+    }
+  }
+  &:focus-visible {
+    translate: 0 -2px;
+  }
+  &:active {
+    translate: 0 0;
+    scale: 0.98;
+  }
+}
+/* Phone menu (Nav): closed it is not rendered (display: none); opening fades and slides it in from
+   8 px above, closing reverses it — display switches at the end of the transition (allow-discrete), and
+   @starting-style gives the opening its first frame. Browsers without these simply show / hide it. */
+.mobile-menu {
+  display: none;
+  opacity: 0;
+  translate: 0 -8px;
+  transition-property: opacity, translate, display;
+  transition-duration: var(--dur-base);
+  transition-timing-function: var(--ease-emphasized);
+  transition-behavior: allow-discrete;
+}
+@media (width < 64rem) {
+  .mobile-menu[data-open] {
+    display: block;
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@starting-style {
+  .mobile-menu[data-open] {
+    opacity: 0;
+    translate: 0 -8px;
+  }
+}
+/* The one card hover, on every card (pointer hover, focus on the card or on a control inside it —
+   :focus-within, not :has(:focus-visible), which is far costlier to keep up to date): a 4 px lift, a soft green border glow, and the card's image (`card-media`) zooming to 1.03
+   inside its own clipped box, so nothing leaves the card. Transform and shadow only. */
+@utility card-hover {
+  transition-property: translate, transform, box-shadow, border-color, background-color;
+  transition-duration: var(--dur-base);
+  transition-timing-function: var(--ease-emphasized);
+  @media (hover: hover) {
+    &:hover {
+      translate: 0 -4px;
+      border-color: rgb(144 217 136 / 0.6);
+      box-shadow: 0 0 0 1px rgb(144 217 136 / 0.35), 0 22px 44px -26px rgb(7 26 23 / 0.42);
+    }
+  }
+  &:focus-visible,
+  &:focus-within {
+    translate: 0 -4px;
+    border-color: rgb(144 217 136 / 0.6);
+    box-shadow: 0 0 0 1px rgb(144 217 136 / 0.35), 0 22px 44px -26px rgb(7 26 23 / 0.42);
+  }
+}
+@utility card-media {
+  transition: scale var(--dur-slow) var(--ease-emphasized);
+  :is(.card-hover:focus-visible, .card-hover:focus-within) & {
+    scale: 1.03;
+  }
+  @media (hover: hover) {
+    .card-hover:hover & {
+      scale: 1.03;
+    }
+  }
+}
+@utility link-inline {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  transition: text-decoration-color var(--dur-fast) var(--ease-standard);
+  &:hover,
+  &:focus-visible {
+    text-decoration-color: currentColor;
+  }
 }
 
 @layer base {
@@ -95,6 +334,39 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-sans);
+  }
+  /* Page and section headings: balanced lines, no heading ends on a lone word. (Card titles are short
+     and many; balancing them would cost layout time on every page for no visible gain.) */
+  h1, h2 {
+    text-wrap: balance;
+  }
+  /* Only 400, 500 and 600 faces ship: bold text uses the 600 face (a 700 would be faked by the browser). */
+  b, strong {
+    font-weight: 600;
+  }
+  /* Reading text: no single-word last lines. */
+  p, li, dd, figcaption, blockquote {
+    text-wrap: pretty;
+  }
+  /* Figures line up in tables (kWh, MW, years). */
+  table, .figures {
+    font-variant-numeric: tabular-nums;
+  }
+  /* One visible focus ring for everything keyboard-focusable: steel on light grounds, the accent green
+     on dark ones (3:1 or better against both). Components may refine it, never remove it. */
+  /* The ring's colour is set on every element up front, so focusing only switches the ring on (a colour
+     transition — transition-colors includes outline-color — would otherwise fade it in from the text
+     colour). */
+  * {
+    outline-color: var(--color-steel);
+  }
+  :where(.bg-ink, .bg-night, .bg-deep, .bg-forest, .bg-charcoal, .bg-black, [data-ground="dark"]) * {
+    outline-color: var(--color-signal);
+  }
+  :focus-visible {
+    outline-width: 2px;
+    outline-style: solid;
+    outline-offset: 2px;
   }
   /* Respect reduced-motion preference */
   @media (prefers-reduced-motion: reduce) {
@@ -251,6 +523,11 @@ html.js-motion [data-roll="waiting"] {
   height: 100%;
   aspect-ratio: auto;
 }
+/* As panels the cards stay put (their window opens instead): no lift, no glow; the photo still zooms. */
+.seg-panels[data-panels] > li > a.card-hover {
+  translate: none;
+  box-shadow: none;
+}
 .seg-panels[data-panels] [data-panel-text] {
   width: var(--tw);
   transform: translateX(var(--xn));
@@ -371,8 +648,7 @@ html.js-motion [data-roll="waiting"] {
   to { background-position: 0% 0; }
 }
 
-/* Key phrase in a section heading: a marker underline drawn left → right once the heading has
-   landed. Drawn by default; held at zero width only while a heading waits for its reveal. */
+/* Key phrase in a section heading: a marker underline (it rises in with its line of the heading). */
 .h2-mark {
   background-image: linear-gradient(rgba(144, 217, 136, 0.35), rgba(144, 217, 136, 0.35));
   background-repeat: no-repeat;
@@ -380,10 +656,6 @@ html.js-motion [data-roll="waiting"] {
   background-size: 100% 0.3em;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-  transition: background-size 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
-}
-html.js-motion [data-kinetic="waiting"] .h2-mark {
-  background-size: 0% 0.3em;
 }
 
 /* Keyword ticker: one strip of four copies of the list moves left by one copy per loop (~40 s), so
@@ -429,19 +701,7 @@ html.js-motion [data-kinetic="waiting"] .h2-mark {
   animation: hotspot-ring 2.2s ease-out infinite;
 }
 
-/* FAQ accordion: native <details> with a smooth open/close where the browser supports animating to
-   `auto` (elsewhere it simply toggles). */
-.faq-item {
-  interpolate-size: allow-keywords;
-}
-.faq-item::details-content {
-  block-size: 0;
-  overflow: hidden;
-  transition: block-size 0.35s cubic-bezier(0.22, 1, 0.36, 1), content-visibility 0.35s allow-discrete;
-}
-.faq-item[open]::details-content {
-  block-size: auto;
-}
+/* FAQ accordion: native <details>; opening and closing animate its height (ArticleFaq toggleDetails). */
 .faq-item > summary {
   list-style: none;
 }
@@ -534,7 +794,8 @@ html.js-motion [data-intro="pending"] [data-word] {
 
 /* Scroll reveals (lib/scrollReveal.js) and hero entrances (lib/intro.js): parts wait hidden only
    until GSAP has taken them over. */
-html.js-motion [data-sr-state="pending"] [data-sr] {
+html.js-motion [data-sr-state="pending"] [data-sr],
+html.js-motion [data-sr-state="pending"][data-sr] {
   opacity: 0;
 }
 /* Section entrances (lib/entrance.js): parts wait hidden only until GSAP has taken them over. */
@@ -649,7 +910,7 @@ html.js-motion [data-enter="pending"] [data-e] {
   }
   .hero-fit .hero-product {
     --bleed: calc(max(0px, (100vw - 1440px) / 2) + var(--site-pad));
-    --door-x: calc(24px - var(--copy-gap, 6.375rem)); /* open door's left edge, from the column */
+    --door-x: calc(24px - var(--copy-gap, 6.5625rem)); /* open door's left edge, from the column (fallback = the measured gap from 1280px up, so the first paint matches) */
     --shift: 6vw;
     --above: 42px; /* top label chips (~23px) + 6px gap to the eyes + 8px to the hero's top + slack */
     --below: 12px;
@@ -691,14 +952,15 @@ html.js-motion [data-enter="pending"] [data-e] {
   animation: journey-in-prev 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
 }
 
-/* Route change (Layout): the new page fades in. Off during a product View Transition and under
-   reduced motion. */
+/* Route change (Layout): the new page fades in, 0.3 s (1.5 × the fast token). Opacity only — it never
+   delays the navigation, the back button or the scroll position. Off during a View Transition and
+   under reduced motion. */
 @keyframes route-fade {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 .route-fade {
-  animation: route-fade 0.32s ease-out backwards; /* no fill afterwards: no lasting stacking context */
+  animation: route-fade calc(var(--dur-fast) * 1.5) var(--ease-standard) backwards; /* no fill afterwards: no lasting stacking context */
 }
 html[data-vt] .route-fade {
   animation: none;
@@ -1123,7 +1385,7 @@ html.js-motion [data-draw="wait"] .draw-path {
   z-index: -1;
   transform: translate(-50%, -50%);
   font-size: clamp(6rem, 16vw, 13rem);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   letter-spacing: 0.02em;
   color: transparent;
@@ -1490,7 +1752,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
 /* 8. Final CTA: the drifting watermark and the arrival pulse. */
 .cta2-mark {
   font-size: clamp(3.75rem, 9vw, 9.5rem);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -1573,7 +1835,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   border-radius: 9999px;
   border: 1px solid rgb(255 255 255 / 0.22);
   padding: 0.55rem 1rem;
-  font-size: 0.875rem;
+  font-size: var(--text-small);
   color: rgb(244 247 244 / 0.9);
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
@@ -1965,7 +2227,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   .article-table-row td::before {
     content: attr(data-label);
     display: block;
-    font-size: 0.75rem;
+    font-size: var(--text-micro);
     font-weight: 600;
     letter-spacing: 0.04em;
     color: var(--color-sage);
@@ -2285,8 +2547,10 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   html[data-app-error] [data-nav-toggle] {
     display: none;
   }
+  /* relative, not static: it scrolls away, and still holds its own background layers (Nav). */
   html[data-app-error] header:has([data-nav-links]) {
-    position: static;
+    position: relative;
+    translate: none;
   }
   html[data-app-error] header > nav {
     height: auto;
@@ -2317,7 +2581,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     display: none;
   }
   header:has([data-nav-links]) {
-    position: static;
+    position: relative;
   }
   header > nav {
     height: auto;
@@ -2352,8 +2616,8 @@ html[data-app-error] form :disabled {
   border: 1px solid currentColor;
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: var(--text-small);
+  line-height: var(--text-small--line-height);
 }
 .app-fallback-note a {
   font-weight: 600;

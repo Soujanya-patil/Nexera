@@ -3,6 +3,7 @@ import MagneticButton from "../ui/MagneticButton";
 import AnimatedText from "../ui/AnimatedText";
 import { useScrollReveal } from "../../lib/scrollReveal";
 import { scrollToId } from "../../lib/scrollTo";
+import { STAGGER } from "../../lib/tokens";
 
 /**
  * Closing call to action. The heading's words rise in, then the copy and buttons follow
@@ -12,7 +13,7 @@ import { scrollToId } from "../../lib/scrollTo";
  */
 export default function EpcCta() {
   const root = useRef(null);
-  const reveal = useScrollReveal(root, { stagger: 0.1, y: 16, start: "top 85%" });
+  const reveal = useScrollReveal(root);
   return (
     <section ref={root} data-sr-state={reveal} aria-labelledby="epc-cta-title" className="relative overflow-hidden bg-deep text-white">
       <div
@@ -26,20 +27,20 @@ export default function EpcCta() {
         <path d="M0 240 C 500 200, 900 230, 1440 185" stroke="rgba(144,217,136,0.1)" strokeWidth="1" />
       </svg>
       <div className="relative mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
-        <p data-sr className="text-xs font-semibold uppercase tracking-[0.22em] text-signal">
+        <p data-sr className="eyebrow text-signal">
           Partner with NEXERA
         </p>
-        <AnimatedText id="epc-cta-title" className="mx-auto mt-4 max-w-3xl text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
+        <AnimatedText id="epc-cta-title" className="mx-auto mt-4 max-w-3xl text-h2 font-semibold">
           Ready to Build Your Next Energy Storage Project?
         </AnimatedText>
-        <p data-sr className="mx-auto mt-5 max-w-xl leading-relaxed text-ice/80">
+        <p data-sr className="mx-auto mt-5 max-w-xl text-body text-ice/80">
           Talk to NEXERA about technology access, project requirements, and partnership opportunities.
         </p>
         <div data-sr className="mt-9 flex flex-wrap items-center justify-center gap-4">
-          <MagneticButton to="#apply" onClick={scrollToId("apply")} arrow className="uppercase tracking-[0.08em] hover:scale-[1.02]">
+          <MagneticButton to="#apply" onClick={scrollToId("apply")} arrow className="uppercase tracking-[0.08em]">
             Become a Partner
           </MagneticButton>
-          <MagneticButton to="/contact" variant="outline" arrow className="uppercase tracking-[0.08em] hover:scale-[1.02]">
+          <MagneticButton to="/contact" variant="outline" arrow className="uppercase tracking-[0.08em]">
             Talk to NEXERA
           </MagneticButton>
         </div>

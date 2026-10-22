@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BatteryFull } from "lucide-react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // The section's three systems, in its order, with the cell wording the article gives each. `product`:
 // its catalogue entry (photo and alt text from data/products.js); Midea has none (the site sets its
@@ -46,7 +47,7 @@ export default function NexeraLfp({ active, motion, mode, step }) {
     root,
     motion,
     active,
-    ({ gsap }, el) => gsap.timeline().from(el.querySelectorAll("[data-tile]"), { opacity: 0, y: 16, duration: 0.5, stagger: 0.18, ease: "power2.out", clearProps: "opacity,transform" }),
+    ({ gsap }, el) => gsap.timeline().from(el.querySelectorAll("[data-tile]"), { opacity: 0, y: 16, duration: DUR.base, stagger: STAGGER, ease: EASE.standard, clearProps: "opacity,transform" }),
     [!!catalogue]
   );
 
@@ -79,7 +80,7 @@ export default function NexeraLfp({ active, motion, mode, step }) {
                 ) : (
                   <span aria-hidden="true" className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-ink">
                     <BatteryFull className={compact ? "h-6 w-6 text-forest" : "h-8 w-8 text-forest"} strokeWidth={1.6} />
-                    {s.wordmark && <span className={`font-bold uppercase leading-none tracking-tight ${compact ? "text-sm" : "text-lg"}`}>{s.wordmark}</span>}
+                    {s.wordmark && <span className={`font-semibold uppercase leading-none tracking-tight ${compact ? "text-sm" : "text-lg"}`}>{s.wordmark}</span>}
                   </span>
                 )}
               </div>

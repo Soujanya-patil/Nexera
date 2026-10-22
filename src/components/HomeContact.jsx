@@ -7,6 +7,7 @@ import { jumpTo } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
 import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
 import { ADDRESS } from "../data/business";
+import { STAGGER } from "../lib/tokens";
 
 const TRUST = [
   { icon: BadgeCheck, text: "Authorized partner for TCL, Hithium, CLOU and Midea" },
@@ -57,7 +58,7 @@ export default function HomeContact() {
   const root = useRef(null);
   const card = useRef(null);
   const form = useRef(null);
-  const reveal = useScrollReveal(root, { stagger: 0.08 });
+  const reveal = useScrollReveal(root);
   const { search, hash } = useLocation();
   const [values, setValues] = useState(EMPTY);
   const [errors, setErrors] = useState({});
@@ -147,10 +148,10 @@ export default function HomeContact() {
     requestAnimationFrame(() => form.current?.querySelector(`#${uid}-name`)?.focus());
   };
 
-  const input = "mt-2 block w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-base text-white placeholder:text-ice/40 transition-colors focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-signal aria-[invalid=true]:border-[#ffb0a3]";
-  const label = "block text-sm font-medium text-ice/90";
+  const input = "mt-2 block w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-body text-white placeholder:text-ice/40 transition-colors focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-signal aria-[invalid=true]:border-[#ffb0a3]";
+  const label = "block text-small font-medium text-ice/90";
   const err = (k) => (
-    <p id={`${uid}-${k}-err`} aria-live="polite" className="mt-1.5 min-h-0 text-sm text-[#ffb0a3]">
+    <p id={`${uid}-${k}-err`} aria-live="polite" className="mt-1.5 min-h-0 text-small text-[#ffb0a3]">
       {errors[k] || ""}
     </p>
   );
@@ -189,13 +190,13 @@ export default function HomeContact() {
       <div className="relative container-site grid gap-12 py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
         {/* Left: the pitch */}
         <div className="lg:col-span-5">
-          <p data-sr className="text-xs font-semibold uppercase tracking-[0.22em] text-signal">
+          <p data-sr className="eyebrow text-signal">
             Get in touch
           </p>
-          <h2 id={`${uid}-title`} data-sr className="mt-4 text-[clamp(2rem,1.2rem+2.6vw,3.25rem)] font-semibold leading-[1.05] tracking-tight">
+          <h2 id={`${uid}-title`} data-sr className="mt-4 text-h2 font-semibold">
             Let&rsquo;s power your project.
           </h2>
-          <p data-sr className="mt-5 max-w-md text-lg leading-relaxed text-ice/80">
+          <p data-sr className="mt-5 max-w-md text-lead text-ice/80">
             Tell us about your home, business or utility project. Our team will help you choose the right battery energy storage system.
           </p>
           <ul data-sr className="mt-8 space-y-4">
@@ -213,7 +214,7 @@ export default function HomeContact() {
               {CONTACT_PHONE && (
                 <>
                   Prefer to talk? Call{" "}
-                  <a href={telHref(CONTACT_PHONE)} className="font-semibold text-signal underline-offset-4 hover:underline">
+                  <a href={telHref(CONTACT_PHONE)} className="font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
                     {CONTACT_PHONE}
                   </a>
                   {CONTACT_EMAIL ? " " : ""}
@@ -222,21 +223,21 @@ export default function HomeContact() {
               {CONTACT_EMAIL && (
                 <>
                   {CONTACT_PHONE ? "or email " : "Prefer email? Write to "}
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-signal underline-offset-4 hover:underline">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
                     {CONTACT_EMAIL}
                   </a>
                 </>
               )}
             </p>
           )}
-          <address data-sr className="mt-3 max-w-md text-sm not-italic leading-relaxed text-ice/75">
+          <address data-sr className="mt-3 max-w-md text-small not-italic text-ice/75">
             {ADDRESS}
           </address>
-          <p data-sr className="mt-8 text-sm text-ice/75">
+          <p data-sr className="mt-8 text-small text-ice/75">
             Want to become a distributor?{" "}
-            <Link to="/become-a-partner" className="group inline-flex items-center gap-1 font-semibold text-signal underline-offset-4 hover:underline">
+            <Link to="/become-a-partner" className="group inline-flex items-center gap-1 font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
               Explore our partner program
-              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 group-focus-within:translate-x-0.5" />
             </Link>
           </p>
         </div>
@@ -250,10 +251,10 @@ export default function HomeContact() {
                   <circle cx="32" cy="32" r="29" pathLength="1" />
                   <path d="M20 33l8 8 16-17" pathLength="1" />
                 </svg>
-                <p className="mx-auto mt-6 max-w-md text-xl font-semibold leading-snug text-white">
+                <p className="mx-auto mt-6 max-w-md text-h3 font-semibold text-white">
                   Thank you, {firstName}. We&rsquo;ve received your enquiry and our team will get back to you shortly.
                 </p>
-                <button type="button" onClick={again} className="mt-6 rounded-md text-sm font-semibold text-signal underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal">
+                <button type="button" onClick={again} className="mt-6 rounded-md text-button font-semibold text-signal underline underline-offset-4 hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-4">
                   Send another enquiry
                 </button>
               </div>
@@ -300,7 +301,7 @@ export default function HomeContact() {
                     <label htmlFor={`${uid}-message`} className={label}>
                       Message<span className="text-ice/60"> (optional)</span>
                     </label>
-                    <span id={`${uid}-count`} className="text-xs tabular-nums text-ice/60">
+                    <span id={`${uid}-count`} className="text-micro tabular-nums text-ice/60">
                       {values.message.length} / {LIMITS.message}
                     </span>
                   </div>
@@ -328,7 +329,7 @@ export default function HomeContact() {
                 </div>
 
                 {status === "error" && (
-                  <p role="alert" className="rounded-xl border border-[#ffb0a3]/40 bg-[#ffb0a3]/10 px-4 py-3 text-sm text-white">
+                  <p role="alert" className="rounded-xl border border-[#ffb0a3]/40 bg-[#ffb0a3]/10 px-4 py-3 text-small text-white">
                     Something went wrong. Please try again, or call/email us.
                     {CONTACT_PHONE && (
                       <>
@@ -350,11 +351,11 @@ export default function HomeContact() {
                 )}
 
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-                  <p className="text-xs text-ice/70">We&rsquo;ll only use your details to respond to this enquiry.</p>
+                  <p className="text-micro text-ice/70">We&rsquo;ll only use your details to respond to this enquiry.</p>
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3 text-sm font-semibold text-forest transition-[background-color,box-shadow] duration-300 hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+                    className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-signal px-6 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4"
                   >
                     {status === "sending" ? (
                       <>

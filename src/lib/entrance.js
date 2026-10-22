@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { loadGsap } from "./motion";
 import { isFirstLoad } from "./firstLoad";
+import { DUR, EASE } from "./tokens";
 
 const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -31,7 +32,7 @@ export function useEntrance(ref, build, { start = "top 78%" } = {}) {
         if (cancelled || !el) return;
         clearTimeout(safety);
         ctx = gsap.context(() => {
-          const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" }, onComplete: () => !cancelled && setState("done") });
+          const tl = gsap.timeline({ paused: true, defaults: { ease: EASE.emphasized, duration: DUR.base }, onComplete: () => !cancelled && setState("done") });
           build({ tl, q: gsap.utils.selector(el), gsap });
           const st = ScrollTrigger.create({ trigger: el, start, once: true, onEnter: () => tl.play() });
           // Already passed — or, on a first load, already on screen: just show it (same frame, no flash).

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE } from "../../../lib/tokens";
 
 // One closed outline per scale (same direction, similar point counts, so the morph reads cleanly).
 const SHAPES = [
@@ -43,11 +44,11 @@ export default function ScaleMorph({ active, motion, mode, step }) {
       tl.fromTo(
         el.querySelector("[data-shape]"),
         { morphSVG: SHAPES[from.current].d },
-        { morphSVG: SHAPES[at].d, duration: 0.9, ease: "power3.inOut", onComplete: () => (from.current = at) },
+        { morphSVG: SHAPES[at].d, duration: DUR.slow, ease: EASE.inOut, onComplete: () => (from.current = at) },
         0
       )
-        .fromTo(el.querySelector("[data-detail]"), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.6)
-        .fromTo(el.querySelector("[data-caption]"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4 }, 0.5);
+        .fromTo(el.querySelector("[data-detail]"), { opacity: 0 }, { opacity: 1, duration: DUR.base }, 0.6)
+        .fromTo(el.querySelector("[data-caption]"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: DUR.base }, 0.5);
       return tl;
     },
     [at]

@@ -158,9 +158,9 @@ export default function SolutionsResidential() {
           {PARTNERS.map((p) => (
             <article key={p.key} className="group/card flex h-full flex-col rounded-2xl border border-line bg-paper p-6 md:p-8">
               <PartnerMark partner={p.partner} name={p.name} decorative />
-              <h3 className="mt-5 text-lg font-semibold leading-snug text-ink">{p.title}</h3>
+              <h3 className="mt-5 text-h4 font-semibold text-ink">{p.title}</h3>
               <Stats items={p.stats} />
-              <p className="mt-5 flex-1 text-sm leading-relaxed text-graphite">{p.copy}</p>
+              <p className="mt-5 flex-1 text-small text-graphite">{p.copy}</p>
               <ArrowLink to={p.cta.to} className="mt-6 self-start">
                 {p.cta.label}
               </ArrowLink>
@@ -177,7 +177,7 @@ export default function SolutionsResidential() {
           "We don't believe a home battery should be selected simply because it is the cheapest system available. A residential energy storage system is expected to operate for many years. Battery chemistry, thermal management, safety systems, inverter technology, software, monitoring and after-sales support all matter. That's why NEXERA focuses on technology platforms backed by established global manufacturers.",
         ]}
       >
-        <h3 className="mt-12 text-xl font-semibold tracking-tight text-ink">What sets our solutions apart</h3>
+        <h3 className="mt-12 text-h3 font-semibold text-ink">What sets our solutions apart</h3>
         <FeatureGrid
           level={4}
           className="mt-8"
@@ -236,7 +236,7 @@ export default function SolutionsResidential() {
             ["Maximum for an individual household", "₹78,000"],
           ]}
         />
-        <p className="mt-6 max-w-3xl text-sm leading-relaxed text-graphite">
+        <p className="mt-6 max-w-3xl text-small text-graphite">
           Subsidy eligibility, benchmark costs and implementation requirements are governed by the current MNRE scheme and the National Portal.
           NEXERA can help customers understand the applicable process and coordinate the installation.
         </p>
@@ -244,15 +244,15 @@ export default function SolutionsResidential() {
           href="https://pmsuryaghar.gov.in"
           target="_blank"
           rel="noopener"
-          className="group/pill mt-8 inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3 text-sm font-semibold text-forest transition-[background-color,box-shadow,scale] duration-300 hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+          className="group/pill btn-motion mt-8 inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           PM Surya Ghar National Portal
           <ExternalLink aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
           <span className="sr-only">(opens in a new tab)</span>
         </a>
         <div className="mt-12 max-w-3xl rounded-2xl border border-line bg-ice p-6 md:p-8">
-          <h3 className="text-xl font-semibold tracking-tight text-ink">What About PM Surya Ghar 2.0?</h3>
-          <p className="mt-3 leading-relaxed text-graphite">
+          <h3 className="text-h3 font-semibold text-ink">What About PM Surya Ghar 2.0?</h3>
+          <p className="mt-3 text-body text-graphite">
             As India moves towards the next generation of rooftop solar, battery storage is expected to play an increasingly important role in
             residential energy systems. NEXERA is ready with the technology to help homeowners move from simply generating solar power to
             intelligently managing their home&rsquo;s energy.
@@ -268,7 +268,7 @@ export default function SolutionsResidential() {
         intro="With our experience in solar engineering, plant monitoring, energy analysis and system optimisation, NEXERA looks at the complete picture:"
       >
         <FlowSteps items={["Your consumption", "Solar generation", "Battery sizing", "Backup requirement", "Energy management", "Future expansion"]} />
-        <p className="mt-8 max-w-3xl leading-relaxed text-graphite">
+        <p className="mt-8 max-w-3xl text-body text-graphite">
           The result is a system designed around how your home actually uses electricity, rather than simply selling you a battery of a particular
           size.
         </p>
@@ -340,17 +340,17 @@ function HomeSystems() {
               onPointerEnter={(e) => e.pointerType === "mouse" && pick(i + 1)}
               onFocus={() => pick(i + 1)}
               onClick={() => pick(i + 1)}
-              className={`relative flex h-full cursor-pointer flex-col rounded-2xl border bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 ${
+              className={`relative flex h-full cursor-pointer flex-col rounded-2xl border bg-paper p-6 transition-[border-color,box-shadow,translate] duration-fast ${
                 on ? "-translate-y-1 border-signal shadow-[0_0_0_1px_var(--color-signal),0_18px_40px_-28px_rgba(7,26,23,0.45)]" : "border-line"
               }`}
             >
               <span aria-hidden="true" className="absolute left-6 top-0 h-0.5 w-8 rounded-full bg-signal" />
-              <span className={`step-num text-[4rem] font-semibold leading-none tracking-tight ${on ? "" : "is-outline"}`}>{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="mt-4 text-lg font-semibold text-ink">{s.title}</h3>
-              <p className="mt-1 text-sm font-semibold text-forest">{s.lead}</p>
-              <p className="mt-3 text-sm leading-relaxed text-graphite">{s.copy}</p>
+              <span className={`step-num text-display tabular-nums font-semibold leading-none ${on ? "" : "is-outline"}`}>{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="mt-4 text-h4 font-semibold text-ink">{s.title}</h3>
+              <p className="mt-1 text-small font-semibold text-forest">{s.lead}</p>
+              <p className="mt-3 text-small text-graphite">{s.copy}</p>
               {s.ideal && (
-                <p className="mt-3 text-sm leading-relaxed text-graphite">
+                <p className="mt-3 text-small text-graphite">
                   <strong className="font-semibold text-ink">Ideal for:</strong> {s.ideal}
                 </p>
               )}

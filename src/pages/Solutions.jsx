@@ -10,6 +10,7 @@ import { useRouteTransition } from "../lib/viewTransition";
 import { useMediaQuery } from "../lib/scrollSteps";
 import { usePanels } from "../lib/panels";
 import { isFirstLoad } from "../lib/firstLoad";
+import { DUR, EASE, STAGGER } from "../lib/tokens";
 
 // The hero's crossfading segment ribbon: desktop only, its own chunk.
 const SegmentRibbon = lazy(() => import("../components/solutions/SegmentRibbon"));
@@ -92,11 +93,11 @@ function HubHeader({ eyebrow, title, subtitle }) {
             if (!cancelled) setState("done");
           },
         });
-        tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, letterSpacing: "0.4em" }, { opacity: 1, letterSpacing: "normal", duration: 0.6, ease: "power2.out", clearProps: "all" }, 0)
-          .fromTo(q('[data-a="rule"]'), { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out", clearProps: "all" }, 0)
+        tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, clearProps: "all" }, 0)
+          .fromTo(q('[data-a="rule"]'), { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: DUR.base, ease: EASE.standard, clearProps: "all" }, 0)
           .set(h1, { opacity: 1 }, 0)
-          .fromTo(split.lines, { yPercent: 100 }, { yPercent: 0, duration: 0.65, stagger: 0.09, ease: "expo.out" }, 0.1)
-          .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", clearProps: "all" }, 0.27);
+          .fromTo(split.lines, { yPercent: 100 }, { yPercent: 0, duration: DUR.slow, stagger: STAGGER, ease: EASE.emphasized }, 0.1)
+          .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, clearProps: "all" }, 0.27);
         setState("running");
       })
       .catch(() => !cancelled && setState("done"));
@@ -115,20 +116,20 @@ function HubHeader({ eyebrow, title, subtitle }) {
       <Spotlight />
       <div data-intro={state} className="relative container-site grid items-center gap-12 py-16 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
         <div>
-          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-sm font-medium text-signal">
+          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-small font-medium text-signal">
             <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
             {eyebrow}
           </p>
-          <h1 data-a="title" className="max-w-2xl font-sans text-3xl font-semibold md:text-4xl">
+          <h1 data-a="title" className="max-w-2xl text-h1 font-semibold">
             {title}
           </h1>
-          <p data-a="desc" className="mt-4 max-w-2xl leading-relaxed text-ice/75">
+          <p data-a="desc" className="mt-4 max-w-2xl text-body text-ice/75">
             {subtitle}
           </p>
-          <p data-a="desc" className="mt-4 text-sm">
-            <Link to="/blog/what-is-bess" className="group/new inline-flex items-center gap-1.5 font-semibold text-signal underline-offset-4 hover:underline">
+          <p data-a="desc" className="mt-4 text-small">
+            <Link to="/blog/what-is-bess" className="group/new hit-area inline-flex items-center gap-1.5 font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
               New to battery storage? Read: What Is a BESS?
-              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-300 group-hover/new:translate-x-0.5" />
+              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/new:translate-x-0.5 group-focus-visible/new:translate-x-0.5 group-focus-within/new:translate-x-0.5" />
             </Link>
           </p>
         </div>
@@ -160,30 +161,30 @@ function SegmentCard({ s }) {
       to={s.page}
       onClick={open}
       data-vt-card={s.id}
-      className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-night text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal md:aspect-[4/5]"
+      className="card-hover group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-night text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
     >
       <div data-vt-img className="absolute inset-0 overflow-hidden">
         <SceneImg
           name={s.img}
           alt={s.alt}
           sizes="(min-width: 1024px) 45vw, (min-width: 768px) 33vw, 100vw"
-          className="absolute inset-0 h-full w-full object-cover transition-[scale,translate] duration-700 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.05] group-focus-visible:scale-[1.05]"
+          className="card-media absolute inset-0 h-full w-full object-cover"
         />
       </div>
       <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/60 to-night/5" />
-      <span aria-hidden="true" className="absolute inset-0 bg-night/0 transition-colors duration-500 group-hover:bg-night/35 group-focus-visible:bg-night/35" />
+      <span aria-hidden="true" className="absolute inset-0 bg-night/0 transition-colors duration-base group-hover:bg-night/35 group-focus-within:bg-night/35 group-focus-visible:bg-night/35" />
       {/* In the panels the card's own outline would be clipped by its window: the ring is drawn on the text. */}
       <div
         data-panel-text
         className="relative rounded-2xl p-6 group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-signal md:p-7"
       >
         <h2
-          className="text-2xl font-semibold transition-colors duration-300 group-hover:text-signal group-focus-visible:text-signal"
+          className="text-h2 font-semibold transition-colors duration-fast group-hover:text-signal group-focus-within:text-signal group-focus-visible:text-signal"
         >
           {s.title}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-ice/85">{s.copy}</p>
-        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-signal">
+        <p className="mt-2 text-small text-ice/85">{s.copy}</p>
+        <span className="mt-5 inline-flex items-center gap-1.5 text-small font-semibold text-signal">
           <ArrowUnderline group="card">{s.cta}</ArrowUnderline>
         </span>
       </div>
@@ -193,7 +194,7 @@ function SegmentCard({ s }) {
 
 export default function Solutions() {
   const grid = useRef(null);
-  const reveal = useScrollReveal(grid, { stagger: 0.1 });
+  const reveal = useScrollReveal(grid);
   usePanels(grid);
   return (
     <div className="solutions-page">

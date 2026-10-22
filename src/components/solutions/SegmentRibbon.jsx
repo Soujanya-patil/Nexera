@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { scene } from "../../lib/scenes";
 import { loadGsap } from "../../lib/motion";
+import { EASE } from "../../lib/tokens";
 
 // The three segment heroes' photos, in the order the hub lists the segments.
 const SLIDES = [
@@ -87,9 +88,9 @@ export default function SegmentRibbon() {
       canvases.forEach((c, i) => {
         const at = i * HOLD;
         tl.call(() => setIndex(i), null, at)
-          .fromTo(c, { opacity: 0 }, { opacity: 1, duration: FADE, ease: "power1.inOut" }, at)
+          .fromTo(c, { opacity: 0 }, { opacity: 1, duration: FADE, ease: EASE.inOut }, at)
           .fromTo(c, { scale: 1 }, { scale: 1.06, duration: HOLD + FADE, ease: "none" }, at)
-          .to(c, { opacity: 0, duration: FADE, ease: "power1.inOut" }, at + HOLD);
+          .to(c, { opacity: 0, duration: FADE, ease: EASE.inOut }, at + HOLD);
       });
       io = new IntersectionObserver(([e]) => {
         onScreen = e.isIntersecting;
@@ -121,7 +122,7 @@ export default function SegmentRibbon() {
         <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/70 via-transparent to-transparent" />
       </div>
       {/* The label rolls up from a mask as its photo comes in. */}
-      <p className="mt-4 flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.18em] text-ice/80">
+      <p className="mt-4 flex items-center gap-3 eyebrow text-ice/80">
         <span className="h-px w-8 bg-signal/70" />
         <span className="relative block h-5 overflow-hidden">
           <span key={index} className="ribbon-label block whitespace-nowrap">

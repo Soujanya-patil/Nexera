@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // The four questions, in short.
 const CHIPS = ["Energy to store (kWh)", "Power at once (kW)", "What it's mainly for", "Where it will be installed"];
@@ -25,7 +26,7 @@ export default function ChooseChips({ active, motion, mode, step, chips = CHIPS,
   const all = done >= chips.length - 1;
 
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
-    gsap.timeline().from(el.querySelectorAll("[data-chip]"), { opacity: 0, x: -14, duration: 0.4, stagger: 0.08, ease: "power2.out" })
+    gsap.timeline().from(el.querySelectorAll("[data-chip]"), { opacity: 0, x: -14, duration: DUR.base, stagger: STAGGER, ease: EASE.standard })
   );
 
   return (

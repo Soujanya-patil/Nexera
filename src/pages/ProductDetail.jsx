@@ -28,7 +28,7 @@ import PillLink from "../components/PillLink";
 import AnimatedTabs from "@/components/smoothui/animated-tabs";
 import MagneticButton from "../components/ui/MagneticButton";
 import AnimatedText from "../components/ui/AnimatedText";
-import { isFirstLoad } from "../lib/firstLoad";
+import CountUp from "../components/CountUp";
 import { useParallax } from "../lib/parallax";
 import ProductCard from "../components/catalogue/ProductCard";
 import HotspotViewer from "../components/catalogue/HotspotViewer";
@@ -37,6 +37,7 @@ import { depth, usePointerDepth } from "../lib/pointerDepth";
 import { useIntro } from "../lib/intro";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { ProductsRoute } from "./lazy";
+import { DUR, STAGGER } from "../lib/tokens";
 
 const TAB_ID = "spec-tabs";
 const ICONS = { Boxes, Cpu, Expand, Flame, Gauge, LandPlot, Layers, Minimize2, Monitor, Network, ShieldCheck, Snowflake, Sun, Thermometer, Zap };
@@ -71,81 +72,13 @@ function TechnicalTabs({ specs }) {
               className="grid gap-1 py-4 animate-[spec-row_0.4s_ease-out_both] sm:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] sm:gap-6"
               style={{ animationDelay: `${i * 40}ms` }}
             >
-              <dt className="text-sm text-graphite">{row.label}</dt>
-              <dd className="text-sm font-medium text-ink">{row.value}</dd>
+              <dt className="text-small text-graphite">{row.label}</dt>
+              <dd className="text-small font-medium text-ink">{row.value}</dd>
             </div>
           ))}
         </dl>
       ))}
     </div>
-  );
-}
-
-/**
- * A key-specification value that counts up to its exact figure the first time it scrolls into view.
- * Only values that begin with a real number animate ("261 kWh", "6.25 MWh", "8–128 kWh" — both ends
- * of a range); everything else ("IP55", "LFP", "Up to 6.3 MWh", model names) is shown as written.
- * The count always lands on the data's own text; screen readers get that text directly.
- */
-const RANGE = /^(\d+(?:\.\d+)?)–(\d+(?:\.\d+)?)(.*)$/;
-const SINGLE = /^(\d+(?:\.\d+)?)(.*)$/;
-const decimals = (n) => (n.split(".")[1] || "").length;
-
-function SpecValue({ value }) {
-  const range = value.match(RANGE);
-  const single = !range && value.match(SINGLE);
-  const countable = Boolean(range || single);
-  const format = (t) => {
-    const f = (n) => (parseFloat(n) * t).toFixed(decimals(n));
-    return range ? `${f(range[1])}–${f(range[2])}${range[3]}` : `${f(single[1])}${single[2]}`;
-  };
-  // A first load (lib/firstLoad) renders the real figure — it is in the pre-rendered page and must not
-  // read 0 — and only a value still below the viewport is reset to count when it arrives. After a
-  // client-side navigation the count starts from 0 as before.
-  const [first] = useState(() => typeof window === "undefined" || isFirstLoad());
-  const motion = () => !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const [shown, setShown] = useState(() => (countable && !first && motion() ? format(0) : value));
-  const ref = useRef(null);
-  useEffect(() => {
-    if (!countable || (!first && shown === value) || (first && !motion())) return;
-    const el = ref.current;
-    let raf = 0;
-    let seen = false;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (first && !seen) {
-          seen = true;
-          // On screen already (or passed): leave the real figure. Below: it may count when it arrives.
-          if (entry.boundingClientRect.top < window.innerHeight) return io.disconnect();
-          setShown(format(0));
-          return;
-        }
-        if (!entry.isIntersecting) return;
-        io.disconnect();
-        const start = performance.now();
-        const tick = (now) => {
-          const p = Math.min((now - start) / 1100, 1);
-          setShown(p < 1 ? format(1 - Math.pow(1 - p, 3)) : value);
-          if (p < 1) raf = requestAnimationFrame(tick);
-        };
-        raf = requestAnimationFrame(tick);
-      },
-      { threshold: 0.6 }
-    );
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      cancelAnimationFrame(raf);
-    };
-    // Runs once: the count only ever goes up to the real value.
-  }, []);
-  return (
-    <span ref={ref}>
-      <span className="sr-only">{value}</span>
-      <span aria-hidden="true" className="tabular-nums">
-        {shown}
-      </span>
-    </span>
   );
 }
 
@@ -162,7 +95,7 @@ export default function ProductDetail() {
     return (
       <section className="bg-ice">
         <div className="mx-auto max-w-2xl px-6 py-24 text-center">
-          <h1 className="text-2xl font-semibold text-ink">We couldn&rsquo;t find that system.</h1>
+          <h1 className="text-h1 font-semibold text-ink">We couldn&rsquo;t find that system.</h1>
           <p className="mt-2 text-graphite">It may have been renamed or removed from the catalogue.</p>
           <PillLink to="/products" className="mt-8">
             Browse all products
@@ -194,14 +127,14 @@ function ProductView({ product }) {
   useParallax(drift, { amount: 4 });
   const intro = useIntro(hero, ({ tl, q }) => {
     const done = { clearProps: "all" };
-    tl.fromTo(q('[data-a="crumbs"]'), { opacity: 0 }, { opacity: 1, duration: 0.5, ...done }, 0)
-      .fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6, ...done }, 0.05)
-      .fromTo(q('[data-a="title"]'), { opacity: 0, y: 36, filter: "blur(6px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.9, ...done }, 0.15)
-      .fromTo(q('[data-a="meta"]'), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ...done }, 0.35)
-      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 14, filter: "blur(4px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ...done }, 0.5)
-      .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.08, ...done }, 0.7);
+    tl.fromTo(q('[data-a="crumbs"]'), { opacity: 0 }, { opacity: 1, duration: DUR.base, ...done }, 0)
+      .fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: DUR.base, ...done }, 0.05)
+      .fromTo(q('[data-a="title"]'), { opacity: 0, y: 36 }, { opacity: 1, y: 0, duration: DUR.slow, ...done }, 0.15)
+      .fromTo(q('[data-a="meta"]'), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: DUR.base, stagger: STAGGER, ...done }, 0.35)
+      .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: DUR.base, ...done }, 0.5)
+      .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: DUR.base, stagger: STAGGER, ...done }, 0.7);
   });
-  const reveal = useScrollReveal(page, { stagger: 0.08 });
+  const reveal = useScrollReveal(page);
   // Returning to the catalogue should be instant too.
   useEffect(() => {
     ProductsRoute.preload();
@@ -222,10 +155,10 @@ function ProductView({ product }) {
           />
         </div>
         <div data-intro={intro} className="relative container-site pb-14 pt-8 lg:pb-16">
-          <nav data-a="crumbs" aria-label="Breadcrumb" className="text-xs text-ice/60">
+          <nav data-a="crumbs" aria-label="Breadcrumb" className="text-micro text-ice/60">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
-                <Link to="/products" className="hover:text-white">
+                <Link to="/products" className="hit-area hover:text-white focus-visible:text-white">
                   Products
                 </Link>
               </li>
@@ -233,7 +166,7 @@ function ProductView({ product }) {
                 <ChevronRight className="h-3.5 w-3.5" />
               </li>
               <li>
-                <Link to={`/partners/${partner.id}`} className="hover:text-white">
+                <Link to={`/partners/${partner.id}`} className="hit-area hover:text-white focus-visible:text-white">
                   {partner.name}
                 </Link>
               </li>
@@ -248,13 +181,13 @@ function ProductView({ product }) {
 
           <div className="mt-8 grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14">
             <div>
-              <p data-a="eyebrow" className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
+              <p data-a="eyebrow" className="eyebrow text-ice/80">
                 Technology partner ·{" "}
-                <Link to={`/partners/${partner.id}`} className="text-white underline-offset-4 hover:text-signal hover:underline">
+                <Link to={`/partners/${partner.id}`} className="text-white underline-offset-4 hover:text-signal focus-visible:text-signal hover:underline focus-visible:underline">
                   {partner.name}
                 </Link>
               </p>
-              <h1 data-a="title" className="mt-4 text-[clamp(2rem,3.6vw,3rem)] font-semibold leading-[1.1] tracking-tight">
+              <h1 data-a="title" className="mt-4 text-h1 font-semibold">
                 {product.name}
               </h1>
               <div data-a="meta">
@@ -263,30 +196,30 @@ function ProductView({ product }) {
               </div>
               <ul data-a="meta" className="mt-5 flex flex-wrap gap-2" aria-label="Applications">
                 {product.applications.map((a) => (
-                  <li key={a} className="rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-ice/85">
+                  <li key={a} className="rounded-full border border-white/15 px-3 py-1 text-micro font-medium text-ice/85">
                     {applicationLabel(a)}
                   </li>
                 ))}
               </ul>
               {/* Back to the Solutions page(s) this system belongs to. */}
-              <p data-a="meta" className="mt-3 text-sm text-ice/70">
+              <p data-a="meta" className="mt-3 text-small text-ice/70">
                 See how it fits:{" "}
                 {product.applications.map((a, i) => (
                   <Fragment key={a}>
                     {i > 0 && " · "}
-                    <Link to={SOLUTION_PAGES[a].path} className="font-semibold text-signal underline-offset-4 hover:underline">
+                    <Link to={SOLUTION_PAGES[a].path} className="font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
                       {SOLUTION_PAGES[a].label} solutions
                     </Link>
                   </Fragment>
                 ))}
               </p>
               {/* The summary, then where to get it: the partner pages' own line (data/partners.js). */}
-              <p data-a="desc" className="mt-6 max-w-lg leading-relaxed text-ice/80">
+              <p data-a="desc" className="mt-6 max-w-lg text-body text-ice/80">
                 {product.summary} {PARTNER_LINE}
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <span data-a="cta" className="inline-block">
-                  <MagneticButton to={`/contact?product=${product.id}`} arrow className="hover:scale-[1.02]">
+                  <MagneticButton to={`/contact?product=${product.id}`} arrow>
                     Enquire About This System
                   </MagneticButton>
                 </span>
@@ -295,15 +228,15 @@ function ProductView({ product }) {
                     data-a="cta"
                     href={product.datasheet}
                     download
-                    className="inline-flex items-center gap-2 rounded-full border border-white/60 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-white hover:bg-white/10"
+                    className="btn-motion inline-flex items-center gap-2 rounded-full border border-white/60 px-6 py-3 text-button font-semibold text-white hover:border-white focus-visible:border-white hover:bg-white/10 focus-visible:bg-white/10"
                   >
                     <Download aria-hidden="true" className="h-4 w-4" />
                     Download Datasheet
                   </a>
                 )}
               </div>
-              <Link data-a="cta" to="/products" className="group/back mt-6 inline-flex items-center gap-1.5 text-sm text-ice/60 hover:text-white">
-                <ArrowLeft aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/back:-translate-x-1" /> All products
+              <Link data-a="cta" to="/products" className="group/back mt-6 inline-flex items-center gap-1.5 text-small text-ice/60 hover:text-white focus-visible:text-white">
+                <ArrowLeft aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/back:-translate-x-1 group-focus-visible/back:-translate-x-1 group-focus-within/back:-translate-x-1" /> All products
               </Link>
             </div>
 
@@ -343,13 +276,13 @@ function ProductView({ product }) {
                         decoding="async"
                         data-vt-hero={product.id}
                         style={{ viewTransitionName: `product-${product.id}` }}
-                        className="absolute inset-0 m-auto h-[88%] w-[88%] object-contain transition-[scale] duration-700 ease-out group-hover/hero:scale-[1.015]"
+                        className="absolute inset-0 m-auto h-[88%] w-[88%] object-contain transition-[scale] duration-slow ease-standard group-hover/hero:scale-[1.015] group-focus-visible/hero:scale-[1.015] group-focus-within/hero:scale-[1.015]"
                       />
                     )}
                   </div>
                 </div>
               </div>
-              {product.imageNote && <figcaption className="mt-3 text-center text-xs text-ice/50">{product.imageNote}</figcaption>}
+              {product.imageNote && <figcaption className="mt-3 text-center text-micro text-ice/50">{product.imageNote}</figcaption>}
             </figure>
           </div>
         </div>
@@ -358,24 +291,24 @@ function ProductView({ product }) {
       {/* Key specifications */}
       <section className="bg-ice py-16 md:py-20">
         <div className="container-site">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Key specifications</p>
-          <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">At a glance</AnimatedText>
+          <p className="eyebrow text-sage">Key specifications</p>
+          <AnimatedText className="mt-3 text-h2 font-semibold text-ink">At a glance</AnimatedText>
           <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {product.keySpecs.map((s) => (
               <div
                 data-sr
                 key={s.label}
-                className="group/spec relative overflow-hidden rounded-2xl border border-line bg-paper p-5 transition-[border-color,translate] duration-300 hover:-translate-y-0.5 hover:border-forest/25"
+                className="group/spec relative overflow-hidden rounded-2xl border border-line bg-paper p-5 card-hover"
               >
-                <span aria-hidden="true" className="absolute left-5 top-0 h-0.5 w-6 rounded-full bg-signal transition-[width] duration-500 group-hover/spec:w-10" />
-                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-sage">{s.label}</dt>
-                <dd className="mt-2 text-xl font-semibold tracking-tight text-forest">
-                  <SpecValue value={s.value} />
+                <span aria-hidden="true" className="absolute left-5 top-0 h-0.5 w-10 origin-left scale-x-[0.6] rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover/spec:scale-x-100 group-focus-visible/spec:scale-x-100 group-focus-within/spec:scale-x-100" />
+                <dt className="eyebrow text-sage">{s.label}</dt>
+                <dd className="mt-2 text-h3 tabular-nums font-semibold text-forest">
+                  <CountUp value={s.value} />
                 </dd>
               </div>
             ))}
           </dl>
-          {product.specsNote && <p className="mt-5 text-sm text-graphite">{product.specsNote}</p>}
+          {product.specsNote && <p className="mt-5 text-small text-graphite">{product.specsNote}</p>}
         </div>
       </section>
 
@@ -383,18 +316,18 @@ function ProductView({ product }) {
       {product.highlights.length > 0 && (
         <section className="bg-paper py-16 md:py-20">
           <div className="container-site">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Product highlights</p>
-            <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Why this system</AnimatedText>
+            <p className="eyebrow text-sage">Product highlights</p>
+            <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Why this system</AnimatedText>
             <ul className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               {product.highlights.map((h) => {
                 const Icon = ICONS[h.icon] ?? ShieldCheck;
                 return (
                   <li data-sr key={h.title} className="group/hl">
-                    <span className="grid h-11 w-11 place-items-center rounded-full bg-ice text-forest transition-[background-color,scale] duration-300 group-hover/hl:scale-105 group-hover/hl:bg-signal/25">
+                    <span className="grid h-11 w-11 place-items-center rounded-full bg-ice text-forest transition-[background-color,scale] duration-fast group-hover/hl:scale-105 group-focus-visible/hl:scale-105 group-focus-within/hl:scale-105 group-hover/hl:bg-signal/25 group-focus-visible/hl:bg-signal/25 group-focus-within/hl:bg-signal/25">
                       <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
                     </span>
                     <h3 className="mt-4 font-semibold text-ink">{h.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-graphite">{h.text}</p>
+                    <p className="mt-1.5 text-small text-graphite">{h.text}</p>
                   </li>
                 );
               })}
@@ -408,9 +341,9 @@ function ProductView({ product }) {
         <section className="bg-ice py-16 md:py-20">
           <div className="grid container-site gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Technical information</p>
-              <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight text-ink md:text-3xl">Specifications</AnimatedText>
-              {product.specsNote && <p className="mt-4 text-sm leading-relaxed text-graphite">{product.specsNote}</p>}
+              <p className="eyebrow text-sage">Technical information</p>
+              <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Specifications</AnimatedText>
+              {product.specsNote && <p className="mt-4 text-small text-graphite">{product.specsNote}</p>}
             </div>
             <div data-sr className="min-w-0">
               <TechnicalTabs key={product.id} specs={product.specs} />
@@ -424,9 +357,9 @@ function ProductView({ product }) {
         <section className="relative overflow-hidden bg-night py-16 text-white md:py-20">
           <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 35% 50%, rgba(144,217,136,0.07), transparent 70%)" }} />
           <div className="relative container-site">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-ice/80">Interactive product view</p>
-            <AnimatedText className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">Explore the protection architecture</AnimatedText>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ice/70">Hover or select a point to see the component.</p>
+            <p className="eyebrow text-ice/80">Interactive product view</p>
+            <AnimatedText className="mt-3 text-h2 font-semibold">Explore the protection architecture</AnimatedText>
+            <p className="mt-3 max-w-2xl text-small text-ice/70">Hover or select a point to see the component.</p>
             <div data-sr className="mt-10">
               <HotspotViewer hotspots={product.hotspots} partnerName={partner.name} />
             </div>
@@ -437,7 +370,7 @@ function ProductView({ product }) {
       {/* Sources */}
       <section className="border-t border-line bg-paper">
         <div className="container-site py-6">
-          <p className="text-xs leading-relaxed text-graphite">
+          <p className="text-micro text-graphite">
             <span className="font-semibold text-ink">Source:</span> {product.sources.join("; ")}. {partner.name} designs and manufactures this
             system; NEXERA supplies it and provides system design and support as an authorized partner.
           </p>
@@ -449,13 +382,13 @@ function ProductView({ product }) {
         <section className="bg-ice py-16 md:py-20">
           <div className="container-site">
             <div className="flex items-end justify-between gap-4">
-              <h2 className="text-2xl font-semibold tracking-tight text-ink">More from {partner.name}</h2>
+              <h2 className="text-h2 font-semibold text-ink">More from {partner.name}</h2>
               <Link
                 to={`/products?partner=${partner.id}`}
-                className="group/all inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-forest hover:text-steel"
+                className="group/all inline-flex shrink-0 items-center gap-1.5 text-button font-semibold text-forest hover:text-steel focus-visible:text-steel"
               >
                 View all {partner.name}
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/all:translate-x-1" />
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/all:translate-x-1 group-focus-visible/all:translate-x-1 group-focus-within/all:translate-x-1" />
               </Link>
             </div>
             <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -63,9 +63,13 @@ export default function CabinetStage({ section }) {
           onUpdate: apply,
           scrollTrigger: {
             trigger: el,
-            start: "top 64px", // pinned just below the sticky header
+            start: "top 56px", // pinned just below the sticky header (56 px tall once the page has scrolled)
             end: () => `+=${Math.round(window.innerHeight * PIN)}`,
             pin: true,
+            // Held in place by a transform rather than by switching to position: fixed: its layout never
+            // changes, so pinning and unpinning are no layout shift (a fixed pin counted as ~0.93 CLS each
+            // way). Lenis drives the scroll on the same ticker, so the transform keeps step with it.
+            pinType: "transform",
             scrub: SCRUB,
             invalidateOnRefresh: true,
           },

@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const DC = "#90D988"; // direct current: the site's green
 const AC = "#F2C46D"; // alternating current: amber
@@ -58,9 +59,9 @@ export default function CouplingFlow({ active, motion, mode, kind = "dc" }) {
     active,
     ({ gsap }, el) => {
       const tl = gsap.timeline();
-      tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.7, stagger: 0.05, ease: "power2.inOut" }).from(
+      tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut }).from(
         el.querySelectorAll("[data-count]"),
-        { opacity: 0, scale: 0.6, transformOrigin: "center", duration: 0.4, ease: "back.out(2)" },
+        { opacity: 0, scale: 0.6, transformOrigin: "center", duration: DUR.base, ease: EASE.emphasized },
         0.6
       );
       // Particles: each runs the whole path, segment by segment, taking the colour of the current
@@ -71,7 +72,7 @@ export default function CouplingFlow({ active, motion, mode, kind = "dc" }) {
         run.set(dot, { opacity: 1 });
         segs.forEach((seg) => {
           run.set(dot, { attr: { fill: seg.dataset.seg === "dc" ? DC : AC } }).to(dot, {
-            duration: 0.7,
+            duration: DUR.slow,
             ease: "none",
             motionPath: { path: seg, align: seg, alignOrigin: [0.5, 0.5] },
           });

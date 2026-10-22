@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const COOL = "#90D988";
 const HOT = "#F28C38";
@@ -30,13 +31,13 @@ export default function ThermalRunaway({ active, motion }) {
       .set(ring, { drawSVG: "0%", opacity: 1 })
       .set(walls, { scaleY: 0, transformOrigin: "50% 0%" })
       .set(labels, { opacity: 0.25 })
-      .to(hot, { attr: { fill: HOT, "fill-opacity": 0.45, stroke: HOT }, duration: 0.9, ease: "power2.in" }, 0.4)
-      .to(glow, { opacity: 0.9, scale: 1.15, duration: 0.9, ease: "power2.in" }, 0.4)
-      .to(labels[0], { opacity: 1, duration: 0.3 }, 0.9)
-      .to(ring, { drawSVG: "100%", duration: 0.6, ease: "power2.inOut" }, 1.4)
-      .to(labels[1], { opacity: 1, duration: 0.3 }, 1.7)
-      .to(walls, { scaleY: 1, duration: 0.5, ease: "power3.out", stagger: 0.08 }, 2.1)
-      .to(labels[2], { opacity: 1, duration: 0.3 }, 2.4)
+      .to(hot, { attr: { fill: HOT, "fill-opacity": 0.45, stroke: HOT }, duration: DUR.slow, ease: EASE.in }, 0.4)
+      .to(glow, { opacity: 0.9, scale: 1.15, duration: DUR.slow, ease: EASE.in }, 0.4)
+      .to(labels[0], { opacity: 1, duration: DUR.base }, 0.9)
+      .to(ring, { drawSVG: "100%", duration: DUR.base, ease: EASE.inOut }, 1.4)
+      .to(labels[1], { opacity: 1, duration: DUR.base }, 1.7)
+      .to(walls, { scaleY: 1, duration: DUR.base, ease: EASE.emphasized, stagger: STAGGER }, 2.1)
+      .to(labels[2], { opacity: 1, duration: DUR.base }, 2.4)
       .to({}, { duration: 1.6 });
     return tl;
   });

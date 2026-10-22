@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE } from "../../../lib/tokens";
 
 // Inside out: the cell, then the layers the text lists around it, and the installation under it all.
 const LAYERS = [
@@ -30,7 +31,7 @@ export default function SafetyLayers({ active, motion, mode, step }) {
   }, [mode, motion, active]);
 
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
-    gsap.timeline().from(el.querySelectorAll("[data-core]"), { drawSVG: "0%", duration: 0.7, ease: "power2.inOut" }).from(el.querySelectorAll("[data-core-label]"), { opacity: 0, duration: 0.3 }, 0.5)
+    gsap.timeline().from(el.querySelectorAll("[data-core]"), { drawSVG: "0%", duration: DUR.slow, ease: EASE.inOut }).from(el.querySelectorAll("[data-core-label]"), { opacity: 0, duration: DUR.base }, 0.5)
   );
 
   // Points read so far: -1 the cell only, 0 + BMS, 1 + cooling, 2 + fire protection, 3 + installation.

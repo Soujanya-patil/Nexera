@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { loadGsap } from "../lib/motion";
 import { onceInView } from "../lib/inview";
+import { DUR, EASE } from "../lib/tokens";
 
 /**
  * A figure that rolls in once as it scrolls into view: each character of the FINAL value (digits,
@@ -41,7 +42,7 @@ export default function RollValue({ value }) {
     const tween = gsapRef.current.fromTo(
       chars,
       { yPercent: 110 },
-      { yPercent: 0, duration: 0.3, ease: "power3.out", stagger: each, onComplete: () => setPhase("plain") }
+      { yPercent: 0, duration: DUR.base, ease: EASE.emphasized, stagger: each, onComplete: () => setPhase("plain") }
     );
     return () => tween.kill();
   }, [phase]);

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // The six parts, in the article's order.
 const PARTS = [
@@ -32,9 +33,9 @@ export default function CabinetParts({ active, motion, mode, step, hover }) {
 
   useSceneMotion(root, motion, active, ({ gsap }, el) => {
     const tl = gsap.timeline();
-    tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.9, stagger: 0.05, ease: "power2.inOut" })
+    tl.from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
       // the labels' text (their groups carry a CSS opacity transition for the highlight)
-      .from(el.querySelectorAll("[data-label] text"), { opacity: 0, x: 10, duration: 0.35, stagger: 0.05 }, 0.5);
+      .from(el.querySelectorAll("[data-label] text"), { opacity: 0, x: 10, duration: DUR.base, stagger: STAGGER }, 0.5);
     return tl;
   });
 

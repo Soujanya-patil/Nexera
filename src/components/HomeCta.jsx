@@ -1,6 +1,7 @@
 import { Fragment, useRef } from "react";
 import MagneticButton from "./ui/MagneticButton";
 import { useEntrance } from "../lib/entrance";
+import { DUR, EASE, STAGGER } from "../lib/tokens";
 
 const STEPS = ["Partner", "Deploy", "Accelerate"];
 
@@ -22,24 +23,16 @@ export default function HomeCta({ contactTo = "/contact" }) {
     const words = q("[data-step]");
     // 1. Partner → Deploy → Accelerate
     words.forEach((w, i) => {
-      tl.fromTo(w, { opacity: 0.25, color: "rgba(244,247,244,0.8)" }, { opacity: 1, color: "#90D988", duration: 0.35, ease: "power2.out" }, 0.05 + i * 0.3);
-      if (i < words.length - 1) tl.to(w, { color: "rgba(244,247,244,0.8)", duration: 0.45 }, 0.05 + (i + 1) * 0.3);
+      tl.fromTo(w, { opacity: 0.25 }, { opacity: 1, duration: DUR.base, ease: EASE.standard }, 0.05 + i * 0.3);
     });
-    tl.fromTo(q("[data-sep]"), { scaleY: 0 }, { scaleY: 1, duration: 0.3, stagger: 0.3, clearProps: "transform" }, 0.25)
+    tl.fromTo(q("[data-sep]"), { scaleY: 0 }, { scaleY: 1, duration: DUR.base, stagger: 0.3, clearProps: "transform" }, 0.25)
       // 2. the light lines draw
-      .fromTo(q("[data-line]"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.2, stagger: 0.12, ease: "power2.out" }, 0.8)
+      .fromTo(q("[data-line]"), { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: DUR.slow, stagger: STAGGER, ease: EASE.standard }, 0.8)
       // 3. heading + copy
-      .fromTo(q('[data-e="rest"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, clearProps: "all" }, 0.95)
+      .fromTo(q('[data-e="rest"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: DUR.base, stagger: STAGGER, clearProps: "all" }, 0.95)
       // 4. the buttons arrive and switch on
-      .fromTo(q('[data-e="actions"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45, clearProps: "all" }, 1.25)
-      .fromTo(
-        q("[data-e='actions'] a"),
-        { boxShadow: "0 0 0 0 rgba(144,217,136,0)" },
-        { keyframes: [{ boxShadow: "0 0 0 6px rgba(144,217,136,0.28)", duration: 0.35 }, { boxShadow: "0 0 0 12px rgba(144,217,136,0)", duration: 0.5 }], stagger: 0.12, clearProps: "boxShadow" },
-        1.5
-      );
-    // Hand the first two words back to their stylesheet colour; the last keeps its green.
-    tl.set(words.slice(0, -1), { clearProps: "all" });
+      .fromTo(q('[data-e="actions"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, clearProps: "all" }, 1.25);
+    tl.set(words, { clearProps: "all" });
   });
 
   return (
@@ -66,27 +59,29 @@ export default function HomeCta({ contactTo = "/contact" }) {
 
       <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
-          <p className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.22em] text-ice/80">
+          <p className="flex items-center gap-3 eyebrow text-ice/80">
             {STEPS.map((w, i) => (
               <Fragment key={w}>
                 {i > 0 && <span data-sep aria-hidden="true" className="inline-block h-3 w-px origin-center bg-ice/40" />}
-                <span data-step>{w}</span>
+                <span data-step className={i === STEPS.length - 1 ? "text-signal" : undefined}>
+                  {w}
+                </span>
               </Fragment>
             ))}
           </p>
-          <h2 data-e="rest" className="mt-4 text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+          <h2 data-e="rest" className="mt-4 text-h2 font-semibold">
             Let&rsquo;s Build India&rsquo;s Energy Storage Future Together
           </h2>
-          <p data-e="rest" className="mt-4 max-w-xl leading-relaxed text-ice/80">
+          <p data-e="rest" className="mt-4 max-w-xl text-body text-ice/80">
             Whether you&rsquo;re a solar EPC looking to partner, or an end customer exploring a solution, Nexera is your
             trusted partner for BESS.
           </p>
         </div>
         <div data-e="actions" className="flex shrink-0 flex-wrap items-center gap-4">
-          <MagneticButton to={contactTo} arrow spotlight className="hover:scale-[1.02]">
+          <MagneticButton to={contactTo} arrow spotlight>
             Get in Touch
           </MagneticButton>
-          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:scale-[1.02] hover:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)]">
+          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)] focus-visible:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)]">
             Become a Partner
           </MagneticButton>
         </div>

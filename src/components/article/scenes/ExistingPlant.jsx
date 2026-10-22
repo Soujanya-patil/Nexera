@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const DC = "#90D988";
 const AC = "#F2C46D";
@@ -16,10 +17,10 @@ export default function ExistingPlant({ active, motion }) {
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
     gsap
       .timeline()
-      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.7, stagger: 0.04, ease: "power2.inOut" })
-      .from(el.querySelector("[data-cabinet]"), { x: 140, opacity: 0, duration: 0.9, ease: "power3.out" }, 0.6)
-      .from(el.querySelector("[data-link]"), { drawSVG: "0%", duration: 0.5, ease: "power2.inOut" }, 1.4)
-      .from(el.querySelectorAll("[data-new]"), { opacity: 0, duration: 0.4 }, 1.6)
+      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
+      .from(el.querySelector("[data-cabinet]"), { x: 140, opacity: 0, duration: DUR.slow, ease: EASE.emphasized }, 0.6)
+      .from(el.querySelector("[data-link]"), { drawSVG: "0%", duration: DUR.base, ease: EASE.inOut }, 1.4)
+      .from(el.querySelectorAll("[data-new]"), { opacity: 0, duration: DUR.base }, 1.6)
   );
 
   return (

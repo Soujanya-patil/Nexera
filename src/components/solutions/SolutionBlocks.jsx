@@ -6,7 +6,7 @@ import { ArrowLink, SEGMENT_OFFSET, Spotlight, useTilt } from "./Interactive";
 import MagneticButton from "../ui/MagneticButton";
 import PillLink from "../PillLink";
 import SceneImg from "../SceneImg";
-import RollValue from "../RollValue";
+import CountUp from "../CountUp";
 import { depth, usePointerDepth } from "../../lib/pointerDepth";
 import { useIntro } from "../../lib/intro";
 import { isFirstLoad } from "../../lib/firstLoad";
@@ -18,6 +18,8 @@ import { onceInView } from "../../lib/inview";
 import { SCRUB, useScrub } from "../../lib/scrub";
 import { partnerOf } from "../../data/products";
 import { topicSlug } from "../../data/solutionTopics";
+import { DUR, EASE, STAGGER } from "../../lib/tokens";
+import { toggleDetails } from "../../lib/accordion";
 
 /*
  * Building blocks for the three Solutions pages (/solutions/utility-scale, /commercial-industrial,
@@ -81,26 +83,26 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
       const done = { clearProps: "all" };
       // After a morph, start once the old page has faded out (150 ms, index.css).
       if (morphed) tl.delay(0.15);
-      tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, letterSpacing: "0.4em" }, { opacity: 1, letterSpacing: "0.22em", duration: 0.6, ease: "power2.out", ...done }, 0)
-        .fromTo(q('[data-a="rule"]'), { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.out", ...done }, 0)
-        .fromTo(q('[data-a="line"]'), { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: 0.65, ease: "expo.out", stagger: 0.09, ...done }, 0.1)
+      tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, ...done }, 0)
+        .fromTo(q('[data-a="rule"]'), { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: DUR.base, ease: EASE.standard, ...done }, 0)
+        .fromTo(q('[data-a="line"]'), { opacity: 1, yPercent: 100 }, { yPercent: 0, duration: DUR.slow, ease: EASE.emphasized, stagger: STAGGER, ...done }, 0.1)
         .add(() => {
           const el = accent.current;
           if (!el) return;
           el.classList.add("accent-sweep");
           el.addEventListener("animationend", () => el.classList.remove("accent-sweep"), { once: true });
         }, 0.84)
-        .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: "power2.out", ...done }, 0.27)
-        .fromTo(q('[data-a="cta"]'), { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out", ...done }, 0.62)
+        .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, stagger: STAGGER, ease: EASE.standard, ...done }, 0.27)
+        .fromTo(q('[data-a="cta"]'), { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: DUR.base, ease: EASE.standard, ...done }, 0.62)
         // Desktop only: on phones the photo is the page's largest paint (LCP) and sits dimmed behind the
         // copy, so it is shown at once there (the zoom below still plays).
         .fromTo(
           q('[data-a="image"]'),
-          window.matchMedia("(min-width: 1024px)").matches ? { opacity: 1, clipPath: "inset(0% 0% 100% 0%)" } : { opacity: 1 },
-          { clipPath: "inset(0% 0% 0% 0%)", duration: 0.8, ease: "power2.out", ...done },
+          { opacity: window.matchMedia("(min-width: 1024px)").matches ? 0 : 1 },
+          { opacity: 1, duration: DUR.slow, ease: EASE.standard, ...done },
           0
         )
-        .fromTo(q('[data-a="zoom"]'), { opacity: 1, scale: 1.0566 }, { scale: 1, duration: 1.6, ease: "power2.out", ...done }, 0);
+        .fromTo(q('[data-a="zoom"]'), { opacity: 1, scale: 1.0566 }, { scale: 1, duration: 1.6, ease: EASE.standard, ...done }, 0);
   });
 
   return (
@@ -134,10 +136,10 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
         </div>
 
         <div className="relative container-site py-14 lg:py-20">
-          <nav aria-label="Breadcrumb" className="text-xs text-ice/75">
+          <nav aria-label="Breadcrumb" className="text-micro text-ice/75">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
-                <Link to="/solutions" onClick={back} className="hover:text-white">
+                <Link to="/solutions" onClick={back} className="hit-area hover:text-white focus-visible:text-white">
                   Solutions
                 </Link>
               </li>
@@ -155,11 +157,11 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
                 that would reach the eyebrow (and .solutions-page balances h1 text), so the headline's
                 styles sit on its own span. */}
             <h1>
-              <span data-a="eyebrow" className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal [text-wrap:wrap]">
+              <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-signal [text-wrap:wrap]">
                 <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
                 {eyebrow}
               </span>{" "}
-              <span className="mt-5 block text-[clamp(2.6rem,6vw,4.25rem)] font-semibold leading-[1.04] tracking-tight">
+              <span className="mt-5 block text-display font-semibold">
                 <span className="line-mask">
                   <span data-a="line" className="block">
                     {line1}
@@ -174,22 +176,22 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
                 </span>
               </span>
             </h1>
-            <p data-a="desc" className="mt-6 text-lg font-medium text-white md:text-xl">
+            <p data-a="desc" className="mt-6 text-lead font-medium text-white">
               {subheading}
             </p>
             {body.map((p) => (
-              <p data-a="desc" key={p} className="mt-4 max-w-xl leading-relaxed text-ice/90">
+              <p data-a="desc" key={p} className="mt-4 max-w-xl text-body text-ice/90">
                 {p}
               </p>
             ))}
             {tagline && (
-              <p data-a="desc" className="mt-5 text-sm font-semibold tracking-wide text-signal">
+              <p data-a="desc" className="mt-5 text-small font-semibold text-signal">
                 {tagline}
               </p>
             )}
             <div className="mt-9">
               <span data-a="cta" className="inline-block">
-                <MagneticButton to={`#${cta.target}`} onClick={scrollToId(cta.target, { offset: SEGMENT_OFFSET })} arrow ripple className="hover:scale-[1.02]">
+                <MagneticButton to={`#${cta.target}`} onClick={scrollToId(cta.target, { offset: SEGMENT_OFFSET })} arrow ripple>
                   {cta.label}
                 </MagneticButton>
               </span>
@@ -197,7 +199,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
           </div>
         </div>
         {image.credit && (
-          <p className="absolute bottom-4 right-6 hidden rounded-full bg-night/85 px-3 py-1 text-[0.6875rem] tracking-[0.14em] text-ice/90 backdrop-blur-sm lg:block">{image.credit}</p>
+          <p className="absolute bottom-4 right-6 hidden rounded-full bg-night/85 px-3 py-1 text-micro tracking-[0.14em] text-ice/90 backdrop-blur-sm lg:block">{image.credit}</p>
         )}
       </div>
     </section>
@@ -227,9 +229,9 @@ export function BenefitStrip({ items }) {
           { strokeDasharray: 1, strokeDashoffset: 1 },
           {
             strokeDashoffset: 0,
-            duration: 0.9,
-            ease: "power2.inOut",
-            stagger: 0.03,
+            duration: DUR.slow,
+            ease: EASE.inOut,
+            stagger: STAGGER,
             clearProps: "strokeDasharray,strokeDashoffset",
             onComplete: () => shapes.forEach((s) => s.removeAttribute("pathLength")),
           }
@@ -253,12 +255,12 @@ export function BenefitStrip({ items }) {
       <ul ref={list} className="grid container-site gap-x-8 gap-y-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(({ icon: Icon, title, text }) => (
           <li key={title} className="group/ben flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-signal/60 text-signal transition-[translate,box-shadow,border-color] duration-300 group-hover/ben:-translate-y-1 group-hover/ben:border-signal group-hover/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)]">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-signal/60 text-signal transition-[translate,box-shadow,border-color] duration-fast group-hover/ben:-translate-y-1 group-focus-visible/ben:-translate-y-1 group-focus-within/ben:-translate-y-1 group-hover/ben:border-signal group-focus-visible/ben:border-signal group-focus-within/ben:border-signal group-hover/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)] group-focus-visible/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)] group-focus-within/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)]">
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <div>
               <h3 className="font-semibold text-white">{title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-ice/70">{text}</p>
+              <p className="mt-1 text-small text-ice/70">{text}</p>
             </div>
           </li>
         ))}
@@ -300,15 +302,15 @@ export function Section({ id, tone = "paper", eyebrow, title, mark, intro, push 
       <div className="relative container-site">
         <div className="max-w-3xl">
           {eyebrow && (
-            <KineticEyebrow className={`text-xs font-semibold uppercase tracking-[0.2em] ${dark ? "text-signal" : "text-sage"}`} ruleClass={dark ? "bg-signal" : "bg-sage"}>
+            <KineticEyebrow className={`eyebrow ${dark ? "text-signal" : "text-sage"}`} ruleClass={dark ? "bg-signal" : "bg-sage"}>
               {eyebrow}
             </KineticEyebrow>
           )}
-          <KineticHeading id={`${id}-title`} mark={mark} className={`sol-h2 ${eyebrow ? "mt-3" : ""} font-semibold ${dark ? "text-white" : "text-ink"}`}>
+          <KineticHeading id={`${id}-title`} mark={mark} className={`text-h2 ${eyebrow ? "mt-3" : ""} font-semibold ${dark ? "text-white" : "text-ink"}`}>
             {title}
           </KineticHeading>
           {intros.map((p) => (
-            <p key={p} className={`mt-4 leading-relaxed ${dark ? "text-ice/75" : "text-graphite"}`}>
+            <p key={p} className={`mt-4 text-body ${dark ? "text-ice/75" : "text-graphite"}`}>
               {p}
             </p>
           ))}
@@ -323,7 +325,7 @@ export function Section({ id, tone = "paper", eyebrow, title, mark, intro, push 
 export function FeatureGrid({ items, columns = 3, dark = false, level = 3, className = "mt-12" }) {
   const Heading = `h${level}`;
   const list = useRef(null);
-  const reveal = useScrollReveal(list, { stagger: 0.07 });
+  const reveal = useScrollReveal(list);
   const cols = columns === 4 ? "sm:grid-cols-2 lg:grid-cols-4" : columns === 2 ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3";
   return (
     <ul ref={list} data-sr-state={reveal} className={`grid gap-x-8 gap-y-10 ${cols} ${className}`}>
@@ -331,15 +333,15 @@ export function FeatureGrid({ items, columns = 3, dark = false, level = 3, class
         <li data-sr key={title} className="group/hl">
           {Icon && (
             <span
-              className={`grid h-11 w-11 place-items-center rounded-full transition-[background-color,scale] duration-300 group-hover/hl:scale-105 ${
-                dark ? "bg-white/10 text-signal" : "bg-ice text-forest group-hover/hl:bg-signal/25"
+              className={`grid h-11 w-11 place-items-center rounded-full transition-[background-color,scale] duration-fast group-hover/hl:scale-105 group-focus-visible/hl:scale-105 group-focus-within/hl:scale-105 ${
+                dark ? "bg-white/10 text-signal" : "bg-ice text-forest group-hover/hl:bg-signal/25 group-focus-visible/hl:bg-signal/25 group-focus-within/hl:bg-signal/25"
               }`}
             >
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
           )}
           <Heading className={`${Icon ? "mt-4" : ""} font-semibold ${dark ? "text-white" : "text-ink"}`}>{title}</Heading>
-          <p className={`mt-1.5 text-sm leading-relaxed ${dark ? "text-ice/70" : "text-graphite"}`}>{text}</p>
+          <p className={`mt-1.5 text-small ${dark ? "text-ice/70" : "text-graphite"}`}>{text}</p>
         </li>
       ))}
     </ul>
@@ -429,13 +431,13 @@ function Timeline({ items, cols, variant, surface = "bg-ice", className }) {
             }`}
           >
             {variant === "card" ? (
-              <span data-step className={`step-num self-start pr-3 text-[4.5rem] font-semibold leading-none tracking-tight ${surface}`}>
+              <span data-step className={`step-num self-start pr-3 text-display tabular-nums font-semibold leading-none ${surface}`}>
                 {pad2(i + 1)}
               </span>
             ) : (
               <span
                 data-step
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-signal bg-signal text-sm font-semibold text-forest transition-[background-color,color,border-color] duration-300 data-[active=false]:border-forest/20 data-[active=false]:bg-paper data-[active=false]:text-sage"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-signal bg-signal text-small font-semibold text-forest transition-[background-color,color,border-color] duration-fast data-[active=false]:border-forest/20 data-[active=false]:bg-paper data-[active=false]:text-sage"
               >
                 {pad2(i + 1)}
               </span>
@@ -443,10 +445,10 @@ function Timeline({ items, cols, variant, surface = "bg-ice", className }) {
             {variant === "card" ? (
               <div className="flex-1 rounded-2xl border border-line bg-paper p-6">
                 <h3 className="font-semibold text-ink">{title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-graphite">{it.text}</p>
+                <p className="mt-1.5 text-small text-graphite">{it.text}</p>
               </div>
             ) : (
-              <span className="rounded-full border border-line bg-paper px-4 py-2 text-sm font-semibold text-forest">{title}</span>
+              <span className="rounded-full border border-line bg-paper px-4 py-2 text-small font-semibold text-forest">{title}</span>
             )}
           </li>
         );
@@ -513,13 +515,13 @@ export function LayerStack({ items, className = "mt-12" }) {
           )}
           <span
             data-step
-            className="relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-signal bg-signal text-sm font-semibold text-forest transition-[background-color,color] duration-300 data-[active=false]:bg-night data-[active=false]:text-signal"
+            className="relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-signal bg-signal text-small font-semibold text-forest transition-[background-color,color] duration-fast data-[active=false]:bg-night data-[active=false]:text-signal"
           >
             {i + 1}
           </span>
           <div className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] p-4 md:ml-[calc(var(--step)*1.5rem)] md:flex md:items-baseline md:gap-4 md:p-5">
             <h3 className="font-semibold text-white md:w-40 md:shrink-0">{title}</h3>
-            <p className="mt-1 text-sm leading-relaxed text-ice/75 md:mt-0">{text}</p>
+            <p className="mt-1 text-small text-ice/75 md:mt-0">{text}</p>
           </div>
         </li>
       ))}
@@ -534,15 +536,15 @@ export function LayerStack({ items, className = "mt-12" }) {
  */
 export function DataTable({ caption, head, rows, icons = {}, className = "mt-10" }) {
   const body = useRef(null);
-  const reveal = useScrollReveal(body, { stagger: 0.04 });
+  const reveal = useScrollReveal(body);
   return (
     <div className={`overflow-x-auto rounded-2xl border border-line bg-paper ${className}`}>
-      <table className="w-full min-w-[30rem] border-collapse text-left text-sm">
-        <caption className="border-b border-line px-5 py-4 text-left text-sm font-semibold text-ink sm:px-6">{caption}</caption>
+      <table className="w-full min-w-[30rem] border-collapse text-left text-small">
+        <caption className="border-b border-line px-5 py-4 text-left text-small font-semibold text-ink sm:px-6">{caption}</caption>
         <thead>
           <tr className="bg-ice">
             {head.map((h) => (
-              <th key={h} scope="col" className="px-5 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-sage sm:px-6">
+              <th key={h} scope="col" className="px-5 py-3 eyebrow text-sage sm:px-6">
                 {h}
               </th>
             ))}
@@ -552,11 +554,11 @@ export function DataTable({ caption, head, rows, icons = {}, className = "mt-10"
           {rows.map(([first, ...rest]) => {
             const Icon = icons[first];
             return (
-              <tr data-sr key={first} className="group/row transition-colors duration-200 hover:bg-ice/70">
+              <tr data-sr key={first} className="group/row transition-colors duration-fast hover:bg-ice/70 focus-visible:bg-ice/70">
                 <th scope="row" className="relative overflow-hidden px-5 py-3.5 font-semibold text-ink sm:px-6">
                   <span
                     aria-hidden="true"
-                    className="absolute inset-y-0 left-0 w-[3px] -translate-x-full bg-signal transition-transform duration-300 ease-out group-hover/row:translate-x-0"
+                    className="absolute inset-y-0 left-0 w-[3px] -translate-x-full bg-signal transition-transform duration-fast ease-standard group-hover/row:translate-x-0 group-focus-visible/row:translate-x-0 group-focus-within/row:translate-x-0"
                   />
                   <span className="flex items-center gap-2.5">
                     {Icon && <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-forest/70" strokeWidth={1.8} />}
@@ -582,7 +584,7 @@ export function Checklist({ items, dark = false, className = "mt-6" }) {
   return (
     <ul className={`grid gap-3 sm:grid-cols-2 ${className}`}>
       {items.map((t) => (
-        <li key={t} className={`flex items-start gap-3 text-sm ${dark ? "text-ice/85" : "text-ink"}`}>
+        <li key={t} className={`flex items-start gap-3 text-small ${dark ? "text-ice/85" : "text-ink"}`}>
           <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-signal" strokeWidth={2.4} />
           {t}
         </li>
@@ -598,9 +600,9 @@ export function Stats({ items, className = "mt-6" }) {
       {items.map(([value, label]) => (
         // dt (label) first in the markup, shown under the figure.
         <div key={label} className="flex flex-col-reverse border-l-2 border-signal/60 pl-3">
-          <dt className="text-xs leading-snug text-graphite">{label}</dt>
-          <dd className="text-lg font-semibold tracking-tight text-forest tabular-nums">
-            <RollValue value={value} />
+          <dt className="text-micro text-graphite">{label}</dt>
+          <dd className="text-h4 font-semibold text-forest tabular-nums">
+            <CountUp value={value} />
           </dd>
         </div>
       ))}
@@ -626,12 +628,12 @@ export function PartnerMark({ partner, name, decorative = false }) {
           loading="lazy"
           decoding="async"
           alt={`${p.name} logo`}
-          className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-500 ease-out group-hover/card:scale-110`}
+          className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-base ease-standard group-hover/card:scale-110 group-focus-visible/card:scale-110 group-focus-within/card:scale-110`}
         />
       </span>
     );
   return (
-    <p aria-hidden={decorative || undefined} className="self-start text-2xl font-bold uppercase leading-6 tracking-tight text-ink">
+    <p aria-hidden={decorative || undefined} className="self-start text-2xl font-semibold uppercase leading-6 tracking-tight text-ink">
       {name}
     </p>
   );
@@ -679,8 +681,8 @@ function CompareChip({ id, name }) {
   const checked = ids.includes(id);
   return (
     <label
-      className={`absolute right-3 top-3 z-20 inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold shadow-sm backdrop-blur transition-colors duration-200 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-signal ${
-        checked ? "border-forest bg-forest text-white" : "border-line bg-paper/90 text-forest hover:border-forest/40"
+      className={`absolute right-3 top-3 z-20 inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-micro font-semibold pointer-coarse:before:absolute pointer-coarse:before:-inset-2 pointer-coarse:before:content-[''] shadow-sm backdrop-blur transition-colors duration-fast has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-signal ${
+        checked ? "border-forest bg-forest text-white" : "border-line bg-paper/90 text-forest hover:border-forest/40 focus-visible:border-forest/40"
       }`}
     >
       <input type="checkbox" checked={checked} onChange={() => toggle(id)} className="sr-only" />
@@ -733,12 +735,12 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
     <article
       ref={card}
       style={{ transform: "perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))" }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper transition-[border-color,box-shadow,transform] duration-300 ease-out hover:border-forest/30 hover:shadow-[0_22px_44px_-28px_rgba(7,26,23,0.4)]"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper card-hover"
     >
       {/* Glare: a soft highlight that follows the cursor while tilting (desktop). */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-fast group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100"
         style={{ background: "radial-gradient(40% 50% at var(--gx, 50%) var(--gy, 30%), rgba(255,255,255,0.35), transparent 70%)" }}
       />
       <div data-sr data-wipe className="relative h-56 shrink-0 overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)] lg:h-60">
@@ -747,7 +749,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
         {!fallback && (
           <span
             aria-hidden="true"
-            className="absolute inset-x-[22%] bottom-[7%] h-5 rounded-[100%] bg-black/15 blur-lg transition-transform duration-500 ease-out group-hover:scale-x-[1.3] motion-reduce:transition-none"
+            className="absolute inset-x-[22%] bottom-[7%] h-5 rounded-[100%] bg-black/15 blur-lg transition-transform duration-base ease-standard group-hover:scale-x-[1.3] group-focus-visible:scale-x-[1.3] group-focus-within:scale-x-[1.3] motion-reduce:transition-none"
           />
         )}
         <img
@@ -760,18 +762,18 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
           className={
             fallback
               ? "absolute inset-0 m-auto h-auto w-[40%] max-w-[10rem] object-contain opacity-80"
-              : "absolute inset-0 h-full w-full object-contain p-6 transition-[scale,translate] duration-500 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.03] motion-reduce:transition-none"
+              : "card-media absolute inset-0 h-full w-full object-contain p-6 motion-reduce:transition-none"
           }
         />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <Heading className="text-xl font-semibold tracking-tight text-ink">{name}</Heading>
-        {sub && <p className="mt-0.5 text-xs text-graphite">{sub}</p>}
-        {figures && <p className="mt-2 text-sm font-semibold text-forest">{figures}</p>}
-        {tagline && <p className="mt-3 text-sm font-semibold text-ink">{tagline}</p>}
-        {copy && <p className="mt-2 text-sm leading-relaxed text-graphite">{copy}</p>}
+        <Heading className="text-h3 font-semibold text-ink">{name}</Heading>
+        {sub && <p className="mt-0.5 text-micro text-graphite">{sub}</p>}
+        {figures && <p className="mt-2 text-small font-semibold text-forest">{figures}</p>}
+        {tagline && <p className="mt-3 text-small font-semibold text-ink">{tagline}</p>}
+        {copy && <p className="mt-2 text-small text-graphite">{copy}</p>}
         {specs.length > 0 && (
-          <ul className="mt-4 space-y-1.5 text-sm text-ink">
+          <ul className="mt-4 space-y-1.5 text-small text-ink">
             {specs.map((s) => (
               <li key={s} className="flex items-start gap-2">
                 <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-signal" />
@@ -780,7 +782,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
             ))}
           </ul>
         )}
-        {note && <p className="mt-4 text-xs leading-relaxed text-graphite">{note}</p>}
+        {note && <p className="mt-4 text-micro text-graphite">{note}</p>}
         <ArrowLink to={to ?? `/products/${product.id}`} className="mt-auto self-start pt-6">
           {cta}
         </ArrowLink>
@@ -792,7 +794,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
 /** A grid of cards that reveals as it scrolls in. */
 export function CardGrid({ children, columns = 3, className = "mt-12" }) {
   const list = useRef(null);
-  const reveal = useScrollReveal(list, { stagger: 0.08 });
+  const reveal = useScrollReveal(list);
   const cols = columns === 2 ? "md:grid-cols-2" : columns === 4 ? "sm:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-2 lg:grid-cols-3";
   return (
     <ul ref={list} data-sr-state={reveal} className={`grid gap-6 ${cols} ${className}`}>
@@ -825,25 +827,26 @@ export function FaqList({ id, title, items, tone = "ice" }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "paper" ? "bg-paper" : "bg-ice"} relative py-14 lg:py-20`}>
       <div className="container-site">
-        <KineticHeading id={`${id}-title`} className="sol-h2 max-w-3xl font-semibold text-ink">
+        <KineticHeading id={`${id}-title`} className="text-h2 max-w-3xl font-semibold text-ink">
           {title}
         </KineticHeading>
         <div className={`mt-10 max-w-3xl divide-y divide-line rounded-2xl border border-line ${tone === "paper" ? "bg-ice/60" : "bg-paper"}`}>
           {items.map(({ q, a }, i) => (
             <details key={q} className="faq-item group/faq" open={i === 0 || undefined}>
               <summary
+                onClick={toggleDetails}
                 onKeyDown={onKey}
-                className="flex cursor-pointer items-center justify-between gap-4 px-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-signal sm:px-6"
+                className="flex cursor-pointer items-center justify-between gap-4 px-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] sm:px-6"
               >
                 <h3 className="font-semibold text-ink">{q}</h3>
                 <span
                   aria-hidden="true"
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-forest transition-[transform,background-color] duration-300 group-open/faq:rotate-180 group-open/faq:bg-signal/25"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-forest transition-[transform,background-color] duration-base ease-emphasized group-open/faq:rotate-180 group-open/faq:bg-signal/25"
                 >
                   <ChevronDown className="h-4 w-4" />
                 </span>
               </summary>
-              <p className="px-5 pb-5 text-sm leading-relaxed text-graphite sm:px-6">{a}</p>
+              <p className="px-5 pb-5 text-small text-graphite sm:px-6">{a}</p>
             </details>
           ))}
         </div>
@@ -868,11 +871,11 @@ function TopicChips({ items, selected, onToggle, labelledBy }) {
               type="button"
               aria-pressed={on}
               onClick={() => onToggle(t)}
-              className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-left text-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${
-                on ? "border-signal/60 bg-signal/15 text-white" : "border-white/15 bg-transparent text-ice/60 hover:border-white/30 hover:text-ice/85"
+              className={`hit-area inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-left text-small transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                on ? "border-signal/60 bg-signal/15 text-white" : "border-white/15 bg-transparent text-ice/60 hover:border-white/30 focus-visible:border-white/30 hover:text-ice/85 focus-visible:text-ice/85"
               }`}
             >
-              <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors duration-200 ${on ? "border-signal bg-signal" : "border-white/30"}`}>
+              <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors duration-fast ${on ? "border-signal bg-signal" : "border-white/30"}`}>
                 <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none">
                   <path
                     d="M2.5 6.2 5 8.6 9.6 3.6"
@@ -881,7 +884,7 @@ function TopicChips({ items, selected, onToggle, labelledBy }) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-forest transition-[stroke-dashoffset] duration-300 ease-out motion-reduce:transition-none"
+                    className="text-forest transition-[stroke-dashoffset] duration-fast ease-standard motion-reduce:transition-none"
                     style={{ strokeDasharray: 1, strokeDashoffset: on ? 0 : 1 }}
                   />
                 </svg>
@@ -912,15 +915,15 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
       <div className="relative container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
         <div>
           {eyebrow && (
-            <KineticEyebrow className="text-xs font-semibold uppercase tracking-[0.2em] text-signal" ruleClass="bg-signal">
+            <KineticEyebrow className="eyebrow text-signal" ruleClass="bg-signal">
               {eyebrow}
             </KineticEyebrow>
           )}
-          <KineticHeading id={`${id}-title`} className={`sol-h2 ${eyebrow ? "mt-3" : ""} font-semibold`}>
+          <KineticHeading id={`${id}-title`} className={`text-h2 ${eyebrow ? "mt-3" : ""} font-semibold`}>
             {title}
           </KineticHeading>
-          {subheading && <p className="mt-4 text-lg font-medium text-white">{subheading}</p>}
-          <p id={`${id}-body`} className="mt-4 max-w-xl leading-relaxed text-ice/80">
+          {subheading && <p className="mt-4 text-lead font-medium text-white">{subheading}</p>}
+          <p id={`${id}-body`} className="mt-4 max-w-xl text-body text-ice/80">
             {body}
           </p>
           <PillLink to={to} arrow spotlight ripple className="mt-8">
@@ -931,7 +934,7 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
           {segment ? (
             <TopicChips items={checklist} selected={selected} onToggle={toggle} labelledBy={`${id}-body`} />
           ) : (
-            <Checklist items={checklist} dark className="" />
+            <Checklist items={checklist} dark />
           )}
         </div>
       </div>

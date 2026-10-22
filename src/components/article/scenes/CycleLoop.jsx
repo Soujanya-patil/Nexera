@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE } from "../../../lib/tokens";
 
 const DOTS = 24; // marks around the ring: one more lights with each full cycle (no figures shown)
 const R = 104; // ring radius
@@ -28,18 +29,18 @@ export default function CycleLoop({ active, motion }) {
       onRepeat: () => {
         // A full cycle done: the next mark lights; after a full ring, they all reset.
         if (n === DOTS) {
-          gsap.to(dots, { opacity: 0.18, duration: 0.3 });
+          gsap.to(dots, { opacity: 0.18, duration: DUR.base });
           n = 0;
         }
-        gsap.to(dots[n++], { opacity: 1, duration: 0.25 });
+        gsap.to(dots[n++], { opacity: 1, duration: DUR.fast });
       },
     });
     tl.set([charge, discharge], { opacity: 0.35 })
-      .to(charge, { opacity: 1, duration: 0.2 })
-      .to(fill, { scaleY: 1, duration: 0.85, ease: "power1.inOut" }, "<")
-      .to(charge, { opacity: 0.35, duration: 0.2 })
-      .to(discharge, { opacity: 1, duration: 0.2 }, "<")
-      .to(fill, { scaleY: 0, duration: 0.85, ease: "power1.inOut" }, "<");
+      .to(charge, { opacity: 1, duration: DUR.fast })
+      .to(fill, { scaleY: 1, duration: DUR.slow, ease: EASE.inOut }, "<")
+      .to(charge, { opacity: 0.35, duration: DUR.fast })
+      .to(discharge, { opacity: 1, duration: DUR.fast }, "<")
+      .to(fill, { scaleY: 0, duration: DUR.slow, ease: EASE.inOut }, "<");
     return tl;
   });
 

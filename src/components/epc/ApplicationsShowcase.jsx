@@ -5,6 +5,7 @@ import AnimatedText from "../ui/AnimatedText";
 import SceneImg from "../SceneImg";
 import { PRODUCTS } from "../../data/products";
 import { useScrollReveal } from "../../lib/scrollReveal";
+import { STAGGER } from "../../lib/tokens";
 
 // Images, alt text and lines as on the Home "Solutions" cards; the system count is read from the
 // catalogue. Each card opens the Products explorer filtered to that application.
@@ -39,14 +40,14 @@ const APPS = [
  */
 export default function ApplicationsShowcase() {
   const grid = useRef(null);
-  const reveal = useScrollReveal(grid, { stagger: 0.1 });
+  const reveal = useScrollReveal(grid);
   return (
     <section aria-labelledby="applications-title" className="bg-paper py-20 md:py-28">
       <div className="container-site">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">BESS applications</p>
-            <AnimatedText id="applications-title" className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+            <p className="eyebrow text-sage">BESS applications</p>
+            <AnimatedText id="applications-title" className="mt-3 text-h2 font-semibold text-ink">
               Where Your Projects Can Deploy Storage
             </AnimatedText>
           </div>
@@ -58,26 +59,26 @@ export default function ApplicationsShowcase() {
             <li key={a.id} data-sr>
               <Link
                 to={`/products?app=${a.id}`}
-                className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-night text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal md:aspect-[4/5]"
+                className="card-hover group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-night text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
               >
                 <SceneImg
                   name={a.img}
                   alt={a.alt}
                   sizes="(min-width: 768px) 33vw, 100vw"
-                  className="absolute inset-0 h-full w-full object-cover transition-[scale,translate] duration-700 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.05] group-focus-visible:scale-[1.05]"
+                  className="card-media absolute inset-0 h-full w-full object-cover"
                 />
                 <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/55 to-night/5" />
-                <span aria-hidden="true" className="absolute inset-0 bg-night/0 transition-colors duration-500 group-hover:bg-night/35 group-focus-visible:bg-night/35" />
+                <span aria-hidden="true" className="absolute inset-0 bg-night/0 transition-colors duration-base group-hover:bg-night/35 group-focus-within:bg-night/35 group-focus-visible:bg-night/35" />
                 <div className="relative p-6 md:p-7">
-                  <p className="flex items-center gap-2 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-ice/70">
+                  <p className="flex items-center gap-2 eyebrow text-ice/70">
                     <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-signal" />
                     {a.count} {a.count === 1 ? "system" : "systems"} in the catalogue
                   </p>
-                  <h3 className="mt-3 text-2xl font-semibold transition-colors duration-300 group-hover:text-signal group-focus-visible:text-signal">{a.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ice/80">{a.copy}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-signal">
+                  <h3 className="mt-3 text-h3 font-semibold transition-colors duration-fast group-hover:text-signal group-focus-within:text-signal group-focus-visible:text-signal">{a.title}</h3>
+                  <p className="mt-2 text-small text-ice/80">{a.copy}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 text-small font-semibold text-signal">
                     Explore Solutions
-                    <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+                    <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-focus-within:translate-x-1.5" />
                   </span>
                 </div>
               </Link>

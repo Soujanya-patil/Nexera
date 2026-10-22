@@ -19,7 +19,7 @@ const NEXT = [
 ];
 
 const input =
-  "w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink transition-[border-color,box-shadow] focus:border-forest/40 focus:outline-none focus:ring-2 focus:ring-signal/50";
+  "w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink transition-[border-color,box-shadow] focus:border-forest/40 focus:outline-none focus:ring-2 focus:ring-signal/50";
 
 /**
  * Partner enquiry — the Become a Partner application form (this page's existing enquiry flow, which
@@ -121,21 +121,21 @@ export default function PartnerForm() {
     <section id="apply" aria-labelledby="apply-title" className="bg-paper py-20 focus:outline-none md:py-28">
       <div className="grid container-site gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">Partner enquiry</p>
-          <h2 id="apply-title" className="mt-3 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
+          <p className="eyebrow text-sage">Partner enquiry</p>
+          <h2 id="apply-title" className="mt-3 text-h2 font-semibold text-ink">
             Become a Partner
           </h2>
-          <p className="mt-4 max-w-md leading-relaxed text-graphite">
+          <p className="mt-4 max-w-md text-body text-graphite">
             Tell us about your company and the projects you&rsquo;re planning. Our team will review your details and get
             back to you.
           </p>
           <ol className="mt-10 space-y-6">
             {NEXT.map((s) => (
               <li key={s.n} className="flex gap-4">
-                <span className="text-xs font-semibold tracking-[0.18em] text-sage">{s.n}</span>
+                <span className="text-micro font-semibold tracking-[0.18em] text-sage">{s.n}</span>
                 <div>
                   <p className="font-medium text-ink">{s.title}</p>
-                  <p className="mt-0.5 text-sm text-graphite">{s.copy}</p>
+                  <p className="mt-0.5 text-small text-graphite">{s.copy}</p>
                 </div>
               </li>
             ))}
@@ -146,8 +146,8 @@ export default function PartnerForm() {
           {submitted ? (
             <div role="status" className="journey-detail flex flex-col items-start py-6">
               <CheckCircle2 aria-hidden="true" className="h-8 w-8 text-forest" strokeWidth={1.75} />
-              <p className="mt-4 text-lg font-semibold text-ink">Enquiry received.</p>
-              <p className="mt-1.5 text-sm text-graphite">Our team will review your details and get back to you.</p>
+              <p className="mt-4 text-lead font-semibold text-ink">Enquiry received.</p>
+              <p className="mt-1.5 text-small text-graphite">Our team will review your details and get back to you.</p>
             </div>
           ) : (
             <form method="post" onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} onInput={onInput} noValidate className="space-y-5">
@@ -183,7 +183,7 @@ export default function PartnerForm() {
                 </label>
               </div>
               {status === "error" && (
-                <p role="alert" className="rounded-lg border border-[#b3261e]/30 bg-[#b3261e]/[0.06] px-4 py-3 text-sm text-ink">
+                <p role="alert" className="rounded-lg border border-[#b3261e]/30 bg-[#b3261e]/[0.06] px-4 py-3 text-small text-ink">
                   Something went wrong. Please try again, or call/email us.
                   {CONTACT_PHONE && (
                     <>
@@ -207,10 +207,10 @@ export default function PartnerForm() {
                 type="submit"
                 disabled={status === "sending"}
                 aria-busy={status === "sending" || undefined}
-                className="group inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-forest transition-[background-color,box-shadow,scale] duration-300 hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+                className="group btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-signal px-6 py-3 text-button font-semibold uppercase tracking-[0.08em] text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
               >
                 Submit Enquiry
-                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover:translate-x-1 group-focus-visible:translate-x-1 group-focus-within:translate-x-1" />
               </button>
             </form>
           )}
@@ -224,7 +224,7 @@ function Field({ label, name, required, type = "text", as, error, ...rest }) {
   const Tag = as || "input";
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-ink">
+      <label htmlFor={name} className="mb-1.5 block text-small font-medium text-ink">
         {label} {required && <span className="font-normal text-graphite">(required)</span>}
       </label>
       <Tag
@@ -239,7 +239,7 @@ function Field({ label, name, required, type = "text", as, error, ...rest }) {
         {...rest}
       />
       {/* The field's error (announced politely); takes no space until there is one. */}
-      <p id={`${name}-err`} aria-live="polite" className={error ? "mt-1.5 text-sm text-[#b3261e]" : undefined}>
+      <p id={`${name}-err`} aria-live="polite" className={error ? "mt-1.5 text-small text-[#b3261e]" : undefined}>
         {error || ""}
       </p>
     </div>
@@ -249,7 +249,7 @@ function Field({ label, name, required, type = "text", as, error, ...rest }) {
 function Select({ label, name, options, defaultValue }) {
   return (
     <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-ink">
+      <label htmlFor={name} className="mb-1.5 block text-small font-medium text-ink">
         {label}
       </label>
       <select id={name} name={name} defaultValue={defaultValue} className={input}>

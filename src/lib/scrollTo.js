@@ -1,4 +1,5 @@
 import { getLenis } from "./lenis";
+import { SCROLL_DUR } from "./tokens";
 
 /**
  * onClick handler for an in-page link: glides to the element with `id` (through Lenis when it is
@@ -41,7 +42,7 @@ export const scrollToId = (id, { offset = -64 } = {}) => (e) => {
       stop();
     }, 1000);
   };
-  if (lenis) lenis.scrollTo(y(), { duration: 1.2, onComplete: settle });
+  if (lenis) lenis.scrollTo(y(), { duration: SCROLL_DUR, onComplete: settle });
   else {
     stop();
     window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY + offset, behavior: reduce ? "auto" : "smooth" });

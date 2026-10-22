@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const DC = "#90D988";
 const AC = "#F2C46D";
@@ -38,8 +39,8 @@ export default function HybridSystem({ active, motion }) {
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
     gsap
       .timeline()
-      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.7, stagger: 0.05, ease: "power2.inOut" })
-      .from(el.querySelectorAll("[data-part]"), { opacity: 0, scale: 0.85, transformOrigin: "center", duration: 0.4, stagger: 0.08 }, 0.3)
+      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
+      .from(el.querySelectorAll("[data-part]"), { opacity: 0, scale: 0.85, transformOrigin: "center", duration: DUR.base, stagger: STAGGER }, 0.3)
   );
 
   const P = PHASES[phase];

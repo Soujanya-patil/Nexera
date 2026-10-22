@@ -1,5 +1,7 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
+import { useScrollReveal } from "../lib/scrollReveal";
 
 const offices = [
   { city: "Bangalore", role: "Headquarters", detail: "Strategy, brand partnerships, sales support", status: "active" },
@@ -9,8 +11,11 @@ const offices = [
 ];
 
 export default function WhereWeOperate() {
+  // The site's scroll reveal: the offices and the call to action fade up in turn (lib/scrollReveal).
+  const root = useRef(null);
+  const reveal = useScrollReveal(root);
   return (
-    <div>
+    <div ref={root} data-sr-state={reveal}>
       <PageHeader
         eyebrow="Where We Operate"
         title="A growing footprint across India"
@@ -18,20 +23,21 @@ export default function WhereWeOperate() {
       />
 
       <section className="bg-paper">
-        <div className="mx-auto max-w-4xl px-6 py-16">
+        <div className="mx-auto max-w-4xl px-6 py-16 md:py-20">
           <div className="space-y-6">
             {offices.map((o) => (
               <div
                 key={o.city}
+                data-sr
                 className="flex items-start justify-between border-b border-line pb-6 last:border-0"
               >
                 <div>
-                  <h2 className="font-sans text-lg font-semibold text-ink">{o.city}</h2>
-                  <p className="text-sm text-graphite mt-1">{o.role}</p>
-                  {o.detail && <p className="text-sm text-graphite">{o.detail}</p>}
+                  <h2 className="text-h4 font-semibold text-ink">{o.city}</h2>
+                  <p className="text-small text-graphite mt-1">{o.role}</p>
+                  {o.detail && <p className="text-small text-graphite">{o.detail}</p>}
                 </div>
                 <span
-                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${
+                  className={`shrink-0 rounded-full px-3 py-1 text-micro font-medium ${
                     o.status === "active"
                       ? "bg-signal/10 text-ink"
                       : "bg-line/60 text-graphite"
@@ -43,14 +49,14 @@ export default function WhereWeOperate() {
             ))}
           </div>
 
-          <div className="mt-12 rounded-lg bg-ice border border-line p-8 text-center">
-            <p className="text-ink font-medium">Not in our network yet?</p>
-            <p className="mt-1 text-sm text-graphite">
+          <div data-sr className="mt-12 rounded-lg bg-ice border border-line p-8 text-center">
+            <p className="text-h4 font-semibold text-ink">Not in our network yet?</p>
+            <p className="mt-1 text-small text-graphite">
               Apply to bring Nexera to your state.
             </p>
             <Link
               to="/become-a-partner"
-              className="mt-4 inline-flex items-center rounded-full bg-signal px-5 py-2.5 text-sm font-semibold text-forest hover:bg-signal/90 transition-colors"
+              className="mt-4 btn-motion inline-flex min-h-11 items-center rounded-full bg-signal px-5 py-2.5 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d]"
             >
               Become a Partner
             </Link>

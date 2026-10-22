@@ -84,26 +84,26 @@ function ArticlePage({ a }) {
           {/* Contents: collapsible above the text below 1280px; a sticky list on the left from 1280px. */}
           <aside className="lg:col-span-2 xl:col-span-1">
             <details className="group/toc rounded-2xl border border-line bg-ice/60 xl:hidden">
-              <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-4 px-5 py-3 text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-signal">
+              <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-4 px-5 py-3 text-small font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px]">
                 On this page
-                <ChevronDown aria-hidden="true" className="h-4 w-4 text-forest transition-transform duration-300 group-open/toc:rotate-180" />
+                <ChevronDown aria-hidden="true" className="h-4 w-4 text-forest transition-transform duration-fast group-open/toc:rotate-180" />
               </summary>
               <TocList items={toc} className="px-5 pb-4" />
             </details>
             <nav aria-label="On this page" className="sticky top-24 hidden xl:block">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">On this page</p>
+              <p className="eyebrow text-sage">On this page</p>
               <TocList items={toc} active={active} indicator className="mt-4" />
             </nav>
           </aside>
 
-          <article ref={body} className="min-w-0 text-[18px] leading-[1.75] text-graphite">
+          <article ref={body} className="min-w-0 text-body text-graphite">
             {a.sections.map((s, i) => (
               <section key={s.id} data-section={s.id} aria-labelledby={s.id} className={i ? "mt-16" : ""}>
                 <div data-rv="h2">
                   <svg aria-hidden="true" className="article-h2-line" viewBox="0 0 64 4" preserveAspectRatio="none">
                     <line x1="1" y1="2" x2="63" y2="2" />
                   </svg>
-                  <h2 id={s.id} className="article-h2 scroll-mt-28 text-2xl font-semibold leading-tight tracking-tight text-ink md:text-[1.75rem]">
+                  <h2 id={s.id} className="article-h2 scroll-mt-28 text-h3 font-semibold text-ink">
                     {s.h2}
                   </h2>
                 </div>
@@ -183,11 +183,11 @@ function TocList({ items, active, indicator = false, className = "" }) {
       {indicator && bar && (
         <span
           aria-hidden="true"
-          className="absolute left-0 top-0 w-0.5 rounded-full bg-signal transition-[transform,height] duration-500 ease-out motion-reduce:transition-none"
+          className="absolute left-0 top-0 w-0.5 rounded-full bg-signal transition-[transform,height] duration-base ease-standard motion-reduce:transition-none"
           style={{ transform: `translateY(${bar.top}px)`, height: bar.height }}
         />
       )}
-      <ol ref={list} className="space-y-0.5 text-sm">
+      <ol ref={list} className="space-y-0.5 text-small">
         {items.map((s) => {
           const on = active === s.id;
           return (
@@ -196,7 +196,7 @@ function TocList({ items, active, indicator = false, className = "" }) {
                 href={`#${s.id}`}
                 onClick={goTo(s.id)}
                 aria-current={on ? "location" : undefined}
-                className={`flex min-h-11 items-center border-l-2 border-line py-1.5 pl-3 leading-snug transition-colors duration-200 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal xl:min-h-0 ${
+                className={`flex min-h-11 items-center border-l-2 border-line py-1.5 pl-3 leading-snug transition-colors duration-fast hover:text-ink focus-visible:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 xl:min-h-0 ${
                   on ? "font-semibold text-ink" : "text-graphite"
                 }`}
               >
@@ -221,13 +221,13 @@ function GlanceTable({ t, section, reading }) {
   const current = reading.section === section ? reading.step : -1;
   return (
     <div data-rv="text" className="mt-6">
-      <table role="table" className="article-table w-full border-separate border-spacing-0 text-left text-base leading-relaxed">
+      <table role="table" className="article-table w-full border-separate border-spacing-0 text-left text-body">
         <thead role="rowgroup">
           <tr role="row">
             {/* The row labels' column has no heading (as in the article's text). */}
             <td role="cell" className="w-[26%] pb-3 pr-4" />
             {heads.map((h) => (
-              <th key={h} role="columnheader" scope="col" className="pb-3 pr-4 align-bottom text-sm font-semibold text-ink">
+              <th key={h} role="columnheader" scope="col" className="pb-3 pr-4 align-bottom text-small font-semibold text-ink">
                 {h}
               </th>
             ))}
@@ -236,7 +236,7 @@ function GlanceTable({ t, section, reading }) {
         <tbody role="rowgroup">
           {t.rows.map(([label, ...cells], i) => (
             <tr key={label} role="row" data-step={i} data-of={section} data-on={current === i || undefined} className="article-table-row">
-              <th role="rowheader" scope="row" className="py-3 pr-4 align-top text-sm font-semibold text-ink">
+              <th role="rowheader" scope="row" className="py-3 pr-4 align-top text-small font-semibold text-ink">
                 {label}
               </th>
               {cells.map((c, k) => (
@@ -285,7 +285,7 @@ function Item({ it, pulse }) {
           {" "}
           <Link to={it.link.to} className={`article-link group/il inline-flex items-center gap-1 whitespace-nowrap font-semibold text-forest ${pulse ? "article-pulse" : ""}`}>
             <span>{it.link.label}</span>
-            <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/il:translate-x-1 group-focus-visible/il:translate-x-1" />
+            <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/il:translate-x-1 group-focus-within/il:translate-x-1 group-focus-visible/il:translate-x-1" />
           </Link>
         </>
       )}
@@ -306,7 +306,7 @@ function Block({ b, section, ctx, inCallout = false }) {
   if (b.callout) {
     return (
       <div role="note" aria-label={b.callout.label} data-rv="term" className="article-term-card article-callout relative mt-6 rounded-2xl border border-line bg-ice/70 py-5 pl-6 pr-5">
-        <p data-label className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">
+        <p data-label className="eyebrow text-sage">
           {b.callout.label}
         </p>
         {b.callout.blocks.map((x, j) => (
@@ -351,7 +351,7 @@ function Block({ b, section, ctx, inCallout = false }) {
             data-of={section}
             className="article-term-card relative rounded-2xl border border-line bg-ice/70 py-4 pl-6 pr-5"
           >
-            <p data-label className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">
+            <p data-label className="eyebrow text-sage">
               Key term
             </p>
             <p className="mt-1.5">
@@ -368,14 +368,14 @@ function Block({ b, section, ctx, inCallout = false }) {
         {b.actions.map((x) =>
           x.primary ? (
             <span key={x.to} data-shine className="article-cta-wrap inline-block">
-              <MagneticButton to={x.to} arrow spotlight className="article-cta hover:scale-[1.02]">
+              <MagneticButton to={x.to} arrow spotlight className="article-cta">
                 {x.label}
               </MagneticButton>
             </span>
           ) : (
-            <Link key={x.to} to={x.to} className="article-link group/act inline-flex items-center gap-1.5 text-base font-semibold text-forest">
+            <Link key={x.to} to={x.to} className="article-link group/act inline-flex items-center gap-1.5 text-body font-semibold text-forest">
               <span>{x.label}</span>
-              <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover/act:translate-x-1" />
+              <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/act:translate-x-1 group-focus-visible/act:translate-x-1 group-focus-within/act:translate-x-1" />
             </Link>
           )
         )}

@@ -233,25 +233,25 @@ export default function SolutionsUtility() {
                 <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
                   <div>
                     <PartnerMark partner={p.id} decorative />
-                    <h3 className="mt-5 text-2xl font-semibold tracking-tight text-ink">{p.title}</h3>
-                    <p className="mt-3 leading-relaxed text-graphite">{p.copy}</p>
+                    <h3 className="mt-5 text-h3 font-semibold text-ink">{p.title}</h3>
+                    <p className="mt-3 text-body text-graphite">{p.copy}</p>
                     <Stats items={p.stats} />
                     <ArrowLink to={`/partners/${p.id}`} className="mt-6">
                       All {p.id === "clou" ? "CLOU" : "Hithium"} systems
                     </ArrowLink>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sage">{p.whyTitle}</p>
+                    <p className="eyebrow text-sage">{p.whyTitle}</p>
                     <ul className="mt-4 divide-y divide-line">
                       {p.why.map(([t, d]) => (
-                        <li key={t} className="py-3 text-sm leading-relaxed text-graphite">
+                        <li key={t} className="py-3 text-small text-graphite">
                           <strong className="font-semibold text-ink">{t}:</strong> {d}
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-                <p className="mt-10 text-xs font-semibold uppercase tracking-[0.2em] text-sage">Featured systems</p>
+                <p className="mt-10 eyebrow text-sage">Featured systems</p>
                 <CardGrid columns={2} className="mt-4">
                   {p.systems.map((s) => (
                     <SolutionProductCard key={s.name} {...s} level={4} product={getProduct(s.product)} />
@@ -316,12 +316,12 @@ export default function SolutionsUtility() {
             "Grid fluctuations",
             "Remote project locations",
           ].map((c) => (
-            <li key={c} className="rounded-full border border-line bg-paper px-4 py-2 text-sm font-medium text-forest">
+            <li key={c} className="rounded-full border border-line bg-paper px-4 py-2 text-small font-medium text-forest">
               {c}
             </li>
           ))}
         </ul>
-        <p className="mt-8 max-w-3xl leading-relaxed text-graphite">
+        <p className="mt-8 max-w-3xl text-body text-graphite">
           For example, the CLOU Aqua C2.5S platform specifies operation from –30°C to +55°C, IP55 protection and C4 corrosion protection, with C5
           available as an option.
         </p>

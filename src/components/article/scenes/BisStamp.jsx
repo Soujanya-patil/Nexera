@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const GREEN = "#90D988";
 const LINE = "#F4F7F4";
@@ -15,10 +16,10 @@ export default function BisStamp({ active, motion }) {
     const stamp = el.querySelector("[data-stamp]");
     return gsap
       .timeline()
-      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.7, stagger: 0.05, ease: "power2.inOut" })
-      .from(stamp, { y: -150, scale: 1.4, rotation: -30, opacity: 0, transformOrigin: "50% 50%", duration: 0.55, ease: "power3.in" }, 0.6)
-      .to(stamp, { scale: 0.92, duration: 0.08, yoyo: true, repeat: 1, transformOrigin: "50% 50%" })
-      .from(el.querySelector("[data-ink]"), { opacity: 0, scale: 0.8, transformOrigin: "50% 50%", duration: 0.3 }, "<");
+      .from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
+      .from(stamp, { y: -150, scale: 1.4, rotation: -30, opacity: 0, transformOrigin: "50% 50%", duration: DUR.base, ease: EASE.in }, 0.6)
+      .to(stamp, { scale: 0.92, duration: DUR.fast, yoyo: true, repeat: 1, transformOrigin: "50% 50%" })
+      .from(el.querySelector("[data-ink]"), { opacity: 0, scale: 0.8, transformOrigin: "50% 50%", duration: DUR.base }, "<");
   });
 
   return (
@@ -37,7 +38,7 @@ export default function BisStamp({ active, motion }) {
         <g data-stamp transform="rotate(-12 200 170)">
           <circle cx="200" cy="170" r="50" fill="none" stroke={GREEN} strokeWidth="3" />
           <circle cx="200" cy="170" r="42" fill="none" stroke={GREEN} strokeWidth="1.2" strokeDasharray="3 3" />
-          <text x="200" y="168" textAnchor="middle" className="fill-signal text-[22px] font-bold tracking-[0.08em]">
+          <text x="200" y="168" textAnchor="middle" className="fill-signal text-[22px] font-semibold tracking-[0.08em]">
             BIS
           </text>
           <text x="200" y="188" textAnchor="middle" className="fill-signal text-[8px] font-semibold uppercase tracking-[0.06em]">

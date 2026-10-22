@@ -14,6 +14,7 @@ import { useMediaQuery } from "../lib/scrollSteps";
 import { loadGsap } from "../lib/motion";
 import { getLenis } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
+import { SCROLL_DUR } from "../lib/tokens";
 
 // Labels are fully drawn ~1.25s after they start; 3.6s leaves all of them legible together ~2.3s.
 const HOLD_MS = 3600;
@@ -467,7 +468,7 @@ export default function HomeHero() {
     const range = el.offsetHeight - (window.innerHeight - 64);
     const y = el.getBoundingClientRect().top + window.scrollY - 64 + at * range;
     const lenis = getLenis();
-    if (lenis) lenis.scrollTo(y, { duration: 1.2 });
+    if (lenis) lenis.scrollTo(y, { duration: SCROLL_DUR });
     else window.scrollTo({ top: y, behavior: "smooth" });
   };
 
@@ -552,7 +553,7 @@ export default function HomeHero() {
           {story && (
             <p
               aria-hidden="true"
-              className={`absolute -top-9 left-0 flex items-center gap-2 text-[0.6875rem] font-semibold uppercase tracking-[0.2em] text-signal transition-[opacity,translate] duration-500 ease-out ${
+              className={`absolute -top-9 left-0 flex items-center gap-2 eyebrow text-signal transition-[opacity,translate] duration-base ease-standard ${
                 CONTEXT[storyStage] ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0"
               }`}
             >
@@ -607,7 +608,7 @@ export default function HomeHero() {
                 light at the product. This is what lets the stage edge disappear. */}
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute -inset-x-[42%] -inset-y-[30%] transition-[opacity,filter] duration-700 ${inspect ? "brightness-125" : ""}`}
+              className={`pointer-events-none absolute -inset-x-[42%] -inset-y-[30%] transition-[opacity,filter] duration-slow ${inspect ? "brightness-125" : ""}`}
               style={{
                 ...(story ? { opacity: "calc(1 - var(--settle, 0) * 0.55)", scale: "calc(1 + var(--recede, 0) * 0.12)" } : null),
                 background:
@@ -650,7 +651,7 @@ export default function HomeHero() {
                   ? "Product view. Scroll to open the cabinet and show its protection components, or press Enter to go to them."
                   : "Product view. Hover, tap or press Enter to open the cabinet and show its protection components."
               }
-              className={`group/stage relative aspect-[65/54] w-full rounded-lg outline-none transition-[scale] duration-700 ease-out focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal/60 ${
+              className={`group/stage relative aspect-[65/54] w-full rounded-lg transition-[scale] duration-slow ease-standard focus-visible:outline-2 focus-visible:outline-offset-4 ${
                 story && inspect ? "scale-[1.01]" : ""
               }`}
             >
@@ -663,7 +664,7 @@ export default function HomeHero() {
                   playsInline
                   preload={videoReady || story ? "auto" : "none"}
                   aria-label="NEXERA battery energy storage cabinet opening to reveal its stacked battery modules and power electronics"
-                  className="h-full w-full object-contain transition-opacity duration-300"
+                  className="h-full w-full object-contain transition-opacity duration-fast"
                 />
                 {/* The closing clip sits exactly over the opening one and is only made visible while it plays
                     (the cycle only; the story scrubs the footage back instead). */}
@@ -683,7 +684,7 @@ export default function HomeHero() {
                   <canvas
                     ref={veilCanvas}
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-[400ms] ease-out"
+                    className="pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-base ease-standard"
                     style={{ opacity: veil === "fade" ? 0 : 1 }}
                   />
                 )}
@@ -695,7 +696,7 @@ export default function HomeHero() {
               {story && (
                 <div
                   aria-hidden="true"
-                  className={`pointer-events-none absolute inset-0 mix-blend-screen transition-opacity duration-500 ${inspect ? "opacity-100" : "opacity-0"}`}
+                  className={`pointer-events-none absolute inset-0 mix-blend-screen transition-opacity duration-base ${inspect ? "opacity-100" : "opacity-0"}`}
                   style={{ background: "radial-gradient(22% 26% at var(--ix, 50%) var(--iy, 50%), rgba(244,247,244,0.07), rgba(144,217,136,0.04) 45%, transparent 75%)" }}
                 />
               )}
@@ -751,8 +752,9 @@ export default function HomeHero() {
                       type="button"
                       onClick={() => goToStage(i)}
                       aria-current={on ? "step" : undefined}
-                      className={`text-[0.625rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-500 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal ${
-                        on ? "text-white" : "text-ice/40 hover:text-ice/75"
+                      // The story controls keep their own small label size: the hero reserves exactly their height.
+                      className={`text-[0.625rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-base focus-visible:outline-2 focus-visible:outline-offset-4 ${
+                        on ? "text-white" : "text-ice/40 hover:text-ice/75 focus-visible:text-ice/75"
                       }`}
                     >
                       <span className={on ? "text-signal" : undefined}>{String(i + 1).padStart(2, "0")}</span> {st.label}

@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 // C-rate: the two values the article gives, and nothing else.
 const RATES = [
@@ -29,7 +30,7 @@ export default function KeyTerms({ active, motion, mode, step }) {
   }, [mode, motion, active]);
 
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
-    gsap.timeline().from(el.querySelectorAll("[data-in]"), { opacity: 0, y: 12, duration: 0.45, stagger: 0.1, ease: "power2.out" })
+    gsap.timeline().from(el.querySelectorAll("[data-in]"), { opacity: 0, y: 12, duration: DUR.base, stagger: STAGGER, ease: EASE.standard })
   );
 
   const lit = mode === "inline" ? tour : step;

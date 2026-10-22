@@ -73,7 +73,7 @@ export default function SegmentSwitcher({ current }) {
       aria-label="Solutions segments"
       aria-hidden={!shown || undefined}
       inert={!shown}
-      className={`fixed inset-x-0 top-16 z-40 flex justify-center px-4 pt-2 transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${
+      className={`fixed inset-x-0 top-16 z-40 flex justify-center px-4 pt-2 transition-[opacity,transform] duration-fast ease-standard motion-reduce:transition-none ${
         shown ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-2 opacity-0"
       }`}
     >
@@ -88,7 +88,7 @@ export default function SegmentSwitcher({ current }) {
         <span
           ref={bar}
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-1 left-0 h-0.5 w-px origin-left rounded-full bg-signal transition-transform duration-300 ease-out motion-reduce:transition-none"
+          className="pointer-events-none absolute bottom-1 left-0 h-0.5 w-px origin-left rounded-full bg-signal transition-transform duration-fast ease-standard motion-reduce:transition-none"
         />
       </div>
     </nav>
@@ -121,8 +121,8 @@ function SegmentPill({ id, current, onPoint, onBlur }) {
       onPointerEnter={onPoint}
       onFocus={onPoint}
       onBlur={onBlur}
-      className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-signal ${
-        here ? "text-white" : "text-ice/70 hover:text-white"
+      className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-button font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:-outline-offset-2 ${
+        here ? "text-white" : "text-ice/70 hover:text-white focus-visible:text-white"
       }`}
     >
       {page.label}

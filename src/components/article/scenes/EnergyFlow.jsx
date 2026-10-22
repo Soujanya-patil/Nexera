@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE } from "../../../lib/tokens";
 
 // Sources (left) feed the battery when charging; the battery feeds the loads (right) when discharging.
 const WIRES = {
@@ -57,7 +58,7 @@ export default function EnergyFlow({ active, motion, mode: sceneMode, step }) {
       tl.fromTo(
         level,
         { scaleY: lastLevel.current },
-        { scaleY: LEVEL[mode], duration: 1.4, ease: "power2.inOut", onUpdate: () => (lastLevel.current = gsap.getProperty(level, "scaleY")) },
+        { scaleY: LEVEL[mode], duration: 1.4, ease: EASE.inOut, onUpdate: () => (lastLevel.current = gsap.getProperty(level, "scaleY")) },
         0
       );
       for (const [name] of WIRES[mode]) {
@@ -65,7 +66,7 @@ export default function EnergyFlow({ active, motion, mode: sceneMode, step }) {
         const dots = [...el.querySelectorAll(`[data-dot="${name}"]`)].slice(0, dense);
         const dur = 1.6;
         dots.forEach((dot, i) => {
-          tl.fromTo(dot, { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0);
+          tl.fromTo(dot, { opacity: 0 }, { opacity: 1, duration: DUR.fast }, 0);
           tl.to(dot, { motionPath: { path, align: path, alignOrigin: [0.5, 0.5] }, duration: dur, ease: "none", repeat: -1, delay: (dur / dense) * i }, 0);
         });
       }

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 const DURATION = 1200; // ms — under the 1.5s cap
-const ease = (t) => 1 - Math.pow(1 - t, 3); // ease-out cubic, same curve lib/count.js already uses
+const ease = (t) => 1 - Math.pow(1 - t, 3); // ease-standard cubic, same curve lib/count.js already uses
 
 // Real approved figures (Hero.jsx's stat band — currently unmounted elsewhere on Home) — not
 // invented, not changed. "Quick" has no numeric value, so it's shown static, same as the
@@ -114,7 +114,7 @@ export default function StatBar({ stats = STATS, tone = "dark", className = "" }
           <p className={`whitespace-nowrap font-semibold ${TONES[tone].value}`}>
             <StatValue stat={s} play={play} reduced={reducedRef.current} />
           </p>
-          <p className={`mx-auto mt-1 max-w-[16rem] text-sm leading-snug ${TONES[tone].label}`}>{s.label}</p>
+          <p className={`mx-auto mt-1 max-w-[16rem] text-small ${TONES[tone].label}`}>{s.label}</p>
         </div>
       ))}
     </div>

@@ -77,7 +77,7 @@ export function Stage({ sections, reading, hover, motion }) {
               </div>
             );
           })}
-        <p aria-hidden="true" className="absolute bottom-4 left-0 right-0 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">
+        <p aria-hidden="true" className="absolute bottom-4 left-0 right-0 text-center eyebrow text-white/45">
           {sections[at]?.h2}
         </p>
       </div>

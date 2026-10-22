@@ -69,24 +69,48 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // The phone menu closes with Escape (focus back on its button).
+  const toggle = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      toggle.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  // The underline draws by transform (scaleX), on hover and keyboard focus alike.
   const desktopLink = ({ isActive }) =>
-    `relative py-1 text-sm transition-colors after:absolute after:-bottom-[0.9rem] after:left-0 after:h-0.5 after:bg-signal after:transition-all after:duration-300 ${
-      isActive ? "text-signal after:w-full" : "text-ice/85 hover:text-white after:w-0 hover:after:w-full"
+    `relative py-1 text-small transition-colors duration-fast after:absolute after:-bottom-[0.9rem] after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-signal after:transition-transform after:duration-base after:ease-emphasized ${
+      isActive ? "text-signal after:scale-x-100" : "text-ice/85 after:scale-x-0 hover:text-white hover:after:scale-x-100 focus-visible:text-white focus-visible:after:scale-x-100"
     }`;
 
   return (
+    // Scrolled: the bar slides up 8 px (it reads 56 px tall instead of 64 — its box keeps its height, so
+    // nothing below moves), its ground turns translucent over a blur, and a hairline and shadow fade in.
+    // Transform and opacity only.
     <header
-      className={`sticky top-0 z-50 border-b bg-ink transition-[border-color,box-shadow] duration-300 ${
-        scrolled ? "border-white/10 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)]" : "border-white/5"
-      }`}
+      data-scrolled={scrolled || undefined}
+      data-ground="dark"
+      className={`sticky top-0 z-50 isolate transition-[translate] duration-base ease-emphasized ${scrolled ? "-translate-y-2" : ""}`}
     >
-      <nav className="flex h-16 container-site items-center justify-between">
+      <span aria-hidden="true" className={`absolute inset-0 -z-10 bg-ink transition-opacity duration-base ease-emphasized ${scrolled ? "opacity-90" : ""}`} />
+      <span aria-hidden="true" className="absolute inset-0 -z-20 backdrop-blur-md" />
+      <span
+        aria-hidden="true"
+        className={`absolute inset-0 -z-10 border-b border-white/10 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] transition-opacity duration-base ease-emphasized ${scrolled ? "" : "opacity-0"}`}
+      />
+      <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 -z-10 h-px bg-white/5 ${scrolled ? "opacity-0" : ""}`} />
+      <nav className={`flex h-16 container-site items-center justify-between transition-[translate] duration-base ease-emphasized ${scrolled ? "translate-y-1" : ""}`}>
         <div className="flex items-center gap-5">
           {/* The logo is the way home on every page (there is no separate Home link). */}
-          <Link to="/" aria-label="NEXERA Powertech home" className="text-white">
+          <Link to="/" aria-label="NEXERA Powertech home" className="inline-flex min-h-11 items-center text-white">
             <Wordmark className="text-lg" />
           </Link>
-          <p className="hidden border-l border-white/20 pl-5 text-[0.625rem] font-medium uppercase leading-snug tracking-[0.2em] text-ice/80 xl:block">
+          <p className="hidden border-l border-white/20 pl-5 eyebrow text-ice/80 xl:block">
             Store today
             <br />
             Power tomorrow
@@ -109,7 +133,7 @@ export default function Nav() {
           <Magnetic max={5}>
             <Link
               to="/contact"
-              className="inline-flex items-center rounded-full bg-signal px-5 py-2 text-sm font-semibold text-forest transition-all duration-300 hover:bg-[#a4e39d] hover:shadow-[0_0_20px_2px_rgba(144,217,136,0.35)]"
+              className="btn-motion inline-flex items-center rounded-full bg-signal px-5 py-2 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_20px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_20px_2px_rgba(144,217,136,0.35)]"
             >
               Contact Us
             </Link>
@@ -118,24 +142,32 @@ export default function Nav() {
 
         {/* Mobile menu toggle */}
         <button
+          ref={toggle}
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
+          aria-controls="mobile-menu"
           data-nav-toggle
           aria-label={open ? "Close menu" : "Open menu"}
-          className="inline-flex h-9 w-9 flex-col items-center justify-center gap-1.5 lg:hidden"
+          className="-mr-2 inline-flex h-11 w-11 flex-col items-center justify-center gap-1.5 lg:hidden"
         >
-          <span className={`block h-0.5 w-6 bg-white transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-white transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-white transition-transform duration-base ease-emphasized ${open ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-white transition-opacity duration-fast ${open ? "opacity-0" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-white transition-transform duration-base ease-emphasized ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </nav>
       <ScrollProgress />
 
-      {/* Mobile menu panel */}
-      {open && (
-        <div className="border-t border-white/10 bg-ink px-6 py-4 lg:hidden">
-          <ul className="flex flex-col gap-4">
+      {/* Mobile menu panel: opens over the content (rather than pushing it down) with a fade and a short
+          slide, and closes the same way (.mobile-menu in index.css: display switches with the
+          transition, so the closed panel is not rendered at all). */}
+      <div
+        id="mobile-menu"
+        data-open={open || undefined}
+        inert={!open}
+        className="mobile-menu absolute inset-x-0 top-full border-t border-white/10 bg-ink px-6 pb-6 pt-2 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.7)] lg:hidden"
+      >
+          <ul className="flex flex-col">
             {links.map((link) => (
               <li key={link.label}>
                 <NavLink
@@ -143,7 +175,7 @@ export default function Nav() {
                   end={link.end}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `block text-base transition-colors ${isActive ? "text-signal" : "text-ice/85 hover:text-white"}`
+                    `flex min-h-11 items-center text-body transition-colors duration-fast ${isActive ? "text-signal" : "text-ice/85 hover:text-white"}`
                   }
                 >
                   {link.label}
@@ -154,12 +186,11 @@ export default function Nav() {
           <Link
             to="/contact"
             onClick={() => setOpen(false)}
-            className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-signal px-4 py-3 text-sm font-semibold text-forest transition-colors hover:bg-[#a4e39d]"
+            className="btn-motion mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-signal px-4 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d]"
           >
             Contact Us
           </Link>
-        </div>
-      )}
+      </div>
     </header>
   );
 }

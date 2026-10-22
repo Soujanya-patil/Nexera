@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
+import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
 const GREEN = "#90D988";
 const RED = "#E8604C";
@@ -21,7 +22,7 @@ export default function CeaContainer({ active, motion, mode, step }) {
     return () => clearInterval(t);
   }, [mode, motion, active]);
   useSceneMotion(root, motion, active, ({ gsap }, el) =>
-    gsap.timeline().from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: 0.8, stagger: 0.03, ease: "power2.inOut" })
+    gsap.timeline().from(el.querySelectorAll("[data-draw]"), { drawSVG: "0%", duration: DUR.slow, stagger: STAGGER, ease: EASE.inOut })
   );
 
   // How many elements are shown: every one without motion; otherwise one per rule read.

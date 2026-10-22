@@ -66,7 +66,7 @@ export default function EnergyFlow({ mode, day }) {
               d={d}
               fill="none"
               data-on={on}
-              className="flow-line text-signal transition-opacity duration-500"
+              className="flow-line text-signal transition-opacity duration-base"
               stroke="currentColor"
               strokeWidth="3"
               strokeLinecap="round"
@@ -80,7 +80,7 @@ export default function EnergyFlow({ mode, day }) {
         const on = m.nodes.includes(id);
         const out = id === "grid" && m.outage;
         return (
-          <g key={id} className="transition-opacity duration-500" style={{ opacity: on || out ? 1 : 0.35 }}>
+          <g key={id} className="transition-opacity duration-base" style={{ opacity: on || out ? 1 : 0.35 }}>
             <circle cx={x} cy={y} r="34" className={on ? "fill-white stroke-signal" : "fill-white stroke-forest/20"} strokeWidth="2" />
             <Icon x={x - 14} y={y - 14} width="28" height="28" className={out ? "text-graphite/50" : on ? "text-forest" : "text-sage"} strokeWidth={1.8} />
             {out && (
@@ -177,15 +177,15 @@ export function DaySlider({ day, hour, onDay }) {
           type="button"
           aria-pressed={outage}
           onClick={() => onDay({ hour, outage: !outage })}
-          className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal ${
-            outage ? "border-amber bg-amber/15 text-ink" : "border-line bg-paper text-forest hover:border-forest/40"
+          className={`hit-area inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-button font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
+            outage ? "border-amber bg-amber/15 text-ink" : "border-line bg-paper text-forest hover:border-forest/40 focus-visible:border-forest/40"
           }`}
         >
           <ZapOff aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
           Power cut
         </button>
       </div>
-      <p aria-live={auto ? "off" : "polite"} className={`mt-3 min-h-[1.5rem] text-sm font-medium transition-opacity duration-300 ${day ? "text-forest" : "text-graphite/70"}`}>
+      <p aria-live={auto ? "off" : "polite"} className={`mt-3 min-h-[1.5rem] text-small font-medium transition-opacity duration-fast ${day ? "text-forest" : "text-graphite/70"}`}>
         {caption}
       </p>
     </div>
