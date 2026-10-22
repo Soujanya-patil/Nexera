@@ -86,15 +86,19 @@ export default function CabinetScrub() {
             </div>
           ) : (
             <figure>
-              <img
-                src={openStill}
-                width={1040}
-                height={864}
-                loading="lazy"
-                decoding="async"
-                alt="Open battery energy storage cabinet: door with fans and fire suppression unit, five battery packs and the lower electrical rack"
-                className="w-full rounded-2xl ring-1 ring-white/10"
-              />
+              {/* No box: the still melts into the section (.photo-blend). Narrow edges: the open door reaches
+                  6% from the left and the rack's feet 8% from the bottom, and both stay clear. */}
+              <div className="photo-blend relative [--blend-l:6%] [--blend-r:8%] [--blend-b:14%]">
+                <img
+                  src={openStill}
+                  width={1040}
+                  height={864}
+                  loading="lazy"
+                  decoding="async"
+                  alt="Open battery energy storage cabinet: door with fans and fire suppression unit, five battery packs and the lower electrical rack"
+                  className="w-full"
+                />
+              </div>
               <figcaption className="sr-only">Protection components</figcaption>
               <ul aria-label="Protection components" className="mt-5 grid gap-2 sm:grid-cols-2">
                 {CALLOUTS.map((c) => (

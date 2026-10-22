@@ -110,11 +110,12 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
       <Spotlight />
       <div data-intro={intro}>
         {/* Photo: full-bleed behind the copy on phones (dimmed); on desktop the right 54% (62% from 1280 px,
-            where the copy has more room), its left edge masked to transparent so it melts into the ground. */}
+            where the copy has more room). Its edges melt into the ground (.photo-blend): on phones only
+            top and bottom (the sides are the screen's); on desktop widest on the left, toward the copy. */}
         <div
           data-a={morphed ? undefined : "image"}
           data-vt-img
-          className="absolute inset-0 overflow-hidden lg:left-[46%] xl:left-[38%] lg:[mask-image:linear-gradient(to_right,transparent,#000_42%)] xl:[mask-image:linear-gradient(to_right,transparent,#000_26%)]"
+          className="photo-blend absolute inset-0 overflow-hidden [--blend-l:0%] [--blend-r:0%] lg:left-[46%] lg:[--blend-l:42%] lg:[--blend-r:12%] xl:left-[38%] xl:[--blend-l:26%]"
         >
           {/* parallax (scroll scrub, transform only) → zoom (load) → pointer drift → photo */}
           <div ref={parallax} className="absolute inset-0 will-change-transform">

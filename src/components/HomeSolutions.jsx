@@ -110,16 +110,19 @@ export default function HomeSolutions() {
             >
               <span aria-hidden="true" className="absolute left-6 top-0 z-10 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-visible:scale-x-100 group-focus-within:scale-x-100 " />
               <div className="relative aspect-[16/10] overflow-hidden">
-                <ParallaxMedia amount={5}>
-                  <SceneImg
-                    name={c.img}
-                    alt={c.alt}
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="card-media h-full w-full object-cover"
-                  />
-                </ParallaxMedia>
-                {/* A soft shade that lifts on hover, so the photo seems to brighten */}
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep-grid/30 via-deep-grid/5 to-transparent transition-opacity duration-slow group-hover:opacity-0 group-focus-visible:opacity-0 group-focus-within:opacity-0" />
+                {/* No box: the photo melts into the card's white (.photo-blend), most at the bottom, toward the text. */}
+                <div className="photo-blend absolute inset-0 [--blend-l:10%] [--blend-r:10%] [--blend-t:8%] [--blend-b:38%]">
+                  <ParallaxMedia amount={5}>
+                    <SceneImg
+                      name={c.img}
+                      alt={c.alt}
+                      sizes="(min-width: 768px) 33vw, 100vw"
+                      className="card-media h-full w-full object-cover"
+                    />
+                  </ParallaxMedia>
+                  {/* A soft shade that lifts on hover, so the photo seems to brighten */}
+                  <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep-grid/30 via-deep-grid/5 to-transparent transition-opacity duration-slow group-hover:opacity-0 group-focus-visible:opacity-0 group-focus-within:opacity-0" />
+                </div>
                 <span
                   aria-hidden="true"
                   className="absolute right-4 top-4 inline-flex translate-x-2 items-center gap-1.5 rounded-full bg-deep-grid/75 px-3 py-1 eyebrow text-white opacity-0 backdrop-blur-sm transition-[opacity,translate] duration-base ease-standard group-hover:translate-x-0 group-focus-visible:translate-x-0 group-focus-within:translate-x-0 group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100  "

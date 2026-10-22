@@ -176,11 +176,13 @@
   --accent: var(--color-link);
   --accent-hover: color-mix(in srgb, var(--color-link) 82%, black);
   --on-accent: var(--color-white);
+  --blend-sky: transparent; /* .photo-blend: no sky tint on a light ground */
 }
 :where(.bg-deep-grid, .bg-forest, .bg-black, [data-ground="dark"], [class*="bg-deep-grid/"], [class*="bg-forest/"]):not([class*=":bg-deep-grid"], [class*=":bg-forest"]) {
   --accent: var(--color-signal);
   --accent-hover: color-mix(in srgb, var(--color-signal) 80%, white);
   --on-accent: var(--color-ink);
+  --blend-sky: var(--color-deep-grid);
 }
 
 /* Motion durations (lib/tokens.js DUR): fast for hovers and presses, base for reveals, menus and
@@ -554,6 +556,62 @@
 .seg-panels[data-panels]:has(> li:nth-child(2):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x1)); }
 .seg-panels[data-panels]:has(> li:nth-child(3):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x2)); }
 
+/* Hub hero segment photos (SegmentRibbon): no box — each photo fades into the deep-grid ground on all
+   sides. Two gradient masks, intersected: across (a long fade on the left, towards the headline; a short
+   one on the right) and down (a short fade at the top; the longest at the bottom). The middle of the
+   frame, where the products stand, stays fully opaque. A mask, so nothing re-lays out (CLS 0) and the
+   Ken Burns push on the canvases runs inside it unchanged. */
+/* Photo blend: one treatment for the photos on the Solutions pages and the home solutions cards. No
+   box: a mask fades the photo to transparent at its edges, so it melts into whatever ground it sits on
+   (deep-grid, paper or white alike), widest on the side facing the text (left by default) and at the
+   bottom; the middle stays fully clear. Each edge's width is a variable (--blend-l / -r / -t / -b), set
+   on the element for a photo whose text sits elsewhere. On a dark ground a light tint of that ground
+   (--blend-sky, set with the accent) calms a bright sky across the top; on light grounds there is none.
+   The host must be positioned (the tint is its ::after). In the components layer, so a utility on the
+   same element ([--blend-l:…]) overrides the defaults. */
+@layer components {
+  .photo-blend {
+    --blend-l: 30%;
+    --blend-r: 12%;
+    --blend-t: 13%;
+    --blend-b: 32%;
+    --blend-x: linear-gradient(
+      to right,
+      transparent 0%,
+      rgb(0 0 0 / 0.25) calc(var(--blend-l) * 0.23),
+      rgb(0 0 0 / 0.75) calc(var(--blend-l) * 0.6),
+      #000 var(--blend-l),
+      #000 calc(100% - var(--blend-r)),
+      rgb(0 0 0 / 0.6) calc(100% - var(--blend-r) * 0.42),
+      transparent 100%
+    );
+    --blend-y: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(0 0 0 / 0.7) calc(var(--blend-t) * 0.46),
+      #000 var(--blend-t),
+      #000 calc(100% - var(--blend-b)),
+      rgb(0 0 0 / 0.75) calc(100% - var(--blend-b) * 0.625),
+      rgb(0 0 0 / 0.3) calc(100% - var(--blend-b) * 0.28),
+      transparent 100%
+    );
+    -webkit-mask-image: var(--blend-x), var(--blend-y);
+    -webkit-mask-composite: source-in;
+    mask-image: var(--blend-x), var(--blend-y);
+    mask-composite: intersect;
+  }
+  .photo-blend::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 42%;
+    pointer-events: none;
+    /* 55% of the ground at the top, about 20% halfway down, none at 42% (no color-mix: its build
+       fallback would paint the full colour). */
+    background: linear-gradient(to bottom, var(--blend-sky), 32%, transparent);
+    opacity: 0.55;
+  }
+}
 /* Hub ribbon label: rolls up from its mask as its photo comes in. */
 @keyframes ribbon-label {
   from { transform: translateY(100%); }
