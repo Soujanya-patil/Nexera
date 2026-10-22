@@ -53,7 +53,7 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
 /** The ribbon's footprint (its 4:3 photo box and the label line under it). */
 const RibbonSpace = () => (
   <div aria-hidden="true">
-    <div className="aspect-[4/3] bg-deep-grid" />
+    <div className="aspect-[4/3]" />
     <div className="mt-4 h-5" />
   </div>
 );

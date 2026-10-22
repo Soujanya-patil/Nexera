@@ -57,11 +57,23 @@ export default function SegmentRibbon() {
     const canvases = [...el.querySelectorAll("canvas")];
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let cancelled = false;
-    let tl;
     let io;
     let onScreen = true;
+    let paused = false;
+    // The running tweens (the current step and the Ken Burns pushes still on screen), paused together.
+    const live = new Set();
+    const track = (t) => {
+      live.forEach((x) => x.progress() === 1 && live.delete(x)); // drop the finished ones
+      live.add(t);
+      if (paused) t.pause();
+      return t;
+    };
+    const setPaused = (p) => {
+      paused = p;
+      live.forEach((t) => (p ? t.pause() : t.resume()));
+    };
     const imgs = [];
-    const onVisibility = () => tl && (document.hidden ? tl.pause() : onScreen && tl.play());
+    const onVisibility = () => setPaused(document.hidden || !onScreen);
     const redraw = () => imgs.forEach((img, i) => img && drawCover(canvases[i], img));
 
     const start = async () => {
@@ -84,18 +96,29 @@ export default function SegmentRibbon() {
       await Promise.all([load(1), load(2)]).catch(() => {});
       const { gsap } = await loadGsap();
       if (cancelled) return;
-      tl = gsap.timeline({ repeat: -1 });
-      canvases.forEach((c, i) => {
-        const at = i * HOLD;
-        tl.call(() => setIndex(i), null, at)
-          .fromTo(c, { opacity: 0 }, { opacity: 1, duration: FADE, ease: EASE.inOut }, at)
-          .fromTo(c, { scale: 1 }, { scale: 1.06, duration: HOLD + FADE, ease: "none" }, at)
-          .to(c, { opacity: 0, duration: FADE, ease: EASE.inOut }, at + HOLD);
-      });
+      // One step per photo: it is raised above the others and fades in ON TOP of the previous photo,
+      // which stays fully opaque underneath until the new one is fully in — only then is it hidden.
+      // So the picture never thins out over the ground mid-change (no dark dip). Its Ken Burns push
+      // (1 → 1.06) runs through its hold and the next photo's fade. After HOLD the next step starts.
+      let cur = -1;
+      const step = (i) => {
+        if (cancelled) return;
+        const c = canvases[i];
+        const prev = canvases[cur];
+        cur = i;
+        setIndex(i);
+        canvases.forEach((x) => (x.style.zIndex = x === c ? "2" : x === prev ? "1" : "0"));
+        track(gsap.fromTo(c, { scale: 1 }, { scale: 1.06, duration: HOLD + FADE, ease: "none" }));
+        const tl = gsap.timeline({ onComplete: () => step((i + 1) % canvases.length) });
+        tl.fromTo(c, { opacity: 0 }, { opacity: 1, duration: FADE, ease: EASE.inOut }, 0);
+        if (prev) tl.set(prev, { opacity: 0 }, FADE);
+        tl.call(() => {}, null, HOLD); // the hold: the timeline ends (and the next step starts) at HOLD
+        track(tl);
+      };
+      step(0);
       io = new IntersectionObserver(([e]) => {
         onScreen = e.isIntersecting;
-        if (onScreen && !document.hidden) tl.play();
-        else tl.pause();
+        setPaused(document.hidden || !onScreen);
       });
       io.observe(el);
       document.addEventListener("visibilitychange", onVisibility);
@@ -106,7 +129,7 @@ export default function SegmentRibbon() {
     return () => {
       cancelled = true;
       window.cancelIdleCallback?.(id);
-      tl?.kill();
+      live.forEach((t) => t.kill());
       io?.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", redraw);
@@ -115,9 +138,10 @@ export default function SegmentRibbon() {
 
   return (
     <div ref={root} aria-hidden="true" className="relative">
-      {/* No box: the photos melt into the deep-grid ground on every side, a light tint over the sky
-          (.photo-blend, index.css). */}
-      <div className="photo-blend relative aspect-[4/3] overflow-hidden bg-deep-grid">
+      {/* No box: one mask on this wrapper (.photo-blend, index.css) melts every photo, and the cross-fade
+          between them, into the ground; the wrapper and the canvases paint nothing of their own. The
+          text is to the left and the label below, so the extra fades are on those sides. */}
+      <div className="photo-blend relative aspect-[4/3] overflow-hidden [--blend-at:54%_46%] [--blend-l:30%] [--blend-b:26%]">
         {SLIDES.map((s) => (
           <canvas key={s.img} data-slide="" style={{ opacity: 0 }} className="absolute inset-0 h-full w-full will-change-transform" />
         ))}
