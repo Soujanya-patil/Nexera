@@ -2,9 +2,9 @@ import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
-const DC = "#90D988"; // direct current: the site's green
-const AC = "#F2C46D"; // alternating current: amber
-const LINE = "#F4F7F4";
+const DC = "var(--color-signal)"; // direct current: the site's green
+const AC = "var(--color-amber)"; // alternating current: amber
+const LINE = "var(--color-paper)";
 
 // Each layout: boxes (label, x, y, w, h) and the path solar power takes into the battery, in segments
 // that are DC or AC. `conversions`: DC↔AC conversions when storing solar (DC-coupled 0, AC-coupled 2).
@@ -120,8 +120,8 @@ export default function CouplingFlow({ active, motion, mode, kind = "dc" }) {
         ))}
         {L.boxes.map((b) => (
           <g key={b.id}>
-            <rect data-draw x={b.x} y={b.y} width={b.w} height={b.h} rx="10" fill="#071A17" stroke={b.lit ? DC : LINE} strokeOpacity={b.lit ? 0.95 : 0.55} strokeWidth="2" />
-            <text x={b.x + b.w / 2} y={b.y + b.h / 2 + 4} textAnchor="middle" className={`text-[11.5px] font-semibold ${b.lit ? "fill-signal" : "fill-white/90"}`}>
+            <rect data-draw x={b.x} y={b.y} width={b.w} height={b.h} rx="10" fill="var(--color-ink)" stroke={b.lit ? DC : LINE} strokeOpacity={b.lit ? 0.95 : 0.55} strokeWidth="2" />
+            <text x={b.x + b.w / 2} y={b.y + b.h / 2 + 4} textAnchor="middle" className={`text-[11.5px] font-semibold ${b.lit ? "fill-accent" : "fill-white/90"}`}>
               {b.label}
             </text>
           </g>
@@ -131,11 +131,11 @@ export default function CouplingFlow({ active, motion, mode, kind = "dc" }) {
         ))}
         {/* the conversions counter */}
         <g data-count>
-          <rect x="274" y="226" width="118" height="44" rx="12" fill="#071A17" stroke={DC} strokeOpacity="0.6" strokeWidth="1.5" />
+          <rect x="274" y="226" width="118" height="44" rx="12" fill="var(--color-ink)" stroke={DC} strokeOpacity="0.6" strokeWidth="1.5" />
           <text x="284" y="245" className="fill-white/70 text-[9px] font-semibold uppercase tracking-[0.08em]">
             DC↔AC conversions
           </text>
-          <text x="284" y="263" className="fill-signal text-[15px] font-semibold">
+          <text x="284" y="263" className="fill-accent text-[15px] font-semibold">
             {L.conversions}
           </text>
         </g>

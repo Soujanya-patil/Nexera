@@ -45,11 +45,11 @@ function Segmented({ options, value, onChange, label }) {
     return () => window.removeEventListener("resize", measure);
   }, [value]);
   return (
-    <div role="radiogroup" aria-label={label} className="relative inline-flex shrink-0 rounded-full border border-line bg-paper p-1">
+    <div role="radiogroup" aria-label={label} className="relative inline-flex shrink-0 rounded-full border border-line bg-white p-1">
       {box && (
         <span
           aria-hidden="true"
-          className="absolute bottom-1 left-0 top-1 rounded-full bg-ink shadow-[0_6px_16px_-8px_rgba(7,26,23,0.6)] transition-[transform,width] duration-base ease-emphasized"
+          className="absolute bottom-1 left-0 top-1 rounded-full bg-forest shadow-[0_6px_16px_-8px_color-mix(in_srgb,var(--color-ink)_60%,transparent)] transition-[transform,width] duration-base ease-emphasized"
           style={{ width: box.w, transform: `translateX(${box.x}px)` }}
         />
       )}
@@ -64,12 +64,12 @@ function Segmented({ options, value, onChange, label }) {
             aria-checked={on}
             onClick={() => onChange(o.id)}
             className={`relative z-10 rounded-full py-2 pl-5 pr-4 eyebrow pointer-coarse:min-h-11 transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 sm:pl-6 sm:pr-5 ${
-              on ? "text-white" : "text-graphite hover:text-ink focus-visible:text-ink"
+              on ? "text-white" : "text-copy hover:text-ink focus-visible:text-ink"
             }`}
           >
             <span
               aria-hidden="true"
-              className={`absolute left-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-signal transition-[scale,opacity] duration-fast sm:left-2.5 ${
+              className={`absolute left-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-accent transition-[scale,opacity] duration-fast sm:left-2.5 ${
                 on ? "scale-100 opacity-100" : "scale-0 opacity-0"
               }`}
             />
@@ -106,13 +106,13 @@ function HeroProduct() {
         <div aria-hidden="true" className="pointer-events-none absolute -inset-x-[55%] -inset-y-[18%]" style={depth(-2, -1.5)}>
           <div
             className="ambient-drift absolute inset-0"
-            style={{ background: "radial-gradient(40% 44% at 50% 52%, rgba(144,217,136,0.13), rgba(144,217,136,0.04) 45%, transparent 72%)" }}
+            style={{ background: "radial-gradient(40% 44% at 50% 52%, color-mix(in_srgb,var(--accent)_13%,transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 45%, transparent 72%)" }}
           />
           <div
             className="absolute inset-0 opacity-70"
             style={{
               backgroundImage:
-                "linear-gradient(rgba(244,247,244,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(244,247,244,0.05) 1px, transparent 1px)",
+                "linear-gradient(color-mix(in srgb, var(--color-paper) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 5%, transparent) 1px, transparent 1px)",
               backgroundSize: "40px 40px",
               maskImage: "radial-gradient(38% 40% at 50% 55%, #000, transparent 75%)",
               WebkitMaskImage: "radial-gradient(38% 40% at 50% 55%, #000, transparent 75%)",
@@ -140,19 +140,19 @@ function HeroProduct() {
               aria-hidden="true"
               className={`pointer-events-none absolute left-[20%] top-[14%] transition-opacity duration-fast ${tag ? "opacity-100" : "opacity-0"}`}
             >
-              <span className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-signal ring-2 ring-deep/70" />
+              <span className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-accent ring-2 ring-deep-grid/70" />
               <span
-                className="absolute left-0 top-0 h-px w-10 origin-left bg-signal/70 transition-[scale] duration-base ease-standard lg:left-auto lg:right-0 lg:origin-right"
+                className="absolute left-0 top-0 h-px w-10 origin-left bg-accent/70 transition-[scale] duration-base ease-standard lg:left-auto lg:right-0 lg:origin-right"
                 style={{ scale: tag ? "1 1" : "0 1" }}
               />
               <div
-                className={`absolute -top-[1.85rem] left-11 w-max rounded-[3px] border border-signal/35 bg-deep/85 px-3 py-2 leading-tight backdrop-blur-sm transition-[opacity,scale] duration-base ease-standard lg:left-auto lg:right-11 ${
+                className={`absolute -top-[1.85rem] left-11 w-max rounded-[3px] border border-accent/35 bg-deep-grid/85 px-3 py-2 leading-tight backdrop-blur-sm transition-[opacity,scale] duration-base ease-standard lg:left-auto lg:right-11 ${
                   tag ? "scale-100 opacity-100 delay-150" : "scale-95 opacity-0"
                 }`}
               >
-                <p className="eyebrow text-signal">{partner.name}</p>
+                <p className="eyebrow text-accent">{partner.name}</p>
                 <p className="mt-0.5 text-small font-semibold text-white">{product.cardSpecs[0]}</p>
-                <p className="mt-0.5 eyebrow text-ice/70">
+                <p className="mt-0.5 eyebrow text-paper/70">
                   {product.applications.map(applicationLabel).join(" · ")}
                 </p>
               </div>
@@ -160,7 +160,7 @@ function HeroProduct() {
           </div>
         </div>
       </div>
-      <figcaption className="mt-5 text-micro tracking-[0.16em] text-ice/50">
+      <figcaption className="mt-5 text-micro tracking-[0.16em] text-paper/50">
         <span className="uppercase">{partner.name}</span> {product.name}
       </figcaption>
     </figure>
@@ -189,11 +189,11 @@ function CategoryHeading({ app, partner }) {
       <div key={shown.key} className={leaving ? "heading-out" : shown.entering ? "heading-in" : ""}>
         <h2 className="text-h2 font-semibold text-ink">
           {copy.title}
-          {p && <span className="text-sage"> · {p.name}</span>}
+          {p && <span className="text-muted"> · {p.name}</span>}
         </h2>
-        <p className="mt-2 text-small text-graphite">{copy.text}</p>
+        <p className="mt-2 text-small text-copy">{copy.text}</p>
         {p && (
-          <Link to={`/partners/${p.id}`} className="group/about mt-2 inline-flex items-center gap-1 text-button font-semibold text-forest hover:text-steel focus-visible:text-steel">
+          <Link to={`/partners/${p.id}`} className="group/about mt-2 inline-flex items-center gap-1 text-button font-semibold text-accent hover:text-link focus-visible:text-link">
             About {p.name} in India
             <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/about:translate-x-0.5 group-focus-visible/about:translate-x-0.5 group-focus-within/about:translate-x-0.5" />
           </Link>
@@ -331,17 +331,17 @@ export default function Products() {
   return (
     <div className={compare.length ? "pb-24" : undefined}>
       {/* Hero */}
-      <section ref={hero} className="relative overflow-hidden bg-night text-white">
+      <section ref={hero} className="relative overflow-hidden bg-deep-grid text-white">
         {/* Ground layers drift a touch against the product for depth (smaller than the product). */}
         <div aria-hidden="true" className="pointer-events-none absolute -inset-3" style={depth(-2, -1.5)}>
           <div
             className="absolute inset-0"
-            style={{ background: "radial-gradient(55% 60% at 8% 0%, rgba(244,247,244,0.05), transparent 70%), linear-gradient(to bottom, transparent 60%, var(--color-deep))" }}
+            style={{ background: "radial-gradient(55% 60% at 8% 0%, color-mix(in srgb, var(--color-paper) 5%, transparent), transparent 70%), linear-gradient(to bottom, transparent 60%, var(--color-deep-grid))" }}
           />
           <div
             className="absolute inset-0 opacity-60"
             style={{
-              backgroundImage: "linear-gradient(rgba(244,247,244,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(244,247,244,0.035) 1px, transparent 1px)",
+              backgroundImage: "linear-gradient(color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px)",
               backgroundSize: "64px 64px",
               maskImage: "radial-gradient(70% 80% at 70% 50%, #000, transparent 75%)",
               WebkitMaskImage: "radial-gradient(70% 80% at 70% 50%, #000, transparent 75%)",
@@ -350,7 +350,7 @@ export default function Products() {
         </div>
         <div data-intro={intro} className="relative grid container-site items-center gap-10 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:py-16">
           <div>
-            <p data-a="eyebrow" className="eyebrow text-ice/80">
+            <p data-a="eyebrow" className="eyebrow text-paper/80">
               Energy Storage Systems
             </p>
             <h1 className="mt-5 text-h1 font-semibold">
@@ -359,18 +359,18 @@ export default function Products() {
               </span>
               {/* Keeps the lines' words apart in the heading's text; between block lines it renders nothing. */}
               {" "}
-              <span data-a="line2" className="block origin-left text-signal">
+              <span data-a="line2" className="block origin-left text-accent">
                 Built to Scale.
               </span>
             </h1>
-            <p data-a="desc" className="mt-6 max-w-md text-body text-ice/80">
+            <p data-a="desc" className="mt-6 max-w-md text-body text-paper/80">
               Explore BESS solutions from NEXERA&rsquo;s technology partners for residential, commercial &amp; industrial, and utility-scale applications.
             </p>
             <div data-a="cta" className="mt-8 inline-block">
               <button
                 type="button"
                 onClick={toCatalogue}
-                className="group/pill btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-signal px-6 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="group/pill btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] focus-visible:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 Explore Systems
                 <ArrowDown aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/pill:translate-y-0.5 group-focus-visible/pill:translate-y-0.5 group-focus-within/pill:translate-y-0.5" strokeWidth={2} />
@@ -382,13 +382,13 @@ export default function Products() {
       </section>
 
       {/* Filters */}
-      <section id="catalogue" aria-label="Filter the catalogue" className="scroll-mt-16 border-b border-line bg-ice">
+      <section id="catalogue" aria-label="Filter the catalogue" className="scroll-mt-16 border-b border-line bg-paper">
         <div className="flex container-site flex-col gap-5 py-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="-mx-6 overflow-x-auto px-6 pb-1 [scrollbar-width:none] lg:mx-0 lg:overflow-visible lg:px-0 lg:pb-0">
             <Segmented label="Application" options={APP_OPTIONS} value={app} onChange={(v) => setFilter("app", v)} />
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
-            <p className="eyebrow text-sage">Technology partner</p>
+            <p className="eyebrow text-muted">Technology partner</p>
             <div role="radiogroup" aria-label="Technology partner" className="-mx-6 flex gap-2 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:mx-0 sm:px-0">
               {PARTNERS.map((p) => {
                 const on = partner === p.id;
@@ -404,8 +404,8 @@ export default function Products() {
                     onPointerLeave={() => setPeek(null)}
                     onFocus={() => setPeek(p.id)}
                     onBlur={() => setPeek(null)}
-                    className={`group/partner relative grid h-11 w-24 shrink-0 place-items-center rounded-full border bg-paper transition-[border-color,box-shadow] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
-                      on ? "border-forest shadow-[0_0_0_3px_rgba(144,217,136,0.35)]" : "border-line hover:border-forest/40 focus-visible:border-forest/40"
+                    className={`group/partner relative grid h-11 w-24 shrink-0 place-items-center rounded-full border bg-white transition-[border-color,box-shadow] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                      on ? "border-accent shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_35%,transparent)]" : "border-line hover:border-accent/40 focus-visible:border-accent/40"
                     }`}
                   >
                     {/* The button is named by its aria-label; the logo still carries its own alt. */}
@@ -420,7 +420,7 @@ export default function Products() {
                     />
                     <span
                       aria-hidden="true"
-                      className={`absolute -bottom-2 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-signal transition-[scale] duration-fast ${
+                      className={`absolute -bottom-2 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-accent transition-[scale] duration-fast ${
                         on ? "" : "scale-x-0 group-hover/partner:scale-x-[0.625] group-focus-visible/partner:scale-x-[0.625] group-focus-within/partner:scale-x-[0.625]"
                       }`}
                     />
@@ -433,13 +433,13 @@ export default function Products() {
       </section>
 
       {/* Catalogue */}
-      <section className="bg-ice pb-20 pt-10 md:pb-24">
+      <section className="bg-paper pb-20 pt-10 md:pb-24">
         <div className="container-site">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <CategoryHeading app={app} partner={partner} />
             <LiveCount count={visibleCount} total={LISTED.length} />
           </div>
-          <p className="mt-3 max-w-2xl text-micro text-sage">
+          <p className="mt-3 max-w-2xl text-micro text-muted">
             NEXERA is an authorized solution provider and distributor. Every system here is designed and manufactured by
             the technology partner named on it.
           </p>
@@ -467,13 +467,13 @@ export default function Products() {
           </ul>
 
           {visibleCount === 0 && (
-            <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper px-6 py-14 text-center">
-              <p className="eyebrow text-sage">No systems found</p>
-              <p className="mt-2 text-small text-graphite">No system in the catalogue matches this application and partner.</p>
+            <div className="mt-8 rounded-2xl border border-dashed border-line bg-white px-6 py-14 text-center">
+              <p className="eyebrow text-muted">No systems found</p>
+              <p className="mt-2 text-small text-copy">No system in the catalogue matches this application and partner.</p>
               <button
                 type="button"
                 onClick={() => applyParams(new URLSearchParams())}
-                className="group/clear btn-motion mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 py-2.5 text-button font-semibold text-white hover:bg-ink/90 focus-visible:bg-ink/90"
+                className="group/clear btn-motion mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-button font-semibold text-white hover:bg-accent/90 focus-visible:bg-accent/90"
               >
                 Clear Filters
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/clear:translate-x-1 group-focus-visible/clear:translate-x-1 group-focus-within/clear:translate-x-1" />

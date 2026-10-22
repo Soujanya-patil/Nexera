@@ -36,7 +36,7 @@ export default function FinalCta() {
   );
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-night text-bone">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid text-paper">
       <div className="relative flex min-h-[92svh] items-center">
         {/* TODO(india-imagery): src/assets/scenes/cta-desert-{1280,1920}.webp is a desert render from Hithium's EU brochure; replace with an Indian installation, update `alt`. */}
         <SceneImg
@@ -46,7 +46,7 @@ export default function FinalCta() {
           className="absolute inset-0 h-full w-full object-cover will-change-transform"
           style={{ objectPosition: "50% 70%" }}
         />
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-night/90 via-night/60 to-night/20" />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-deep-grid/90 via-deep-grid/60 to-deep-grid/20" />
         <div
           data-a="glow"
           aria-hidden="true"
@@ -56,7 +56,7 @@ export default function FinalCta() {
               "radial-gradient(60% 50% at 62% 78%, color-mix(in srgb, var(--color-amber) 24%, transparent), transparent 70%)",
           }}
         />
-        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-night to-transparent" />
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-deep-grid to-transparent" />
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink to-transparent" />
 
         <div className="relative z-10 container-site py-24">
@@ -64,18 +64,18 @@ export default function FinalCta() {
             <h2
               data-a="rise"
               data-reveal
-              className="font-serif text-[clamp(2.5rem,5.6vw,5.5rem)] font-semibold leading-[1.02] text-bone"
+              className="font-serif text-[clamp(2.5rem,5.6vw,5.5rem)] font-semibold leading-[1.02] text-paper"
             >
               Run an EPC business?
             </h2>
-            <p data-a="rise" data-reveal style={{ "--reveal-delay": "0.08s" }} className="mt-6 max-w-xl text-lg leading-relaxed text-bone/80">
+            <p data-a="rise" data-reveal style={{ "--reveal-delay": "0.08s" }} className="mt-6 max-w-xl text-lg leading-relaxed text-paper/80">
               Add battery storage without building a supply chain from scratch.
               Authorized access, training, and after-sales support included.
             </p>
             <div data-a="rise" data-reveal style={{ "--reveal-delay": "0.16s" }} className="mt-9 flex flex-wrap items-center gap-4">
               <Link
                 to="/become-a-partner"
-                className="inline-flex items-center gap-2 rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_rgba(0,167,142,0.5)] transition-all duration-300 hover:bg-signal/90 hover:shadow-[0_0_28px_4px_rgba(0,167,142,0.45)]"
+                className="inline-flex items-center gap-2 rounded-md bg-accent px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_color-mix(in_srgb,var(--accent)_50%,transparent)] transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_28px_4px_color-mix(in_srgb,var(--accent)_45%,transparent)]"
               >
                 Apply to Become a Distributor
                 <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">

@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
-const GREEN = "#90D988";
-const LINE = "#F4F7F4";
+const GREEN = "var(--color-signal)";
+const LINE = "var(--color-paper)";
 // The article's six safety features, in its order, and where each label row sits (y).
 const PARTS = ["BMS", "Thermal management", "Fire detection and suppression", "Safe cell chemistry (LFP)", "Explosion protection and ventilation", "Emergency stop"];
 const LABEL_Y = [176, 112, 64, 236, 36, 150];
@@ -41,7 +41,7 @@ export default function SafetyCabinet({ active, motion, mode, step }) {
     stroke: state(i) === "on" ? GREEN : LINE,
     strokeOpacity: state(i) === "off" ? 0.35 : 0.9,
     className: "transition-[stroke,stroke-opacity] duration-500 motion-reduce:transition-none",
-    style: { filter: state(i) === "on" ? "drop-shadow(0 0 6px rgba(144,217,136,0.6))" : "none" },
+    style: { filter: state(i) === "on" ? "drop-shadow(0 0 6px color-mix(in_srgb,var(--accent)_60%,transparent))" : "none" },
   });
 
   return (
@@ -89,7 +89,7 @@ export default function SafetyCabinet({ active, motion, mode, step }) {
           {[0, 1, 2].map((r) => (
             <rect key={r} data-draw x="52" y={204 + r * 24} width="134" height="18" rx="3" fill="none" strokeWidth="2" />
           ))}
-          <text x="119" y="241" textAnchor="middle" stroke="none" className={`text-[10px] font-semibold ${state(3) === "on" ? "fill-signal" : "fill-white/60"}`}>
+          <text x="119" y="241" textAnchor="middle" stroke="none" className={`text-[10px] font-semibold ${state(3) === "on" ? "fill-accent" : "fill-white/60"}`}>
             LFP
           </text>
         </g>
@@ -97,7 +97,7 @@ export default function SafetyCabinet({ active, motion, mode, step }) {
         {PARTS.map((p, i) => (
           <g key={p} data-label opacity={state(i) === "off" ? 0.4 : 1}>
             <line x1="214" y1={LABEL_Y[i] - 4} x2="226" y2={LABEL_Y[i] - 4} stroke={state(i) === "on" ? GREEN : LINE} strokeOpacity="0.6" strokeWidth="1.5" />
-            <text x="232" y={LABEL_Y[i]} className={`text-[11px] font-semibold ${state(i) === "on" ? "fill-signal" : "fill-white/85"}`}>
+            <text x="232" y={LABEL_Y[i]} className={`text-[11px] font-semibold ${state(i) === "on" ? "fill-accent" : "fill-white/85"}`}>
               {SHORT[i]}
             </text>
           </g>

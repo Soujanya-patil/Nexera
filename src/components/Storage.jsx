@@ -74,7 +74,7 @@ export default function Storage() {
 
   return (
     <section ref={root} className={cine ? "relative z-10 -mt-[100vh] h-[300vh]" : "relative"}>
-      <div className={cine ? "sticky top-0 h-screen overflow-hidden bg-night" : "relative bg-night"} style={cine ? FEATHER : undefined}>
+      <div className={cine ? "sticky top-0 h-screen overflow-hidden bg-deep-grid" : "relative bg-deep-grid"} style={cine ? FEATHER : undefined}>
         {/* Beat 1 — TCL BlueArk */}
         <article data-a="beat-tcl" className={beat}>
           <div data-a="bg-rise" className="absolute inset-0 will-change-transform">
@@ -86,27 +86,27 @@ export default function Storage() {
               style={{ objectPosition: "50% 84%", filter: "brightness(1.08) contrast(1.05)" }}
             />
           </div>
-          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-night via-night/55 to-transparent" />
-          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-night/90 via-night/35 to-transparent" />
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-deep-grid via-deep-grid/55 to-transparent" />
+          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-deep-grid/90 via-deep-grid/35 to-transparent" />
           <div className={inner}>
             <div data-a="tcl-rise" data-reveal className="max-w-xl will-change-transform">
               <div data-a="tcl-text" className="will-change-transform">
-                <span className="rounded-full bg-signal/15 px-3 py-1 text-xs font-medium text-signal">Authorized Partner</span>
-                <h2 className="mt-4 font-serif text-[clamp(2.5rem,5.4vw,5.25rem)] font-semibold leading-none text-bone">
+                <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-medium text-accent">Authorized Partner</span>
+                <h2 className="mt-4 font-serif text-[clamp(2.5rem,5.4vw,5.25rem)] font-semibold leading-none text-paper">
                   TCL BlueArk
                 </h2>
                 <dl className="mt-8 grid gap-4 text-sm">
                   <div>
-                    <dt className="text-bone/60">Products</dt>
-                    <dd className="mt-0.5 text-bone">W10 (125kW/261kWh), X5</dd>
+                    <dt className="text-paper/60">Products</dt>
+                    <dd className="mt-0.5 text-paper">W10 (125kW/261kWh), X5</dd>
                   </div>
                   <div>
-                    <dt className="text-bone/60">Best for</dt>
-                    <dd className="mt-0.5 text-bone">Residential, light C&amp;I</dd>
+                    <dt className="text-paper/60">Best for</dt>
+                    <dd className="mt-0.5 text-paper">Residential, light C&amp;I</dd>
                   </div>
                   <div>
-                    <dt className="text-bone/60">Why TCL</dt>
-                    <dd className="mt-0.5 text-bone">Global brand backing, compact footprint</dd>
+                    <dt className="text-paper/60">Why TCL</dt>
+                    <dd className="mt-0.5 text-paper">Global brand backing, compact footprint</dd>
                   </div>
                 </dl>
               </div>
@@ -121,26 +121,26 @@ export default function Storage() {
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(75% 65% at 72% 78%, color-mix(in srgb, var(--color-steel) 30%, transparent), transparent 70%), radial-gradient(45% 35% at 70% 102%, color-mix(in srgb, var(--color-amber) 20%, transparent), transparent 70%), var(--color-night)",
+                "radial-gradient(75% 65% at 72% 78%, color-mix(in srgb, var(--color-link) 30%, transparent), transparent 70%), radial-gradient(45% 35% at 70% 102%, color-mix(in srgb, var(--color-amber) 20%, transparent), transparent 70%), var(--color-deep-grid)",
             }}
           />
           <div className={inner}>
             <div className={cine ? "flex h-full items-end" : ""}>
               <div data-a="hithium-text" data-reveal className={`max-w-md will-change-transform ${cine ? "relative z-10" : ""}`}>
-                <span className="rounded-full bg-signal/15 px-3 py-1 text-xs font-medium text-signal">Authorized Partner</span>
-                <h2 className="mt-4 font-serif text-[clamp(2.5rem,5.4vw,5.25rem)] font-semibold leading-none text-bone">
+                <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-medium text-accent">Authorized Partner</span>
+                <h2 className="mt-4 font-serif text-[clamp(2.5rem,5.4vw,5.25rem)] font-semibold leading-none text-paper">
                   Hithium
                 </h2>
                 <dl className="mt-8 grid gap-4 text-sm">
                   <div>
-                    <dt className="text-bone/60">Products</dt>
-                    <dd className="mt-0.5 text-bone">
+                    <dt className="text-paper/60">Products</dt>
+                    <dd className="mt-0.5 text-paper">
                       261kWh liquid-cooled C&amp;I cabinet, 1022kWh DC block, 6.25MWh (4h) utility block
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-bone/60">Best for</dt>
-                    <dd className="mt-0.5 text-bone">C&amp;I and utility-scale</dd>
+                    <dt className="text-paper/60">Best for</dt>
+                    <dd className="mt-0.5 text-paper">C&amp;I and utility-scale</dd>
                   </div>
                 </dl>
               </div>

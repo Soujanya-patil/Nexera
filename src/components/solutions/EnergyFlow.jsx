@@ -61,12 +61,12 @@ export default function EnergyFlow({ mode, day }) {
         const on = m.lines.includes(id);
         return (
           <g key={id}>
-            <path d={d} fill="none" stroke="currentColor" className="text-forest/12" strokeWidth="3" strokeLinecap="round" />
+            <path d={d} fill="none" stroke="currentColor" className="text-accent/12" strokeWidth="3" strokeLinecap="round" />
             <path
               d={d}
               fill="none"
               data-on={on}
-              className="flow-line text-signal transition-opacity duration-base"
+              className="flow-line text-accent transition-opacity duration-base"
               stroke="currentColor"
               strokeWidth="3"
               strokeLinecap="round"
@@ -81,15 +81,15 @@ export default function EnergyFlow({ mode, day }) {
         const out = id === "grid" && m.outage;
         return (
           <g key={id} className="transition-opacity duration-base" style={{ opacity: on || out ? 1 : 0.35 }}>
-            <circle cx={x} cy={y} r="34" className={on ? "fill-white stroke-signal" : "fill-white stroke-forest/20"} strokeWidth="2" />
-            <Icon x={x - 14} y={y - 14} width="28" height="28" className={out ? "text-graphite/50" : on ? "text-forest" : "text-sage"} strokeWidth={1.8} />
+            <circle cx={x} cy={y} r="34" className={on ? "fill-white stroke-accent" : "fill-white stroke-accent/20"} strokeWidth="2" />
+            <Icon x={x - 14} y={y - 14} width="28" height="28" className={out ? "text-copy/50" : on ? "text-accent" : "text-muted"} strokeWidth={1.8} />
             {out && (
               <g>
                 <circle cx={x + 26} cy={y - 26} r="13" className="fill-amber" />
                 <ZapOff x={x + 18} y={y - 34} width="16" height="16" className="text-white" strokeWidth={2.2} />
               </g>
             )}
-            <text x={x} y={y + 56} textAnchor="middle" className="fill-forest text-[15px] font-semibold">
+            <text x={x} y={y + 56} textAnchor="middle" className="fill-accent text-[15px] font-semibold">
               {label}
             </text>
           </g>
@@ -178,14 +178,14 @@ export function DaySlider({ day, hour, onDay }) {
           aria-pressed={outage}
           onClick={() => onDay({ hour, outage: !outage })}
           className={`hit-area inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-button font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
-            outage ? "border-amber bg-amber/15 text-ink" : "border-line bg-paper text-forest hover:border-forest/40 focus-visible:border-forest/40"
+            outage ? "border-amber bg-amber/15 text-ink" : "border-line bg-white text-accent hover:border-accent/40 focus-visible:border-accent/40"
           }`}
         >
           <ZapOff aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
           Power cut
         </button>
       </div>
-      <p aria-live={auto ? "off" : "polite"} className={`mt-3 min-h-[1.5rem] text-small font-medium transition-opacity duration-fast ${day ? "text-forest" : "text-graphite/70"}`}>
+      <p aria-live={auto ? "off" : "polite"} className={`mt-3 min-h-[1.5rem] text-small font-medium transition-opacity duration-fast ${day ? "text-accent" : "text-copy/70"}`}>
         {caption}
       </p>
     </div>

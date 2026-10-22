@@ -53,7 +53,7 @@ const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matc
 /** The ribbon's footprint (its 4:3 photo box and the label line under it). */
 const RibbonSpace = () => (
   <div aria-hidden="true">
-    <div className="aspect-[4/3] rounded-2xl bg-deep ring-1 ring-white/10" />
+    <div className="aspect-[4/3] rounded-2xl bg-deep-grid ring-1 ring-white/10" />
     <div className="mt-4 h-5" />
   </div>
 );
@@ -112,22 +112,22 @@ function HubHeader({ eyebrow, title, subtitle }) {
   }, []);
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-ink text-white">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid text-white">
       <Spotlight />
       <div data-intro={state} className="relative container-site grid items-center gap-12 py-16 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
         <div>
-          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-small font-medium text-signal">
-            <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
+          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-small font-medium text-accent">
+            <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-accent/70" />
             {eyebrow}
           </p>
           <h1 data-a="title" className="max-w-2xl text-h1 font-semibold">
             {title}
           </h1>
-          <p data-a="desc" className="mt-4 max-w-2xl text-body text-ice/75">
+          <p data-a="desc" className="mt-4 max-w-2xl text-body text-paper/75">
             {subtitle}
           </p>
           <p data-a="desc" className="mt-4 text-small">
-            <Link to="/blog/what-is-bess" className="group/new hit-area inline-flex items-center gap-1.5 font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
+            <Link to="/blog/what-is-bess" className="group/new hit-area inline-flex items-center gap-1.5 font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
               New to battery storage? Read: What Is a BESS?
               <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/new:translate-x-0.5 group-focus-visible/new:translate-x-0.5 group-focus-within/new:translate-x-0.5" />
             </Link>
@@ -161,7 +161,7 @@ function SegmentCard({ s }) {
       to={s.page}
       onClick={open}
       data-vt-card={s.id}
-      className="card-hover group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-2xl bg-night text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
+      className="card-hover group relative flex aspect-[4/3] focus-visible:outline-link flex-col justify-end overflow-hidden rounded-2xl bg-deep-grid text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
     >
       <div data-vt-img className="absolute inset-0 overflow-hidden">
         <SceneImg
@@ -171,20 +171,20 @@ function SegmentCard({ s }) {
           className="card-media absolute inset-0 h-full w-full object-cover"
         />
       </div>
-      <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/60 to-night/5" />
-      <span aria-hidden="true" className="absolute inset-0 bg-night/0 transition-colors duration-base group-hover:bg-night/35 group-focus-within:bg-night/35 group-focus-visible:bg-night/35" />
+      <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-deep-grid via-deep-grid/60 to-deep-grid/5" />
+      <span aria-hidden="true" className="absolute inset-0 bg-deep-grid/0 transition-colors duration-base group-hover:bg-deep-grid/35 group-focus-within:bg-deep-grid/35 group-focus-visible:bg-deep-grid/35" />
       {/* In the panels the card's own outline would be clipped by its window: the ring is drawn on the text. */}
       <div
         data-panel-text
-        className="relative rounded-2xl p-6 group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-signal md:p-7"
+        className="relative rounded-2xl p-6 group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-accent md:p-7"
       >
         <h2
-          className="text-h2 font-semibold transition-colors duration-fast group-hover:text-signal group-focus-within:text-signal group-focus-visible:text-signal"
+          className="text-h2 font-semibold transition-colors duration-fast group-hover:text-accent group-focus-within:text-accent group-focus-visible:text-accent"
         >
           {s.title}
         </h2>
-        <p className="mt-2 text-small text-ice/85">{s.copy}</p>
-        <span className="mt-5 inline-flex items-center gap-1.5 text-small font-semibold text-signal">
+        <p className="mt-2 text-small text-paper/85">{s.copy}</p>
+        <span className="mt-5 inline-flex items-center gap-1.5 text-small font-semibold text-accent">
           <ArrowUnderline group="card">{s.cta}</ArrowUnderline>
         </span>
       </div>
@@ -205,7 +205,7 @@ export default function Solutions() {
       />
 
       {/* Same card treatment as For EPCs' application cards: partner imagery under a dark gradient. */}
-      <section aria-label="Solutions by segment" className="bg-paper py-14 lg:py-20">
+      <section aria-label="Solutions by segment" className="bg-white py-14 lg:py-20">
         <ul ref={grid} data-sr-state={reveal} className="seg-panels grid container-site gap-5 md:grid-cols-3">
           {SEGMENTS.map((s) => (
             <li key={s.id} id={s.id} data-sr className="scroll-mt-20">

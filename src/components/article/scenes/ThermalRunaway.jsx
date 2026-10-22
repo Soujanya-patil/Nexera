@@ -1,10 +1,12 @@
 import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
+import { PALETTE } from "../../../lib/palette";
 
-const COOL = "#90D988";
+// Tweened into HOT by GSAP, so a real colour value, not a CSS variable (lib/palette.js).
+const COOL = PALETTE.signal;
 const HOT = "#F28C38";
-const LINE = "#F4F7F4";
+const LINE = "var(--color-paper)";
 const CELLS = [0, 1, 2, 3, 4];
 const HOT_CELL = 2;
 const X0 = 46; // first cell's left edge
@@ -88,7 +90,7 @@ export default function ThermalRunaway({ active, motion }) {
           <text data-say x="200" y="242" textAnchor="middle" className="fill-white">
             Detected early
           </text>
-          <text data-say x="328" y="242" textAnchor="middle" className="fill-signal">
+          <text data-say x="328" y="242" textAnchor="middle" className="fill-accent">
             Isolated, contained
           </text>
         </g>

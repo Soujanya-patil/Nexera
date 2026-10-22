@@ -25,14 +25,14 @@ export default function NetworkMap() {
   const cp = pos(current);
 
   return (
-    <section aria-labelledby="network-title" className="relative overflow-hidden bg-deep py-20 text-white md:py-28">
+    <section aria-labelledby="network-title" className="relative overflow-hidden bg-deep-grid py-20 text-white md:py-28">
       <div className="grid container-site items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p className="eyebrow text-signal">Our network</p>
+          <p className="eyebrow text-accent">Our network</p>
           <AnimatedText id="network-title" className="mt-3 text-h2 font-semibold">
             Rooted in Karnataka. Growing Across India.
           </AnimatedText>
-          <p className="mt-4 max-w-md text-body text-ice/75">
+          <p className="mt-4 max-w-md text-body text-paper/75">
             Headquartered in Bangalore, with a regional office and technician training center in Kalaburagi. Nagpur and
             Delhi are planned expansions.
           </p>
@@ -52,18 +52,18 @@ export default function NetworkMap() {
                   >
                     <span
                       aria-hidden="true"
-                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${o.status === "active" ? "bg-signal" : "border border-signal/70"}`}
+                      className={`h-2.5 w-2.5 shrink-0 rounded-full ${o.status === "active" ? "bg-accent" : "border border-accent/70"}`}
                     />
                     <span className="min-w-0 flex-1">
-                      <span className={`block font-semibold transition-colors ${on ? "text-signal" : "text-white group-hover:text-signal group-focus-visible:text-signal group-focus-within:text-signal"}`}>{o.city}</span>
-                      <span className="block text-small text-ice/60">
+                      <span className={`block font-semibold transition-colors ${on ? "text-accent" : "text-white group-hover:text-accent group-focus-visible:text-accent group-focus-within:text-accent"}`}>{o.city}</span>
+                      <span className="block text-small text-paper/60">
                         {o.role}
                         {o.detail && ` · ${o.detail}`}
                       </span>
                     </span>
                     <span
                       className={`shrink-0 rounded-full px-2.5 py-0.5 eyebrow ${
-                        o.status === "active" ? "bg-signal/15 text-signal" : "bg-white/8 text-ice/60"
+                        o.status === "active" ? "bg-accent/15 text-accent" : "bg-white/8 text-paper/60"
                       }`}
                     >
                       {o.status === "active" ? "Active" : "Planned"}
@@ -81,7 +81,7 @@ export default function NetworkMap() {
             <div
               className="absolute inset-0 rounded-3xl"
               style={{
-                backgroundImage: "radial-gradient(rgba(244,247,244,0.13) 1px, transparent 1.4px)",
+                backgroundImage: "radial-gradient(color-mix(in srgb, var(--color-paper) 13%, transparent) 1px, transparent 1.4px)",
                 backgroundSize: "18px 18px",
                 maskImage: "radial-gradient(60% 55% at 45% 55%, #000 30%, transparent 80%)",
                 WebkitMaskImage: "radial-gradient(60% 55% at 45% 55%, #000 30%, transparent 80%)",
@@ -99,7 +99,7 @@ export default function NetworkMap() {
                     x2={b.x}
                     y2={b.y}
                     vectorEffect="non-scaling-stroke"
-                    stroke={o.status === "active" ? "rgba(144,217,136,0.75)" : "rgba(144,217,136,0.35)"}
+                    stroke={o.status === "active" ? "color-mix(in_srgb,var(--accent)_75%,transparent)" : "color-mix(in_srgb,var(--accent)_35%,transparent)"}
                     strokeWidth="1.25"
                     strokeDasharray={o.status === "active" ? undefined : "4 5"}
                   />
@@ -119,16 +119,16 @@ export default function NetworkMap() {
                   onClick={() => setActive(o.id)}
                 >
                   <span className="relative flex h-8 w-8 cursor-pointer items-center justify-center">
-                    {on && <span className="animate-hotspot-pulse absolute h-3.5 w-3.5 rounded-full bg-signal/60" />}
+                    {on && <span className="animate-hotspot-pulse absolute h-3.5 w-3.5 rounded-full bg-accent/60" />}
                     <span
                       className={`relative rounded-full transition-[scale] duration-fast ${on ? "scale-125" : ""} ${
-                        o.status === "active" ? "h-3.5 w-3.5 bg-signal ring-4 ring-signal/15" : "h-3 w-3 border-[1.5px] border-signal/80 bg-deep"
+                        o.status === "active" ? "h-3.5 w-3.5 bg-accent ring-4 ring-accent/15" : "h-3 w-3 border-[1.5px] border-accent/80 bg-deep-grid"
                       }`}
                     />
                   </span>
                   <span
                     className={`absolute left-8 top-1/2 -translate-y-1/2 whitespace-nowrap text-micro font-semibold tracking-[0.06em] transition-[color,opacity] ${
-                      on ? `text-white ${p.x > 52 ? "" : "sm:opacity-0"}` : "text-ice/55"
+                      on ? `text-white ${p.x > 52 ? "" : "sm:opacity-0"}` : "text-paper/55"
                     }`}
                   >
                     {o.city.replace(/ \(.*\)/, "")}
@@ -140,7 +140,7 @@ export default function NetworkMap() {
             {/* Info card for the active location (floats beside the point from sm up) */}
             <div
               key={current.id}
-              className="journey-detail pointer-events-none absolute z-10 hidden w-52 rounded-lg border border-white/12 bg-night/90 p-3.5 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.8)] backdrop-blur-sm sm:block"
+              className="journey-detail pointer-events-none absolute z-10 hidden w-52 rounded-lg border border-white/12 bg-deep-grid/90 p-3.5 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.8)] backdrop-blur-sm sm:block"
               style={{
                 left: `${cp.x}%`,
                 top: `${cp.y}%`,
@@ -151,10 +151,10 @@ export default function NetworkMap() {
             </div>
           </div>
           {/* Phones: the same card, below the schematic */}
-          <div key={`m-${current.id}`} className="journey-detail mt-4 rounded-lg border border-white/12 bg-night/90 p-3.5 sm:hidden">
+          <div key={`m-${current.id}`} className="journey-detail mt-4 rounded-lg border border-white/12 bg-deep-grid/90 p-3.5 sm:hidden">
             <OfficeCard office={current} />
           </div>
-          <p className="mt-4 text-center eyebrow text-ice/40">
+          <p className="mt-4 text-center eyebrow text-paper/40">
             Schematic · relative positions, not a map
           </p>
         </div>
@@ -166,11 +166,11 @@ export default function NetworkMap() {
 function OfficeCard({ office }) {
   return (
     <>
-      <p className="eyebrow text-signal">
+      <p className="eyebrow text-accent">
         {office.status === "active" ? office.role : "Planned expansion"}
       </p>
       <p className="mt-1 text-small font-semibold text-white">{office.city}</p>
-      {office.detail && <p className="mt-1 text-micro text-ice/70">{office.detail}</p>}
+      {office.detail && <p className="mt-1 text-micro text-paper/70">{office.detail}</p>}
     </>
   );
 }

@@ -100,12 +100,12 @@ export default function JourneyRail({ labels, wrapRef }) {
           <span
             aria-hidden="true"
             className={`block rounded-full transition-all duration-300 ${
-              i === active ? "h-2 w-2 bg-signal" : "h-1.5 w-1.5 bg-bone/35 group-hover:bg-bone/70"
+              i === active ? "h-2 w-2 bg-accent" : "h-1.5 w-1.5 bg-paper/35 group-hover:bg-paper/70"
             }`}
           />
           <span
             aria-hidden="true"
-            className={`pointer-events-none absolute left-6 whitespace-nowrap rounded bg-night/90 px-2 py-1 text-[11px] font-medium text-bone shadow-lg ring-1 ring-bone/15 transition-opacity duration-200 ${
+            className={`pointer-events-none absolute left-6 whitespace-nowrap rounded bg-deep-grid/90 px-2 py-1 text-[11px] font-medium text-paper shadow-lg ring-1 ring-paper/15 transition-opacity duration-200 ${
               hover === i ? "opacity-100" : "opacity-0"
             }`}
           >

@@ -39,7 +39,7 @@ export default function ReadingProgress() {
   }, []);
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-16 z-40 h-[3px]">
-      <div ref={bar} className="h-full origin-left bg-signal" style={{ transform: "scaleX(0)" }} />
+      <div ref={bar} className="h-full origin-left bg-accent" style={{ transform: "scaleX(0)" }} />
     </div>
   );
 }

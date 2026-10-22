@@ -52,14 +52,14 @@ export default function TechGrid({ size = 56, tone = 0.05, glow = true, drift = 
         data-a="grid-layer"
         className="absolute inset-[-12%] will-change-transform"
         style={{
-          backgroundImage: `linear-gradient(to right, rgba(242,240,234,${tone}) 1px, transparent 1px), linear-gradient(to bottom, rgba(242,240,234,${tone}) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(to right, rgba(245,247,244,${tone}) 1px, transparent 1px), linear-gradient(to bottom, rgba(245,247,244,${tone}) 1px, transparent 1px)`,
           backgroundSize: `${size}px ${size}px`,
         }}
       />
       {glow && (
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(55% 45% at 50% 45%, rgba(0,167,142,0.10) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(55% 45% at 50% 45%, color-mix(in_srgb,var(--accent)_10%,transparent) 0%, transparent 70%)" }}
         />
       )}
     </div>

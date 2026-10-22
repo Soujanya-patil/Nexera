@@ -42,11 +42,11 @@ export default function DisplayHeading({ eyebrow, children, className = "", as: 
   return (
     <div ref={root} className={className}>
       {eyebrow && (
-        <p data-a="dh-eyebrow" className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">
+        <p data-a="dh-eyebrow" className="text-xs font-medium uppercase tracking-[0.2em] text-paper/60">
           {eyebrow}
         </p>
       )}
-      <Tag className="mt-3 font-serif font-semibold leading-[1.04] text-balance text-bone text-[clamp(2rem,4.6vw,3.75rem)]">
+      <Tag className="mt-3 font-serif font-semibold leading-[1.04] text-balance text-paper text-[clamp(2rem,4.6vw,3.75rem)]">
         <span className="sr-only">{children}</span>
         <span aria-hidden="true">
           {words.map((w, i) => (

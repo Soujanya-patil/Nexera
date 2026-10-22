@@ -14,24 +14,24 @@ export default function ServiceTraining() {
         title="We don't just supply the battery. We train the hands that install it."
       />
 
-      <section className="bg-paper border-b border-line">
+      <section className="bg-white border-b border-line">
         <div className="container-site py-16 md:py-20">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Design & Commissioning Support
           </h2>
-          <p data-sr className="mt-heading max-w-measure text-body text-graphite">
+          <p data-sr className="mt-heading max-w-measure text-body text-copy">
             Every partner gets our engineering team for sizing, single-line diagrams,
             and on-site support with BESS installation and BESS commissioning.
           </p>
         </div>
       </section>
 
-      <section className="bg-ice border-b border-line">
+      <section className="bg-paper border-b border-line">
         <div className="container-site py-16 md:py-20">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             After-Sales & Warranty
           </h2>
-          <p data-sr className="mt-heading max-w-measure text-body text-graphite">
+          <p data-sr className="mt-heading max-w-measure text-body text-copy">
             Local-first warranty handling — we manage the OEM relationship so your
             customer relationship stays intact.
           </p>
@@ -39,28 +39,28 @@ export default function ServiceTraining() {
         </div>
       </section>
 
-      <section className="bg-paper">
+      <section className="bg-white">
         <div className="container-site py-16 md:py-20">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Kalaburagi Technician Training Center
           </h2>
-          <p data-sr className="mt-2 text-small text-graphite">
+          <p data-sr className="mt-2 text-small text-copy">
             India's Hands-On BESS Training Center for EPC Technicians
           </p>
-          <p data-sr className="mt-heading max-w-measure text-body text-graphite">
+          <p data-sr className="mt-heading max-w-measure text-body text-copy">
             In Kalaburagi, BESS technician training happens on live TCL and Hithium
             hardware — not manuals and PDFs.
           </p>
-          <ul data-sr className="mt-6 space-y-2 text-body text-graphite">
-            <li className="flex gap-3"><span className="text-forest">✓</span> Hands-on installation and commissioning practice</li>
-            <li className="flex gap-3"><span className="text-forest">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
-            <li className="flex gap-3"><span className="text-forest">✓</span> Certification path for field-ready technicians</li>
+          <ul data-sr className="mt-6 space-y-2 text-body text-copy">
+            <li className="flex gap-3"><span className="text-accent">✓</span> Hands-on installation and commissioning practice</li>
+            <li className="flex gap-3"><span className="text-accent">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
+            <li className="flex gap-3"><span className="text-accent">✓</span> Certification path for field-ready technicians</li>
           </ul>
         </div>
       </section>
 
       {/* FAQ: the same list is the page's FAQPage structured data (src/seo/routes.js), word for word. */}
-      <section className="bg-ice border-t border-line">
+      <section className="bg-paper border-t border-line">
         <div className="container-site py-16 md:py-20">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Frequently Asked Questions
@@ -69,7 +69,7 @@ export default function ServiceTraining() {
             {SERVICE_TRAINING_FAQ.map(({ q, a }) => (
               <div key={q} data-sr>
                 <dt className="text-h4 font-semibold text-ink">{q}</dt>
-                <dd className="mt-2 text-graphite text-body">{a}</dd>
+                <dd className="mt-2 text-copy text-body">{a}</dd>
               </div>
             ))}
           </dl>
@@ -95,24 +95,24 @@ function FileComplaint() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="link inline-flex min-h-11 items-center text-small font-semibold text-steel"
+          className="link inline-flex min-h-11 items-center text-small font-semibold text-link"
         >
           File a Complaint →
         </button>
       ) : ref ? (
         <div>
           <p className="font-medium text-ink">Complaint filed.</p>
-          <p className="mt-1 text-small text-graphite">
+          <p className="mt-1 text-small text-copy">
             Reference number: <span className="font-mono text-ink">{ref}</span>
           </p>
-          <p className="mt-1 text-small text-graphite">
+          <p className="mt-1 text-small text-copy">
             We'll email you updates — track anytime with this reference.
           </p>
         </div>
       ) : (
         <form method="post" onSubmit={handleSubmit} className="space-y-4">
           <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
-          <p className="text-small text-graphite">Tracked by email.</p>
+          <p className="text-small text-copy">Tracked by email.</p>
           <Field label="Name" name="name" required />
           <Field label="Number" name="number" />
           <Field label="Email" name="email" type="email" required />
@@ -120,7 +120,7 @@ function FileComplaint() {
           <Field label="What's wrong" name="issue" as="textarea" />
           <button
             type="submit"
-            className="btn-motion inline-flex min-h-11 items-center rounded-full bg-signal px-5 py-2.5 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d]"
+            className="btn-motion inline-flex min-h-11 items-center rounded-full bg-accent px-5 py-2.5 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"
           >
             Submit
           </button>
@@ -143,7 +143,7 @@ function Field({ label, name, required, type = "text", as }) {
         type={as ? undefined : type}
         required={required}
         rows={as === "textarea" ? 3 : undefined}
-        className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-steel/40"
+        className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40"
       />
     </div>
   );

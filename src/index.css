@@ -72,26 +72,29 @@
 }
 
 @theme {
-  /* Color system — accents sampled from the approved Home mockup (home-mockup-v2-approved.png);
-     grounds and surface from the NEXERA green/graphite palette (#071A17 / #03100D / #F4F7F4).
-     `signal` is a fill / text-on-dark color only: on white it is ~1.7:1, so any green text on a
-     light surface uses `forest` instead. */
-  --color-ink: #071A17;         /* header ground (continuous with the hero); headlines and primary text on light */
-  --color-signal: #90D988;      /* accent green: buttons, icons, highlight text on dark */
-  --color-forest: #092F27;      /* dark green: stat figures, labels on green buttons, green text on light */
-  --color-steel: #354A47;       /* links and focus rings on light */
-  --color-sage: #63726F;        /* eyebrow labels on light */
-  --color-ice: #F4F7F4;         /* light section backgrounds (surface) */
-  --color-paper: #FFFFFF;       /* base page background, cards */
-  --color-graphite: #545658;    /* body / secondary text on light */
-  --color-line: #EEEEEE;        /* hairline dividers, borders */
-  --color-deep: #03100D;        /* deep ground: hero fall-off, final CTA band, footer */
-
-  /* Dark scene palette — extends the tokens above, replaces none of them */
-  --color-night: #071A17;       /* hero ground: deep green-graphite */
-  --color-charcoal: #0F1A27;    /* raised surfaces inside dark scenes */
-  --color-bone: #F2F0EA;        /* warm off-white for type and light bands on dark */
-  --color-amber: #E3A23B;       /* energy accent — sparing: progress line, sunrise glow only */
+  /* Colour — the NEXERA palette (one definition; utilities bg-*, text-*, border-* …). Contrast rules:
+     signal and amber are never text on white or paper; text on amber is ink; links and primary buttons
+     on light grounds are link green, on dark grounds signal green (the ground-aware `accent` below).
+       deep-grid  dark sections, footer          forest  dark cards, header on dark
+       signal     accents on DARK grounds only   link    links and primary buttons on LIGHT grounds
+       amber      small highlights (peak / alert tags; ink text on it)
+       paper      light section background       white   cards
+       ink        headings                       copy    paragraph text (the palette's "body"; named
+                                                         copy because text-body is the body font size)
+       muted      captions, small text           ice     soft tinted panels, badges
+       line       borders, dividers */
+  --color-deep-grid: #06110E;
+  --color-forest: #0B2A22;
+  --color-signal: #86E08A;
+  --color-link: #1F7A4D;
+  --color-amber: #F5B841;
+  --color-paper: #F5F7F4;
+  --color-white: #FFFFFF;
+  --color-ink: #0E1A16;
+  --color-copy: #3A4A44;
+  --color-muted: #5C6B65;
+  --color-ice: #E8F1EC;
+  --color-line: #E1E7E3;
 
   /* Type — IBM Plex: an engineering-documentation typeface family,
      a deliberate fit for a technical hardware brand, not a generic pairing */
@@ -155,6 +158,29 @@
   --ease-standard: cubic-bezier(0.33, 1, 0.68, 1);
   --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Accent: link green on light grounds, signal green on dark ones — one class (bg-accent, text-accent,
+   border-accent …) is right on either. A dark ground is any element painted deep-grid or forest (or
+   marked data-ground="dark"); a solid white / paper / ice element inside it is light again. Primary
+   buttons are bg-accent with text-on-accent (white on link green, ink on signal green) and hover to
+   accent-hover. `inline`: the utilities read the variables where they are used, so they follow the
+   ground of each element. */
+@theme inline {
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: var(--on-accent);
+}
+:root,
+:where(.bg-white, .bg-paper, .bg-ice, .bg-white\/90, .bg-white\/95, .bg-paper\/90, .bg-paper\/95) {
+  --accent: var(--color-link);
+  --accent-hover: color-mix(in srgb, var(--color-link) 82%, black);
+  --on-accent: var(--color-white);
+}
+:where(.bg-deep-grid, .bg-forest, .bg-black, [data-ground="dark"], [class*="bg-deep-grid/"], [class*="bg-forest/"]):not([class*=":bg-deep-grid"], [class*=":bg-forest"]) {
+  --accent: var(--color-signal);
+  --accent-hover: color-mix(in srgb, var(--color-signal) 80%, white);
+  --on-accent: var(--color-ink);
 }
 
 /* Motion durations (lib/tokens.js DUR): fast for hovers and presses, base for reveals, menus and
@@ -283,15 +309,15 @@
   @media (hover: hover) {
     &:hover {
       translate: 0 -4px;
-      border-color: rgb(144 217 136 / 0.6);
-      box-shadow: 0 0 0 1px rgb(144 217 136 / 0.35), 0 22px 44px -26px rgb(7 26 23 / 0.42);
+      border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 22px 44px -26px rgb(7 26 23 / 0.42);
     }
   }
   &:focus-visible,
   &:focus-within {
     translate: 0 -4px;
-    border-color: rgb(144 217 136 / 0.6);
-    box-shadow: 0 0 0 1px rgb(144 217 136 / 0.35), 0 22px 44px -26px rgb(7 26 23 / 0.42);
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 22px 44px -26px rgb(7 26 23 / 0.42);
   }
 }
 @utility card-media {
@@ -329,7 +355,7 @@
   body {
     font-family: var(--font-sans);
     color: var(--color-ink);
-    background: var(--color-paper);
+    background: var(--color-white);
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 {
@@ -352,16 +378,13 @@
   table, .figures {
     font-variant-numeric: tabular-nums;
   }
-  /* One visible focus ring for everything keyboard-focusable: steel on light grounds, the accent green
-     on dark ones (3:1 or better against both). Components may refine it, never remove it. */
+  /* One visible focus ring for everything keyboard-focusable (3:1 or better on both grounds).
+     Components may refine it, never remove it. */
   /* The ring's colour is set on every element up front, so focusing only switches the ring on (a colour
      transition — transition-colors includes outline-color — would otherwise fade it in from the text
-     colour). */
+     colour). It is the ground's accent: link green on light, signal green on dark. */
   * {
-    outline-color: var(--color-steel);
-  }
-  :where(.bg-ink, .bg-night, .bg-deep, .bg-forest, .bg-charcoal, .bg-black, [data-ground="dark"]) * {
-    outline-color: var(--color-signal);
+    outline-color: var(--accent);
   }
   :focus-visible {
     outline-width: 2px;
@@ -449,13 +472,14 @@
    installed component inherits the NEXERA palette — no library theme (SmoothUI's `tokens` theme
    and its pink brand colour were removed on install). */
 @theme inline {
-  --color-background: var(--color-paper);
+  --color-background: var(--color-white);
   --color-foreground: var(--color-ink);
-  --color-muted: var(--color-ice);
-  --color-muted-foreground: var(--color-sage);
+  /* (shadcn's `muted` surface is written bg-paper in the components; `muted` here is the palette's
+     caption colour.) */
+  --color-muted-foreground: var(--color-muted);
   --color-border: var(--color-line);
-  --color-ring: var(--color-signal);
-  --color-brand: var(--color-signal);
+  --color-ring: var(--accent);
+  --color-brand: var(--accent);
 
   /* Magic UI Marquee */
   /* --duration / --gap come from the Marquee's className; these are the component's defaults. */
@@ -566,12 +590,12 @@ html.js-motion [data-roll="waiting"] {
 .day-range::-webkit-slider-runnable-track {
   height: 0.5rem;
   border-radius: 9999px;
-  background: linear-gradient(to right, #12352e 0%, #12352e 20%, #cfe9c9 32%, #f1f9ee 50%, #cfe9c9 68%, #12352e 82%, #12352e 100%);
+  background: linear-gradient(to right, var(--color-forest) 0%, var(--color-forest) 20%, var(--color-ice) 32%, var(--color-paper) 50%, var(--color-ice) 68%, var(--color-forest) 82%, var(--color-forest) 100%);
 }
 .day-range::-moz-range-track {
   height: 0.5rem;
   border-radius: 9999px;
-  background: linear-gradient(to right, #12352e 0%, #12352e 20%, #cfe9c9 32%, #f1f9ee 50%, #cfe9c9 68%, #12352e 82%, #12352e 100%);
+  background: linear-gradient(to right, var(--color-forest) 0%, var(--color-forest) 20%, var(--color-ice) 32%, var(--color-paper) 50%, var(--color-ice) 68%, var(--color-forest) 82%, var(--color-forest) 100%);
 }
 .day-range::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -580,26 +604,26 @@ html.js-motion [data-roll="waiting"] {
   margin-top: -0.875rem;
   border-radius: 9999px;
   border: 2px solid var(--color-forest);
-  background: var(--color-signal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23071A17' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E") center / 1.25rem no-repeat;
-  box-shadow: 0 6px 16px -6px rgba(7, 26, 23, 0.5);
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E1A16' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E") center / 1.25rem no-repeat;
+  box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--color-ink) 50%, transparent);
 }
 .day-range::-moz-range-thumb {
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 9999px;
   border: 2px solid var(--color-forest);
-  background: var(--color-signal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23071A17' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E") center / 1.25rem no-repeat;
+  background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E1A16' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4'/%3E%3C/svg%3E") center / 1.25rem no-repeat;
 }
 .day-range[data-phase="moon"]::-webkit-slider-thumb {
-  background: var(--color-night) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E2F6DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E") center / 1.125rem no-repeat;
-  border-color: var(--color-signal);
+  background: var(--color-deep-grid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E2F6DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E") center / 1.125rem no-repeat;
+  border-color: var(--accent);
 }
 .day-range[data-phase="moon"]::-moz-range-thumb {
-  background: var(--color-night) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E2F6DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E") center / 1.125rem no-repeat;
-  border-color: var(--color-signal);
+  background: var(--color-deep-grid) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E2F6DD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E") center / 1.125rem no-repeat;
+  border-color: var(--accent);
 }
 .day-range:focus-visible {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--accent);
   outline-offset: 4px;
   border-radius: 9999px;
 }
@@ -636,7 +660,7 @@ html.js-motion [data-roll="waiting"] {
 /* Accent line: one soft light sweep across it after it lands (JS adds the class, removes it on end).
    The gradient is solid accent at both ends, so the start and end frames equal the plain colour. */
 .accent-sweep {
-  background-image: linear-gradient(110deg, var(--color-signal) 0%, var(--color-signal) 40%, #effbe9 50%, var(--color-signal) 60%, var(--color-signal) 100%);
+  background-image: linear-gradient(110deg, var(--accent) 0%, var(--accent) 40%, color-mix(in srgb, var(--accent) 18%, white) 50%, var(--accent) 60%, var(--accent) 100%);
   background-size: 250% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
@@ -650,7 +674,7 @@ html.js-motion [data-roll="waiting"] {
 
 /* Key phrase in a section heading: a marker underline (it rises in with its line of the heading). */
 .h2-mark {
-  background-image: linear-gradient(rgba(144, 217, 136, 0.35), rgba(144, 217, 136, 0.35));
+  background-image: linear-gradient(color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 18%, transparent));
   background-repeat: no-repeat;
   background-position: 0 92%;
   background-size: 100% 0.3em;
@@ -675,8 +699,8 @@ html.js-motion [data-roll="waiting"] {
 
 /* Big outline step numbers: stroke only until the step is active (scroll timeline / selected card). */
 .step-num {
-  color: var(--color-forest);
-  -webkit-text-stroke: 1px rgba(9, 47, 39, 0.35);
+  color: var(--accent);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--color-forest) 35%, transparent);
   transition: color 0.35s ease;
 }
 .step-num[data-active="false"],
@@ -734,7 +758,7 @@ html.js-motion [data-roll="waiting"] {
     animation: none;
   }
   .accent-sweep {
-    color: var(--color-signal);
+    color: var(--accent);
     background: none;
   }
   .h2-mark,
@@ -775,7 +799,7 @@ html.js-motion [data-intro="pending"] [data-word] {
    no looping). The gradient is solid accent at both ends, so returning without a transition is
    invisible. */
 .hero-accent-sheen {
-  background-image: linear-gradient(110deg, var(--color-signal) 0%, var(--color-signal) 42%, #e6f8e2 50%, var(--color-signal) 58%, var(--color-signal) 100%);
+  background-image: linear-gradient(110deg, var(--accent) 0%, var(--accent) 42%, color-mix(in srgb, var(--accent) 22%, white) 50%, var(--accent) 58%, var(--accent) 100%);
   background-size: 250% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
@@ -825,7 +849,7 @@ html.js-motion [data-enter="pending"] [data-e] {
 }
 .pill-sweep {
   padding: 1px;
-  background: conic-gradient(from var(--sweep-angle), transparent 0deg, rgba(144, 217, 136, 0.95) 50deg, transparent 110deg);
+  background: conic-gradient(from var(--sweep-angle), transparent 0deg, color-mix(in srgb, var(--accent) 95%, transparent) 50deg, transparent 110deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -842,7 +866,7 @@ html.js-motion [data-enter="pending"] [data-e] {
   .group\/pill:hover .pill-sweep,
   .group\/pill:focus-visible .pill-sweep {
     animation: none;
-    background: rgba(144, 217, 136, 0.9);
+    background: color-mix(in srgb, var(--accent) 90%, transparent);
   }
 }
 
@@ -992,7 +1016,7 @@ html[data-vt] .route-fade {
 }
 /* Between the two pages the backdrop is the site's dark ground, not a white flash. */
 html[data-vt-fade]::view-transition {
-  background-color: var(--color-night);
+  background-color: var(--color-deep-grid);
 }
 html[data-vt-fade]::view-transition-old(root) {
   animation: vt-page-out 150ms ease-in both;
@@ -1103,7 +1127,7 @@ html[data-vt-from="pill"]::view-transition-old(*) {
   contain-intrinsic-size: auto 900px;
 }
 .grad-text {
-  background-image: linear-gradient(90deg, var(--color-signal), #c3f2df);
+  background-image: linear-gradient(90deg, var(--accent), var(--color-ice));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1173,7 +1197,7 @@ html.js-motion [data-draw="wait"] .draw-path {
   transform: translateY(-50%);
   font-size: clamp(3rem, 10cqw, 7.5rem);
   white-space: nowrap;
-  text-shadow: 0 2px 30px rgba(3, 16, 13, 0.6);
+  text-shadow: 0 2px 30px color-mix(in srgb, var(--color-deep-grid) 60%, transparent);
 }
 .seq-mask {
   display: inline-block;
@@ -1274,7 +1298,7 @@ html.js-motion [data-draw="wait"] .draw-path {
   white-space: nowrap;
 }
 .sweep-word[data-key] .sweep-hi {
-  color: var(--color-signal);
+  color: var(--accent);
 }
 .sweep-word[data-on="true"] .sweep-hi {
   opacity: 1;
@@ -1287,7 +1311,7 @@ html.js-motion [data-draw="wait"] .draw-path {
   height: 0.16em;
   overflow: visible;
   fill: none;
-  stroke: var(--color-signal);
+  stroke: var(--accent);
   stroke-width: 4px;
   stroke-linecap: round;
 }
@@ -1349,7 +1373,7 @@ html.js-motion [data-draw="wait"] .draw-path {
   height: 5rem;
   overflow: hidden;
   border-radius: 9999px;
-  box-shadow: 0 0 0 1px rgb(144 217 136 / 0.35), 0 0 30px rgb(144 217 136 / 0.15);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 0 30px color-mix(in srgb, var(--accent) 15%, transparent);
 }
 .cross-label {
   grid-column: 2;
@@ -1389,18 +1413,18 @@ html.js-motion [data-draw="wait"] .draw-path {
   line-height: 1;
   letter-spacing: 0.02em;
   color: transparent;
-  -webkit-text-stroke: 1.5px rgb(144 217 136 / 0.35);
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--accent) 35%, transparent);
   pointer-events: none;
 }
 .cross-line {
-  stroke: rgb(144 217 136 / 0.5);
+  stroke: color-mix(in srgb, var(--accent) 50%, transparent);
   stroke-width: 1.5;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   transition: opacity 0.3s;
 }
 .cross-flow {
-  stroke: var(--color-signal);
+  stroke: var(--accent);
   stroke-width: 2.25;
   stroke-dasharray: 3 12;
   stroke-linecap: round;
@@ -1410,7 +1434,7 @@ html.js-motion [data-draw="wait"] .draw-path {
   to { stroke-dashoffset: -15; }
 }
 .cross-stage [data-hot] .cross-line {
-  stroke: var(--color-signal);
+  stroke: var(--accent);
 }
 .cross-stage [data-arm][data-dim] {
   opacity: 0.35;
@@ -1466,7 +1490,7 @@ html.js-motion .cross-stage[data-in="wait"] .cross-disc {
 .cross-vflow > span {
   position: absolute;
   inset: -15px 0 0;
-  background: repeating-linear-gradient(to bottom, var(--color-signal) 0 3px, transparent 3px 15px);
+  background: repeating-linear-gradient(to bottom, var(--accent) 0 3px, transparent 3px 15px);
   animation: cross-vflow 0.9s linear infinite;
 }
 @keyframes cross-vflow {
@@ -1519,7 +1543,7 @@ html.js-motion .cross-stage[data-in="wait"] .cross-disc {
     cursor: pointer;
   }
   .cross-hit:focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 2px solid var(--accent);
     outline-offset: 4px;
   }
   .cross-label {
@@ -1537,7 +1561,7 @@ html.js-motion .cross-stage[data-in="wait"] .cross-disc {
     z-index: 1;
     width: 26rem;
     height: 11.5rem;
-    border: 1px solid rgb(144 217 136 / 0.4);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
     border-radius: 1.25rem;
     background: linear-gradient(135deg, #0f2a24, #08171a);
     box-shadow: 0 24px 60px -24px rgb(0 0 0 / 0.6);
@@ -1608,7 +1632,7 @@ html.js-motion .cross-stage[data-in="wait"] .cross-disc {
 .ex2-side-r { fill: #c6d3cc; stroke: #0f3b31; stroke-width: 1.2; }
 .ex2-motif { fill: none; stroke: #2f7d3a; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 .ex2-motif * { vector-effect: non-scaling-stroke; }
-.ex2-glow { fill: none; stroke: var(--color-signal); stroke-width: 7; opacity: 0; transition: opacity 0.4s; }
+.ex2-glow { fill: none; stroke: var(--accent); stroke-width: 7; opacity: 0; transition: opacity 0.4s; }
 .ex2-slab[data-on="true"] .ex2-glow { opacity: 0.6; }
 .ex2-lead { stroke: #5c6b66; stroke-width: 1; stroke-dasharray: 3 4; }
 .ex2-label { font-size: 19px; font-weight: 600; fill: #0b2a23; }
@@ -1684,8 +1708,8 @@ html.js-motion .cross-stage[data-in="wait"] .cross-disc {
   width: 100%;
   height: 100%;
   border-radius: 9999px;
-  background: var(--color-signal);
-  box-shadow: 0 0 14px 3px rgb(144 217 136 / 0.55);
+  background: var(--accent);
+  box-shadow: 0 0 14px 3px color-mix(in srgb, var(--accent) 55%, transparent);
   opacity: 0;
   transform: scale(0.4);
   transition: opacity 0.4s, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -1704,7 +1728,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   content: "";
   position: absolute;
   inset: -7px;
-  border: 1.5px solid var(--color-signal);
+  border: 1.5px solid var(--accent);
   border-radius: 9999px;
   animation: jr-pulse 1.8s ease-out infinite;
 }
@@ -1782,7 +1806,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  box-shadow: 0 0 0 2px var(--color-signal), 0 0 18px 2px rgb(144 217 136 / 0.5);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 18px 2px color-mix(in srgb, var(--accent) 50%, transparent);
   pointer-events: none;
   animation: cta-ring 1.4s ease-out 1 both;
 }
@@ -1815,7 +1839,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  box-shadow: 0 0 0 1px rgb(144 217 136 / 0.45), 0 0 40px -6px rgb(144 217 136 / 0.35);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 0 40px -6px color-mix(in srgb, var(--accent) 35%, transparent);
   opacity: 0.35;
   pointer-events: none;
 }
@@ -1840,16 +1864,16 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 .contact-chip span:hover {
-  border-color: rgb(144 217 136 / 0.7);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
 }
 .contact-chip input:checked + span {
-  border-color: var(--color-signal);
-  background: var(--color-signal);
-  color: var(--color-forest);
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
   font-weight: 600;
 }
 .contact-chip input:focus-visible + span {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 @keyframes contact-spin {
@@ -2021,12 +2045,12 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
 }
 .article-grid-line {
   fill: none;
-  stroke: rgba(144, 217, 136, 0.13);
+  stroke: color-mix(in srgb, var(--accent) 13%, transparent);
   stroke-width: 1;
   stroke-dasharray: 1;
 }
 .article-grid-pulse {
-  fill: var(--color-signal);
+  fill: var(--accent);
   opacity: 0;
   offset-rotate: 0deg;
 }
@@ -2086,14 +2110,14 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   overflow: visible;
 }
 .article-h2-line line {
-  stroke: var(--color-signal);
+  stroke: var(--accent);
   stroke-width: 4;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
 }
 @keyframes article-flash {
   0%, 100% { color: var(--color-ink); text-shadow: none; }
-  25% { color: #2f7a28; text-shadow: 0 0 18px rgba(144, 217, 136, 0.75); }
+  25% { color: var(--color-link); text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 75%, transparent); }
 }
 .article-flash {
   animation: article-flash 1.4s ease-out;
@@ -2101,7 +2125,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
 
 /* Bold lead-ins: a highlighter sweep behind the words as their point arrives. */
 .article-lead {
-  background-image: linear-gradient(rgba(144, 217, 136, 0.38), rgba(144, 217, 136, 0.38));
+  background-image: linear-gradient(color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 18%, transparent));
   background-repeat: no-repeat;
   background-position: 0 88%;
   background-size: 100% 0.45em;
@@ -2117,7 +2141,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   transition: transform 0.25s ease-out, box-shadow 0.3s;
 }
 .article-term-card:hover {
-  box-shadow: 0 18px 40px -26px rgba(7, 26, 23, 0.45);
+  box-shadow: 0 18px 40px -26px color-mix(in srgb, var(--color-ink) 45%, transparent);
 }
 .article-term-card::before {
   content: "";
@@ -2127,7 +2151,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   bottom: -1px;
   width: 4px;
   border-radius: 16px 0 0 16px;
-  background: var(--color-signal);
+  background: var(--accent);
   transform-origin: top;
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
 }
@@ -2172,7 +2196,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   transition: background-color 0.4s ease;
 }
 .article-table-row[data-on] > * {
-  background-color: rgb(144 217 136 / 0.12);
+  background-color: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 .article-table-row > :first-child {
   padding-left: 0.75rem;
@@ -2204,12 +2228,12 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   .article-table-row {
     border: 1px solid var(--color-line);
     border-radius: 16px;
-    background: color-mix(in srgb, var(--color-ice) 60%, transparent);
+    background: color-mix(in srgb, var(--color-paper) 60%, transparent);
     padding: 0.875rem 1rem;
     transition: border-color 0.4s ease;
   }
   .article-table-row[data-on] {
-    border-color: rgb(144 217 136 / 0.7);
+    border-color: color-mix(in srgb, var(--accent) 70%, transparent);
   }
   .article-table-row > *,
   .article-table-row[data-on] > * {
@@ -2230,7 +2254,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
     font-size: var(--text-micro);
     font-weight: 600;
     letter-spacing: 0.04em;
-    color: var(--color-sage);
+    color: var(--color-muted);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2256,13 +2280,13 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   background-size: 100% 1.5px;
 }
 .article-link:focus-visible {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
 @keyframes article-link-pulse {
   0%, 100% { text-shadow: none; }
-  40% { text-shadow: 0 0 14px rgba(144, 217, 136, 0.95); }
+  40% { text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 95%, transparent); }
 }
 @media (prefers-reduced-motion: no-preference) {
   .article-pulse {
@@ -2297,8 +2321,8 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   transition: border-color 0.4s, box-shadow 0.4s;
 }
 .article-faq[open]:not([data-closing]) {
-  border-color: rgba(144, 217, 136, 0.7);
-  box-shadow: 0 0 0 1px rgba(144, 217, 136, 0.45), 0 14px 34px -16px rgba(144, 217, 136, 0.55);
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 14px 34px -16px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 .article-faq-icon {
   position: relative;
@@ -2316,7 +2340,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
 }
 .article-faq[open]:not([data-closing]) .article-faq-icon {
   transform: rotate(135deg);
-  background-color: rgba(144, 217, 136, 0.25);
+  background-color: color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 /* Related cards and the Guides card: a soft light following the pointer. */
@@ -2326,7 +2350,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(200px circle at var(--mx, 50%) var(--my, 50%), rgba(144, 217, 136, 0.2), transparent 70%);
+  background: radial-gradient(200px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -2335,8 +2359,8 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   opacity: 1;
 }
 @keyframes guide-pill {
-  0% { box-shadow: 0 0 0 0 rgba(144, 217, 136, 0.65); }
-  100% { box-shadow: 0 0 0 10px rgba(144, 217, 136, 0); }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 65%, transparent); }
+  100% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 0%, transparent); }
 }
 @media (prefers-reduced-motion: no-preference) {
   .guide-pill {
@@ -2357,7 +2381,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
 
 /* The scene stage and the inline scenes: a dark card with a faint grid; scenes cross-fade. */
 .article-stage-grid {
-  background-image: linear-gradient(rgba(144, 217, 136, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(144, 217, 136, 0.06) 1px, transparent 1px);
+  background-image: linear-gradient(color-mix(in srgb, var(--accent) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--accent) 6%, transparent) 1px, transparent 1px);
   background-size: 28px 28px;
   mask-image: radial-gradient(80% 70% at 50% 45%, #000 40%, transparent 100%);
 }
@@ -2401,13 +2425,13 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   opacity: 0.35;
 }
 .article-term.is-on {
-  filter: drop-shadow(0 0 8px rgba(144, 217, 136, 0.45));
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 45%, transparent));
 }
 .article-range {
-  accent-color: var(--color-signal);
+  accent-color: var(--accent);
 }
 .article-range:focus-visible {
-  outline: 2px solid var(--color-signal);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -2467,7 +2491,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   inset: 0;
   z-index: 80;
   pointer-events: none;
-  background: radial-gradient(60% 60% at 50% 40%, rgba(144, 217, 136, 0.16), transparent 70%), #092f27;
+  background: radial-gradient(60% 60% at 50% 40%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%), var(--color-forest);
 }
 
 /* ---- Resources hub (pages/Resources.jsx, components/resources) --------------------------------------
@@ -2476,11 +2500,11 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
    read), the featured guide's tilt and the "Coming soon" cards' shimmer border (only while on screen,
    data-run). Reduced motion: all static. */
 .resources-body {
-  background-color: var(--color-paper);
+  background-color: var(--color-white);
   transition: background-color 0.8s ease;
 }
 .resources-body[data-tone="grey"] {
-  background-color: var(--color-ice);
+  background-color: var(--color-paper);
 }
 /* Below Guides, a section (and the closing band, with its drifting lines) is laid out and painted only
    as it nears the screen; it stays in the page for search, find-in-page and screen readers. */
@@ -2509,7 +2533,7 @@ html.js-motion .jr-item[data-lit="false"] .jr-text {
   padding: 1px;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(110deg, transparent 35%, rgba(144, 217, 136, 0.85) 50%, transparent 65%);
+  background: linear-gradient(110deg, transparent 35%, color-mix(in srgb, var(--accent) 85%, transparent) 50%, transparent 65%);
   background-size: 260% 100%;
   background-position: 150% 0;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);

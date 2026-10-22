@@ -28,9 +28,9 @@ function useLoop(ref, enabled, ms) {
 }
 
 const META = (a) => (
-  <span className="flex flex-wrap items-center gap-2 text-micro text-graphite">
+  <span className="flex flex-wrap items-center gap-2 text-micro text-copy">
     <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time>
-    <span className="guide-pill rounded-full bg-signal/20 px-2.5 py-1 font-semibold text-forest">{a.readingTime} min read</span>
+    <span className="guide-pill rounded-full bg-accent/20 px-2.5 py-1 font-semibold text-ink">{a.readingTime} min read</span>
   </span>
 );
 
@@ -61,9 +61,9 @@ export default function GuidesBento({ articles, motion }) {
         onPointerLeave={untrackCard}
         aria-labelledby={`guide-${featured.slug}-title`}
         aria-describedby={`guide-${featured.slug}-desc`}
-        className="guide-card guide-featured group/guide relative flex flex-col overflow-hidden rounded-3xl border border-line bg-paper card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none lg:col-span-2"
+        className="guide-card guide-featured group/guide relative flex flex-col overflow-hidden rounded-3xl border border-line bg-white card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none lg:col-span-2"
       >
-        <div ref={stage} className="relative h-56 overflow-hidden bg-night text-white sm:h-64">
+        <div ref={stage} className="relative h-56 overflow-hidden bg-deep-grid text-white sm:h-64">
           <div aria-hidden="true" className="article-stage-grid pointer-events-none absolute inset-0" />
           {/* The featured guide's own scene (data/articles.js `card`): the two cells for LFP vs NMC, the
               BESS letters otherwise. */}
@@ -78,23 +78,23 @@ export default function GuidesBento({ articles, motion }) {
           )}
         </div>
         <span className="flex flex-1 flex-col p-6 sm:p-8">
-          <span className="eyebrow text-sage">{featured.eyebrow}</span>
-          <h3 id={`guide-${featured.slug}-title`} className="mt-3 text-h3 font-semibold text-ink transition-colors duration-fast group-hover/guide:text-forest group-focus-visible/guide:text-forest group-focus-within/guide:text-forest">
+          <span className="eyebrow text-muted">{featured.eyebrow}</span>
+          <h3 id={`guide-${featured.slug}-title`} className="mt-3 text-h3 font-semibold text-ink transition-colors duration-fast group-hover/guide:text-accent group-focus-visible/guide:text-accent group-focus-within/guide:text-accent">
             {featured.h1}
           </h3>
-          <span id={`guide-${featured.slug}-desc`} className="mt-3 max-w-measure text-body text-graphite">
+          <span id={`guide-${featured.slug}-desc`} className="mt-3 max-w-measure text-body text-copy">
             {featured.description}
           </span>
           <span className="mt-6 flex items-center justify-between gap-3">
             {META(featured)}
-            <ArrowRight aria-hidden="true" className="h-5 w-5 text-forest transition-transform duration-fast group-hover/guide:translate-x-1.5 group-focus-within/guide:translate-x-1.5 group-focus-visible/guide:translate-x-1.5" />
+            <ArrowRight aria-hidden="true" className="h-5 w-5 text-accent transition-transform duration-fast group-hover/guide:translate-x-1.5 group-focus-within/guide:translate-x-1.5 group-focus-visible/guide:translate-x-1.5" />
           </span>
         </span>
       </a>
 
       {/* Start here: the featured guide's sections, each a link straight into it. */}
       <aside data-rv="text" aria-labelledby="start-here-title" className="flex flex-col rounded-3xl border border-line bg-ice/70 p-6 sm:p-7">
-        <p className="eyebrow text-sage">Start here</p>
+        <p className="eyebrow text-muted">Start here</p>
         <h3 id="start-here-title" className="mt-2 text-h4 font-semibold text-ink">
           {featured.shortTitle}
         </h3>
@@ -103,10 +103,10 @@ export default function GuidesBento({ articles, motion }) {
             <li key={s.id}>
               <a
                 href={`/blog/${featured.slug}#${s.id}`}
-                className="group/start flex min-h-11 items-center justify-between gap-3 rounded-xl px-3 py-2 text-small font-medium text-ink transition-colors duration-fast hover:bg-paper focus-visible:bg-paper hover:text-forest focus-visible:text-forest focus-visible:outline-2 focus-visible:outline-offset-1"
+                className="group/start flex min-h-11 items-center justify-between gap-3 rounded-xl px-3 py-2 text-small font-medium text-ink transition-colors duration-fast hover:bg-white focus-visible:bg-white hover:text-accent focus-visible:text-accent focus-visible:outline-2 focus-visible:outline-offset-1"
               >
                 {s.h2}
-                <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-forest opacity-40 transition-[opacity,translate] duration-fast group-hover/start:translate-x-1 group-focus-visible/start:translate-x-1 group-focus-within/start:translate-x-1 group-hover/start:opacity-100 group-focus-visible/start:opacity-100 group-focus-within/start:opacity-100" />
+                <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-accent opacity-40 transition-[opacity,translate] duration-fast group-hover/start:translate-x-1 group-focus-visible/start:translate-x-1 group-focus-within/start:translate-x-1 group-hover/start:opacity-100 group-focus-visible/start:opacity-100 group-focus-within/start:opacity-100" />
               </a>
             </li>
           ))}
@@ -124,18 +124,18 @@ export default function GuidesBento({ articles, motion }) {
           onPointerLeave={untrackCard}
           aria-labelledby={`guide-${a.slug}-title`}
           aria-describedby={`guide-${a.slug}-desc`}
-          className="guide-card group/guide relative flex flex-col overflow-hidden rounded-3xl border border-line bg-paper p-6 card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
+          className="guide-card group/guide relative flex flex-col overflow-hidden rounded-3xl border border-line bg-white p-6 card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
         >
-          <span className="eyebrow text-sage">{a.eyebrow}</span>
-          <h3 id={`guide-${a.slug}-title`} className="mt-3 text-h4 font-semibold text-ink transition-colors duration-fast group-hover/guide:text-forest group-focus-visible/guide:text-forest group-focus-within/guide:text-forest">
+          <span className="eyebrow text-muted">{a.eyebrow}</span>
+          <h3 id={`guide-${a.slug}-title`} className="mt-3 text-h4 font-semibold text-ink transition-colors duration-fast group-hover/guide:text-accent group-focus-visible/guide:text-accent group-focus-within/guide:text-accent">
             {a.h1}
           </h3>
-          <span id={`guide-${a.slug}-desc`} className="mt-2 flex-1 text-small text-graphite">
+          <span id={`guide-${a.slug}-desc`} className="mt-2 flex-1 text-small text-copy">
             {a.description}
           </span>
           <span className="mt-5 flex items-center justify-between gap-3">
             {META(a)}
-            <ArrowRight aria-hidden="true" className="h-4 w-4 text-forest transition-transform duration-fast group-hover/guide:translate-x-1 group-focus-visible/guide:translate-x-1 group-focus-within/guide:translate-x-1" />
+            <ArrowRight aria-hidden="true" className="h-4 w-4 text-accent transition-transform duration-fast group-hover/guide:translate-x-1 group-focus-visible/guide:translate-x-1 group-focus-within/guide:translate-x-1" />
           </span>
         </a>
       ))}

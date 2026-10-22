@@ -15,25 +15,25 @@ export default function EpcCta() {
   const root = useRef(null);
   const reveal = useScrollReveal(root);
   return (
-    <section ref={root} data-sr-state={reveal} aria-labelledby="epc-cta-title" className="relative overflow-hidden bg-deep text-white">
+    <section ref={root} data-sr-state={reveal} aria-labelledby="epc-cta-title" className="relative overflow-hidden bg-deep-grid text-white">
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[10%]"
-        style={{ background: "radial-gradient(45% 70% at 70% 110%, rgba(144,217,136,0.17), transparent 70%)" }}
+        style={{ background: "radial-gradient(45% 70% at 70% 110%, color-mix(in_srgb,var(--accent)_17%,transparent), transparent 70%)" }}
       />
       <svg aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 w-full" viewBox="0 0 1440 240" preserveAspectRatio="none" fill="none">
-        <path d="M0 210 C 360 150, 720 250, 1440 120" stroke="rgba(144,217,136,0.3)" strokeWidth="1.2" />
-        <path d="M0 230 C 420 170, 820 240, 1440 150" stroke="rgba(144,217,136,0.18)" strokeWidth="1" />
-        <path d="M0 240 C 500 200, 900 230, 1440 185" stroke="rgba(144,217,136,0.1)" strokeWidth="1" />
+        <path d="M0 210 C 360 150, 720 250, 1440 120" stroke="color-mix(in_srgb,var(--accent)_30%,transparent)" strokeWidth="1.2" />
+        <path d="M0 230 C 420 170, 820 240, 1440 150" stroke="color-mix(in_srgb,var(--accent)_18%,transparent)" strokeWidth="1" />
+        <path d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in_srgb,var(--accent)_10%,transparent)" strokeWidth="1" />
       </svg>
       <div className="relative mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
-        <p data-sr className="eyebrow text-signal">
+        <p data-sr className="eyebrow text-accent">
           Partner with NEXERA
         </p>
         <AnimatedText id="epc-cta-title" className="mx-auto mt-4 max-w-3xl text-h2 font-semibold">
           Ready to Build Your Next Energy Storage Project?
         </AnimatedText>
-        <p data-sr className="mx-auto mt-5 max-w-xl text-body text-ice/80">
+        <p data-sr className="mx-auto mt-5 max-w-xl text-body text-paper/80">
           Talk to NEXERA about technology access, project requirements, and partnership opportunities.
         </p>
         <div data-sr className="mt-9 flex flex-wrap items-center justify-center gap-4">

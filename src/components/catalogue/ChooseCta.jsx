@@ -15,19 +15,19 @@ export default function ChooseCta({ productId }) {
   const reveal = useScrollReveal(root);
   const quote = `/contact?intent=quote${productId ? `&product=${productId}` : ""}`;
   return (
-    <section ref={root} data-sr-state={reveal} className="relative overflow-hidden bg-deep text-white">
+    <section ref={root} data-sr-state={reveal} className="relative overflow-hidden bg-deep-grid text-white">
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[10%]"
-        style={{ background: "radial-gradient(45% 70% at 78% 105%, rgba(144,217,136,0.15), transparent 70%)" }}
+        style={{ background: "radial-gradient(45% 70% at 78% 105%, color-mix(in_srgb,var(--accent)_15%,transparent), transparent 70%)" }}
       />
       <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
-          <p data-sr className="eyebrow text-ice/80">
+          <p data-sr className="eyebrow text-paper/80">
             Talk to an engineer
           </p>
           <AnimatedText className="mt-4 text-h2 font-semibold">Need help choosing the right system?</AnimatedText>
-          <p data-sr className="mt-4 max-w-xl text-body text-ice/80">
+          <p data-sr className="mt-4 max-w-xl text-body text-paper/80">
             Tell us about your site and load. NEXERA&rsquo;s team will recommend and size a system from our technology partners.
           </p>
         </div>

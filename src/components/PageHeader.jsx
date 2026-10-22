@@ -14,10 +14,10 @@ export default function PageHeader({ eyebrow, title, subtitle }) {
     tl.fromTo(q("[data-a]"), { opacity: 0, y: RISE }, { opacity: 1, y: 0, duration: DUR.slow, stagger: STAGGER, clearProps: "all" });
   });
   return (
-    <section ref={root} data-intro={intro} className="bg-ink text-white">
+    <section ref={root} data-intro={intro} className="bg-deep-grid text-white">
       <div className="container-site py-16 md:py-24">
         {eyebrow && (
-          <p data-a className="eyebrow text-signal">
+          <p data-a className="eyebrow text-accent">
             {eyebrow}
           </p>
         )}
@@ -25,7 +25,7 @@ export default function PageHeader({ eyebrow, title, subtitle }) {
           {title}
         </h1>
         {subtitle && (
-          <p data-a className="mt-heading max-w-measure text-lead text-ice/80">
+          <p data-a className="mt-heading max-w-measure text-lead text-paper/80">
             {subtitle}
           </p>
         )}

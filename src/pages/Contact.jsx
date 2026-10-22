@@ -139,15 +139,15 @@ export default function Contact() {
         subtitle="Tell us what you need — we'll route it to the right team."
       />
 
-      <section className="bg-paper">
+      <section className="bg-white">
         <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
           {/* Where to find and call us (data/business: as on the Google Business Profile). */}
-          <address data-sr className="mb-8 rounded-lg border border-line bg-ice px-5 py-4 text-small not-italic text-graphite">
+          <address data-sr className="mb-8 rounded-lg border border-line bg-ice px-5 py-4 text-small not-italic text-copy">
             <span className="block font-medium text-ink">{ADDRESS}</span>
             {CONTACT_PHONE && (
               <span className="mt-1 block">
                 Call{" "}
-                <a href={telHref(CONTACT_PHONE)} className="link-inline font-semibold text-forest">
+                <a href={telHref(CONTACT_PHONE)} className="link-inline font-semibold text-accent">
                   {CONTACT_PHONE}
                 </a>
               </span>
@@ -158,7 +158,7 @@ export default function Contact() {
           <div data-sr className="flex flex-wrap gap-2">
             <Link
               to="/become-a-partner"
-              className="group inline-flex min-h-11 items-center gap-1.5 rounded-full bg-ice px-4 py-2 text-small font-medium text-graphite transition-colors duration-fast hover:text-ink focus-visible:text-ink"
+              className="group inline-flex min-h-11 items-center gap-1.5 rounded-full bg-ice px-4 py-2 text-small font-medium text-copy transition-colors duration-fast hover:text-ink focus-visible:text-ink"
             >
               I want to become a distributor
               <svg
@@ -177,8 +177,8 @@ export default function Contact() {
                 onClick={() => { setPath(p.id); setStatus("idle"); setErrors({}); started.current = 0; }}
                 className={`min-h-11 rounded-full px-4 py-2 text-small font-medium transition-colors duration-fast ${
                   path === p.id
-                    ? "bg-ink text-white"
-                    : "bg-ice text-graphite hover:text-ink focus-visible:text-ink"
+                    ? "bg-forest text-white focus-visible:outline-link"
+                    : "bg-ice text-copy hover:text-ink focus-visible:text-ink"
                 }`}
               >
                 {p.label}
@@ -188,9 +188,9 @@ export default function Contact() {
 
           <div data-sr>
           {status === "done" ? (
-            <div role="status" className="mt-8 rounded-lg border border-signal/30 bg-ice p-6">
+            <div role="status" className="mt-8 rounded-lg border border-accent/30 bg-ice p-6">
               <p className="font-medium text-ink">Message received.</p>
-              <p className="mt-1 text-small text-graphite">
+              <p className="mt-1 text-small text-copy">
                 We'll be in touch shortly at the email address you provided.
               </p>
             </div>
@@ -225,7 +225,7 @@ export default function Contact() {
                       required
                       aria-invalid={!!errors.enquiry_type || undefined}
                       aria-describedby="enquiry_type-err"
-                      className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-steel/40 aria-[invalid=true]:border-[#b3261e]"
+                      className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
                     >
                       <option value="">Select…</option>
                       {ENQUIRY_TYPES.map((t) => (
@@ -243,7 +243,7 @@ export default function Contact() {
                       <Field label="Application" name="application" defaultValue={product.applications.map(applicationLabel).join(", ")} />
                     </div>
                   )}
-                  <p className="text-micro text-graphite">
+                  <p className="text-micro text-copy">
                     Sharing a few site details lets our team plan a visit if one's needed.
                   </p>
                   <div className="grid sm:grid-cols-3 gap-5">
@@ -257,7 +257,7 @@ export default function Contact() {
 
               {path === "oem" && (
                 <>
-                  <p className="text-micro text-graphite">
+                  <p className="text-micro text-copy">
                     For other manufacturers and prospective brand partners — tell us who you
                     are and what you're proposing.
                   </p>
@@ -283,7 +283,7 @@ export default function Contact() {
                   {CONTACT_PHONE && (
                     <>
                       {" "}
-                      <a href={telHref(CONTACT_PHONE)} className="font-semibold text-forest underline">
+                      <a href={telHref(CONTACT_PHONE)} className="font-semibold text-accent underline">
                         {CONTACT_PHONE}
                       </a>
                     </>
@@ -291,7 +291,7 @@ export default function Contact() {
                   {CONTACT_EMAIL && (
                     <>
                       {" "}
-                      <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-forest underline">
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline">
                         {CONTACT_EMAIL}
                       </a>
                     </>
@@ -302,9 +302,9 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-signal px-6 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] disabled:cursor-wait disabled:opacity-80"
+                className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover disabled:cursor-wait disabled:opacity-80"
               >
-                {status === "sending" && <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-forest/30 border-t-forest" />}
+                {status === "sending" && <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-on-accent/30 border-t-on-accent" />}
                 {status === "sending" ? "Sending…" : "Send"}
               </button>
             </form>
@@ -341,7 +341,7 @@ function Field({ label, name, required, type = "text", as, defaultValue, error }
         rows={as === "textarea" ? 4 : undefined}
         aria-invalid={!!error || undefined}
         aria-describedby={`${name}-err`}
-        className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-steel/40 aria-[invalid=true]:border-[#b3261e]"
+        className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
       />
       <FieldError name={name} error={error} />
     </div>

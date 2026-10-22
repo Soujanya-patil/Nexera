@@ -15,7 +15,7 @@ function PartnerLogo({ src, name, className }) {
 function Spec({ label, children }) {
   return (
     <div className="border-t border-line pt-4">
-      <p className="text-graphite text-sm">{label}</p>
+      <p className="text-copy text-sm">{label}</p>
       <p className="mt-1 text-ink font-medium text-sm">{children}</p>
     </div>
   );
@@ -31,13 +31,13 @@ export default function OurBrands() {
       />
 
       {/* TCL — authorized, full treatment */}
-      <section className="bg-paper border-b border-line">
+      <section className="bg-white border-b border-line">
         <div className="container-site py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
           <div className="md:col-span-2">
             <PartnerLogo src={tclLogo} name="TCL" className="h-8" />
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="font-sans text-2xl font-semibold text-ink">TCL BlueArk</h2>
-              <span className="rounded-full bg-signal/10 text-ink text-xs font-medium px-3 py-1">
+              <span className="rounded-full bg-accent/10 text-ink text-xs font-medium px-3 py-1">
                 Authorized Partner
               </span>
             </div>
@@ -48,7 +48,7 @@ export default function OurBrands() {
             </div>
           </div>
           <Reveal className="md:col-span-3">
-            <figure className="overflow-hidden rounded-lg bg-ink ring-1 ring-ink/10">
+            <figure className="overflow-hidden rounded-lg bg-forest ring-1 ring-ink/10">
               <img
                 src={tclLineup}
                 width="700"
@@ -64,10 +64,10 @@ export default function OurBrands() {
       </section>
 
       {/* Hithium — authorized, full treatment */}
-      <section className="bg-ice border-b border-line">
+      <section className="bg-paper border-b border-line">
         <div className="container-site py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
           <Reveal className="md:col-span-3 order-2 md:order-1">
-            <figure className="overflow-hidden rounded-lg bg-ink ring-1 ring-ink/10">
+            <figure className="overflow-hidden rounded-lg bg-forest ring-1 ring-ink/10">
               <img
                 src={hithiumDeployed}
                 width="700"
@@ -83,7 +83,7 @@ export default function OurBrands() {
             <PartnerLogo src={hithiumLogo} name="Hithium" className="h-9" />
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="font-sans text-2xl font-semibold text-ink">Hithium</h2>
-              <span className="rounded-full bg-signal/10 text-ink text-xs font-medium px-3 py-1">
+              <span className="rounded-full bg-accent/10 text-ink text-xs font-medium px-3 py-1">
                 Authorized Partner
               </span>
             </div>
@@ -103,13 +103,13 @@ export default function OurBrands() {
       {/* CLOU — authorized, full treatment (partnership agreement signed). No CLOU photography is in
           the project yet, so a logo panel stands in for the product image rather than a borrowed photo;
           specs are limited to what the project states (utility-scale applications). */}
-      <section className="bg-paper">
+      <section className="bg-white">
         <div className="container-site py-16 grid md:grid-cols-5 gap-10 md:gap-14 items-center">
           <div className="md:col-span-2">
             <PartnerLogo src={clouLogo} name="CLOU" className="h-10" />
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="font-sans text-2xl font-semibold text-ink">CLOU</h2>
-              <span className="rounded-full bg-signal/10 text-ink text-xs font-medium px-3 py-1">
+              <span className="rounded-full bg-accent/10 text-ink text-xs font-medium px-3 py-1">
                 Authorized Partner
               </span>
             </div>

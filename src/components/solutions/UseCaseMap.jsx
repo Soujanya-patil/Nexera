@@ -34,7 +34,7 @@ export default function UseCaseMap({ items }) {
             </Suspense>
           </NearViewport>
         </div>
-        <figcaption className="mt-3 text-micro text-graphite">Illustration courtesy of CLOU.</figcaption>
+        <figcaption className="mt-3 text-micro text-copy">Illustration courtesy of CLOU.</figcaption>
       </figure>
       <ul ref={list} data-sr-state={reveal} className="grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-1">
         {items.map(({ icon: Icon, title, text }, i) => (
@@ -45,18 +45,18 @@ export default function UseCaseMap({ items }) {
             onPointerLeave={() => setActive(null)}
             onFocus={() => setActive(i)}
             tabIndex={-1}
-            className={`flex gap-3.5 rounded-xl p-3 transition-colors duration-fast ${active === i ? "bg-signal/15" : ""}`}
+            className={`flex gap-3.5 rounded-xl p-3 transition-colors duration-fast ${active === i ? "bg-accent/15" : ""}`}
           >
             <span
               className={`grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors duration-fast ${
-                active === i ? "bg-signal text-forest" : "bg-ice text-forest"
+                active === i ? "bg-accent text-on-accent" : "bg-ice text-accent"
               }`}
             >
               <Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
             </span>
             <div>
               <h3 className="font-semibold text-ink">{title}</h3>
-              <p className="mt-0.5 text-small text-graphite">{text}</p>
+              <p className="mt-0.5 text-small text-copy">{text}</p>
             </div>
           </li>
         ))}

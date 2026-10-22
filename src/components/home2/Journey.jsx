@@ -21,7 +21,7 @@ function Topo() {
     [640, 640, 5.2],
   ];
   return (
-    <svg aria-hidden="true" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" fill="none" stroke="rgba(244,247,244,0.07)" strokeWidth="1">
+    <svg aria-hidden="true" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" fill="none" stroke="color-mix(in srgb, var(--color-paper) 7%, transparent)" strokeWidth="1">
       <path d={hills.flatMap(([cx, cy, seed]) => Array.from({ length: 9 }, (_, k) => ring(cx, cy, 26 + k * 30, k, seed))).join("")} />
     </svg>
   );
@@ -150,11 +150,11 @@ export default function Journey() {
   }, []);
 
   return (
-    <section aria-labelledby="home2-journey" className="relative isolate overflow-hidden bg-[#050f0c] py-20 text-white lg:py-28">
+    <section aria-labelledby="home2-journey" className="relative isolate overflow-hidden bg-deep-grid py-20 text-white lg:py-28">
       <div className="absolute inset-0 -z-10">
         <MediaSlot file="journey-road.png" sizes="100vw" className="h-full w-full object-cover" fallback={<Topo />} />
       </div>
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-[#050f0c]/85 via-[#050f0c]/55 to-[#050f0c]/90" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-deep-grid/85 via-deep-grid/55 to-deep-grid/90" />
       <div className="container-site">
         <Eyebrow dark>Our journey</Eyebrow>
         <h2 id="home2-journey" className="mt-4 text-[clamp(2.4rem,1.4rem+3.6vw,5rem)] font-semibold leading-[0.98] tracking-tight">
@@ -164,9 +164,9 @@ export default function Journey() {
         <div ref={stage} className="jr-stage relative mt-14 lg:mt-12">
           {geo && (
             <svg aria-hidden="true" className="pointer-events-none absolute left-0 top-0 overflow-visible" width={geo.w} height={geo.h} viewBox={`0 0 ${geo.w} ${geo.h}`} fill="none">
-              <path d={geo.d} stroke="rgba(244,247,244,0.12)" strokeWidth="1.5" strokeDasharray="3 7" />
-              <path ref={glow} d={geo.d} stroke="#90D988" strokeWidth="7" strokeOpacity="0.16" strokeLinecap="round" />
-              <path ref={path} d={geo.d} stroke="#90D988" strokeWidth="2" strokeLinecap="round" />
+              <path d={geo.d} stroke="color-mix(in srgb, var(--color-paper) 12%, transparent)" strokeWidth="1.5" strokeDasharray="3 7" />
+              <path ref={glow} d={geo.d} stroke="var(--color-signal)" strokeWidth="7" strokeOpacity="0.16" strokeLinecap="round" />
+              <path ref={path} d={geo.d} stroke="var(--color-signal)" strokeWidth="2" strokeLinecap="round" />
             </svg>
           )}
           <ol className="jr-list relative">
@@ -176,9 +176,9 @@ export default function Journey() {
                   <span className="jr-dot-on" />
                 </span>
                 <div className="jr-text">
-                  {m.year && <p className="text-xs font-semibold tracking-[0.18em] text-signal">{m.year}</p>}
+                  {m.year && <p className="text-xs font-semibold tracking-[0.18em] text-accent">{m.year}</p>}
                   <h3 className="text-base font-semibold leading-snug text-white">{m.title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ice/80">{m.text}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-paper/80">{m.text}</p>
                 </div>
               </li>
             ))}

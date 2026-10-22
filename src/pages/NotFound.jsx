@@ -16,15 +16,15 @@ export default function NotFound() {
   });
   return (
     // Tall enough that the footer always reaches the bottom of the window.
-    <section ref={root} data-intro={intro} className="flex min-h-[60svh] items-center bg-ice">
+    <section ref={root} data-intro={intro} className="flex min-h-[60svh] items-center bg-paper">
       <div className="mx-auto w-full max-w-2xl px-6 py-24 text-center">
-        <p data-a className="eyebrow text-sage">
+        <p data-a className="eyebrow text-muted">
           Error 404
         </p>
         <h1 data-a className="mt-eyebrow text-h1 font-semibold text-ink">
           We couldn&rsquo;t find that page.
         </h1>
-        <p data-a className="mt-heading text-body text-graphite">
+        <p data-a className="mt-heading text-body text-copy">
           It may have moved, or the link may be mistyped.
         </p>
         <span data-a className="mt-8 inline-block">

@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
-const GREEN = "#90D988";
+const GREEN = "var(--color-signal)";
 const RED = "#E8604C";
-const LINE = "#F4F7F4";
+const LINE = "var(--color-paper)";
 
 /**
  * "The CEA safety rules for BESS": a battery container whose safety elements appear one by one as the
@@ -33,7 +33,7 @@ export default function CeaContainer({ active, motion, mode, step }) {
   });
   const latest = (i) => motion && i === shown;
   const label = (i, x, y, text, anchor = "start") => (
-    <text x={x} y={y} textAnchor={anchor} className={`text-[11px] font-semibold ${latest(i) ? "fill-signal" : "fill-white/80"}`}>
+    <text x={x} y={y} textAnchor={anchor} className={`text-[11px] font-semibold ${latest(i) ? "fill-accent" : "fill-white/80"}`}>
       {text}
     </text>
   );
@@ -42,7 +42,7 @@ export default function CeaContainer({ active, motion, mode, step }) {
     <div ref={root} className="flex h-full items-center justify-center px-3">
       <svg role="img" aria-label="A battery container with its safety elements: a detector, fire suppression, a vent, a fence for spacing and an emergency stop." viewBox="0 0 400 300" className="h-full max-h-full w-full">
         {/* the container */}
-        <rect data-draw x="96" y="108" width="208" height="112" rx="6" fill="#071A17" stroke={LINE} strokeOpacity="0.8" strokeWidth="2.2" />
+        <rect data-draw x="96" y="108" width="208" height="112" rx="6" fill="var(--color-ink)" stroke={LINE} strokeOpacity="0.8" strokeWidth="2.2" />
         {Array.from({ length: 12 }, (_, k) => (
           <line key={k} data-draw x1={112 + k * 16} y1="118" x2={112 + k * 16} y2="210" stroke={LINE} strokeOpacity="0.18" strokeWidth="1.5" />
         ))}
@@ -78,7 +78,7 @@ export default function CeaContainer({ active, motion, mode, step }) {
         </g>
         {/* 4 emergency stop (by the door) */}
         <g {...el(4)}>
-          <rect x="108" y="176" width="26" height="26" rx="4" fill="#F2C46D" fillOpacity="0.9" />
+          <rect x="108" y="176" width="26" height="26" rx="4" fill="var(--color-amber)" fillOpacity="0.9" />
           <circle cx="121" cy="189" r="8" fill={RED} />
           {label(4, 16, 92, "Emergency stop")}
           <path d="M60 98 L112 176" stroke={LINE} strokeOpacity="0.4" strokeWidth="1.2" />

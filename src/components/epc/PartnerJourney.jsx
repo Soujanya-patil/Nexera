@@ -29,8 +29,8 @@ const Board = () => (
     aria-hidden="true"
     className="absolute inset-0"
     style={{
-      backgroundColor: "#EEF2EE",
-      backgroundImage: "linear-gradient(rgba(9,47,39,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(9,47,39,0.06) 1px, transparent 1px)",
+      backgroundColor: "var(--color-paper)",
+      backgroundImage: "linear-gradient(color-mix(in srgb, var(--color-forest) 6%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-forest) 6%, transparent) 1px, transparent 1px)",
       backgroundSize: "32px 32px",
     }}
   />
@@ -133,7 +133,7 @@ export default function PartnerJourney() {
 
   const title = (
     <>
-      <p className="eyebrow text-signal">Partnership journey</p>
+      <p className="eyebrow text-accent">Partnership journey</p>
       <AnimatedText id="journey-title" className="mt-3 text-h2 font-semibold">
         How Your Project Moves With NEXERA
       </AnimatedText>
@@ -143,7 +143,7 @@ export default function PartnerJourney() {
   if (!pinned) {
     // ---------------- Vertical sequence (phones, reduced motion) ----------------
     return (
-      <section aria-labelledby="journey-title" className="relative bg-deep text-white">
+      <section aria-labelledby="journey-title" className="relative bg-deep-grid text-white">
         <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-24">
           {title}
           <ol ref={list} className="mt-10 space-y-14">
@@ -156,17 +156,17 @@ export default function PartnerJourney() {
                   <div className="flex items-center gap-3">
                     <span
                       className={`flex h-9 w-9 items-center justify-center rounded-full border transition-[background-color,border-color,color] duration-base ${
-                        on ? "border-signal bg-signal text-forest" : "border-signal/50 text-signal"
+                        on ? "border-accent bg-accent text-on-accent" : "border-accent/50 text-accent"
                       }`}
                     >
                       <StepIcon aria-hidden="true" className="h-4 w-4" strokeWidth={1.75} />
                     </span>
-                    <span className="text-micro font-semibold tracking-[0.18em] text-signal">{s.n}</span>
+                    <span className="text-micro font-semibold tracking-[0.18em] text-accent">{s.n}</span>
                     <h3 className="text-h4 font-semibold uppercase tracking-[0.08em]">{s.title}</h3>
                   </div>
                   <figure className="mt-4">
                     {/* The whole image at its own proportions — never cropped */}
-                    <div className="relative overflow-hidden rounded-xl border border-white/10 bg-night">
+                    <div className="relative overflow-hidden rounded-xl border border-white/10 bg-deep-grid">
                       {s.contain && <Board />}
                       <img
                         src={img.src}
@@ -180,11 +180,11 @@ export default function PartnerJourney() {
                         className={`relative block h-auto w-full ${s.contain ? "p-[5%]" : ""}`}
                       />
                     </div>
-                    <figcaption className="mt-2 text-micro text-ice/60">
+                    <figcaption className="mt-2 text-micro text-paper/60">
                       {s.caption} · technology partner imagery
                     </figcaption>
                   </figure>
-                  <p className="mt-3 text-small text-ice/80">{s.detail}</p>
+                  <p className="mt-3 text-small text-paper/80">{s.detail}</p>
                 </li>
               );
             })}
@@ -199,14 +199,14 @@ export default function PartnerJourney() {
     <section
       ref={root}
       aria-labelledby="journey-title"
-      className="relative bg-deep text-white"
+      className="relative bg-deep-grid text-white"
       style={{ height: `calc(100svh - 4rem + ${Math.round(travel * SLOW)}px)` }}
     >
       <div className="sticky top-16 flex h-[calc(100svh-4rem)] flex-col justify-center overflow-clip py-8">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(50% 60% at 80% 30%, rgba(144,217,136,0.06), transparent 70%)" }}
+          style={{ background: "radial-gradient(50% 60% at 80% 30%, color-mix(in_srgb,var(--accent)_6%,transparent), transparent 70%)" }}
         />
 
         <div className="relative container-site">
@@ -214,15 +214,15 @@ export default function PartnerJourney() {
           <div className="flex items-end justify-between gap-8">
             <div>{title}</div>
             <div className="flex shrink-0 items-center gap-3">
-              <span className="mr-2 text-micro font-semibold tracking-[0.18em] text-ice/50" aria-live="polite">
-                <span className="text-signal">{current.n}</span> / {pad(JOURNEY.length)}
+              <span className="mr-2 text-micro font-semibold tracking-[0.18em] text-paper/50" aria-live="polite">
+                <span className="text-accent">{current.n}</span> / {pad(JOURNEY.length)}
               </span>
               <button
                 type="button"
                 onClick={() => goTo(base() - 1)}
                 disabled={active === 0}
                 aria-label="Previous stage"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white transition-[border-color,background-color,opacity] duration-fast hover:border-signal focus-visible:border-signal hover:bg-signal/10 focus-visible:bg-signal/10 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/20 disabled:hover:bg-transparent"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white transition-[border-color,background-color,opacity] duration-fast hover:border-accent focus-visible:border-accent hover:bg-accent/10 focus-visible:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/20 disabled:hover:bg-transparent"
               >
                 <ArrowLeft aria-hidden="true" className="h-4 w-4" />
               </button>
@@ -231,7 +231,7 @@ export default function PartnerJourney() {
                 onClick={() => goTo(base() + 1)}
                 disabled={active === LAST}
                 aria-label="Next stage"
-                className="group/next flex h-11 items-center gap-2 rounded-full border border-white/20 px-5 eyebrow text-white transition-[border-color,background-color,opacity] duration-fast hover:border-signal focus-visible:border-signal hover:bg-signal/10 focus-visible:bg-signal/10 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/20 disabled:hover:bg-transparent"
+                className="group/next flex h-11 items-center gap-2 rounded-full border border-white/20 px-5 eyebrow text-white transition-[border-color,background-color,opacity] duration-fast hover:border-accent focus-visible:border-accent hover:bg-accent/10 focus-visible:bg-accent/10 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-white/20 disabled:hover:bg-transparent"
               >
                 Next
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/next:translate-x-0.5 group-focus-visible/next:translate-x-0.5 group-focus-within/next:translate-x-0.5" />
@@ -242,7 +242,7 @@ export default function PartnerJourney() {
           {/* Stage navigation: numbers + titles over a progress line that follows the gallery */}
           <div role="tablist" aria-label="Project stages" onKeyDown={onKeyDown} className="relative mt-7 grid grid-cols-6 gap-3">
             <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-white/12" />
-            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px origin-left bg-signal" style={{ scale: `${MOVE_CSS} 1` }} />
+            <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px origin-left bg-accent" style={{ scale: `${MOVE_CSS} 1` }} />
             {JOURNEY.map((s, i) => {
               const on = i === active;
               return (
@@ -261,13 +261,13 @@ export default function PartnerJourney() {
                   <span
                     aria-hidden="true"
                     className={`absolute -top-[3px] left-0 h-[7px] w-[7px] rounded-full transition-[background-color,scale] duration-base ${
-                      on ? "scale-150 bg-signal" : i < active ? "bg-signal/70" : "bg-white/30"
+                      on ? "scale-150 bg-accent" : i < active ? "bg-accent/70" : "bg-white/30"
                     }`}
                   />
-                  <span className={`text-micro font-semibold tracking-[0.16em] transition-colors duration-base ${on ? "text-signal" : "text-ice/45"}`}>{s.n}</span>
+                  <span className={`text-micro font-semibold tracking-[0.16em] transition-colors duration-base ${on ? "text-accent" : "text-paper/45"}`}>{s.n}</span>
                   <span
                     className={`ml-2 text-small font-semibold uppercase tracking-[0.08em] transition-colors duration-base ${
-                      on ? "text-white" : "text-ice/45 group-hover:text-ice/80 group-focus-visible:text-ice/80 group-focus-within:text-ice/80"
+                      on ? "text-white" : "text-paper/45 group-hover:text-paper/80 group-focus-visible:text-paper/80 group-focus-within:text-paper/80"
                     }`}
                   >
                     {s.title}
@@ -291,7 +291,7 @@ export default function PartnerJourney() {
                 <li
                   key={s.n}
                   onClick={() => goTo(i)}
-                  className={`group/card relative aspect-square max-h-[calc(100svh-23rem)] w-[calc((100%-1.5rem)/2)] shrink-0 cursor-pointer overflow-hidden rounded-2xl border bg-night transition-[opacity,scale,filter,border-color] duration-base ease-standard lg:w-[calc((100%-3rem)/3)] ${
+                  className={`group/card relative aspect-square max-h-[calc(100svh-23rem)] w-[calc((100%-1.5rem)/2)] shrink-0 cursor-pointer overflow-hidden rounded-2xl border bg-deep-grid transition-[opacity,scale,filter,border-color] duration-base ease-standard lg:w-[calc((100%-3rem)/3)] ${
                     on ? "scale-100 border-white/15 opacity-100 brightness-100" : "scale-[0.97] border-white/5 opacity-75 brightness-[0.82] hover:opacity-100 focus-visible:opacity-100 hover:brightness-100 focus-visible:brightness-100"
                   }`}
                 >
@@ -313,18 +313,18 @@ export default function PartnerJourney() {
                   {/* Hover overlay: soft dark gradient, green accent, number, title, short description */}
                   <div
                     aria-hidden="true"
-                    className={`pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-night/95 via-night/45 to-transparent p-6 opacity-0 transition-opacity duration-base group-hover/card:opacity-100 group-focus-visible/card:opacity-100 group-focus-within/card:opacity-100 ${
+                    className={`pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-deep-grid/95 via-deep-grid/45 to-transparent p-6 opacity-0 transition-opacity duration-base group-hover/card:opacity-100 group-focus-visible/card:opacity-100 group-focus-within/card:opacity-100 ${
                       on ? "[@media(hover:none)]:opacity-100" : ""
                     }`}
                   >
-                    <span className="absolute left-6 top-0 h-0.5 w-12 origin-left scale-x-0 rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover/card:scale-x-100 group-focus-visible/card:scale-x-100 group-focus-within/card:scale-x-100" />
+                    <span className="absolute left-6 top-0 h-0.5 w-12 origin-left scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover/card:scale-x-100 group-focus-visible/card:scale-x-100 group-focus-within/card:scale-x-100" />
                     <div className="translate-y-3 transition-transform duration-base ease-standard group-hover/card:translate-y-0 group-focus-visible/card:translate-y-0 group-focus-within/card:translate-y-0">
-                      <p className="flex items-center gap-2 text-micro font-semibold tracking-[0.18em] text-signal">
+                      <p className="flex items-center gap-2 text-micro font-semibold tracking-[0.18em] text-accent">
                         {s.n}
                         <ArrowRight className="h-3.5 w-3.5 -translate-x-1 opacity-0 transition-[translate,opacity] duration-base group-hover/card:translate-x-0 group-focus-visible/card:translate-x-0 group-focus-within/card:translate-x-0 group-hover/card:opacity-100 group-focus-visible/card:opacity-100 group-focus-within/card:opacity-100" />
                       </p>
                       <p className="mt-1 text-h3 font-semibold uppercase tracking-[0.06em]">{s.title}</p>
-                      <p className="mt-2 text-small text-ice/85">{s.copy}</p>
+                      <p className="mt-2 text-small text-paper/85">{s.copy}</p>
                     </div>
                   </div>
                 </li>
@@ -339,18 +339,18 @@ export default function PartnerJourney() {
               key={`panel-${active}`}
               className={`${dir.current === "next" ? "journey-in-next" : "journey-in-prev"} grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4`}
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-signal text-forest">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-on-accent">
                 <Icon aria-hidden="true" className="h-4.5 w-4.5" strokeWidth={1.9} />
               </span>
               <div>
                 <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                   <h3 className="text-h4 font-semibold uppercase tracking-[0.06em]">
-                    <span className="mr-3 text-micro font-semibold tracking-[0.2em] text-signal">{current.n}</span>
+                    <span className="mr-3 text-micro font-semibold tracking-[0.2em] text-accent">{current.n}</span>
                     {current.title}
                   </h3>
-                  <p className="text-micro text-ice/60">{current.caption} · technology partner imagery</p>
+                  <p className="text-micro text-paper/60">{current.caption} · technology partner imagery</p>
                 </div>
-                <p className="mt-1 max-w-3xl text-small text-ice/80">{current.detail}</p>
+                <p className="mt-1 max-w-3xl text-small text-paper/80">{current.detail}</p>
               </div>
             </div>
           </div>

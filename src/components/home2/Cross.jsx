@@ -49,10 +49,10 @@ const ARM_ART = {
 function ArmArt({ id }) {
   return (
     <div className="absolute inset-0 grid place-items-center" style={{ background: "radial-gradient(circle at 50% 40%, #12352e 0%, #0a1f1b 70%)" }}>
-      <svg viewBox="0 0 64 64" className="h-[52%] w-[52%] text-ice/90" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 64 64" className="h-[52%] w-[52%] text-paper/90" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         {ARM_ART[id]}
       </svg>
-      <span className="absolute inset-x-[22%] bottom-[18%] h-px bg-signal/70 shadow-[0_0_8px_1px_rgba(144,217,136,0.6)]" />
+      <span className="absolute inset-x-[22%] bottom-[18%] h-px bg-accent/70 shadow-[0_0_8px_1px_color-mix(in_srgb,var(--accent)_60%,transparent)]" />
     </div>
   );
 }
@@ -64,16 +64,16 @@ function CoreArt() {
     <svg aria-hidden="true" viewBox="0 0 200 200" className="absolute inset-0 h-full w-full overflow-visible" fill="none">
       <defs>
         <radialGradient id="core-glow">
-          <stop offset="0" stopColor="#90D988" stopOpacity="0.45" />
-          <stop offset="1" stopColor="#90D988" stopOpacity="0" />
+          <stop offset="0" stopColor="var(--color-signal)" stopOpacity="0.45" />
+          <stop offset="1" stopColor="var(--color-signal)" stopOpacity="0" />
         </radialGradient>
       </defs>
       <circle cx="100" cy="104" r="96" fill="url(#core-glow)" className="core-breathe" />
-      <g stroke="#90D988" strokeOpacity="0.55" strokeWidth="1">
+      <g stroke="var(--color-signal)" strokeOpacity="0.55" strokeWidth="1">
         <path d="M100 44V-30M100 166v74M42 104h-74M158 104h74" strokeDasharray="2 5" />
       </g>
-      <path d="M52 66 L100 42 L148 66 L148 142 L100 166 L52 142 Z" fill="rgba(144,217,136,0.06)" stroke="#90D988" strokeWidth="1.6" />
-      <path d="M100 90 L100 166 M52 66 L100 90 L148 66" stroke="#90D988" strokeOpacity="0.8" strokeWidth="1.2" />
+      <path d="M52 66 L100 42 L148 66 L148 142 L100 166 L52 142 Z" fill="color-mix(in_srgb,var(--accent)_6%,transparent)" stroke="var(--color-signal)" strokeWidth="1.6" />
+      <path d="M100 90 L100 166 M52 66 L100 90 L148 66" stroke="var(--color-signal)" strokeOpacity="0.8" strokeWidth="1.2" />
       {[78, 94, 110, 126].map((y, i) => (
         <path key={y} d={top(y + 12)} stroke="#c8f0c2" strokeOpacity={0.35 + i * 0.12} strokeWidth="1" fill={`rgba(144,217,136,${0.05 + i * 0.03})`} className="core-layer" style={{ "--i": i }} />
       ))}
@@ -166,10 +166,10 @@ export default function Cross() {
         />
         <div className="cross-card">
           <div id={`${uid}-${n.id}`} className="cross-text" inert={!isOpen || undefined}>
-            <p className="text-[0.95rem] leading-snug text-ice/90">{n.text}</p>
+            <p className="text-[0.95rem] leading-snug text-paper/90">{n.text}</p>
             <Link
               to={n.to}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-signal underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
             >
               {n.cta}
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
@@ -184,8 +184,8 @@ export default function Cross() {
   };
 
   return (
-    <section aria-labelledby="home2-cross" className="relative overflow-hidden bg-[#06110e] py-20 text-white lg:py-28">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_55%_at_50%_55%,rgba(144,217,136,0.09),transparent_70%)]" />
+    <section aria-labelledby="home2-cross" className="relative overflow-hidden bg-deep-grid py-20 text-white lg:py-28">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_55%_at_50%_55%,color-mix(in_srgb,var(--accent)_9%,transparent),transparent_70%)]" />
       <div className="relative container-site">
         <div className="mx-auto max-w-3xl text-center">
           <Eyebrow dark className="justify-center">
@@ -224,7 +224,7 @@ export default function Cross() {
                   fallback={<MediaSlot file="bess-core.png" sizes="260px" className="absolute inset-0 h-full w-full object-contain" fallback={<CoreArt />} />}
                 />
               </div>
-              <p className="relative mx-auto mt-1 w-fit rounded-md bg-[#06110e] px-2 py-1 text-center text-xs font-semibold uppercase tracking-[0.22em] text-ice/85">Battery Energy Storage System</p>
+              <p className="relative mx-auto mt-1 w-fit rounded-md bg-deep-grid px-2 py-1 text-center text-xs font-semibold uppercase tracking-[0.22em] text-paper/85">Battery Energy Storage System</p>
             </li>
             {CROSS.slice(1).map(node)}
           </ul>

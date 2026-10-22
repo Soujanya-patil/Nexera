@@ -94,14 +94,14 @@ export default function Hero() {
   );
 
   const panel = cine
-    ? "sticky top-0 h-screen overflow-hidden bg-night text-bone"
-    : "relative overflow-hidden bg-night text-bone";
+    ? "sticky top-0 h-screen overflow-hidden bg-deep-grid text-paper"
+    : "relative overflow-hidden bg-deep-grid text-paper";
   const grid = cine
     ? "relative grid h-full container-site grid-cols-5 items-center gap-14 pb-40 pt-20"
     : "relative grid container-site gap-12 py-16 md:grid-cols-5 md:items-center md:gap-14 md:py-24";
   const band = cine
-    ? "invisible absolute inset-x-0 bottom-0 bg-bone text-ink"
-    : "relative bg-bone text-ink";
+    ? "invisible absolute inset-x-0 bottom-0 bg-paper text-ink"
+    : "relative bg-paper text-ink";
 
   return (
     <section ref={root} className={cine ? "relative h-[300vh]" : "relative"}>
@@ -117,19 +117,19 @@ export default function Hero() {
           />
         )}
         {mode !== "light" && (
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/85 via-night/30 to-night/25" />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep-grid/85 via-deep-grid/30 to-deep-grid/25" />
         )}
         <div
           data-a="aurora-steel"
           aria-hidden="true"
           className="pointer-events-none absolute -left-[10rem] -top-[12rem] h-[42rem] w-[50rem] will-change-transform"
-          style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-steel) 55%, transparent), transparent)" }}
+          style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-link) 55%, transparent), transparent)" }}
         />
         <div
           data-a="aurora-signal"
           aria-hidden="true"
           className="pointer-events-none absolute -right-[10rem] top-[28rem] h-[45rem] w-[48rem] will-change-transform"
-          style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-signal) 45%, transparent), transparent)" }}
+          style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--accent) 45%, transparent), transparent)" }}
         />
         {cine && (
           <div
@@ -138,7 +138,7 @@ export default function Hero() {
             className="pointer-events-none invisible absolute inset-0"
             style={{
               background:
-                "radial-gradient(70% 45% at 50% 108%, color-mix(in srgb, var(--color-amber) 16%, transparent), transparent 70%), linear-gradient(to bottom, color-mix(in srgb, var(--color-night) 82%, transparent), var(--color-night))",
+                "radial-gradient(70% 45% at 50% 108%, color-mix(in srgb, var(--color-amber) 16%, transparent), transparent 70%), linear-gradient(to bottom, color-mix(in srgb, var(--color-deep-grid) 82%, transparent), var(--color-deep-grid))",
             }}
           />
         )}
@@ -148,14 +148,14 @@ export default function Hero() {
             <h1 className="font-serif text-4xl font-semibold leading-tight text-balance lg:text-5xl">
               Energy Storage, Built to Scale.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-bone/80">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/80">
               Advanced Battery Energy Storage Systems for reliable, scalable power
               across residential, commercial and utility applications.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <a
                 href="#systems"
-                className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_rgba(0,167,142,0.5)] transition-all duration-300 hover:bg-signal/90 hover:shadow-[0_0_28px_4px_rgba(0,167,142,0.45)]"
+                className="inline-flex items-center rounded-md bg-accent px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_color-mix(in_srgb,var(--accent)_50%,transparent)] transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_28px_4px_color-mix(in_srgb,var(--accent)_45%,transparent)]"
               >
                 Explore Our Systems
               </a>
@@ -168,16 +168,16 @@ export default function Hero() {
             </div>
             <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4 border-t border-white/15 pt-5 text-sm">
               <div>
-                <dt className="text-bone/60">Authorized Partner</dt>
-                <dd className="mt-0.5 text-bone/90">TCL, Hithium, CLOU</dd>
+                <dt className="text-paper/60">Authorized Partner</dt>
+                <dd className="mt-0.5 text-paper/90">TCL, Hithium, CLOU</dd>
               </div>
               <div>
-                <dt className="text-bone/60">Founding team</dt>
-                <dd className="mt-0.5 text-bone/90">15+ years in solar &amp; storage EPC</dd>
+                <dt className="text-paper/60">Founding team</dt>
+                <dd className="mt-0.5 text-paper/90">15+ years in solar &amp; storage EPC</dd>
               </div>
               <div>
-                <dt className="text-bone/60">HQ</dt>
-                <dd className="mt-0.5 text-bone/90">Bangalore</dd>
+                <dt className="text-paper/60">HQ</dt>
+                <dd className="mt-0.5 text-paper/90">Bangalore</dd>
               </div>
             </dl>
           </div>
@@ -191,14 +191,14 @@ export default function Hero() {
               className="pointer-events-none absolute left-1/2 top-1/2 h-[135%] w-[135%] -translate-x-1/2 -translate-y-1/2 will-change-transform"
               style={{
                 background:
-                  "radial-gradient(closest-side, color-mix(in srgb, var(--color-steel) 42%, transparent), color-mix(in srgb, var(--color-signal) 16%, transparent) 55%, transparent 100%)",
+                  "radial-gradient(closest-side, color-mix(in srgb, var(--color-link) 42%, transparent), color-mix(in srgb, var(--accent) 16%, transparent) 55%, transparent 100%)",
               }}
             />
             <div
               data-a="pool"
               aria-hidden="true"
               className="pointer-events-none absolute -bottom-3 left-1/2 h-8 w-[78%] -translate-x-1/2 rounded-[100%] blur-xl"
-              style={{ background: "color-mix(in srgb, var(--color-signal) 38%, transparent)" }}
+              style={{ background: "color-mix(in srgb, var(--accent) 38%, transparent)" }}
             />
             <div data-a="cabinet" className="relative will-change-transform" style={{ filter: "drop-shadow(0 34px 38px rgba(0,0,0,0.55))" }}>
               <ModelStage

@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
-const DC = "#90D988";
-const AC = "#F2C46D";
-const LINE = "#F4F7F4";
+const DC = "var(--color-signal)";
+const AC = "var(--color-amber)";
+const LINE = "var(--color-paper)";
 const CX = 200;
 const CY = 150;
 
@@ -71,7 +71,7 @@ export default function HybridSystem({ active, motion }) {
               <line data-draw x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeOpacity={dir === "none" ? 0.25 : 0.75} strokeWidth="2.5" />
               {dir !== "none" && <path d={tip} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-opacity duration-300" />}
               <g data-part>
-                <rect x={p.x - 40} y={p.y - 24} width="80" height="48" rx="10" fill="#071A17" stroke={LINE} strokeOpacity={dir === "none" ? 0.3 : 0.7} strokeWidth="2" />
+                <rect x={p.x - 40} y={p.y - 24} width="80" height="48" rx="10" fill="var(--color-ink)" stroke={LINE} strokeOpacity={dir === "none" ? 0.3 : 0.7} strokeWidth="2" />
                 <text x={p.x} y={p.y + 4} textAnchor="middle" className={`text-[12px] font-semibold ${dir === "none" ? "fill-white/40" : "fill-white/90"}`}>
                   {p.label}
                 </text>
@@ -80,11 +80,11 @@ export default function HybridSystem({ active, motion }) {
           );
         })}
         <g data-part>
-          <rect x={CX - 52} y={CY - 30} width="104" height="60" rx="12" fill="#071A17" stroke={DC} strokeWidth="2.2" />
-          <text x={CX} y={CY - 2} textAnchor="middle" className="fill-signal text-[12px] font-semibold">
+          <rect x={CX - 52} y={CY - 30} width="104" height="60" rx="12" fill="var(--color-ink)" stroke={DC} strokeWidth="2.2" />
+          <text x={CX} y={CY - 2} textAnchor="middle" className="fill-accent text-[12px] font-semibold">
             Hybrid
           </text>
-          <text x={CX} y={CY + 14} textAnchor="middle" className="fill-signal text-[12px] font-semibold">
+          <text x={CX} y={CY + 14} textAnchor="middle" className="fill-accent text-[12px] font-semibold">
             inverter
           </text>
         </g>

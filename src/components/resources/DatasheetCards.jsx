@@ -42,11 +42,11 @@ function SheetCard({ product, kind }) {
   const partner = partnerOf(product.partner);
   const name = `${partner.name} ${product.name}`;
   return (
-    <article className="sheet-card group/sheet relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-paper card-hover motion-reduce:transition-none">
-      <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)]">
+    <article className="sheet-card group/sheet relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-white card-hover motion-reduce:transition-none">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,var(--color-white)_0%,var(--color-white)_70%,var(--color-paper)_100%)]">
         <span
           aria-hidden="true"
-          className="absolute inset-[12%] rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,0.95),rgba(144,217,136,0.10)_60%,transparent)] opacity-0 transition-opacity duration-base group-hover/sheet:opacity-100 group-focus-visible/sheet:opacity-100 group-focus-within/sheet:opacity-100"
+          className="absolute inset-[12%] rounded-full bg-[radial-gradient(closest-side,rgba(255,255,255,0.95),color-mix(in_srgb,var(--accent)_10%,transparent)_60%,transparent)] opacity-0 transition-opacity duration-base group-hover/sheet:opacity-100 group-focus-visible/sheet:opacity-100 group-focus-within/sheet:opacity-100"
         />
         <span aria-hidden="true" className="absolute inset-x-[22%] bottom-[9%] h-5 rounded-[100%] bg-black/15 blur-lg" />
         <img
@@ -62,12 +62,12 @@ function SheetCard({ product, kind }) {
 
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center justify-between gap-3">
-          <p className="eyebrow text-sage">{partner.name}</p>
-          <span className="rounded-full border border-forest/20 bg-ice px-2.5 py-1 eyebrow text-forest">{kind}</span>
+          <p className="eyebrow text-muted">{partner.name}</p>
+          <span className="rounded-full border border-accent/20 bg-ice px-2.5 py-1 eyebrow text-accent">{kind}</span>
         </div>
         <h3 className="mt-2 text-h4 font-semibold text-ink">{product.name}</h3>
         {product.cardSpecs.length > 0 && (
-          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-small font-semibold text-forest">
+          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-small font-semibold text-accent">
             {product.cardSpecs.map((s, i) => (
               <span key={s} className="flex items-center gap-3">
                 {i > 0 && <span aria-hidden="true" className="h-3.5 w-px bg-line" />}
@@ -76,11 +76,11 @@ function SheetCard({ product, kind }) {
             ))}
           </p>
         )}
-        <p className="mt-2 flex-1 text-small text-graphite">{product.summary}</p>
+        <p className="mt-2 flex-1 text-small text-copy">{product.summary}</p>
 
         <Link
           to={docHref(product, kind)}
-          className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-ink px-5 text-button font-semibold text-white transition-colors duration-fast after:absolute after:inset-0 after:content-[''] group-hover/sheet:bg-forest group-focus-visible/sheet:bg-forest group-focus-within/sheet:bg-forest focus-visible:outline-none focus-visible:after:rounded-3xl focus-visible:after:ring-2 focus-visible:after:ring-steel"
+          className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-accent px-5 text-button font-semibold text-white transition-colors duration-fast after:absolute after:inset-0 after:content-[''] group-hover/sheet:bg-forest group-focus-visible/sheet:bg-forest group-focus-within/sheet:bg-forest focus-visible:outline-none focus-visible:after:rounded-3xl focus-visible:after:ring-2 focus-visible:after:ring-link"
         >
           Download {kind}
           <span className="sr-only">: {name}</span>

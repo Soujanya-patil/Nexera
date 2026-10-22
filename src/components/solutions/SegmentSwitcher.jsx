@@ -80,7 +80,7 @@ export default function SegmentSwitcher({ current }) {
       <div
         ref={row}
         onPointerLeave={() => setTarget(current)}
-        className="rail relative flex max-w-full overflow-x-auto rounded-full border border-white/10 bg-ink/90 p-1 shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)] backdrop-blur"
+        className="rail relative flex max-w-full overflow-x-auto rounded-full border border-white/10 bg-forest/90 p-1 shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)] backdrop-blur"
       >
         {SEGMENTS.map((id) => (
           <SegmentPill key={id} id={id} current={current} onPoint={() => setTarget(id)} onBlur={() => setTarget(current)} />
@@ -88,7 +88,7 @@ export default function SegmentSwitcher({ current }) {
         <span
           ref={bar}
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-1 left-0 h-0.5 w-px origin-left rounded-full bg-signal transition-transform duration-fast ease-standard motion-reduce:transition-none"
+          className="pointer-events-none absolute bottom-1 left-0 h-0.5 w-px origin-left rounded-full bg-accent transition-transform duration-fast ease-standard motion-reduce:transition-none"
         />
       </div>
     </nav>
@@ -122,7 +122,7 @@ function SegmentPill({ id, current, onPoint, onBlur }) {
       onFocus={onPoint}
       onBlur={onBlur}
       className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-button font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:-outline-offset-2 ${
-        here ? "text-white" : "text-ice/70 hover:text-white focus-visible:text-white"
+        here ? "text-white" : "text-paper/70 hover:text-white focus-visible:text-white"
       }`}
     >
       {page.label}

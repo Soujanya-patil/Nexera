@@ -122,8 +122,8 @@ export default function ScaleStory() {
           .fromTo(ch[i], { autoAlpha: 0 }, { autoAlpha: 1, duration: P(0.14) }, P(at + 0.04))
           .fromTo(bg[i], { scale: 1.24 }, { scale: 1, duration: P(0.3) }, P(at + 0.04))
           .fromTo(tx[i], { autoAlpha: 0, y: 56 }, { autoAlpha: 1, y: 0, duration: P(0.1), ease: "power2.out" }, P(at + 0.14))
-          .to(ticks[i - 1], { color: "rgba(242,240,234,0.4)", duration: P(0.05) }, P(at))
-          .to(ticks[i], { color: "#F2F0EA", duration: P(0.05) }, P(at + 0.04));
+          .to(ticks[i - 1], { color: "color-mix(in srgb, var(--color-paper) 40%, transparent)", duration: P(0.05) }, P(at))
+          .to(ticks[i], { color: "var(--color-paper)", duration: P(0.05) }, P(at + 0.04));
       });
 
       // Energy line: amber fill tracks the story down the rail
@@ -139,7 +139,7 @@ export default function ScaleStory() {
   return (
     <section id="systems" ref={root} className={cine ? "relative z-10 -mt-[100vh] h-[410vh] scroll-mt-16" : "relative scroll-mt-16"}>
       <div
-        className={cine ? "sticky top-0 h-screen overflow-hidden bg-night text-bone" : "relative bg-night text-bone"}
+        className={cine ? "sticky top-0 h-screen overflow-hidden bg-deep-grid text-paper" : "relative bg-deep-grid text-paper"}
         style={cine ? FEATHER : undefined}
       >
         {chapters.map((c, i) => (
@@ -156,32 +156,32 @@ export default function ScaleStory() {
               style={{ objectPosition: c.position }}
             />
             <div aria-hidden="true" className="absolute inset-0" style={{ background: c.shade }} />
-            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-night/85 to-transparent" />
+            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-deep-grid/85 to-transparent" />
             <div
               className={`relative z-10 flex container-site flex-col justify-end pb-16 pt-28 md:pb-24 ${
                 cine ? "h-full" : "min-h-[82svh]"
               }`}
             >
               <div data-a="chapter-text" data-reveal className={`${c.measure} will-change-transform`}>
-                <p className="text-sm text-bone/70">{c.name}</p>
+                <p className="text-sm text-paper/70">{c.name}</p>
                 <h2
-                  className="mt-3 font-serif font-semibold leading-[1.05] text-bone text-balance"
+                  className="mt-3 font-serif font-semibold leading-[1.05] text-paper text-balance"
                   style={{ fontSize: cine ? c.size : c.sizeLight }}
                 >
                   {c.headline}
                 </h2>
-                <p className="mt-5 max-w-xl text-base text-bone/80 md:text-lg">{c.copy}</p>
-                <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-bone/75">
+                <p className="mt-5 max-w-xl text-base text-paper/80 md:text-lg">{c.copy}</p>
+                <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-paper/75">
                   {c.points.map((p) => (
                     <li key={p} className="flex items-center gap-2">
-                      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-signal" />
+                      <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent" />
                       {p}
                     </li>
                   ))}
                 </ul>
                 <Link
                   to={`/solutions#${c.id}`}
-                  className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-colors hover:text-bone"
+                  className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-paper"
                 >
                   {c.cta}
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -198,8 +198,8 @@ export default function ScaleStory() {
             through the other two. Real buttons, so it's keyboard-operable. */}
         {cine && (
             <nav aria-label="Product categories" data-a="rail" className="absolute right-6 top-1/2 z-20 hidden -translate-y-1/2 xl:block">
-              <div className="relative rounded-md bg-night/40 py-3 pl-4 pr-5 text-right [text-shadow:0_1px_10px_rgba(6,13,22,0.9)]">
-                <div aria-hidden="true" className="absolute right-0 top-0 h-full w-px bg-bone/20" />
+              <div className="relative rounded-md bg-deep-grid/40 py-3 pl-4 pr-5 text-right [text-shadow:0_1px_10px_rgba(6,13,22,0.9)]">
+                <div aria-hidden="true" className="absolute right-0 top-0 h-full w-px bg-paper/20" />
                 <div data-a="rail-fill" aria-hidden="true" className="absolute right-0 top-0 h-full w-px origin-top bg-amber" />
                 <ul className="space-y-9 text-xs">
                   {chapters.map((c, i) => (
@@ -208,8 +208,8 @@ export default function ScaleStory() {
                         type="button"
                         onClick={() => goToChapter(i)}
                         data-a="tick"
-                        style={{ color: i === 0 ? "#F2F0EA" : "rgba(242,240,234,0.4)" }}
-                        className="cursor-pointer transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+                        style={{ color: i === 0 ? "var(--color-paper)" : "color-mix(in srgb, var(--color-paper) 40%, transparent)" }}
+                        className="cursor-pointer transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
                       >
                         {c.rail}
                       </button>

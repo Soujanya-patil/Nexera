@@ -14,10 +14,10 @@ export default function StageBlend() {
       style={{
         background: [
           // The lighter floor along the clip's bottom edge.
-          "linear-gradient(to top, var(--color-night) 0%, transparent 16%)",
-          "radial-gradient(closest-side, transparent 62%, color-mix(in srgb, var(--color-night) 70%, transparent) 86%, var(--color-night) 100%)",
-          "linear-gradient(to right, var(--color-night), transparent 9%, transparent 91%, var(--color-night))",
-          "linear-gradient(to bottom, var(--color-night), transparent 8%)",
+          "linear-gradient(to top, var(--color-deep-grid) 0%, transparent 16%)",
+          "radial-gradient(closest-side, transparent 62%, color-mix(in srgb, var(--color-deep-grid) 70%, transparent) 86%, var(--color-deep-grid) 100%)",
+          "linear-gradient(to right, var(--color-deep-grid), transparent 9%, transparent 91%, var(--color-deep-grid))",
+          "linear-gradient(to bottom, var(--color-deep-grid), transparent 8%)",
         ].join(", "),
       }}
     />

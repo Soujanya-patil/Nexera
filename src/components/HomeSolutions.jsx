@@ -77,24 +77,24 @@ export default function HomeSolutions() {
     );
   });
   return (
-    <section onPointerMove={trackSpotlight} className="group/sol relative overflow-hidden bg-ice py-20 md:py-24">
+    <section onPointerMove={trackSpotlight} className="group/sol relative overflow-hidden bg-paper py-20 md:py-24">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-slow group-hover/sol:opacity-100 group-focus-visible/sol:opacity-100 group-focus-within/sol:opacity-100"
-        style={{ background: "radial-gradient(520px circle at var(--cx, -999px) var(--cy, -999px), rgba(144,217,136,0.09), transparent 65%)" }}
+        style={{ background: "radial-gradient(520px circle at var(--cx, -999px) var(--cy, -999px), color-mix(in_srgb,var(--accent)_9%,transparent), transparent 65%)" }}
       />
       <div className="relative container-site">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="eyebrow text-sage">Our Solutions</p>
+            <p className="eyebrow text-muted">Our Solutions</p>
             <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Energy Storage for Every Need</AnimatedText>
-            <p className="mt-3 max-w-2xl text-graphite">
+            <p className="mt-3 max-w-2xl text-copy">
               From homes to industries to the grid — Nexera brings the right storage solution for every application.
             </p>
           </div>
           <Link
             to="/solutions"
-            className="group/all inline-flex min-h-11 shrink-0 items-center gap-2 text-button font-semibold text-forest transition-colors hover:text-steel focus-visible:text-steel"
+            className="group/all inline-flex min-h-11 shrink-0 items-center gap-2 text-button font-semibold text-accent transition-colors hover:text-link focus-visible:text-link"
           >
             View All Solutions
             <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/all:translate-x-1 group-focus-visible/all:translate-x-1 group-focus-within/all:translate-x-1" />
@@ -106,9 +106,9 @@ export default function HomeSolutions() {
             <article
               key={c.id}
               data-e
-              className="group relative flex flex-col overflow-hidden rounded-xl bg-paper shadow-[0_1px_2px_rgba(7,22,33,0.06),0_12px_28px_-16px_rgba(7,22,33,0.22)] card-hover"
+              className="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_color-mix(in_srgb,var(--color-ink)_6%,transparent),0_12px_28px_-16px_color-mix(in_srgb,var(--color-ink)_22%,transparent)] card-hover"
             >
-              <span aria-hidden="true" className="absolute left-6 top-0 z-10 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-visible:scale-x-100 group-focus-within:scale-x-100 " />
+              <span aria-hidden="true" className="absolute left-6 top-0 z-10 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-visible:scale-x-100 group-focus-within:scale-x-100 " />
               <div className="relative aspect-[16/10] overflow-hidden">
                 <ParallaxMedia amount={5}>
                   <SceneImg
@@ -119,10 +119,10 @@ export default function HomeSolutions() {
                   />
                 </ParallaxMedia>
                 {/* A soft shade that lifts on hover, so the photo seems to brighten */}
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/30 via-night/5 to-transparent transition-opacity duration-slow group-hover:opacity-0 group-focus-visible:opacity-0 group-focus-within:opacity-0" />
+                <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep-grid/30 via-deep-grid/5 to-transparent transition-opacity duration-slow group-hover:opacity-0 group-focus-visible:opacity-0 group-focus-within:opacity-0" />
                 <span
                   aria-hidden="true"
-                  className="absolute right-4 top-4 inline-flex translate-x-2 items-center gap-1.5 rounded-full bg-night/75 px-3 py-1 eyebrow text-white opacity-0 backdrop-blur-sm transition-[opacity,translate] duration-base ease-standard group-hover:translate-x-0 group-focus-visible:translate-x-0 group-focus-within:translate-x-0 group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100  "
+                  className="absolute right-4 top-4 inline-flex translate-x-2 items-center gap-1.5 rounded-full bg-deep-grid/75 px-3 py-1 eyebrow text-white opacity-0 backdrop-blur-sm transition-[opacity,translate] duration-base ease-standard group-hover:translate-x-0 group-focus-visible:translate-x-0 group-focus-within:translate-x-0 group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100  "
                 >
                   Explore
                   <ArrowRight className="h-3 w-3" />
@@ -130,11 +130,11 @@ export default function HomeSolutions() {
               </div>
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="text-h4 font-semibold text-ink transition-[translate] duration-base ease-standard group-hover:translate-x-[3px] group-focus-visible:translate-x-[3px] group-focus-within:translate-x-[3px]">{c.title}</h3>
-                <p className="mt-2 flex-1 text-small text-graphite">{c.copy}</p>
+                <p className="mt-2 flex-1 text-small text-copy">{c.copy}</p>
                 {/* Product preview (space always reserved, so hovering never shifts the layout) */}
-                <p className="mt-4 flex translate-y-1 items-center gap-2 text-micro text-graphite transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
-                  <span className="h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
-                  <span className="font-semibold text-forest">{partnersFor(c.id).map((p) => p.name).join(" · ")}</span>
+                <p className="mt-4 flex translate-y-1 items-center gap-2 text-micro text-copy transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+                  <span className="font-semibold text-accent">{partnersFor(c.id).map((p) => p.name).join(" · ")}</span>
                   <span aria-hidden="true">·</span>
                   {countFor(c.id)} {countFor(c.id) === 1 ? "system" : "systems"}
                 </p>
@@ -143,7 +143,7 @@ export default function HomeSolutions() {
                 <Link
                   to={c.page}
                   aria-label={c.cta}
-                  className="mt-5 inline-flex items-center gap-2 text-button font-semibold text-forest after:absolute after:inset-0 group-hover:text-steel group-focus-visible:text-steel group-focus-within:text-steel focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+                  className="mt-5 inline-flex items-center gap-2 text-button font-semibold text-accent after:absolute after:inset-0 group-hover:text-link group-focus-visible:text-link group-focus-within:text-link focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   {c.cta}
                   <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-focus-within:translate-x-1.5" />

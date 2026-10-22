@@ -17,7 +17,7 @@ function DuskSky() {
     <div aria-hidden="true" className="absolute inset-0 overflow-hidden" style={{ background: "linear-gradient(180deg, #06110f 0%, #0b1f22 32%, #2a2433 58%, #6b3a2c 74%, #b0602f 82%, #241612 83%, #0a0d0b 100%)" }}>
       <div className="absolute left-[62%] top-[82%] h-[38vw] max-h-[34rem] w-[38vw] max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: "radial-gradient(closest-side, rgba(255,196,120,0.55), rgba(227,162,59,0.18) 55%, transparent)" }} />
       <div className="absolute left-[62%] top-[82%] h-[7vw] max-h-24 w-[7vw] max-w-24 -translate-x-1/2 -translate-y-1/2 rounded-full" style={{ background: "radial-gradient(circle, #ffe2b0 0%, #f2a65a 60%, #d9772f 100%)", clipPath: "inset(0 0 50% 0)" }} />
-      <div className="absolute inset-x-0 top-[82.6%] h-px bg-[#f2a65a]/40" />
+      <div className="absolute inset-x-0 top-[82.6%] h-px bg-amber/40" />
     </div>
   );
 }
@@ -75,16 +75,16 @@ export default function Why() {
 
   let n = 0;
   return (
-    <section aria-labelledby="home2-why" className="relative isolate overflow-hidden bg-deep text-white">
+    <section aria-labelledby="home2-why" className="relative isolate overflow-hidden bg-deep-grid text-white">
       <ParallaxMedia amount={6} className="-z-10">
         <MediaSlot file="why-dusk.png" sizes="100vw" className="h-full w-full object-cover" fallback={<DuskSky />} />
       </ParallaxMedia>
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-deep/95 via-deep/75 to-deep/30" />
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-deep/70 via-transparent to-deep/80" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-deep-grid/95 via-deep-grid/75 to-deep-grid/30" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-b from-deep-grid/70 via-transparent to-deep-grid/80" />
 
       {/* Horizon (desktop): the sun sets below the line while the battery fills. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-14 hidden lg:block">
-        <div className="h-px w-full bg-gradient-to-r from-transparent via-ice/35 to-transparent" />
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-paper/35 to-transparent" />
         <div className="absolute bottom-0 right-[12%] h-14 w-14 overflow-hidden">
           <svg ref={sun} viewBox="0 0 56 56" className="h-14 w-14" fill="none" stroke="#f2b46a" strokeWidth="1.6" strokeLinecap="round">
             <circle cx="28" cy="34" r="10" fill="rgba(242,180,106,0.25)" />
@@ -95,8 +95,8 @@ export default function Why() {
           </svg>
         </div>
         <div className="absolute right-[12%] top-4 flex translate-x-[120%] items-center gap-1">
-          <span className="relative block h-4 w-8 overflow-hidden rounded-[3px] border border-ice/50 p-[2px]">
-            <span ref={fill} className="block h-full w-full origin-left rounded-[1px] bg-signal" style={{ transform: "scaleX(0)" }} />
+          <span className="relative block h-4 w-8 overflow-hidden rounded-[3px] border border-paper/50 p-[2px]">
+            <span ref={fill} className="block h-full w-full origin-left rounded-[1px] bg-accent" style={{ transform: "scaleX(0)" }} />
           </span>
           <span className="block h-1.5 w-[3px] rounded-r-sm bg-ice/50" />
         </div>
@@ -134,11 +134,11 @@ export default function Why() {
             </span>
           ))}
         </h2>
-        <p className="mt-10 max-w-2xl text-lg leading-relaxed text-ice/85">
+        <p className="mt-10 max-w-2xl text-lg leading-relaxed text-paper/85">
           Most Indian solar companies understand PV well, but have limited battery storage expertise. NEXERA exists to close that gap: bringing
           world-class storage technology from TCL, Hithium, CLOU and Midea, with the training, design and commissioning support to deploy it reliably.
         </p>
-        <p className="mt-6 text-lg italic text-signal">To be India&rsquo;s most trusted partner for battery energy storage.</p>
+        <p className="mt-6 text-lg italic text-accent">To be India&rsquo;s most trusted partner for battery energy storage.</p>
       </div>
     </section>
   );

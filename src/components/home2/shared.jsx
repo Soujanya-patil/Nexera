@@ -78,7 +78,7 @@ export function useDrawAfterLoad(ref) {
 export function SectionHead({ id, eyebrow, title, dark = false, className = "", children }) {
   return (
     <div className={className}>
-      <KineticEyebrow className={`text-xs font-semibold uppercase tracking-[0.22em] ${dark ? "text-signal" : "text-sage"}`} ruleClass={dark ? "bg-signal" : "bg-sage"}>
+      <KineticEyebrow className={`text-xs font-semibold uppercase tracking-[0.22em] ${dark ? "text-accent" : "text-muted"}`} ruleClass={dark ? "bg-accent" : "bg-muted"}>
         {eyebrow}
       </KineticEyebrow>
       <KineticHeading id={id} className={`sol-h2 mt-3 font-semibold ${dark ? "text-white" : "text-ink"}`}>
@@ -93,8 +93,8 @@ export function SectionHead({ id, eyebrow, title, dark = false, className = "", 
 export function Eyebrow({ dark = false, children, className = "" }) {
   return (
     <KineticEyebrow
-      className={`text-xs font-semibold uppercase tracking-[0.22em] ${dark ? "text-signal" : "text-sage"} ${className}`}
-      ruleClass={dark ? "bg-signal" : "bg-sage"}
+      className={`text-xs font-semibold uppercase tracking-[0.22em] ${dark ? "text-accent" : "text-muted"} ${className}`}
+      ruleClass={dark ? "bg-accent" : "bg-muted"}
     >
       {children}
     </KineticEyebrow>

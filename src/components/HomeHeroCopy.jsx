@@ -147,7 +147,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             it looks as before. The h1 itself has no classes: leading/tracking set inherited variables
             that would reach the eyebrow, so the headline's styles sit on its own span. */}
         <h1>
-          <span data-a="eyebrow" className="block eyebrow text-ice/80">
+          <span data-a="eyebrow" className="block eyebrow text-paper/80">
             Battery Energy Storage Systems
           </span>{" "}
           <span
@@ -182,7 +182,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
                 // properties, so the two never override each other.
                 <span key={i} data-line={i} className="block" style={depth(2)}>
                   <span
-                    className={`inline-block text-signal transition-[filter,translate] duration-base ease-standard hover:-translate-y-0.5 focus-visible:-translate-y-0.5 hover:brightness-110 focus-visible:brightness-110 ${
+                    className={`inline-block text-accent transition-[filter,translate] duration-base ease-standard hover:-translate-y-0.5 focus-visible:-translate-y-0.5 hover:brightness-110 focus-visible:brightness-110 ${
                       intro === "done" ? "hero-accent-sheen" : ""
                     }`}
                   >
@@ -193,7 +193,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             })}
           </span>
         </h1>
-        <p data-a="para" className="mt-6 max-w-md text-body text-ice/80">
+        <p data-a="para" className="mt-6 max-w-md text-body text-paper/80">
           Bridging world-class BESS technology with India&rsquo;s solar ecosystem through distribution, design,
           training and service.
         </p>
@@ -217,14 +217,14 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
               key={lines[0]}
               className="group/trust flex flex-col items-start gap-2 px-3 first:pl-0 sm:flex-row sm:items-center sm:gap-3 sm:px-4 lg:flex-col lg:items-start lg:gap-2 xl:flex-row xl:items-center xl:gap-3"
             >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-signal/70 text-signal transition-[background-color,color,translate] duration-base ease-standard group-hover/trust:-translate-y-0.5 group-focus-visible/trust:-translate-y-0.5 group-focus-within/trust:-translate-y-0.5 group-hover/trust:bg-signal group-focus-visible/trust:bg-signal group-focus-within/trust:bg-signal group-hover/trust:text-forest group-focus-visible/trust:text-forest group-focus-within/trust:text-forest">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-accent/70 text-accent transition-[background-color,color,translate] duration-base ease-standard group-hover/trust:-translate-y-0.5 group-focus-visible/trust:-translate-y-0.5 group-focus-within/trust:-translate-y-0.5 group-hover/trust:bg-accent group-focus-visible/trust:bg-accent group-focus-within/trust:bg-accent group-hover/trust:text-on-accent group-focus-visible/trust:text-on-accent group-focus-within/trust:text-on-accent">
                 <Icon aria-hidden="true" className="h-4 w-4 transition-transform duration-base ease-standard group-hover/trust:scale-110 group-focus-visible/trust:scale-110 group-focus-within/trust:scale-110" strokeWidth={1.8} />
               </span>
-              <span className="whitespace-nowrap text-micro text-ice/85 transition-colors duration-fast group-hover/trust:text-white group-focus-visible/trust:text-white group-focus-within/trust:text-white">
+              <span className="whitespace-nowrap text-micro text-paper/85 transition-colors duration-fast group-hover/trust:text-white group-focus-visible/trust:text-white group-focus-within/trust:text-white">
                 {lines[0]}
                 <br />
                 {lines[1]}
-                <span aria-hidden="true" className="mt-1.5 block h-px w-8 origin-left scale-x-0 bg-signal transition-[scale] duration-base ease-standard group-hover/trust:scale-x-100 group-focus-visible/trust:scale-x-100 group-focus-within/trust:scale-x-100" />
+                <span aria-hidden="true" className="mt-1.5 block h-px w-8 origin-left scale-x-0 bg-accent transition-[scale] duration-base ease-standard group-hover/trust:scale-x-100 group-focus-visible/trust:scale-x-100 group-focus-within/trust:scale-x-100" />
               </span>
             </li>
           ))}

@@ -70,8 +70,8 @@ export default function AnimatedTabs({
   const baseContainerStyles = cn(
     "relative inline-flex",
     variant === "underline" && "gap-1 border-border border-b",
-    variant === "pill" && "gap-1 rounded-full bg-muted p-1",
-    variant === "segment" && "gap-0 rounded-lg bg-muted p-1"
+    variant === "pill" && "gap-1 rounded-full bg-paper p-1",
+    variant === "segment" && "gap-0 rounded-lg bg-paper p-1"
   );
 
   const getTabStyles = (isActive) =>
@@ -121,7 +121,7 @@ export default function AnimatedTabs({
   const getIndicatorStyles = () =>
     cn(
       "absolute",
-      variant === "underline" && "right-0 -bottom-px left-0 h-0.5 bg-brand",
+      variant === "underline" && "right-0 -bottom-px left-0 h-0.5 bg-accent",
       variant === "pill" &&
         "inset-0 rounded-full border border-border bg-background shadow-sm",
       variant === "segment" &&

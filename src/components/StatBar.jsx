@@ -33,14 +33,14 @@ function format(stat, t) {
 
 const TONES = {
   dark: {
-    grid: "divide-bone/15 border-y border-bone/15 py-8",
-    value: "font-serif text-3xl text-bone sm:text-4xl",
-    label: "text-bone/60",
+    grid: "divide-paper/15 border-y border-paper/15 py-8",
+    value: "font-serif text-3xl text-paper sm:text-4xl",
+    label: "text-paper/60",
   },
   light: {
     grid: "divide-line py-2",
-    value: "font-sans text-3xl text-forest sm:text-4xl",
-    label: "text-graphite",
+    value: "font-sans text-3xl text-accent sm:text-4xl",
+    label: "text-copy",
   },
 };
 

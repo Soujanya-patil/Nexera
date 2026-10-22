@@ -59,7 +59,7 @@ export default function ScaleMorph({ active, motion, mode, step }) {
       <div className="flex h-full items-center px-4">
         <svg role="img" aria-label="Three scales of battery storage: a home, a factory and a utility-scale container" viewBox="0 0 400 200" className="h-auto w-full">
           {SHAPES.map((s, i) => (
-            <g key={s.label} transform={`translate(${i * 133} 40) scale(0.33)`} fill="none" stroke="#90D988" strokeWidth="6" strokeLinejoin="round">
+            <g key={s.label} transform={`translate(${i * 133} 40) scale(0.33)`} fill="none" stroke="var(--color-signal)" strokeWidth="6" strokeLinejoin="round">
               <path d={s.d} />
               <path d={s.detail} strokeOpacity="0.55" strokeWidth="4" />
             </g>
@@ -76,16 +76,16 @@ export default function ScaleMorph({ active, motion, mode, step }) {
   return (
     <div ref={root} className="flex h-full flex-col items-center justify-center gap-2 px-6">
       <svg role="img" aria-label={`Battery storage by scale: ${SHAPES[at].label}`} viewBox="0 0 400 220" className="h-auto max-h-[74%] w-full">
-        <path data-shape d={SHAPES[0].d} fill="rgba(144,217,136,0.10)" stroke="#90D988" strokeWidth="2.6" strokeLinejoin="round" />
-        <path data-detail d={SHAPES[at].detail} fill="none" stroke="#F4F7F4" strokeOpacity="0.55" strokeWidth="2" strokeLinecap="round" />
-        <line x1="20" y1="200" x2="380" y2="200" stroke="#F4F7F4" strokeOpacity="0.3" strokeWidth="1.5" />
+        <path data-shape d={SHAPES[0].d} fill="color-mix(in_srgb,var(--accent)_10%,transparent)" stroke="var(--color-signal)" strokeWidth="2.6" strokeLinejoin="round" />
+        <path data-detail d={SHAPES[at].detail} fill="none" stroke="var(--color-paper)" strokeOpacity="0.55" strokeWidth="2" strokeLinecap="round" />
+        <line x1="20" y1="200" x2="380" y2="200" stroke="var(--color-paper)" strokeOpacity="0.3" strokeWidth="1.5" />
       </svg>
       <p data-caption aria-hidden="true" className="text-center text-sm font-semibold text-white">
         {SHAPES[at].label}
       </p>
       <div aria-hidden="true" className="flex gap-2">
         {SHAPES.map((s, i) => (
-          <span key={s.label} className={`h-1.5 rounded-full transition-[width,background-color] duration-500 ${i === at ? "w-6 bg-signal" : "w-1.5 bg-white/30"}`} />
+          <span key={s.label} className={`h-1.5 rounded-full transition-[width,background-color] duration-500 ${i === at ? "w-6 bg-accent" : "w-1.5 bg-white/30"}`} />
         ))}
       </div>
     </div>

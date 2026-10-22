@@ -50,21 +50,21 @@ export default function CycleLoop({ active, motion }) {
         {/* the ring of cycle marks */}
         {Array.from({ length: DOTS }, (_, i) => {
           const a = (i / DOTS) * Math.PI * 2 - Math.PI / 2;
-          return <circle key={i} data-dot cx={CX + R * Math.cos(a)} cy={CY + R * Math.sin(a)} r="4.5" fill="#90D988" />;
+          return <circle key={i} data-dot cx={CX + R * Math.cos(a)} cy={CY + R * Math.sin(a)} r="4.5" fill="var(--color-signal)" />;
         })}
         {/* the battery */}
-        <rect x={CX - 14} y={CY - 70} width="28" height="10" rx="3" fill="none" stroke="#F4F7F4" strokeOpacity="0.7" strokeWidth="2" />
-        <rect x={CX - 38} y={CY - 60} width="76" height="128" rx="12" fill="none" stroke="#F4F7F4" strokeOpacity="0.8" strokeWidth="2.2" />
-        <rect data-level x={CX - 30} y={CY - 52} width="60" height="112" rx="7" fill="#90D988" fillOpacity="0.85" style={{ transform: "scaleY(0.5)", transformOrigin: "50% 100%", transformBox: "fill-box" }} />
+        <rect x={CX - 14} y={CY - 70} width="28" height="10" rx="3" fill="none" stroke="var(--color-paper)" strokeOpacity="0.7" strokeWidth="2" />
+        <rect x={CX - 38} y={CY - 60} width="76" height="128" rx="12" fill="none" stroke="var(--color-paper)" strokeOpacity="0.8" strokeWidth="2.2" />
+        <rect data-level x={CX - 30} y={CY - 52} width="60" height="112" rx="7" fill="var(--color-signal)" fillOpacity="0.85" style={{ transform: "scaleY(0.5)", transformOrigin: "50% 100%", transformBox: "fill-box" }} />
         {/* charge / discharge */}
         <g data-charge>
-          <path d={`M${CX - 70} ${CY + 6} v-28 m-7 7 l7 -7 l7 7`} fill="none" stroke="#90D988" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={`M${CX - 70} ${CY + 6} v-28 m-7 7 l7 -7 l7 7`} fill="none" stroke="var(--color-signal)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
           <text x={CX - 70} y={CY + 26} textAnchor="middle" className="fill-white text-[11px] font-semibold uppercase tracking-[0.14em]">
             Charge
           </text>
         </g>
         <g data-discharge>
-          <path d={`M${CX + 70} ${CY - 22} v28 m-7 -7 l7 7 l7 -7`} fill="none" stroke="#F4F7F4" strokeOpacity="0.85" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={`M${CX + 70} ${CY - 22} v28 m-7 -7 l7 7 l7 -7`} fill="none" stroke="var(--color-paper)" strokeOpacity="0.85" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
           <text x={CX + 70} y={CY + 26} textAnchor="middle" className="fill-white text-[11px] font-semibold uppercase tracking-[0.14em]">
             Discharge
           </text>

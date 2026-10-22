@@ -64,22 +64,22 @@ export default function DayDial({ active, motion, mode, step }) {
         className="h-auto max-h-[86%] w-full"
       >
         {/* Day (top) and night (bottom) halves */}
-        <path d={`M${CX - R} ${CY} A${R} ${R} 0 0 1 ${CX + R} ${CY} Z`} fill="rgba(144,217,136,0.10)" />
+        <path d={`M${CX - R} ${CY} A${R} ${R} 0 0 1 ${CX + R} ${CY} Z`} fill="color-mix(in_srgb,var(--accent)_10%,transparent)" />
         <path data-night d={`M${CX - R} ${CY} A${R} ${R} 0 0 0 ${CX + R} ${CY} Z`} fill="#020b09" opacity="0.6" />
-        <circle cx={CX} cy={CY} r={R} fill="none" stroke="#F4F7F4" strokeOpacity="0.4" strokeWidth="2" />
-        <line x1={CX - R - 10} y1={CY} x2={CX + R + 10} y2={CY} stroke="#F4F7F4" strokeOpacity="0.3" strokeWidth="1.5" strokeDasharray="4 5" />
+        <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-paper)" strokeOpacity="0.4" strokeWidth="2" />
+        <line x1={CX - R - 10} y1={CY} x2={CX + R + 10} y2={CY} stroke="var(--color-paper)" strokeOpacity="0.3" strokeWidth="1.5" strokeDasharray="4 5" />
         {/* The sun's path (day half) and the sun */}
         <path data-arc d={`M${CX - R + 14} ${CY - 4} A${R - 14} ${R - 14} 0 0 1 ${CX + R - 14} ${CY - 4}`} fill="none" stroke="none" />
         <g data-sun transform={`translate(${CX} ${CY - R + 14})`}>
           <circle r="11" fill="#F7D774" />
         </g>
         {/* The home, its window lit, and the battery beside it */}
-        <path d={`M${CX - 36} ${CY + 46} v-26 l18 -14 l18 14 v26 z`} fill="none" stroke="#F4F7F4" strokeWidth="2" strokeLinejoin="round" />
+        <path d={`M${CX - 36} ${CY + 46} v-26 l18 -14 l18 14 v26 z`} fill="none" stroke="var(--color-paper)" strokeWidth="2" strokeLinejoin="round" />
         <rect data-window x={CX - 24} y={CY + 26} width="12" height="10" rx="1.5" fill="#F7D774" />
         <g data-battery opacity={motion ? 0.55 : 1}>
-          <rect x={CX + 10} y={CY + 16} width="24" height="32" rx="4" fill="none" stroke="#90D988" strokeWidth="2.2" />
-          <rect x={CX + 17} y={CY + 12} width="10" height="4" rx="1" fill="#90D988" />
-          <rect x={CX + 14} y={CY + 30} width="16" height="14" rx="2" fill="#90D988" />
+          <rect x={CX + 10} y={CY + 16} width="24" height="32" rx="4" fill="none" stroke="var(--color-signal)" strokeWidth="2.2" />
+          <rect x={CX + 17} y={CY + 12} width="10" height="4" rx="1" fill="var(--color-signal)" />
+          <rect x={CX + 14} y={CY + 30} width="16" height="14" rx="2" fill="var(--color-signal)" />
         </g>
         {/* The six uses */}
         {USES.map((u, i) => {
@@ -87,7 +87,7 @@ export default function DayDial({ active, motion, mode, step }) {
           const on = lit === i;
           return (
             <g key={u} transform={`translate(${x} ${y})`} className="transition-opacity duration-300" opacity={lit < 0 || on ? 1 : 0.4}>
-              <circle r="17" fill={on ? "rgba(144,217,136,0.22)" : "rgba(255,255,255,0.06)"} stroke={on ? "#90D988" : "#F4F7F4"} strokeOpacity={on ? 1 : 0.4} strokeWidth="1.6" />
+              <circle r="17" fill={on ? "color-mix(in_srgb,var(--accent)_22%,transparent)" : "rgba(255,255,255,0.06)"} stroke={on ? "var(--color-signal)" : "var(--color-paper)"} strokeOpacity={on ? 1 : 0.4} strokeWidth="1.6" />
               <UseIcon i={i} on={on} />
             </g>
           );
@@ -101,7 +101,7 @@ export default function DayDial({ active, motion, mode, step }) {
 }
 
 function UseIcon({ i, on }) {
-  const s = { fill: "none", stroke: on ? "#90D988" : "#F4F7F4", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" };
+  const s = { fill: "none", stroke: on ? "var(--color-signal)" : "var(--color-paper)", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" };
   switch (i) {
     case 0: // sun to moon
       return <path {...s} d="M-8 2 a5 5 0 1 1 6 -6 M3 -2 a6 6 0 1 0 6 8 a5 5 0 0 1 -6 -8" />;

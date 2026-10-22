@@ -31,7 +31,7 @@ export function ArrowLink({ to, children, className = "", ...rest }) {
   return (
     <Link
       to={to}
-      className={`group/arrow inline-flex items-center gap-1.5 text-button font-semibold text-forest hover:text-steel focus-visible:text-steel focus-visible:outline-2 focus-visible:outline-offset-4 ${className}`}
+      className={`group/arrow inline-flex items-center gap-1.5 text-button font-semibold text-accent hover:text-link focus-visible:text-link focus-visible:outline-2 focus-visible:outline-offset-4 ${className}`}
       {...rest}
     >
       <ArrowUnderline>{children}</ArrowUnderline>
@@ -106,7 +106,7 @@ export function Spotlight() {
       ref={ref}
       aria-hidden="true"
       className="pointer-events-none absolute left-0 top-0 h-[840px] w-[840px] rounded-full opacity-0 transition-opacity duration-base"
-      style={{ background: "radial-gradient(closest-side, rgba(226,246,221,0.075), rgba(144,217,136,0.035) 55%, transparent)" }}
+      style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-paper) 7.5%, transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 55%, transparent)" }}
     />
   );
 }
@@ -173,15 +173,15 @@ export function KeywordTicker({ items, label }) {
   const list = (hidden) => (
     <ul aria-hidden={hidden || undefined} className="ticker-track flex shrink-0 items-center">
       {items.map((k) => (
-        <li key={k} className="flex items-center whitespace-nowrap px-5 text-small font-medium text-ice/80">
-          <span aria-hidden="true" className="mr-10 h-1 w-1 rounded-full bg-signal/80" />
+        <li key={k} className="flex items-center whitespace-nowrap px-5 text-small font-medium text-paper/80">
+          <span aria-hidden="true" className="mr-10 h-1 w-1 rounded-full bg-accent/80" />
           {k}
         </li>
       ))}
     </ul>
   );
   return (
-    <section aria-label={label} className="overflow-hidden border-t border-white/10 bg-deep py-4 text-white">
+    <section aria-label={label} className="overflow-hidden border-t border-white/10 bg-deep-grid py-4 text-white">
       <div ref={ref} className="ticker [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]">
         <div className="ticker-strip flex w-max">
           {list(false)}
@@ -277,13 +277,13 @@ export function AppRail({ items, label }) {
         {items.map(({ icon: Icon, title, text }) => (
           <li
             key={title}
-            className="group/app w-[16.5rem] shrink-0 snap-start select-none rounded-2xl border border-line bg-paper p-6 card-hover sm:w-[18rem]"
+            className="group/app w-[16.5rem] shrink-0 snap-start select-none rounded-2xl border border-line bg-white p-6 card-hover sm:w-[18rem]"
           >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-ice text-forest transition-colors duration-fast group-hover/app:bg-signal/30 group-focus-visible/app:bg-signal/30 group-focus-within/app:bg-signal/30">
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-ice text-accent transition-colors duration-fast group-hover/app:bg-accent/30 group-focus-visible/app:bg-accent/30 group-focus-within/app:bg-accent/30">
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <h3 className="mt-5 font-semibold text-ink">{title}</h3>
-            <p className="mt-1.5 text-small text-graphite">{text}</p>
+            <p className="mt-1.5 text-small text-copy">{text}</p>
           </li>
         ))}
       </ul>
@@ -317,7 +317,7 @@ export function AppRail({ items, label }) {
               onClick={() => go(active + d)}
               aria-label={name}
               disabled={d < 0 ? active === 0 : active === items.length - 1}
-              className="grid h-11 w-11 place-items-center rounded-full border border-line bg-paper text-forest transition-colors hover:border-forest/40 focus-visible:border-forest/40 disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="grid h-11 w-11 place-items-center rounded-full border border-line bg-white text-accent transition-colors hover:border-accent/40 focus-visible:border-accent/40 disabled:opacity-35 focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               <Icon aria-hidden="true" className="h-5 w-5" />
             </button>
@@ -352,7 +352,7 @@ export function PartnerStrip({ partners, label = "Technology partners", classNam
               {p ? (
                 <img src={p.logo} alt={name} loading="lazy" decoding="async" className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto`} />
               ) : (
-                <span className="text-[1.6rem] font-semibold uppercase leading-6 tracking-[0.02em] text-forest">
+                <span className="text-[1.6rem] font-semibold uppercase leading-6 tracking-[0.02em] text-ink">
                   {name}
                 </span>
               )}
@@ -411,7 +411,7 @@ export function SectionRail() {
   };
   return (
     <nav aria-label="Page sections" className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
-      <ol className="flex flex-col gap-1 rounded-full bg-paper/85 px-1.5 py-3 shadow-[0_10px_30px_-18px_rgba(7,26,23,0.5)] ring-1 ring-black/5 backdrop-blur">
+      <ol className="flex flex-col gap-1 rounded-full bg-white/85 px-1.5 py-3 shadow-[0_10px_30px_-18px_color-mix(in_srgb,var(--color-ink)_50%,transparent)] ring-1 ring-black/5 backdrop-blur">
         {sections.map((s, i) => (
           <li key={s.id || s.label} className="relative">
             <button
@@ -422,10 +422,10 @@ export function SectionRail() {
             >
               <span
                 className={`block h-2.5 w-2.5 rounded-full transition-[scale,background-color] duration-fast motion-reduce:transition-none ${
-                  i === active ? "scale-100 bg-signal ring-2 ring-forest/70" : "scale-[0.6] bg-forest/35 group-hover/dot:bg-forest group-focus-visible/dot:bg-forest group-focus-within/dot:bg-forest"
+                  i === active ? "scale-100 bg-accent ring-2 ring-accent/70" : "scale-[0.6] bg-forest/35 group-hover/dot:bg-forest group-focus-visible/dot:bg-forest group-focus-within/dot:bg-forest"
                 }`}
               />
-              <span className="pointer-events-none absolute right-full mr-3 max-w-[16rem] truncate whitespace-nowrap rounded-md bg-ink px-2.5 py-1 text-micro font-medium text-white opacity-0 transition-opacity duration-fast group-hover/dot:opacity-100 group-focus-within/dot:opacity-100 group-focus-visible/dot:opacity-100 motion-reduce:transition-none">
+              <span className="pointer-events-none absolute right-full mr-3 max-w-[16rem] truncate whitespace-nowrap rounded-md bg-forest px-2.5 py-1 text-micro font-medium text-white opacity-0 transition-opacity duration-fast group-hover/dot:opacity-100 group-focus-within/dot:opacity-100 group-focus-visible/dot:opacity-100 motion-reduce:transition-none">
                 {s.label}
               </span>
             </button>

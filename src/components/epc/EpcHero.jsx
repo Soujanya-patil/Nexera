@@ -31,7 +31,7 @@ export default function EpcHero() {
   });
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-night text-white">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid text-white">
       <div data-intro={intro}>
         {/* Image: full-bleed behind the copy on phones (dimmed), the right ~60% of the frame on desktop */}
         <div data-a="image" className="absolute inset-0 overflow-hidden lg:left-[34%]">
@@ -45,8 +45,8 @@ export default function EpcHero() {
               className="h-full w-full object-cover object-[62%_50%]"
             />
           </div>
-          <div aria-hidden="true" className="absolute inset-0 bg-night/70 lg:bg-transparent lg:bg-gradient-to-r lg:from-night lg:via-night/55 lg:to-night/5" />
-          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/90 to-transparent" />
+          <div aria-hidden="true" className="absolute inset-0 bg-deep-grid/70 lg:bg-transparent lg:bg-gradient-to-r lg:from-deep-grid lg:via-deep-grid/55 lg:to-deep-grid/5" />
+          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-deep-grid/90 to-transparent" />
         </div>
 
         <div className="relative flex min-h-[min(46rem,calc(100svh-4rem))] container-site flex-col justify-center py-20 lg:py-24">
@@ -54,8 +54,8 @@ export default function EpcHero() {
               doesn't); it looks as before. The h1 itself has no classes: leading/tracking set inherited
               variables that would reach the eyebrow, so the headline's styles sit on its own span. */}
           <h1>
-            <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-signal">
-              <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
+            <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-accent">
+              <span aria-hidden="true" className="h-px w-8 bg-accent/70" />
               Become a BESS Distributor
             </span>{" "}
             <span className="mt-5 block text-display font-semibold">
@@ -64,12 +64,12 @@ export default function EpcHero() {
               </span>
               {/* Keeps the lines' words apart in the heading's text; between block lines it renders nothing. */}
               {" "}
-              <span data-a="line2" className="block text-signal">
+              <span data-a="line2" className="block text-accent">
                 Store Smarter.
               </span>
             </span>
           </h1>
-          <p data-a="desc" className="mt-6 max-w-lg text-body text-ice/80">
+          <p data-a="desc" className="mt-6 max-w-lg text-body text-paper/80">
             NEXERA gives EPCs authorized access to TCL, Hithium and CLOU battery storage — with design, commissioning,
             training and after-sales support — so you can add BESS to your projects without building a supply chain from
             scratch.
@@ -93,7 +93,7 @@ export default function EpcHero() {
           </div>
         </div>
 
-        <p className="absolute bottom-4 right-6 hidden text-micro tracking-[0.14em] text-ice/60 lg:block">
+        <p className="absolute bottom-4 right-6 hidden text-micro tracking-[0.14em] text-paper/60 lg:block">
           <span className="uppercase">Hithium</span> outdoor storage cabinets · technology partner imagery
         </p>
       </div>

@@ -34,23 +34,23 @@ export default function UseCaseHotspots({ items, active, setActive }) {
               onClick={() => setActive(on && !desktop ? null : i)}
               className="group/hs relative -ml-4 -mt-4 grid h-8 w-8 place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2"
             >
-              <span aria-hidden="true" className="hotspot-ring absolute inset-1 rounded-full bg-signal" style={{ animationDelay: `${i * 0.3}s` }} />
+              <span aria-hidden="true" className="hotspot-ring absolute inset-1 rounded-full bg-accent" style={{ animationDelay: `${i * 0.3}s` }} />
               <span
                 aria-hidden="true"
-                className={`relative h-3.5 w-3.5 rounded-full border-2 border-white shadow-[0_0_0_3px_rgba(7,26,23,0.25)] transition-[scale,background-color] duration-fast ${
-                  on ? "scale-125 bg-forest" : "bg-signal group-hover/hs:scale-110 group-focus-visible/hs:scale-110 group-focus-within/hs:scale-110"
+                className={`relative h-3.5 w-3.5 rounded-full border-2 border-white shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-ink)_25%,transparent)] transition-[scale,background-color] duration-fast ${
+                  on ? "scale-125 bg-forest" : "bg-accent group-hover/hs:scale-110 group-focus-visible/hs:scale-110 group-focus-within/hs:scale-110"
                 }`}
               />
             </button>
             {desktop && on && (
               <div
                 aria-hidden="true"
-                className={`journey-detail pointer-events-none absolute z-20 w-64 rounded-xl border border-white/60 bg-white/75 p-4 text-left shadow-[0_18px_40px_-20px_rgba(7,26,23,0.5)] backdrop-blur-md ${
+                className={`journey-detail pointer-events-none absolute z-20 w-64 rounded-xl border border-white/60 bg-white/75 p-4 text-left shadow-[0_18px_40px_-20px_color-mix(in_srgb,var(--color-ink)_50%,transparent)] backdrop-blur-md ${
                   y < 40 ? "top-6" : "bottom-6"
                 } ${x > 62 ? "right-0" : "-left-4"}`}
               >
                 <p className="font-semibold text-ink">{it.title}</p>
-                <p className="mt-1 text-small text-graphite">{it.text}</p>
+                <p className="mt-1 text-small text-copy">{it.text}</p>
               </div>
             )}
           </div>

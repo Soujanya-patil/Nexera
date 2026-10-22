@@ -25,7 +25,7 @@ export default function HomeV2() {
     <div className="home2">
       <Hero />
       {SECTIONS.map((Section, i) => (
-        <Suspense key={i} fallback={<div className="min-h-svh bg-deep" />}>
+        <Suspense key={i} fallback={<div className="min-h-svh bg-deep-grid" />}>
           <Section />
         </Suspense>
       ))}

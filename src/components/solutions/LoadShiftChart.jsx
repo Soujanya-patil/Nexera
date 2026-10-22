@@ -156,7 +156,7 @@ export default function LoadShiftChart({ variant = "ci" }) {
   const label = "pointer-events-none absolute whitespace-nowrap text-micro font-semibold";
 
   return (
-    <figure ref={root} className="flex aspect-[4/3] w-full flex-col rounded-2xl border border-line bg-paper p-4 sm:aspect-[16/10] sm:p-6">
+    <figure ref={root} className="flex aspect-[4/3] w-full flex-col rounded-2xl border border-line bg-white p-4 sm:aspect-[16/10] sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div role="group" aria-label={v.caption} className="inline-flex rounded-full bg-ice p-1">
           {OPTIONS.map(([value, text]) => (
@@ -165,8 +165,8 @@ export default function LoadShiftChart({ variant = "ci" }) {
               type="button"
               aria-pressed={on === value}
               onClick={() => setOn(value)}
-              className={`hit-area rounded-full px-3.5 py-1.5 text-micro font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
-                on === value ? "bg-forest text-white" : "text-forest hover:text-ink focus-visible:text-ink"
+              className={`hit-area rounded-full px-3.5 py-1.5 text-micro font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link ${
+                on === value ? "bg-forest text-white" : "text-accent hover:text-ink focus-visible:text-ink"
               }`}
             >
               {text}
@@ -174,7 +174,7 @@ export default function LoadShiftChart({ variant = "ci" }) {
           ))}
         </div>
         {v.legend && (
-          <ul className="flex gap-4 text-micro text-graphite">
+          <ul className="flex gap-4 text-micro text-copy">
             {v.legend.map(([t, c]) => (
               <li key={t} className="flex items-center gap-1.5">
                 <span aria-hidden="true" className={`h-0.5 w-4 rounded-full ${c}`} />
@@ -188,27 +188,27 @@ export default function LoadShiftChart({ variant = "ci" }) {
       <div className="relative mt-3 min-h-0 flex-1">
         <svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true" className="absolute inset-0 h-full w-full overflow-visible">
           {/* Axes */}
-          <path d={`M${X0},${Y1 - 2} L${X0},${Y0} L${X1 + 1},${Y0}`} fill="none" stroke="currentColor" className="text-forest/25" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+          <path d={`M${X0},${Y1 - 2} L${X0},${Y0} L${X1 + 1},${Y0}`} fill="none" stroke="currentColor" className="text-accent/25" strokeWidth="1" vectorEffect="non-scaling-stroke" />
           {variant === "ci" ? (
             <>
-              <path d={paths.battery} className="fill-signal/45" style={fade(on)} />
-              <path d={paths.charges} className="fill-signal/25" style={fade(on)} />
-              <line x1={X0} x2={X1} y1={py(LIMIT)} y2={py(LIMIT)} stroke="currentColor" className="text-forest/55" strokeWidth="1.25" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
-              <path ref={line} data-draw d={paths.line} fill="none" stroke="currentColor" className="text-forest" strokeWidth="2.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+              <path d={paths.battery} className="fill-accent/45" style={fade(on)} />
+              <path d={paths.charges} className="fill-accent/25" style={fade(on)} />
+              <line x1={X0} x2={X1} y1={py(LIMIT)} y2={py(LIMIT)} stroke="currentColor" className="text-accent/55" strokeWidth="1.25" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
+              <path ref={line} data-draw d={paths.line} fill="none" stroke="currentColor" className="text-accent" strokeWidth="2.5" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
             </>
           ) : (
             <>
-              <path d={paths.surplus} className="fill-graphite/20" style={fade(!on)} />
-              <path d={paths.shortfall} className="fill-graphite/20" style={fade(!on)} />
-              <path d={paths.surplus} className="fill-signal/40" style={fade(on)} />
-              <path d={paths.shortfall} className="fill-signal/40" style={fade(on)} />
+              <path d={paths.surplus} className="fill-copy/20" style={fade(!on)} />
+              <path d={paths.shortfall} className="fill-copy/20" style={fade(!on)} />
+              <path d={paths.surplus} className="fill-accent/40" style={fade(on)} />
+              <path d={paths.shortfall} className="fill-accent/40" style={fade(on)} />
               <path d={paths.solar} data-draw fill="none" stroke="currentColor" className="text-amber" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
-              <path d={paths.demand} data-draw fill="none" stroke="currentColor" className="text-forest" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
+              <path d={paths.demand} data-draw fill="none" stroke="currentColor" className="text-accent" strokeWidth="2.5" vectorEffect="non-scaling-stroke" />
               <path
                 d={paths.flow}
                 fill="none"
                 data-on={on}
-                className="flow-line text-forest"
+                className="flow-line text-accent"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeDasharray="6 6"
@@ -223,38 +223,38 @@ export default function LoadShiftChart({ variant = "ci" }) {
         {/* Labels (HTML over the plot, positioned in the same 100 × 50 box). */}
         {variant === "ci" ? (
           <>
-            <span className={`${label} right-0 text-forest/70`} style={{ top: `calc(${(py(LIMIT) / 50) * 100}% - 1.35rem)` }}>
+            <span className={`${label} right-0 text-accent`} style={{ top: `calc(${(py(LIMIT) / 50) * 100}% - 1.35rem)` }}>
               Demand limit
             </span>
-            <span aria-hidden={!on} className={`${label} -translate-x-1/2 text-forest`} style={{ left: `${px(14.5)}%`, top: "0%", ...fade(on) }}>
+            <span aria-hidden={!on} className={`${label} -translate-x-1/2 text-accent`} style={{ left: `${px(14.5)}%`, top: "0%", ...fade(on) }}>
               Supplied by the battery
             </span>
-            <span aria-hidden={!on} className={`${label} -translate-x-1/2 text-forest`} style={{ left: `${px(4)}%`, top: `calc(${(py(0.36) / 50) * 100}% - 1.6rem)`, ...fade(on) }}>
+            <span aria-hidden={!on} className={`${label} -translate-x-1/2 text-accent`} style={{ left: `${px(4)}%`, top: `calc(${(py(0.36) / 50) * 100}% - 1.6rem)`, ...fade(on) }}>
               Battery charges
             </span>
           </>
         ) : (
           <>
-            <span aria-hidden={on} className={`${label} -translate-x-1/2 text-graphite`} style={{ left: `${px(12.5)}%`, top: "0%", ...fade(!on) }}>
+            <span aria-hidden={on} className={`${label} -translate-x-1/2 text-copy`} style={{ left: `${px(12.5)}%`, top: "0%", ...fade(!on) }}>
               Unused midday solar
             </span>
-            <span aria-hidden={on} className={`${label} -translate-x-full text-graphite`} style={{ left: `${px(23.5)}%`, top: `calc(${(py(0.86) / 50) * 100}% - 1rem)`, ...fade(!on) }}>
+            <span aria-hidden={on} className={`${label} -translate-x-full text-copy`} style={{ left: `${px(23.5)}%`, top: `calc(${(py(0.86) / 50) * 100}% - 1rem)`, ...fade(!on) }}>
               Evening shortfall
             </span>
-            <span aria-hidden={!on} className={`${label} -translate-x-1/2 whitespace-normal text-center text-forest`} style={{ left: `${px(16)}%`, top: "-0.25rem", width: "13rem", ...fade(on) }}>
+            <span aria-hidden={!on} className={`${label} -translate-x-1/2 whitespace-normal text-center text-accent`} style={{ left: `${px(16)}%`, top: "-0.25rem", width: "13rem", ...fade(on) }}>
               Stored at midday, dispatched in the evening
             </span>
           </>
         )}
 
-        <span className="absolute bottom-0 right-0 translate-y-full pt-1 text-micro text-graphite">{v.xLabel}</span>
+        <span className="absolute bottom-0 right-0 translate-y-full pt-1 text-micro text-copy">{v.xLabel}</span>
         {v.yLabel && (
-          <span className="absolute left-0 top-0 origin-top-left -translate-x-1 translate-y-[4.5rem] -rotate-90 whitespace-nowrap text-micro text-graphite">
+          <span className="absolute left-0 top-0 origin-top-left -translate-x-1 translate-y-[4.5rem] -rotate-90 whitespace-nowrap text-micro text-copy">
             {v.yLabel}
           </span>
         )}
       </div>
-      <figcaption className="mt-6 text-micro text-graphite">{v.caption}</figcaption>
+      <figcaption className="mt-6 text-micro text-copy">{v.caption}</figcaption>
     </figure>
   );
 }

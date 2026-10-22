@@ -42,7 +42,7 @@ function ScrollProgress() {
   }, []);
   return (
     <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 -bottom-px h-[2px] overflow-hidden">
-      <span ref={bar} className="block h-full origin-left bg-signal/80" style={{ transform: "scaleX(0)" }} />
+      <span ref={bar} className="block h-full origin-left bg-accent/80" style={{ transform: "scaleX(0)" }} />
     </span>
   );
 }
@@ -84,8 +84,8 @@ export default function Nav() {
 
   // The underline draws by transform (scaleX), on hover and keyboard focus alike.
   const desktopLink = ({ isActive }) =>
-    `relative py-1 text-small transition-colors duration-fast after:absolute after:-bottom-[0.9rem] after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-signal after:transition-transform after:duration-base after:ease-emphasized ${
-      isActive ? "text-signal after:scale-x-100" : "text-ice/85 after:scale-x-0 hover:text-white hover:after:scale-x-100 focus-visible:text-white focus-visible:after:scale-x-100"
+    `relative py-1 text-small transition-colors duration-fast after:absolute after:-bottom-[0.9rem] after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-accent after:transition-transform after:duration-base after:ease-emphasized ${
+      isActive ? "text-accent after:scale-x-100" : "text-paper/85 after:scale-x-0 hover:text-white hover:after:scale-x-100 focus-visible:text-white focus-visible:after:scale-x-100"
     }`;
 
   return (
@@ -97,7 +97,7 @@ export default function Nav() {
       data-ground="dark"
       className={`sticky top-0 z-50 isolate transition-[translate] duration-base ease-emphasized ${scrolled ? "-translate-y-2" : ""}`}
     >
-      <span aria-hidden="true" className={`absolute inset-0 -z-10 bg-ink transition-opacity duration-base ease-emphasized ${scrolled ? "opacity-90" : ""}`} />
+      <span aria-hidden="true" className={`absolute inset-0 -z-10 bg-forest transition-opacity duration-base ease-emphasized ${scrolled ? "opacity-90" : ""}`} />
       <span aria-hidden="true" className="absolute inset-0 -z-20 backdrop-blur-md" />
       <span
         aria-hidden="true"
@@ -110,7 +110,7 @@ export default function Nav() {
           <Link to="/" aria-label="NEXERA Powertech home" className="inline-flex min-h-11 items-center text-white">
             <Wordmark className="text-lg" />
           </Link>
-          <p className="hidden border-l border-white/20 pl-5 eyebrow text-ice/80 xl:block">
+          <p className="hidden border-l border-white/20 pl-5 eyebrow text-paper/80 xl:block">
             Store today
             <br />
             Power tomorrow
@@ -133,7 +133,7 @@ export default function Nav() {
           <Magnetic max={5}>
             <Link
               to="/contact"
-              className="btn-motion inline-flex items-center rounded-full bg-signal px-5 py-2 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_20px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_20px_2px_rgba(144,217,136,0.35)]"
+              className="btn-motion inline-flex items-center rounded-full bg-accent px-5 py-2 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-[0_0_20px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] focus-visible:shadow-[0_0_20px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)]"
             >
               Contact Us
             </Link>
@@ -165,7 +165,7 @@ export default function Nav() {
         id="mobile-menu"
         data-open={open || undefined}
         inert={!open}
-        className="mobile-menu absolute inset-x-0 top-full border-t border-white/10 bg-ink px-6 pb-6 pt-2 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.7)] lg:hidden"
+        className="mobile-menu absolute inset-x-0 top-full border-t border-white/10 bg-forest px-6 pb-6 pt-2 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.7)] lg:hidden"
       >
           <ul className="flex flex-col">
             {links.map((link) => (
@@ -175,7 +175,7 @@ export default function Nav() {
                   end={link.end}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `flex min-h-11 items-center text-body transition-colors duration-fast ${isActive ? "text-signal" : "text-ice/85 hover:text-white"}`
+                    `flex min-h-11 items-center text-body transition-colors duration-fast ${isActive ? "text-accent" : "text-paper/85 hover:text-white"}`
                   }
                 >
                   {link.label}
@@ -186,7 +186,7 @@ export default function Nav() {
           <Link
             to="/contact"
             onClick={() => setOpen(false)}
-            className="btn-motion mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-signal px-4 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d]"
+            className="btn-motion mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-accent px-4 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"
           >
             Contact Us
           </Link>

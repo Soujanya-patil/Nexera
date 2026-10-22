@@ -85,7 +85,7 @@ export default function SupportCapabilities() {
     <section
       ref={root}
       aria-labelledby="capabilities-title"
-      className="relative bg-paper"
+      className="relative bg-white"
       style={pinned ? { height: `calc(100svh - 4rem + ${Math.round(travel * SLOW)}px)` } : undefined}
     >
       <div
@@ -96,20 +96,20 @@ export default function SupportCapabilities() {
         <div className="container-site">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="eyebrow text-sage">What NEXERA brings</p>
+              <p className="eyebrow text-muted">What NEXERA brings</p>
               <AnimatedText id="capabilities-title" className="mt-3 text-h2 font-semibold text-ink">
                 One Partner. Through the Project.
               </AnimatedText>
             </div>
             <div className="md:text-right">
-              <p className="max-w-sm text-graphite">Technology access, engineering support and service — not just at the sale.</p>
+              <p className="max-w-sm text-copy">Technology access, engineering support and service — not just at the sale.</p>
               {pinned && (
                 <div className="mt-4 flex items-center gap-4 md:justify-end" aria-hidden="true">
-                  <span className="text-micro font-semibold tracking-[0.18em] text-sage">
-                    <span className="text-forest">{pad(active + 1)}</span> / {pad(CAPABILITIES.length)}
+                  <span className="text-micro font-semibold tracking-[0.18em] text-muted">
+                    <span className="text-accent">{pad(active + 1)}</span> / {pad(CAPABILITIES.length)}
                   </span>
                   <span className="relative h-0.5 w-32 overflow-hidden rounded-full bg-forest/10">
-                    <span className="absolute inset-0 origin-left bg-signal" style={{ scale: "var(--progress, 0) 1" }} />
+                    <span className="absolute inset-0 origin-left bg-accent" style={{ scale: "var(--progress, 0) 1" }} />
                   </span>
                 </div>
               )}
@@ -146,7 +146,7 @@ export default function SupportCapabilities() {
                   <Link
                     to={c.to}
                     onFocus={showCard}
-                    className={`group relative flex ${pinned ? "h-[clamp(16.5rem,calc(100svh-19rem),24rem)]" : "h-full min-h-[17rem]"} flex-col overflow-hidden rounded-2xl border border-line bg-ice/60 p-8 card-hover hover:bg-paper focus-visible:bg-paper focus-visible:outline-2 focus-visible:outline-offset-2`}
+                    className={`group relative flex ${pinned ? "h-[clamp(16.5rem,calc(100svh-19rem),24rem)]" : "h-full min-h-[17rem]"} flex-col overflow-hidden rounded-2xl border border-line bg-ice/60 p-8 card-hover hover:bg-white focus-visible:bg-white focus-visible:outline-2 focus-visible:outline-offset-2`}
                   >
                     {/* Background: faint grid + soft light, sliding in on hover */}
                     <span
@@ -154,25 +154,25 @@ export default function SupportCapabilities() {
                       className="pointer-events-none absolute inset-0 translate-x-6 opacity-0 transition-[opacity,translate] duration-slow ease-standard group-hover:translate-x-0 group-focus-within:translate-x-0 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
                       style={{
                         backgroundImage:
-                          "radial-gradient(60% 70% at 100% 0%, rgba(144,217,136,0.16), transparent 70%), linear-gradient(rgba(9,47,39,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(9,47,39,0.05) 1px, transparent 1px)",
+                          "radial-gradient(60% 70% at 100% 0%, color-mix(in_srgb,var(--accent)_16%,transparent), transparent 70%), linear-gradient(color-mix(in srgb, var(--color-forest) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-forest) 5%, transparent) 1px, transparent 1px)",
                         backgroundSize: "100% 100%, 28px 28px, 28px 28px",
                         maskImage: "linear-gradient(to left, #000, transparent 85%)",
                         WebkitMaskImage: "linear-gradient(to left, #000, transparent 85%)",
                       }}
                     />
-                    <span aria-hidden="true" className="absolute left-8 top-0 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-within:scale-x-100 group-focus-visible:scale-x-100" />
+                    <span aria-hidden="true" className="absolute left-8 top-0 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-within:scale-x-100 group-focus-visible:scale-x-100" />
 
                     <div className="relative flex items-start justify-between">
-                      <span className="text-display tabular-nums font-semibold leading-none text-forest/15 transition-colors duration-fast group-hover:text-forest/30 group-focus-visible:text-forest/30 group-focus-within:text-forest/30">
+                      <span className="text-display tabular-nums font-semibold leading-none text-accent/15 transition-colors duration-fast group-hover:text-accent/30 group-focus-visible:text-accent/30 group-focus-within:text-accent/30">
                         {pad(i + 1)}
                       </span>
-                      <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-paper text-forest transition-[background-color,border-color] duration-fast group-hover:border-signal group-focus-visible:border-signal group-focus-within:border-signal group-hover:bg-signal group-focus-visible:bg-signal group-focus-within:bg-signal">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-white text-accent transition-[background-color,border-color,color] duration-fast group-hover:text-on-accent group-focus-visible:text-on-accent group-focus-within:text-on-accent group-hover:border-accent group-focus-visible:border-accent group-focus-within:border-accent group-hover:bg-accent group-focus-visible:bg-accent group-focus-within:bg-accent">
                         <Icon aria-hidden="true" className="h-5 w-5 transition-transform duration-base ease-standard group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5 group-focus-within:-translate-y-0.5 group-hover:rotate-[-6deg] group-focus-visible:rotate-[-6deg] group-focus-within:rotate-[-6deg]" strokeWidth={1.75} />
                       </span>
                     </div>
                     <h3 className="relative mt-auto text-h3 font-semibold uppercase tracking-[0.06em] text-ink">{c.title}</h3>
-                    <p className="relative mt-3 text-body text-graphite">{c.copy}</p>
-                    <span className="relative mt-6 inline-flex items-center gap-2 text-small font-semibold text-forest">
+                    <p className="relative mt-3 text-body text-copy">{c.copy}</p>
+                    <span className="relative mt-6 inline-flex items-center gap-2 text-small font-semibold text-accent">
                       {c.cta}
                       <ArrowRight aria-hidden="true" className="h-4 w-4 -translate-x-1 opacity-60 transition-[translate,opacity] duration-fast group-hover:translate-x-1 group-focus-visible:translate-x-1 group-focus-within:translate-x-1 group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100" />
                     </span>

@@ -94,7 +94,7 @@ export default function Credibility() {
   );
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-night text-bone">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid text-paper">
       <TechGrid size={64} tone={0.04} glow={false} drift={3} />
 
       <div className="relative z-10 px-6 pt-16 text-center md:pt-24">
@@ -117,7 +117,7 @@ export default function Credibility() {
               onClick={() => setActive(i)}
               aria-pressed={isActive}
               aria-label={`${p.name} — ${p.application}`}
-              className={`group relative min-h-[46svh] overflow-hidden border-t border-bone/10 text-left transition-[flex-grow] duration-700 ease-out md:min-h-[78svh] md:border-l md:border-t-0 ${
+              className={`group relative min-h-[46svh] overflow-hidden border-t border-paper/10 text-left transition-[flex-grow] duration-700 ease-out md:min-h-[78svh] md:border-l md:border-t-0 ${
                 isActive ? "md:grow-[1.6]" : "md:grow-[1]"
               } md:basis-0`}
             >
@@ -134,22 +134,22 @@ export default function Credibility() {
                 />
               ) : (
                 // CLOU: technical backdrop, not stand-in product photography.
-                <div className="absolute inset-0 bg-charcoal">
+                <div className="absolute inset-0 bg-forest">
                   <TechGrid size={40} tone={0.07} glow={isActive} drift={2} />
                 </div>
               )}
-              <div aria-hidden="true" className="absolute inset-0 bg-night/20" />
-              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-night via-night/30 to-night/45" />
+              <div aria-hidden="true" className="absolute inset-0 bg-deep-grid/20" />
+              <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-deep-grid via-deep-grid/30 to-deep-grid/45" />
 
               <div className="relative z-10 flex h-full min-h-[46svh] flex-col justify-end px-6 pb-14 md:min-h-[78svh] md:px-10 md:pb-16">
                 <div data-a="rise" data-reveal style={{ "--reveal-delay": `${i * 0.1}s` }}>
                   {p.badge ? (
-                    <span className="rounded-full bg-signal/15 px-3 py-1 text-xs font-medium text-signal">{p.badge}</span>
+                    <span className="rounded-full bg-accent/15 px-3 py-1 text-xs font-medium text-accent">{p.badge}</span>
                   ) : (
-                    <span className="text-xs font-medium uppercase tracking-[0.18em] text-bone/50">Technology</span>
+                    <span className="text-xs font-medium uppercase tracking-[0.18em] text-paper/50">Technology</span>
                   )}
                   <img src={p.logo} alt={p.name} className="mt-5 h-8 w-auto" />
-                  <p className="mt-4 text-xs font-medium uppercase tracking-[0.16em] text-signal">{p.application}</p>
+                  <p className="mt-4 text-xs font-medium uppercase tracking-[0.16em] text-accent">{p.application}</p>
 
                   {/* Product context: always present for screen readers and for the stacked mobile
                       layout; on desktop it reveals as the panel becomes active. */}
@@ -158,8 +158,8 @@ export default function Credibility() {
                       isActive ? "md:max-h-40 md:opacity-100" : ""
                     }`}
                   >
-                    <p className="mt-3 max-w-xs text-sm leading-relaxed text-bone/80">{p.copy}</p>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-signal">
+                    <p className="mt-3 max-w-xs text-sm leading-relaxed text-paper/80">{p.copy}</p>
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
                       View {p.name} products
                       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                     </span>
@@ -173,13 +173,13 @@ export default function Credibility() {
 
       {/* The panels are buttons (they drive selection), so the real navigation lives here — one
           keyboard-reachable link per partner rather than a link nested inside a button. */}
-      <div className="relative z-10 border-t border-bone/10 px-6 py-8 text-center">
+      <div className="relative z-10 border-t border-paper/10 px-6 py-8 text-center">
         <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {partners.map((p) => (
             <li key={p.id}>
               <Link
                 to="/brands"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-colors hover:text-bone"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-paper"
               >
                 View {p.name} products
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -187,7 +187,7 @@ export default function Credibility() {
             </li>
           ))}
         </ul>
-        <p data-a="rise" data-reveal className="mt-6 text-sm text-bone/50">
+        <p data-a="rise" data-reveal className="mt-6 text-sm text-paper/50">
           Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)
         </p>
       </div>

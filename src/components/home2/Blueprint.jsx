@@ -106,8 +106,8 @@ function Particles() {
     const sg = sprite.getContext("2d");
     const g = sg.createRadialGradient(16, 16, 0, 16, 16, 16);
     g.addColorStop(0, "rgba(220,255,215,1)");
-    g.addColorStop(0.25, "rgba(144,217,136,0.9)");
-    g.addColorStop(1, "rgba(144,217,136,0)");
+    g.addColorStop(0.25, "color-mix(in_srgb,var(--accent)_90%,transparent)");
+    g.addColorStop(1, "color-mix(in_srgb,var(--accent)_0%,transparent)");
     sg.fillStyle = g;
     sg.fillRect(0, 0, 32, 32);
 
@@ -202,14 +202,14 @@ export default function Blueprint({ className = "" }) {
           {draw(EYES.map((e) => `M${e[0] - 7},${e[1]}a7,4 0 1,0 14,0a7,4 0 1,0 -14,0`))}
         </g>
         {/* Indicator lights on the front edge. */}
-        <g fill="rgba(144,217,136,0.9)" className="bp-lights">
+        <g fill="color-mix(in_srgb,var(--accent)_90%,transparent)" className="bp-lights">
           {[0, 1, 2].map((k) => {
             const p = P(W - 30, 0, H - 40 - k * 14);
             return <circle key={k} cx={p[0]} cy={p[1]} r="2.6" />;
           })}
         </g>
         {/* The energy: a soft glow and a bright line, drawn after the sketch. */}
-        <g stroke="#90D988" className="bp-energy">
+        <g stroke="var(--color-signal)" className="bp-energy">
           <path d={RUNS.map(runPath).join("")} pathLength="1" strokeWidth="6" strokeOpacity="0.16" className="bp-glow" style={{ "--k": 0 }} />
           <path d={RUNS.map(runPath).join("")} pathLength="1" strokeWidth="1.6" className="bp-glow" style={{ "--k": 0 }} />
         </g>

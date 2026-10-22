@@ -11,11 +11,11 @@ import EnergyGrid from "../article/EnergyGrid";
 export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], reveal }) {
   const words = title.split(" ");
   return (
-    <section id={id} data-play="now" data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-night text-white">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, rgba(144,217,136,0.12), transparent 70%)" }} />
+    <section id={id} data-play="now" data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid text-white">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in_srgb,var(--accent)_12%,transparent), transparent 70%)" }} />
       <EnergyGrid />
       <div className="relative container-site pb-14 pt-14 lg:pb-20 lg:pt-20">
-        <p className="article-eyebrow eyebrow text-signal">{eyebrow}</p>
+        <p className="article-eyebrow eyebrow text-accent">{eyebrow}</p>
         <h1 className="article-h1 mt-5 max-w-3xl text-h1 font-semibold">
           {words.map((w, i) => (
             <span key={i}>
@@ -26,12 +26,12 @@ export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], r
             </span>
           ))}
         </h1>
-        {intro && <p className="article-intro mt-6 max-w-2xl text-lead text-ice/90">{intro}</p>}
+        {intro && <p className="article-intro mt-6 max-w-2xl text-lead text-paper/90">{intro}</p>}
         {chips.length > 0 && (
           <ul aria-label="On this page" className="resources-chips mt-8 flex flex-wrap gap-2.5">
             {chips.map((c, i) => (
-              <li key={c.label} style={{ "--i": i }} className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-small font-medium text-ice/90 backdrop-blur-sm">
-                <span className="font-semibold text-signal">{c.n}</span> {c.label}
+              <li key={c.label} style={{ "--i": i }} className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-small font-medium text-paper/90 backdrop-blur-sm">
+                <span className="font-semibold text-accent">{c.n}</span> {c.label}
               </li>
             ))}
           </ul>

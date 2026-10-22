@@ -112,7 +112,7 @@ export default function WhyNexera() {
   );
 
   return (
-    <section className="relative overflow-hidden bg-night text-bone">
+    <section className="relative overflow-hidden bg-deep-grid text-paper">
       <TechGrid size={56} tone={0.045} drift={3} />
       <div className="relative z-10 container-site pt-24 pb-16 md:pt-28 md:pb-20">
         <DisplayHeading eyebrow="Why Nexera" className="max-w-3xl">
@@ -123,20 +123,20 @@ export default function WhyNexera() {
           <StatBar />
         </Reveal>
 
-        <ol ref={root} className="mt-16 border-l border-bone/15">
+        <ol ref={root} className="mt-16 border-l border-paper/15">
           {steps.map((s) => (
             <li key={s.n} data-a="step" className="relative pb-12 pl-8 last:pb-0 md:pl-12">
               {/* Active-step marker: rides the rail this <ol> already draws with its left border. */}
               <span
                 data-a="step-bar"
                 aria-hidden="true"
-                className="absolute -left-px top-0 h-full w-[2px] origin-top scale-y-0 bg-signal"
+                className="absolute -left-px top-0 h-full w-[2px] origin-top scale-y-0 bg-accent"
               />
               <div className="flex items-baseline gap-4">
-                <span className="font-serif text-sm font-semibold tabular-nums text-signal">{s.n}</span>
-                <h3 className="text-lg font-medium text-bone md:text-xl">{s.title}</h3>
+                <span className="font-serif text-sm font-semibold tabular-nums text-accent">{s.n}</span>
+                <h3 className="text-lg font-medium text-paper md:text-xl">{s.title}</h3>
               </div>
-              <p className="mt-3 max-w-2xl leading-relaxed text-bone/75">{s.copy}</p>
+              <p className="mt-3 max-w-2xl leading-relaxed text-paper/75">{s.copy}</p>
             </li>
           ))}
         </ol>

@@ -33,7 +33,7 @@ export default function Home() {
     <>
       <HomeHero />
       <HomeStats />
-      <Suspense fallback={<div className="min-h-[200svh] bg-paper" />}>
+      <Suspense fallback={<div className="min-h-[200svh] bg-white" />}>
         <HomeBelow />
       </Suspense>
     </>

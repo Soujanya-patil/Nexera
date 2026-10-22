@@ -2,8 +2,8 @@ import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
-const GREEN = "#90D988";
-const LINE = "#F4F7F4";
+const GREEN = "var(--color-signal)";
+const LINE = "var(--color-paper)";
 
 /**
  * "BIS certification for lithium batteries in India": a lithium cell, and a round "registration" stamp
@@ -38,10 +38,10 @@ export default function BisStamp({ active, motion }) {
         <g data-stamp transform="rotate(-12 200 170)">
           <circle cx="200" cy="170" r="50" fill="none" stroke={GREEN} strokeWidth="3" />
           <circle cx="200" cy="170" r="42" fill="none" stroke={GREEN} strokeWidth="1.2" strokeDasharray="3 3" />
-          <text x="200" y="168" textAnchor="middle" className="fill-signal text-[22px] font-semibold tracking-[0.08em]">
+          <text x="200" y="168" textAnchor="middle" className="fill-accent text-[22px] font-semibold tracking-[0.08em]">
             BIS
           </text>
-          <text x="200" y="188" textAnchor="middle" className="fill-signal text-[8px] font-semibold uppercase tracking-[0.06em]">
+          <text x="200" y="188" textAnchor="middle" className="fill-accent text-[8px] font-semibold uppercase tracking-[0.06em]">
             Registration
           </text>
         </g>

@@ -262,17 +262,17 @@ export default function SolutionsCI() {
       >
         <CardGrid>
           {PARTNERS.map((p) => (
-            <article key={p.id} className="group/card flex h-full flex-col rounded-2xl border border-line bg-paper p-6 md:p-8">
+            <article key={p.id} className="group/card flex h-full flex-col rounded-2xl border border-line bg-white p-6 md:p-8">
               <PartnerMark partner={p.id} decorative />
               <h3 className="mt-5 text-h4 font-semibold text-ink">{p.title}</h3>
               {p.statsFirst ? (
                 <>
                   <Stats items={p.stats} />
-                  <p className="mt-5 flex-1 text-small text-graphite">{p.copy}</p>
+                  <p className="mt-5 flex-1 text-small text-copy">{p.copy}</p>
                 </>
               ) : (
                 <>
-                  <p className="mt-3 text-small text-graphite">{p.copy}</p>
+                  <p className="mt-3 text-small text-copy">{p.copy}</p>
                   <Stats items={p.stats} className="mt-5 flex-1 content-start" />
                 </>
               )}
@@ -360,7 +360,7 @@ export default function SolutionsCI() {
             { title: "System Level", text: "EMS monitoring, alarms, remote diagnostics and controlled shutdown" },
           ]}
         />
-        <p className="mt-10 max-w-3xl text-body text-ice/75">
+        <p className="mt-10 max-w-3xl text-body text-paper/75">
           For example, the TCL BlueArk X5 incorporates battery protection, PV/AC surge protection, AFCI and fire-safety provisions, while the
           BlueArk W10 specifies liquid cooling and multiple fire-detection and suppression options.
         </p>
@@ -396,7 +396,7 @@ export default function SolutionsCI() {
         intro="A battery is only one part of a successful BESS project. NEXERA evaluates:"
       >
         <NumberedSteps
-          surface="bg-ice"
+          surface="bg-paper"
           items={[
             { title: "Load Profile", text: "15-minute / 30-minute demand pattern" },
             { title: "Tariff Structure", text: "Peak demand, TOD and energy charges" },

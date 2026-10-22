@@ -31,15 +31,15 @@ import { toggleDetails } from "../../lib/accordion";
  * h3. All copy is real text in the markup.
  */
 
-const TONES = { paper: "bg-paper", ice: "bg-ice", night: "bg-night text-white" };
+const TONES = { paper: "bg-white", ice: "bg-paper", night: "bg-deep-grid text-white" };
 
 // Hero overlays. The photo itself fades out toward the copy (a mask on its wrapper — see below), so
 // the gradient only has to keep the copy's contrast: "strong" for photos with bright detail behind
 // the text, "light" where the photo should stay clearly visible (utility).
 const HERO_OVERLAY = {
-  strong: "lg:bg-gradient-to-r lg:from-night lg:via-night/60 lg:to-night/10",
+  strong: "lg:bg-gradient-to-r lg:from-deep-grid lg:via-deep-grid/60 lg:to-deep-grid/10",
   // Lighter only from 1280 px: between 1024 and 1279 the copy overlaps more of the photo.
-  light: "lg:bg-gradient-to-r lg:from-night lg:via-night/60 lg:to-night/10 xl:from-night/90 xl:via-night/25 xl:to-transparent",
+  light: "lg:bg-gradient-to-r lg:from-deep-grid lg:via-deep-grid/60 lg:to-deep-grid/10 xl:from-deep-grid/90 xl:via-deep-grid/25 xl:to-transparent",
 };
 
 /**
@@ -106,7 +106,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
   });
 
   return (
-    <section ref={root} data-vt-hero={segment} className="relative overflow-hidden bg-night text-white">
+    <section ref={root} data-vt-hero={segment} className="relative overflow-hidden bg-deep-grid text-white">
       <Spotlight />
       <div data-intro={intro}>
         {/* Photo: full-bleed behind the copy on phones (dimmed); on desktop the right 54% (62% from 1280 px,
@@ -131,12 +131,12 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
               </div>
             </div>
           </div>
-          <div aria-hidden="true" className={`absolute inset-0 bg-night/75 lg:bg-transparent ${HERO_OVERLAY[overlay]}`} />
-          <div aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t ${overlay === "light" ? "from-night/70" : "from-night/90"} to-transparent`} />
+          <div aria-hidden="true" className={`absolute inset-0 bg-deep-grid/75 lg:bg-transparent ${HERO_OVERLAY[overlay]}`} />
+          <div aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t ${overlay === "light" ? "from-deep-grid/70" : "from-deep-grid/90"} to-transparent`} />
         </div>
 
         <div className="relative container-site py-14 lg:py-20">
-          <nav aria-label="Breadcrumb" className="text-micro text-ice/75">
+          <nav aria-label="Breadcrumb" className="text-micro text-paper/75">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
                 <Link to="/solutions" onClick={back} className="hit-area hover:text-white focus-visible:text-white">
@@ -146,7 +146,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
               <li aria-hidden="true">
                 <ChevronRight className="h-3.5 w-3.5" />
               </li>
-              <li aria-current="page" className="text-ice/90">
+              <li aria-current="page" className="text-paper/90">
                 {crumb}
               </li>
             </ol>
@@ -157,8 +157,8 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
                 that would reach the eyebrow (and .solutions-page balances h1 text), so the headline's
                 styles sit on its own span. */}
             <h1>
-              <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-signal [text-wrap:wrap]">
-                <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-signal/70" />
+              <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-accent [text-wrap:wrap]">
+                <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-accent/70" />
                 {eyebrow}
               </span>{" "}
               <span className="mt-5 block text-display font-semibold">
@@ -169,7 +169,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
                 </span>{" "}
                 <span className="line-mask">
                   <span data-a="line" className="block">
-                    <span ref={accent} className="text-signal">
+                    <span ref={accent} className="text-accent">
                       {line2}
                     </span>
                   </span>
@@ -180,12 +180,12 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
               {subheading}
             </p>
             {body.map((p) => (
-              <p data-a="desc" key={p} className="mt-4 max-w-xl text-body text-ice/90">
+              <p data-a="desc" key={p} className="mt-4 max-w-xl text-body text-paper/90">
                 {p}
               </p>
             ))}
             {tagline && (
-              <p data-a="desc" className="mt-5 text-small font-semibold text-signal">
+              <p data-a="desc" className="mt-5 text-small font-semibold text-accent">
                 {tagline}
               </p>
             )}
@@ -199,7 +199,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
           </div>
         </div>
         {image.credit && (
-          <p className="absolute bottom-4 right-6 hidden rounded-full bg-night/85 px-3 py-1 text-micro tracking-[0.14em] text-ice/90 backdrop-blur-sm lg:block">{image.credit}</p>
+          <p className="absolute bottom-4 right-6 hidden rounded-full bg-deep-grid/85 px-3 py-1 text-micro tracking-[0.14em] text-paper/90 backdrop-blur-sm lg:block">{image.credit}</p>
         )}
       </div>
     </section>
@@ -248,19 +248,19 @@ export function BenefitStrip({ items }) {
     };
   }, []);
   return (
-    <section aria-labelledby="benefits-title" className="border-t border-white/10 bg-deep text-white">
+    <section aria-labelledby="benefits-title" className="border-t border-white/10 bg-deep-grid text-white">
       <h2 id="benefits-title" className="sr-only">
         Key benefits
       </h2>
       <ul ref={list} className="grid container-site gap-x-8 gap-y-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(({ icon: Icon, title, text }) => (
           <li key={title} className="group/ben flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-signal/60 text-signal transition-[translate,box-shadow,border-color] duration-fast group-hover/ben:-translate-y-1 group-focus-visible/ben:-translate-y-1 group-focus-within/ben:-translate-y-1 group-hover/ben:border-signal group-focus-visible/ben:border-signal group-focus-within/ben:border-signal group-hover/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)] group-focus-visible/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)] group-focus-within/ben:shadow-[0_0_22px_2px_rgba(144,217,136,0.35)]">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/60 text-accent transition-[translate,box-shadow,border-color] duration-fast group-hover/ben:-translate-y-1 group-focus-visible/ben:-translate-y-1 group-focus-within/ben:-translate-y-1 group-hover/ben:border-accent group-focus-visible/ben:border-accent group-focus-within/ben:border-accent group-hover/ben:shadow-[0_0_22px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] group-focus-visible/ben:shadow-[0_0_22px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] group-focus-within/ben:shadow-[0_0_22px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)]">
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <div>
               <h3 className="font-semibold text-white">{title}</h3>
-              <p className="mt-1 text-small text-ice/70">{text}</p>
+              <p className="mt-1 text-small text-paper/70">{text}</p>
             </div>
           </li>
         ))}
@@ -302,7 +302,7 @@ export function Section({ id, tone = "paper", eyebrow, title, mark, intro, push 
       <div className="relative container-site">
         <div className="max-w-3xl">
           {eyebrow && (
-            <KineticEyebrow className={`eyebrow ${dark ? "text-signal" : "text-sage"}`} ruleClass={dark ? "bg-signal" : "bg-sage"}>
+            <KineticEyebrow className={`eyebrow ${dark ? "text-accent" : "text-muted"}`} ruleClass={dark ? "bg-accent" : "bg-muted"}>
               {eyebrow}
             </KineticEyebrow>
           )}
@@ -310,7 +310,7 @@ export function Section({ id, tone = "paper", eyebrow, title, mark, intro, push 
             {title}
           </KineticHeading>
           {intros.map((p) => (
-            <p key={p} className={`mt-4 text-body ${dark ? "text-ice/75" : "text-graphite"}`}>
+            <p key={p} className={`mt-4 text-body ${dark ? "text-paper/75" : "text-copy"}`}>
               {p}
             </p>
           ))}
@@ -334,14 +334,14 @@ export function FeatureGrid({ items, columns = 3, dark = false, level = 3, class
           {Icon && (
             <span
               className={`grid h-11 w-11 place-items-center rounded-full transition-[background-color,scale] duration-fast group-hover/hl:scale-105 group-focus-visible/hl:scale-105 group-focus-within/hl:scale-105 ${
-                dark ? "bg-white/10 text-signal" : "bg-ice text-forest group-hover/hl:bg-signal/25 group-focus-visible/hl:bg-signal/25 group-focus-within/hl:bg-signal/25"
+                dark ? "bg-white/10 text-accent" : "bg-ice text-accent group-hover/hl:bg-accent/25 group-focus-visible/hl:bg-accent/25 group-focus-within/hl:bg-accent/25"
               }`}
             >
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
           )}
           <Heading className={`${Icon ? "mt-4" : ""} font-semibold ${dark ? "text-white" : "text-ink"}`}>{title}</Heading>
-          <p className={`mt-1.5 text-small ${dark ? "text-ice/70" : "text-graphite"}`}>{text}</p>
+          <p className={`mt-1.5 text-small ${dark ? "text-paper/70" : "text-copy"}`}>{text}</p>
         </li>
       ))}
     </ul>
@@ -362,7 +362,7 @@ const pad2 = (n) => String(n).padStart(2, "0");
  * card with the title and text; or "chip" — a numbered circle and a short label. `surface` is the
  * section's background, laid behind the card numbers so the connector line passes behind them.
  */
-function Timeline({ items, cols, variant, surface = "bg-ice", className }) {
+function Timeline({ items, cols, variant, surface = "bg-paper", className }) {
   const list = useRef(null);
   const reveal = useScrollReveal(list);
   const rows = Math.ceil(items.length / cols);
@@ -415,7 +415,7 @@ function Timeline({ items, cols, variant, surface = "bg-ice", className }) {
             className="pointer-events-none relative hidden lg:block lg:[grid-column:1/-1] lg:[grid-row:var(--r)]"
           >
             <span className={`absolute left-5 h-px bg-forest/15 ${variant === "card" ? "top-9" : "top-5"}`} style={{ width }} />
-            <span data-fill className={`absolute left-5 h-0.5 origin-left rounded-full bg-signal ${variant === "card" ? "top-[35px]" : "top-[19px]"}`} style={{ width }} />
+            <span data-fill className={`absolute left-5 h-0.5 origin-left rounded-full bg-accent ${variant === "card" ? "top-[35px]" : "top-[19px]"}`} style={{ width }} />
           </li>
         );
       })}
@@ -437,18 +437,18 @@ function Timeline({ items, cols, variant, surface = "bg-ice", className }) {
             ) : (
               <span
                 data-step
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-signal bg-signal text-small font-semibold text-forest transition-[background-color,color,border-color] duration-fast data-[active=false]:border-forest/20 data-[active=false]:bg-paper data-[active=false]:text-sage"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-accent bg-accent text-small font-semibold text-on-accent transition-[background-color,color,border-color] duration-fast data-[active=false]:border-accent/20 data-[active=false]:bg-white data-[active=false]:text-muted"
               >
                 {pad2(i + 1)}
               </span>
             )}
             {variant === "card" ? (
-              <div className="flex-1 rounded-2xl border border-line bg-paper p-6">
+              <div className="flex-1 rounded-2xl border border-line bg-white p-6">
                 <h3 className="font-semibold text-ink">{title}</h3>
-                <p className="mt-1.5 text-small text-graphite">{it.text}</p>
+                <p className="mt-1.5 text-small text-copy">{it.text}</p>
               </div>
             ) : (
-              <span className="rounded-full border border-line bg-paper px-4 py-2 text-small font-semibold text-forest">{title}</span>
+              <span className="rounded-full border border-line bg-white px-4 py-2 text-small font-semibold text-accent">{title}</span>
             )}
           </li>
         );
@@ -510,18 +510,18 @@ export function LayerStack({ items, className = "mt-12" }) {
           {i < items.length - 1 && (
             <>
               <span aria-hidden="true" className="absolute left-[1.125rem] top-[1.125rem] h-[calc(100%+0.75rem)] w-px -translate-x-1/2 bg-white/15" />
-              <span aria-hidden="true" data-fill className="absolute left-[1.125rem] top-[1.125rem] -ml-px h-[calc(100%+0.75rem)] w-0.5 origin-top bg-signal" />
+              <span aria-hidden="true" data-fill className="absolute left-[1.125rem] top-[1.125rem] -ml-px h-[calc(100%+0.75rem)] w-0.5 origin-top bg-accent" />
             </>
           )}
           <span
             data-step
-            className="relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-signal bg-signal text-small font-semibold text-forest transition-[background-color,color] duration-fast data-[active=false]:bg-night data-[active=false]:text-signal"
+            className="relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-accent bg-accent text-small font-semibold text-on-accent transition-[background-color,color] duration-fast data-[active=false]:bg-deep-grid data-[active=false]:text-accent"
           >
             {i + 1}
           </span>
           <div className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] p-4 md:ml-[calc(var(--step)*1.5rem)] md:flex md:items-baseline md:gap-4 md:p-5">
             <h3 className="font-semibold text-white md:w-40 md:shrink-0">{title}</h3>
-            <p className="mt-1 text-small text-ice/75 md:mt-0">{text}</p>
+            <p className="mt-1 text-small text-paper/75 md:mt-0">{text}</p>
           </div>
         </li>
       ))}
@@ -538,13 +538,13 @@ export function DataTable({ caption, head, rows, icons = {}, className = "mt-10"
   const body = useRef(null);
   const reveal = useScrollReveal(body);
   return (
-    <div className={`overflow-x-auto rounded-2xl border border-line bg-paper ${className}`}>
+    <div className={`overflow-x-auto rounded-2xl border border-line bg-white ${className}`}>
       <table className="w-full min-w-[30rem] border-collapse text-left text-small">
         <caption className="border-b border-line px-5 py-4 text-left text-small font-semibold text-ink sm:px-6">{caption}</caption>
         <thead>
-          <tr className="bg-ice">
+          <tr className="bg-paper">
             {head.map((h) => (
-              <th key={h} scope="col" className="px-5 py-3 eyebrow text-sage sm:px-6">
+              <th key={h} scope="col" className="px-5 py-3 eyebrow text-muted sm:px-6">
                 {h}
               </th>
             ))}
@@ -558,15 +558,15 @@ export function DataTable({ caption, head, rows, icons = {}, className = "mt-10"
                 <th scope="row" className="relative overflow-hidden px-5 py-3.5 font-semibold text-ink sm:px-6">
                   <span
                     aria-hidden="true"
-                    className="absolute inset-y-0 left-0 w-[3px] -translate-x-full bg-signal transition-transform duration-fast ease-standard group-hover/row:translate-x-0 group-focus-visible/row:translate-x-0 group-focus-within/row:translate-x-0"
+                    className="absolute inset-y-0 left-0 w-[3px] -translate-x-full bg-accent transition-transform duration-fast ease-standard group-hover/row:translate-x-0 group-focus-visible/row:translate-x-0 group-focus-within/row:translate-x-0"
                   />
                   <span className="flex items-center gap-2.5">
-                    {Icon && <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-forest/70" strokeWidth={1.8} />}
+                    {Icon && <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-accent/70" strokeWidth={1.8} />}
                     {first}
                   </span>
                 </th>
                 {rest.map((c) => (
-                  <td key={c} className="px-5 py-3.5 text-graphite sm:px-6">
+                  <td key={c} className="px-5 py-3.5 text-copy sm:px-6">
                     {c}
                   </td>
                 ))}
@@ -584,8 +584,8 @@ export function Checklist({ items, dark = false, className = "mt-6" }) {
   return (
     <ul className={`grid gap-3 sm:grid-cols-2 ${className}`}>
       {items.map((t) => (
-        <li key={t} className={`flex items-start gap-3 text-small ${dark ? "text-ice/85" : "text-ink"}`}>
-          <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-signal" strokeWidth={2.4} />
+        <li key={t} className={`flex items-start gap-3 text-small ${dark ? "text-paper/85" : "text-ink"}`}>
+          <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={2.4} />
           {t}
         </li>
       ))}
@@ -599,9 +599,9 @@ export function Stats({ items, className = "mt-6" }) {
     <dl className={`grid grid-cols-2 gap-x-6 gap-y-4 ${className}`}>
       {items.map(([value, label]) => (
         // dt (label) first in the markup, shown under the figure.
-        <div key={label} className="flex flex-col-reverse border-l-2 border-signal/60 pl-3">
-          <dt className="text-micro text-graphite">{label}</dt>
-          <dd className="text-h4 font-semibold text-forest tabular-nums">
+        <div key={label} className="flex flex-col-reverse border-l-2 border-accent/60 pl-3">
+          <dt className="text-micro text-copy">{label}</dt>
+          <dd className="text-h4 font-semibold text-accent tabular-nums">
             <CountUp value={value} />
           </dd>
         </div>
@@ -681,14 +681,14 @@ function CompareChip({ id, name }) {
   const checked = ids.includes(id);
   return (
     <label
-      className={`absolute right-3 top-3 z-20 inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-micro font-semibold pointer-coarse:before:absolute pointer-coarse:before:-inset-2 pointer-coarse:before:content-[''] shadow-sm backdrop-blur transition-colors duration-fast has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-signal ${
-        checked ? "border-forest bg-forest text-white" : "border-line bg-paper/90 text-forest hover:border-forest/40 focus-visible:border-forest/40"
+      className={`absolute right-3 top-3 z-20 inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-micro font-semibold pointer-coarse:before:absolute pointer-coarse:before:-inset-2 pointer-coarse:before:content-[''] shadow-sm backdrop-blur transition-colors duration-fast has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${
+        checked ? "border-accent bg-forest text-white" : "border-line bg-white/90 text-accent hover:border-accent/40 focus-visible:border-accent/40"
       }`}
     >
       <input type="checkbox" checked={checked} onChange={() => toggle(id)} className="sr-only" />
       <span
         aria-hidden="true"
-        className={`grid h-4 w-4 place-items-center rounded-[4px] border ${checked ? "border-signal bg-signal text-forest" : "border-forest/40 bg-paper"}`}
+        className={`grid h-4 w-4 place-items-center rounded-[4px] border ${checked ? "border-accent bg-accent text-on-accent" : "border-accent/40 bg-white"}`}
       >
         {checked && <Check className="h-3 w-3" strokeWidth={3} />}
       </span>
@@ -735,7 +735,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
     <article
       ref={card}
       style={{ transform: "perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))" }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper card-hover"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white card-hover"
     >
       {/* Glare: a soft highlight that follows the cursor while tilting (desktop). */}
       <span
@@ -743,7 +743,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
         className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-fast group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100"
         style={{ background: "radial-gradient(40% 50% at var(--gx, 50%) var(--gy, 30%), rgba(255,255,255,0.35), transparent 70%)" }}
       />
-      <div data-sr data-wipe className="relative h-56 shrink-0 overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,#ffffff_0%,#F4F7F4_70%,#ECF1EC_100%)] lg:h-60">
+      <div data-sr data-wipe className="relative h-56 shrink-0 overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,var(--color-white)_0%,var(--color-white)_70%,var(--color-paper)_100%)] lg:h-60">
         {comparable && <CompareChip id={product.id} name={name} />}
         {/* Ground shadow: widens as the product lifts on hover. */}
         {!fallback && (
@@ -768,21 +768,21 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
       </div>
       <div className="flex flex-1 flex-col p-6">
         <Heading className="text-h3 font-semibold text-ink">{name}</Heading>
-        {sub && <p className="mt-0.5 text-micro text-graphite">{sub}</p>}
-        {figures && <p className="mt-2 text-small font-semibold text-forest">{figures}</p>}
+        {sub && <p className="mt-0.5 text-micro text-copy">{sub}</p>}
+        {figures && <p className="mt-2 text-small font-semibold text-accent">{figures}</p>}
         {tagline && <p className="mt-3 text-small font-semibold text-ink">{tagline}</p>}
-        {copy && <p className="mt-2 text-small text-graphite">{copy}</p>}
+        {copy && <p className="mt-2 text-small text-copy">{copy}</p>}
         {specs.length > 0 && (
           <ul className="mt-4 space-y-1.5 text-small text-ink">
             {specs.map((s) => (
               <li key={s} className="flex items-start gap-2">
-                <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-signal" />
+                <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
                 {s}
               </li>
             ))}
           </ul>
         )}
-        {note && <p className="mt-4 text-micro text-graphite">{note}</p>}
+        {note && <p className="mt-4 text-micro text-copy">{note}</p>}
         <ArrowLink to={to ?? `/products/${product.id}`} className="mt-auto self-start pt-6">
           {cta}
         </ArrowLink>
@@ -825,12 +825,12 @@ export function FaqList({ id, title, items, tone = "ice" }) {
     }
   };
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "paper" ? "bg-paper" : "bg-ice"} relative py-14 lg:py-20`}>
+    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "paper" ? "bg-white" : "bg-paper"} relative py-14 lg:py-20`}>
       <div className="container-site">
         <KineticHeading id={`${id}-title`} className="text-h2 max-w-3xl font-semibold text-ink">
           {title}
         </KineticHeading>
-        <div className={`mt-10 max-w-3xl divide-y divide-line rounded-2xl border border-line ${tone === "paper" ? "bg-ice/60" : "bg-paper"}`}>
+        <div className={`mt-10 max-w-3xl divide-y divide-line rounded-2xl border border-line ${tone === "paper" ? "bg-ice/60" : "bg-white"}`}>
           {items.map(({ q, a }, i) => (
             <details key={q} className="faq-item group/faq" open={i === 0 || undefined}>
               <summary
@@ -841,12 +841,12 @@ export function FaqList({ id, title, items, tone = "ice" }) {
                 <h3 className="font-semibold text-ink">{q}</h3>
                 <span
                   aria-hidden="true"
-                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-forest transition-[transform,background-color] duration-base ease-emphasized group-open/faq:rotate-180 group-open/faq:bg-signal/25"
+                  className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-accent transition-[transform,background-color] duration-base ease-emphasized group-open/faq:rotate-180 group-open/faq:bg-accent/25"
                 >
                   <ChevronDown className="h-4 w-4" />
                 </span>
               </summary>
-              <p className="px-5 pb-5 text-small text-graphite sm:px-6">{a}</p>
+              <p className="px-5 pb-5 text-small text-copy sm:px-6">{a}</p>
             </details>
           ))}
         </div>
@@ -872,10 +872,10 @@ function TopicChips({ items, selected, onToggle, labelledBy }) {
               aria-pressed={on}
               onClick={() => onToggle(t)}
               className={`hit-area inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-left text-small transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
-                on ? "border-signal/60 bg-signal/15 text-white" : "border-white/15 bg-transparent text-ice/60 hover:border-white/30 focus-visible:border-white/30 hover:text-ice/85 focus-visible:text-ice/85"
+                on ? "border-accent/60 bg-accent/15 text-white" : "border-white/15 bg-transparent text-paper/60 hover:border-white/30 focus-visible:border-white/30 hover:text-paper/85 focus-visible:text-paper/85"
               }`}
             >
-              <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors duration-fast ${on ? "border-signal bg-signal" : "border-white/30"}`}>
+              <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border transition-colors duration-fast ${on ? "border-accent bg-accent" : "border-white/30"}`}>
                 <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" fill="none">
                   <path
                     d="M2.5 6.2 5 8.6 9.6 3.6"
@@ -884,7 +884,7 @@ function TopicChips({ items, selected, onToggle, labelledBy }) {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-forest transition-[stroke-dashoffset] duration-fast ease-standard motion-reduce:transition-none"
+                    className="text-accent transition-[stroke-dashoffset] duration-fast ease-standard motion-reduce:transition-none"
                     style={{ strokeDasharray: 1, strokeDashoffset: on ? 0 : 1 }}
                   />
                 </svg>
@@ -909,13 +909,13 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
   const toggle = (t) => setSelected((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : checklist.filter((x) => x === t || cur.includes(x))));
   const to = segment && selected.length ? `${button.to}&topics=${selected.map(topicSlug).join(",")}` : button.to;
   return (
-    <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-night py-14 text-white lg:py-20">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, rgba(144,217,136,0.08), transparent 70%)" }} />
+    <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-deep-grid py-14 text-white lg:py-20">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, color-mix(in_srgb,var(--accent)_8%,transparent), transparent 70%)" }} />
       <Spotlight />
       <div className="relative container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
         <div>
           {eyebrow && (
-            <KineticEyebrow className="eyebrow text-signal" ruleClass="bg-signal">
+            <KineticEyebrow className="eyebrow text-accent" ruleClass="bg-accent">
               {eyebrow}
             </KineticEyebrow>
           )}
@@ -923,7 +923,7 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
             {title}
           </KineticHeading>
           {subheading && <p className="mt-4 text-lead font-medium text-white">{subheading}</p>}
-          <p id={`${id}-body`} className="mt-4 max-w-xl text-body text-ice/80">
+          <p id={`${id}-body`} className="mt-4 max-w-xl text-body text-paper/80">
             {body}
           </p>
           <PillLink to={to} arrow spotlight ripple className="mt-8">

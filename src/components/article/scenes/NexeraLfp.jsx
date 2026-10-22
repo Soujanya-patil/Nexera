@@ -65,10 +65,10 @@ export default function NexeraLfp({ active, motion, mode, step }) {
               key={s.name}
               data-tile
               className={`flex flex-col overflow-hidden rounded-2xl border transition-[border-color,box-shadow] duration-500 ${
-                on ? "border-signal/70 shadow-[0_0_26px_rgba(144,217,136,0.3)]" : any ? "border-white/10 opacity-55" : "border-white/15"
+                on ? "border-accent/70 shadow-[0_0_26px_color-mix(in_srgb,var(--accent)_30%,transparent)]" : any ? "border-white/10 opacity-55" : "border-white/15"
               }`}
             >
-              <div className={`relative shrink-0 overflow-hidden bg-ice ${compact ? "h-24" : "h-36"}`}>
+              <div className={`relative shrink-0 overflow-hidden bg-paper ${compact ? "h-24" : "h-36"}`}>
                 {p ? (
                   <img
                     src={p.image}
@@ -79,14 +79,14 @@ export default function NexeraLfp({ active, motion, mode, step }) {
                   />
                 ) : (
                   <span aria-hidden="true" className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-ink">
-                    <BatteryFull className={compact ? "h-6 w-6 text-forest" : "h-8 w-8 text-forest"} strokeWidth={1.6} />
+                    <BatteryFull className={compact ? "h-6 w-6 text-accent" : "h-8 w-8 text-accent"} strokeWidth={1.6} />
                     {s.wordmark && <span className={`font-semibold uppercase leading-none tracking-tight ${compact ? "text-sm" : "text-lg"}`}>{s.wordmark}</span>}
                   </span>
                 )}
               </div>
               <div className={compact ? "p-2" : "p-3"}>
                 <p className={`font-semibold leading-snug text-white ${compact ? "text-[11px]" : "text-[13px]"}`}>{s.name}</p>
-                <p className={`mt-1 font-semibold text-signal ${compact ? "text-[10px]" : "text-xs"}`}>{s.cell}</p>
+                <p className={`mt-1 font-semibold text-accent ${compact ? "text-[10px]" : "text-xs"}`}>{s.cell}</p>
               </div>
             </li>
           );

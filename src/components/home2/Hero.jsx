@@ -46,7 +46,7 @@ function Sequence() {
       </div>
       <div className="seq-mark text-white">
         <Wordmark className="text-2xl" />
-        <span className="seq-tag seq-ch mt-2 block text-[0.5rem] font-semibold uppercase tracking-[0.42em] text-signal" data-ch="Store today · Power tomorrow" />
+        <span className="seq-tag seq-ch mt-2 block text-[0.5rem] font-semibold uppercase tracking-[0.42em] text-accent" data-ch="Store today · Power tomorrow" />
       </div>
     </div>
   );
@@ -66,14 +66,14 @@ export default function Hero() {
 
       <div className="relative container-site grid gap-8 pb-6 pt-12 lg:min-h-[calc(100svh-4rem)] lg:grid-cols-2 lg:items-center lg:pb-28 lg:pt-10">
         <div className="relative z-10 lg:max-w-[38rem]">
-          <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">
-            <span aria-hidden="true" className="h-px w-8 bg-signal/70" />
+          <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-accent">
+            <span aria-hidden="true" className="h-px w-8 bg-accent/70" />
             Energy storage for a brighter tomorrow
           </p>
           <h1 id="home2-title" className="mt-5 text-[clamp(2.7rem,5.6vw,5.4rem)] font-semibold leading-[0.98] tracking-tight [text-wrap:balance]">
             Battery Energy Storage Systems <span className="grad-text">for a Smarter Energy Future</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-ice/80">
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-paper/80">
             NEXERA Powertech brings advanced Battery Energy Storage Systems (BESS) from global technology partners to residential, commercial &amp;
             industrial and utility-scale projects across India.
           </p>
@@ -117,17 +117,17 @@ export default function Hero() {
       </div>
 
       {/* Bottom edge: the four chips, icons drawing in. */}
-      <ul className="relative z-10 container-site grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 py-6 sm:grid-cols-4 lg:absolute lg:inset-x-0 lg:bottom-0 lg:bg-[#07130f]/85 lg:py-5">
+      <ul className="relative z-10 container-site grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/10 py-6 sm:grid-cols-4 lg:absolute lg:inset-x-0 lg:bottom-0 lg:bg-deep-grid/85 lg:py-5">
         {CHIPS.map((c, k) => (
           <li key={c.title} className="flex items-center gap-3">
-            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-9 w-9 shrink-0 rounded-full border border-signal/35 p-2 text-signal" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-9 w-9 shrink-0 rounded-full border border-accent/35 p-2 text-accent" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
               {ICONS[c.icon].map((d, j) => (
                 <path key={j} d={d} pathLength="1" className="chip-draw" style={{ "--i": k * 2 + j }} />
               ))}
             </svg>
             <span className="leading-tight">
               <span className="block text-sm font-semibold">{c.title}</span>
-              <span className="block text-xs text-ice/70">{c.sub}</span>
+              <span className="block text-xs text-paper/70">{c.sub}</span>
             </span>
           </li>
         ))}

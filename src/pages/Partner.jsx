@@ -105,11 +105,11 @@ function PartnerHero({ id, name, contact }) {
   });
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-night text-white">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid text-white">
       <Spotlight />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, rgba(144,217,136,0.10), transparent 70%)" }} />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in_srgb,var(--accent)_10%,transparent), transparent 70%)" }} />
       <div data-intro={intro} className="relative container-site py-14 lg:py-20">
-        <nav aria-label="Breadcrumb" className="text-micro text-ice/75">
+        <nav aria-label="Breadcrumb" className="text-micro text-paper/75">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
               <Link to="/products" className="hit-area hover:text-white focus-visible:text-white">
@@ -119,14 +119,14 @@ function PartnerHero({ id, name, contact }) {
             <li aria-hidden="true">
               <ChevronRight className="h-3.5 w-3.5" />
             </li>
-            <li aria-current="page" className="text-ice/90">
+            <li aria-current="page" className="text-paper/90">
               {name}
             </li>
           </ol>
         </nav>
         <div className="mt-10 max-w-2xl">
           {/* The logo on a light panel (as on the product pages); Midea has no logo file: its name in type. */}
-          <div data-a="logo" className="inline-flex h-14 items-center rounded-xl bg-paper px-5">
+          <div data-a="logo" className="inline-flex h-14 items-center rounded-xl bg-white px-5">
             {logo ? (
               <img src={logo.logo} alt={name} decoding="async" className={`${id === "clou" ? "h-8" : "h-6"} w-auto`} />
             ) : (
@@ -141,12 +141,12 @@ function PartnerHero({ id, name, contact }) {
               </span>
             </span>{" "}
             <span className="line-mask">
-              <span data-a="line" className="block text-signal">
+              <span data-a="line" className="block text-accent">
                 in India
               </span>
             </span>
           </h1>
-          <p data-a="desc" className="mt-6 max-w-xl text-lead text-ice/90">
+          <p data-a="desc" className="mt-6 max-w-xl text-lead text-paper/90">
             {PARTNER_LINE}
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">

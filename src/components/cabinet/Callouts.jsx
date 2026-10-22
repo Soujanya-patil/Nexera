@@ -215,7 +215,7 @@ export default function Callouts({ show, count, animate, onActive, compact = fal
             left: `${ax}%`,
             top: `${ay}%`,
             opacity: vis(i) && active === i ? 1 : 0,
-            background: "radial-gradient(closest-side, rgba(144,217,136,0.22), rgba(144,217,136,0.07) 55%, transparent)",
+            background: "radial-gradient(closest-side, color-mix(in_srgb,var(--accent)_22%,transparent), color-mix(in_srgb,var(--accent)_7%,transparent) 55%, transparent)",
           }}
         />
       ))}
@@ -232,7 +232,7 @@ export default function Callouts({ show, count, animate, onActive, compact = fal
                 key={CALLOUTS[i].label}
                 points={pts.map((pt) => pt.join(",")).join(" ")}
                 fill="none"
-                stroke={hot ? "rgba(144,217,136,0.9)" : "rgba(244,247,244,0.5)"}
+                stroke={hot ? "color-mix(in_srgb,var(--accent)_90%,transparent)" : "color-mix(in srgb, var(--color-paper) 50%, transparent)"}
                 strokeWidth={hot ? 1.5 : 1}
                 strokeDasharray={len}
                 style={{
@@ -278,13 +278,13 @@ export default function Callouts({ show, count, animate, onActive, compact = fal
                     style={{ transform: hot ? "scale(1.45)" : "none" }}
                   >
                     {shown && animate && (
-                      <span className="animate-hotspot-pulse absolute inset-0 rounded-full bg-signal" style={{ animationDelay: `${base}ms` }} />
+                      <span className="animate-hotspot-pulse absolute inset-0 rounded-full bg-accent" style={{ animationDelay: `${base}ms` }} />
                     )}
                     {/* Hover: one stronger pulse from the dot (remounts on each hover, so it plays once) */}
-                    {shown && hot && animate && <span className="animate-hotspot-once absolute inset-0 rounded-full bg-signal" />}
+                    {shown && hot && animate && <span className="animate-hotspot-once absolute inset-0 rounded-full bg-accent" />}
                     <span
-                      className={`relative block h-full w-full rounded-full bg-signal ring-2 transition-shadow duration-200 ${
-                        hot ? "shadow-[0_0_10px_2px_rgba(144,217,136,0.55)] ring-signal/35" : "ring-deep/70"
+                      className={`relative block h-full w-full rounded-full bg-accent ring-2 transition-shadow duration-200 ${
+                        hot ? "shadow-[0_0_10px_2px_color-mix(in_srgb,var(--accent)_55%,transparent)] ring-accent/35" : "ring-deep-grid/70"
                       }`}
                     />
                   </span>
@@ -302,15 +302,15 @@ export default function Callouts({ show, count, animate, onActive, compact = fal
                 <span className="block" style={{ opacity: shown ? 1 : 0, transform: shown ? "none" : from, ...tr(shown, "opacity, transform", base + CHIP_DELAY, CHIP_IN) }}>
                   <span
                     className={`block rounded-[3px] border px-1.5 py-1 leading-tight backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 sm:px-2 ${
-                      hot ? "border-signal/45 bg-[#0a241d]/90 shadow-[0_0_14px_-2px_rgba(144,217,136,0.35)]" : "border-white/15 bg-deep/85"
+                      hot ? "border-accent/45 bg-deep-grid/90 shadow-[0_0_14px_-2px_color-mix(in_srgb,var(--accent)_35%,transparent)]" : "border-white/15 bg-deep-grid/85"
                     }`}
                   >
                     <span
-                      className={`block text-[0.5625rem] font-semibold uppercase tracking-[0.04em] transition-colors duration-200 sm:text-[0.625rem] sm:tracking-[0.06em] ${hot ? "text-white" : "text-ice"}`}
+                      className={`block text-[0.5625rem] font-semibold uppercase tracking-[0.04em] transition-colors duration-200 sm:text-[0.625rem] sm:tracking-[0.06em] ${hot ? "text-white" : "text-paper"}`}
                     >
                       {label}
                     </span>
-                    {detail && <span className="mt-0.5 hidden text-[0.5625rem] leading-snug text-ice/60 sm:block">{detail}</span>}
+                    {detail && <span className="mt-0.5 hidden text-[0.5625rem] leading-snug text-paper/60 sm:block">{detail}</span>}
                   </span>
                 </span>
               </span>

@@ -49,7 +49,7 @@ const products = [
 
 export default function ProductShowcase() {
   return (
-    <section className="relative bg-night text-bone">
+    <section className="relative bg-deep-grid text-paper">
       <div className="container-site pt-16 pb-24 md:pt-20 md:pb-32">
         <DisplayHeading eyebrow="Product Showcase" className="max-w-3xl">
           Real systems, ready to deploy
@@ -59,7 +59,7 @@ export default function ProductShowcase() {
           {products.map((p, i) => (
             <Reveal key={p.id} className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
               <figure
-                className={`group overflow-hidden rounded-lg bg-charcoal ring-1 ring-bone/10 transition-[box-shadow] duration-300 hover:ring-signal/50 ${
+                className={`group overflow-hidden rounded-lg bg-forest ring-1 ring-paper/10 transition-[box-shadow] duration-300 hover:ring-accent/50 ${
                   i % 2 === 1 ? "md:order-2" : ""
                 }`}
               >
@@ -74,21 +74,21 @@ export default function ProductShowcase() {
                 />
               </figure>
               <div>
-                <p className="text-sm text-bone/60">{p.application}</p>
-                <h3 className="mt-2 font-serif text-2xl font-semibold text-bone md:text-3xl">{p.name}</h3>
-                <p className="mt-4 leading-relaxed text-bone/75">{p.overview}</p>
+                <p className="text-sm text-paper/60">{p.application}</p>
+                <h3 className="mt-2 font-serif text-2xl font-semibold text-paper md:text-3xl">{p.name}</h3>
+                <p className="mt-4 leading-relaxed text-paper/75">{p.overview}</p>
                 <ul className="mt-6 space-y-2.5">
                   {p.capabilities.map((c) => (
-                    <li key={c} className="flex items-center gap-2.5 text-sm text-bone/85">
-                      <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-signal" />
+                    <li key={c} className="flex items-center gap-2.5 text-sm text-paper/85">
+                      <span aria-hidden="true" className="h-1 w-1 shrink-0 rounded-full bg-accent" />
                       {c}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-6 border-t border-bone/15 pt-4 text-xs text-bone/50">{p.specs}</p>
+                <p className="mt-6 border-t border-paper/15 pt-4 text-xs text-paper/50">{p.specs}</p>
                 <a
                   href="#enquire"
-                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-signal transition-colors hover:text-bone"
+                  className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-paper"
                 >
                   Enquire about {p.name}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />

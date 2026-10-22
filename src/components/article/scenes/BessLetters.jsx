@@ -36,7 +36,7 @@ export default function BessLetters({ active, motion, mode }) {
         <ul aria-hidden="true" className="space-y-1">
           {WORDS.map(([l, rest], i) => (
             <li key={i} className={`flex items-baseline font-semibold leading-none tracking-tight ${big}`}>
-              <span data-letter className="inline-block text-signal">
+              <span data-letter className="inline-block text-accent">
                 {l}
               </span>
               <span data-rest className="inline-block text-[0.62em] text-white/90">
@@ -45,7 +45,7 @@ export default function BessLetters({ active, motion, mode }) {
             </li>
           ))}
         </ul>
-        <span data-rule aria-hidden="true" className="mt-5 block h-0.5 w-40 origin-left rounded-full bg-gradient-to-r from-signal to-transparent" />
+        <span data-rule aria-hidden="true" className="mt-5 block h-0.5 w-40 origin-left rounded-full bg-gradient-to-r from-accent to-transparent" />
       </div>
     </div>
   );

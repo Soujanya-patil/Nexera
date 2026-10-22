@@ -48,7 +48,7 @@ export default function Capacity() {
   }, [tip]);
 
   return (
-    <section aria-labelledby="home2-products" className="bg-ice py-20 text-ink lg:py-28">
+    <section aria-labelledby="home2-products" className="bg-paper py-20 text-ink lg:py-28">
       <div className="container-site">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -59,7 +59,7 @@ export default function Capacity() {
           </div>
           <Link
             to="/products"
-            className="group inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-forest underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2f7d3a]"
+            className="group inline-flex items-center gap-1.5 rounded-md text-sm font-semibold text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-link"
           >
             View All Products
             <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none" />
@@ -73,8 +73,8 @@ export default function Capacity() {
               type="button"
               aria-pressed={seg === s.id}
               onClick={() => setSeg(s.id)}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d3a] sm:px-5 ${
-                seg === s.id ? "bg-forest text-white" : "text-graphite hover:text-ink"
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link sm:px-5 ${
+                seg === s.id ? "bg-forest text-white" : "text-copy hover:text-ink"
               }`}
             >
               {s.label}
@@ -120,7 +120,7 @@ export default function Capacity() {
                           if (e.nativeEvent.pointerType === "mouse") setTip(p.id);
                           else setTip((t) => (t === p.id ? null : p.id));
                         }}
-                        className="cap-dot absolute top-1/2 h-4 -translate-y-1/2 rounded-full transition-[opacity,scale] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d3a]"
+                        className="cap-dot absolute top-1/2 h-4 -translate-y-1/2 rounded-full transition-[opacity,scale] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link"
                         style={{
                           left: `calc(${left}% - 8px)`,
                           width: `calc(${Math.max(0, right - left)}% + 16px)`,
@@ -131,15 +131,15 @@ export default function Capacity() {
                       />
                       {open && (
                         <div
-                          className="absolute bottom-full z-10 mb-1 w-60 rounded-xl border border-line bg-white p-3 text-left shadow-[0_14px_34px_-14px_rgba(7,26,23,0.35)]"
+                          className="absolute bottom-full z-10 mb-1 w-60 rounded-xl border border-line bg-white p-3 text-left shadow-[0_14px_34px_-14px_color-mix(in_srgb,var(--color-ink)_35%,transparent)]"
                           style={flip ? { right: `calc(${100 - left}% - 12px)` } : { left: `calc(${left}% - 12px)` }}
                         >
-                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-graphite">{partnerOf(p.partner)?.name}</p>
+                          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-copy">{partnerOf(p.partner)?.name}</p>
                           <p className="mt-0.5 font-semibold leading-snug">{p.name}</p>
-                          <p className="text-sm text-graphite">{energy.text}</p>
+                          <p className="text-sm text-copy">{energy.text}</p>
                           <Link
                             to={`/products/${p.id}`}
-                            className="mt-2 inline-flex items-center gap-1 rounded-md text-sm font-semibold text-[#2f7d3a] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d3a]"
+                            className="mt-2 inline-flex items-center gap-1 rounded-md text-sm font-semibold text-link underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link"
                           >
                             View product
                             <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
@@ -151,16 +151,16 @@ export default function Capacity() {
                 })}
               </ul>
               {/* axis */}
-              <div aria-hidden="true" className="relative mt-3 h-6 border-t border-graphite/40">
+              <div aria-hidden="true" className="relative mt-3 h-6 border-t border-copy/40">
                 {TICKS.map(([k, label]) => (
                   <span key={k} className="absolute top-0 -translate-x-1/2 text-center" style={{ left: `${x(k)}%` }}>
-                    <span className="mx-auto block h-1.5 w-px bg-graphite/50" />
-                    <span className="mt-1 block whitespace-nowrap text-[0.6875rem] text-graphite">{label}</span>
+                    <span className="mx-auto block h-1.5 w-px bg-copy/50" />
+                    <span className="mt-1 block whitespace-nowrap text-[0.6875rem] text-copy">{label}</span>
                   </span>
                 ))}
               </div>
             </div>
-            <p className="mt-6 text-xs text-graphite">Rated energy, log scale. Each line is one system; bars show a range.</p>
+            <p className="mt-6 text-xs text-copy">Rated energy, log scale. Each line is one system; bars show a range.</p>
           </div>
 
           {/* The segment */}
@@ -174,10 +174,10 @@ export default function Capacity() {
             <p className="mt-2 text-3xl font-semibold tracking-tight">
               <RollValue key={seg} value={sum.energy} />
             </p>
-            <p className="mt-1 text-sm text-graphite">{sum.systems}</p>
+            <p className="mt-1 text-sm text-copy">{sum.systems}</p>
             <Link
               to={`/products?app=${seg}`}
-              className="mt-5 inline-flex items-center gap-1.5 self-start rounded-md text-sm font-semibold text-forest underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2f7d3a]"
+              className="mt-5 inline-flex items-center gap-1.5 self-start rounded-md text-sm font-semibold text-accent underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-link"
             >
               See products
               <ArrowRight aria-hidden="true" className="h-4 w-4" />

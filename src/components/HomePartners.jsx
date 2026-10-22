@@ -42,7 +42,7 @@ const Logo = ({ l, index, hidden, onHover }) => (
     onPointerLeave={() => onHover(null)}
     className="group/logo relative flex shrink-0 items-center px-6 sm:px-8"
   >
-    <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-fast group-hover/logo:bg-signal/60 group-focus-visible/logo:bg-signal/60 group-focus-within/logo:bg-signal/60" />
+    <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-fast group-hover/logo:bg-accent/60 group-focus-visible/logo:bg-accent/60 group-focus-within/logo:bg-accent/60" />
     <img
       src={l.src}
       loading="lazy"
@@ -52,7 +52,7 @@ const Logo = ({ l, index, hidden, onHover }) => (
       alt={`${l.name} logo`}
       className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-base ease-standard group-hover/logo:-translate-y-0.5 group-focus-visible/logo:-translate-y-0.5 group-focus-within/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-focus-visible/logo:opacity-100 group-focus-within/logo:opacity-100 group-hover/logo:grayscale-0 group-focus-visible/logo:grayscale-0 group-focus-within/logo:grayscale-0`}
     />
-    <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 scale-x-0 rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover/logo:scale-x-100 group-focus-visible/logo:scale-x-100 group-focus-within/logo:scale-x-100" />
+    <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover/logo:scale-x-100 group-focus-visible/logo:scale-x-100 group-focus-within/logo:scale-x-100" />
   </li>
 );
 
@@ -87,19 +87,19 @@ export default function HomePartners() {
   const partner = logos.find((l) => l.id === hot);
 
   return (
-    <section ref={root} data-enter={enter} className="border-y border-line bg-paper py-16 md:py-20">
+    <section ref={root} data-enter={enter} className="border-y border-line bg-white py-16 md:py-20">
       <div className="grid container-site items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p data-e="eyebrow" className="eyebrow text-sage">
+          <p data-e="eyebrow" className="eyebrow text-muted">
             Our Technology Partners
           </p>
           <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Global Technology. Local Impact.</AnimatedText>
-          <p data-e="desc" className="mt-3 max-w-lg text-graphite">
+          <p data-e="desc" className="mt-3 max-w-lg text-copy">
             NEXERA brings systems from world-leading BESS manufacturers —{" "}
             {NAMED.map(([id, name], i) => (
               <Fragment key={id}>
                 {i > 0 && (i === NAMED.length - 1 ? " and " : ", ")}
-                <Link to={`/partners/${id}`} className="font-medium text-forest underline-offset-4 hover:underline focus-visible:underline">
+                <Link to={`/partners/${id}`} className="font-medium text-accent underline-offset-4 hover:underline focus-visible:underline">
                   {name}
                 </Link>
               </Fragment>
@@ -138,12 +138,12 @@ export default function HomePartners() {
             </>
           )}
           {/* Where the hovered partner's systems fit (fixed height: hovering never shifts the layout) */}
-          <p data-e="fit" aria-hidden="true" className="mt-3 flex h-5 items-center justify-center gap-2 text-micro text-graphite">
-            <span className={`h-1.5 w-1.5 rounded-full transition-colors duration-fast ${partner ? "bg-signal" : "bg-line"}`} />
+          <p data-e="fit" aria-hidden="true" className="mt-3 flex h-5 items-center justify-center gap-2 text-micro text-copy">
+            <span className={`h-1.5 w-1.5 rounded-full transition-colors duration-fast ${partner ? "bg-accent" : "bg-line"}`} />
             <span key={hot ?? "all"} className="journey-detail">
               {partner ? (
                 <>
-                  <span className="font-semibold text-forest">{partner.name}</span> · {partner.apps.join(" · ")} · {partner.count}{" "}
+                  <span className="font-semibold text-accent">{partner.name}</span> · {partner.apps.join(" · ")} · {partner.count}{" "}
                   {partner.count === 1 ? "system" : "systems"} in the catalogue
                 </>
               ) : (

@@ -37,14 +37,14 @@ export default function TechPartners() {
   };
 
   return (
-    <section aria-labelledby="partners-title" className="border-y border-line bg-ice py-20 md:py-28">
+    <section aria-labelledby="partners-title" className="border-y border-line bg-paper py-20 md:py-28">
       <div className="grid container-site gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
         <div>
-          <p className="eyebrow text-sage">Technology partners</p>
+          <p className="eyebrow text-muted">Technology partners</p>
           <AnimatedText id="partners-title" className="mt-3 text-h2 font-semibold text-ink">
             Global Technology. Local Execution.
           </AnimatedText>
-          <p className="mt-4 max-w-md text-body text-graphite">
+          <p className="mt-4 max-w-md text-body text-copy">
             The systems are designed and manufactured by our technology partners. NEXERA is their authorized partner —
             bringing the technology to your projects with design, commissioning and after-sales support in India.
           </p>
@@ -64,11 +64,11 @@ export default function TechPartners() {
                   tabIndex={on ? 0 : -1}
                   onPointerEnter={(e) => e.pointerType === "mouse" && setActive(p.id)}
                   onClick={() => setActive(p.id)}
-                  className={`group relative flex h-16 items-center justify-center overflow-hidden rounded-xl border bg-paper px-4 transition-[border-color,box-shadow,translate] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 lg:h-[4.5rem] lg:justify-between lg:px-6 ${
-                    on ? "border-forest/25 shadow-[0_14px_30px_-22px_rgba(7,26,23,0.45)] lg:translate-x-1" : "border-line hover:border-forest/20 focus-visible:border-forest/20"
+                  className={`group relative flex h-16 items-center justify-center overflow-hidden rounded-xl border bg-white px-4 transition-[border-color,box-shadow,translate] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 lg:h-[4.5rem] lg:justify-between lg:px-6 ${
+                    on ? "border-accent/25 shadow-[0_14px_30px_-22px_color-mix(in_srgb,var(--color-ink)_45%,transparent)] lg:translate-x-1" : "border-line hover:border-accent/20 focus-visible:border-accent/20"
                   }`}
                 >
-                  <span aria-hidden="true" className={`absolute inset-y-3 left-0 w-[3px] rounded-r-full bg-signal transition-[scale] duration-fast ${on ? "scale-y-100" : "scale-y-0"}`} />
+                  <span aria-hidden="true" className={`absolute inset-y-3 left-0 w-[3px] rounded-r-full bg-accent transition-[scale] duration-fast ${on ? "scale-y-100" : "scale-y-0"}`} />
                   <img
                     src={p.logo}
                     loading="lazy"
@@ -78,8 +78,8 @@ export default function TechPartners() {
                       on ? "opacity-100 grayscale-0" : "opacity-50 grayscale group-hover:opacity-80 group-focus-visible:opacity-80 group-focus-within:opacity-80"
                     }`}
                   />
-                  <span className={`hidden items-center gap-2 eyebrow lg:flex ${on ? "text-forest" : "text-sage/70"}`}>
-                    <span className={`h-1.5 w-1.5 rounded-full transition-colors ${on ? "bg-signal" : "bg-line"}`} />
+                  <span className={`hidden items-center gap-2 eyebrow lg:flex ${on ? "text-accent" : "text-muted"}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full transition-colors ${on ? "bg-accent" : "bg-line"}`} />
                     {LINEUP[p.id].products.length} systems
                   </span>
                 </button>
@@ -92,14 +92,14 @@ export default function TechPartners() {
           id="partner-panel"
           role="tabpanel"
           aria-labelledby={`partner-tab-${active}`}
-          className="relative min-h-[23rem] overflow-hidden rounded-2xl border border-line bg-paper sm:min-h-[24rem]"
+          className="relative min-h-[23rem] overflow-hidden rounded-2xl border border-line bg-white sm:min-h-[24rem]"
         >
           <div key={active} className="journey-detail flex h-full flex-col p-6 sm:p-8">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="eyebrow text-sage">{partner.name} · in the NEXERA catalogue</p>
+              <p className="eyebrow text-muted">{partner.name} · in the NEXERA catalogue</p>
               <ul className="flex flex-wrap gap-1.5" aria-label="Applications">
                 {apps.map((a) => (
-                  <li key={a} className="rounded-full bg-ice px-2.5 py-0.5 text-micro font-medium text-forest">
+                  <li key={a} className="rounded-full bg-ice px-2.5 py-0.5 text-micro font-medium text-accent">
                     {applicationLabel(a)}
                   </li>
                 ))}
@@ -123,17 +123,17 @@ export default function TechPartners() {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate font-semibold text-ink">{x.name}</span>
-                      <span className="block truncate text-small text-graphite">{x.type}</span>
+                      <span className="block truncate text-small text-copy">{x.type}</span>
                     </span>
-                    <span className="hidden text-right text-small font-semibold text-forest sm:block">{x.cardSpecs.join(" · ")}</span>
-                    <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-forest opacity-40 transition-[translate,opacity] duration-fast group-hover/row:translate-x-1 group-focus-visible/row:translate-x-1 group-focus-within/row:translate-x-1 group-hover/row:opacity-100 group-focus-visible/row:opacity-100 group-focus-within/row:opacity-100" />
+                    <span className="hidden text-right text-small font-semibold text-accent sm:block">{x.cardSpecs.join(" · ")}</span>
+                    <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-accent opacity-40 transition-[translate,opacity] duration-fast group-hover/row:translate-x-1 group-focus-visible/row:translate-x-1 group-focus-within/row:translate-x-1 group-hover/row:opacity-100 group-focus-visible/row:opacity-100 group-focus-within/row:opacity-100" />
                   </Link>
                 </li>
               ))}
             </ul>
             <Link
               to={`/partners/${active}`}
-              className="group/all mt-5 inline-flex items-center gap-2 self-start text-button font-semibold text-forest hover:text-steel focus-visible:text-steel"
+              className="group/all mt-5 inline-flex items-center gap-2 self-start text-button font-semibold text-accent hover:text-link focus-visible:text-link"
             >
               View {partner.name} systems
               <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/all:translate-x-1 group-focus-visible/all:translate-x-1 group-focus-within/all:translate-x-1" />

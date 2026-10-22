@@ -29,14 +29,14 @@ const partners = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-deep text-ice/70">
+    <footer className="border-t border-white/10 bg-deep-grid text-paper/70">
       <div className="container-site py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
         <div>
           <Wordmark className="text-lg text-white" />
           <address className="mt-3 text-small not-italic">{ADDRESS}</address>
           {PHONE && (
             <p className="mt-1 text-small">
-              <a href={phoneHref(PHONE)} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
+              <a href={phoneHref(PHONE)} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                 {PHONE}
               </a>
             </p>
@@ -48,7 +48,7 @@ export default function Footer() {
           <ul className="mt-3 grid grid-cols-2 gap-2 text-small pointer-coarse:gap-0">
             {links.map((l) => (
               <li key={l.label}>
-                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
+                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                   {l.label}
                 </Link>
               </li>
@@ -60,7 +60,7 @@ export default function Footer() {
           <ul className="mt-3 grid gap-2 text-small pointer-coarse:gap-0">
             {guides.map((l) => (
               <li key={l.label}>
-                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
+                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                   {l.label}
                 </Link>
               </li>
@@ -72,7 +72,7 @@ export default function Footer() {
           <ul className="mt-3 grid gap-2 text-small pointer-coarse:gap-0">
             {partners.map((l) => (
               <li key={l.label}>
-                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-signal focus-visible:text-signal pointer-coarse:min-h-11 pointer-coarse:min-w-11">
+                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
                   {l.label}
                 </Link>
               </li>
@@ -81,7 +81,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <p className="container-site py-5 text-micro text-ice/50">
+        <p className="container-site py-5 text-micro text-paper/50">
           © {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.
         </p>
       </div>

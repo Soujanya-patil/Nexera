@@ -63,15 +63,15 @@ export default function SafetyLayers({ active, motion, mode, step }) {
                 width={l.w}
                 height={l.h}
                 rx={i === 0 ? 8 : 14}
-                fill={i === 0 ? "#90D988" : "none"}
+                fill={i === 0 ? "var(--color-signal)" : "none"}
                 fillOpacity={i === 0 ? 0.18 : 0}
-                stroke={latest || i === 0 ? "#90D988" : "#F4F7F4"}
+                stroke={latest || i === 0 ? "var(--color-signal)" : "var(--color-paper)"}
                 strokeOpacity={latest || i === 0 ? 0.95 : 0.45}
                 strokeWidth="2"
                 strokeDasharray={i === 3 ? "6 5" : undefined}
               />
-              <line x1={CX + l.w / 2} y1={LABEL_Y[i] - 4} x2="280" y2={LABEL_Y[i] - 4} stroke="#F4F7F4" strokeOpacity="0.3" strokeWidth="1" />
-              <text data-core-label={i === 0 || undefined} x="286" y={LABEL_Y[i]} className={`text-[13px] font-semibold ${latest || i === 0 ? "fill-signal" : "fill-white/85"}`}>
+              <line x1={CX + l.w / 2} y1={LABEL_Y[i] - 4} x2="280" y2={LABEL_Y[i] - 4} stroke="var(--color-paper)" strokeOpacity="0.3" strokeWidth="1" />
+              <text data-core-label={i === 0 || undefined} x="286" y={LABEL_Y[i]} className={`text-[13px] font-semibold ${latest || i === 0 ? "fill-accent" : "fill-white/85"}`}>
                 {l.label}
               </text>
             </g>
@@ -79,11 +79,11 @@ export default function SafetyLayers({ active, motion, mode, step }) {
         })}
         {/* the installation: the base everything stands on */}
         <g className="transition-opacity duration-500 motion-reduce:transition-none" style={{ opacity: base ? 1 : 0 }}>
-          <line x1={CX - 124} y1={CY + 110} x2={CX + 124} y2={CY + 110} stroke={motion && read === 3 ? "#90D988" : "#F4F7F4"} strokeOpacity="0.8" strokeWidth="3" strokeLinecap="round" />
+          <line x1={CX - 124} y1={CY + 110} x2={CX + 124} y2={CY + 110} stroke={motion && read === 3 ? "var(--color-signal)" : "var(--color-paper)"} strokeOpacity="0.8" strokeWidth="3" strokeLinecap="round" />
           {Array.from({ length: 9 }, (_, k) => (
-            <line key={k} x1={CX - 112 + k * 28} y1={CY + 112} x2={CX - 122 + k * 28} y2={CY + 122} stroke="#F4F7F4" strokeOpacity="0.35" strokeWidth="1.4" />
+            <line key={k} x1={CX - 112 + k * 28} y1={CY + 112} x2={CX - 122 + k * 28} y2={CY + 122} stroke="var(--color-paper)" strokeOpacity="0.35" strokeWidth="1.4" />
           ))}
-          <text x={CX} y={CY + 142} textAnchor="middle" className={`text-[12px] font-semibold uppercase tracking-[0.16em] ${motion && read === 3 ? "fill-signal" : "fill-white/75"}`}>
+          <text x={CX} y={CY + 142} textAnchor="middle" className={`text-[12px] font-semibold uppercase tracking-[0.16em] ${motion && read === 3 ? "fill-accent" : "fill-white/75"}`}>
             Correct installation
           </text>
         </g>

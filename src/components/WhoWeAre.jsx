@@ -51,8 +51,8 @@ export default function WhoWeAre() {
     <section
       className={
         cine
-          ? "relative z-10 -mt-[100vh] min-h-[100vh] bg-night text-bone"
-          : "relative bg-night text-bone"
+          ? "relative z-10 -mt-[100vh] min-h-[100vh] bg-deep-grid text-paper"
+          : "relative bg-deep-grid text-paper"
       }
       style={cine ? FEATHER : undefined}
     >
@@ -63,7 +63,7 @@ export default function WhoWeAre() {
           Built by an EPC, for EPCs
         </DisplayHeading>
         <Reveal delay={0.08}>
-          <p className="mt-6 max-w-2xl leading-relaxed text-bone/75">
+          <p className="mt-6 max-w-2xl leading-relaxed text-paper/75">
             Nexera Powertech was founded to solve a problem we lived ourselves as a solar EPC:
             getting reliable battery storage into Indian projects, backed by service that
             actually shows up. We're an authorized TCL, Hithium and CLOU partner, built to give Indian
@@ -72,23 +72,23 @@ export default function WhoWeAre() {
         </Reveal>
 
         <Reveal delay={0.1} className="mt-16">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Leadership Team</p>
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-paper/60">Leadership Team</p>
           <div className="mt-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {leaders.map((l) => (
               <div key={l.name}>
-                <p className="font-medium text-bone">{l.name}</p>
-                <p className="mt-1 text-sm leading-relaxed text-bone/70">{l.role}</p>
+                <p className="font-medium text-paper">{l.name}</p>
+                <p className="mt-1 text-sm leading-relaxed text-paper/70">{l.role}</p>
               </div>
             ))}
           </div>
         </Reveal>
 
-        <Reveal delay={0.15} className="mt-16 border-t border-bone/15 pt-10">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-bone/60">Our Promise</p>
+        <Reveal delay={0.15} className="mt-16 border-t border-paper/15 pt-10">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-paper/60">Our Promise</p>
           <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
             {promise.map((w) => (
-              <li key={w} className="flex items-start gap-2.5 text-sm text-bone/85">
-                <span aria-hidden="true" className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-signal" />
+              <li key={w} className="flex items-start gap-2.5 text-sm text-paper/85">
+                <span aria-hidden="true" className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
                 {w}
               </li>
             ))}

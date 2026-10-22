@@ -467,9 +467,9 @@ export default function CallbackWidget() {
     requestAnimationFrame(land);
   };
 
-  const label = "block text-sm font-medium text-ice/90";
+  const label = "block text-sm font-medium text-paper/90";
   const input =
-    "mt-1.5 block h-11 w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 text-base text-white placeholder:text-ice/40 transition-colors hover:border-white/30 focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-signal aria-[invalid=true]:border-[#ffb0a3]";
+    "mt-1.5 block h-11 w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 text-base text-white placeholder:text-paper/40 transition-colors hover:border-white/30 focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent aria-[invalid=true]:border-[#ffb0a3]";
   const err = (k) => (
     <p id={`${uid}-${k}-err`} aria-live="polite" className="mt-1 text-xs leading-4 text-[#ffb0a3]">
       {errors[k] || ""}
@@ -503,15 +503,15 @@ export default function CallbackWidget() {
               nudgeRight ? "left-0 sm:left-full sm:ml-3" : "right-0 sm:right-full sm:mr-3"
             }`}
           >
-            <div className="relative flex items-start gap-1 rounded-2xl border border-white/10 bg-ink py-2.5 pl-4 pr-1.5 text-sm leading-snug text-white shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)]">
-              <button type="button" onClick={toggle} className="text-left focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal">
+            <div className="relative flex items-start gap-1 rounded-2xl border border-white/10 bg-forest py-2.5 pl-4 pr-1.5 text-sm leading-snug text-white shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)]">
+              <button type="button" onClick={toggle} className="text-left focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
                 Need help choosing a battery? We&rsquo;ll call you.
               </button>
               <button
                 type="button"
                 onClick={() => setNudge(false)}
                 aria-label="Dismiss"
-                className="-my-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-ice/70 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-signal"
+                className="-my-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-paper/70 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <X aria-hidden="true" className="h-4 w-4" />
               </button>
@@ -527,13 +527,13 @@ export default function CallbackWidget() {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerEnd}
           onPointerCancel={onPointerEnd}
-          style={dragging ? { scale: "1.05", boxShadow: "0 24px 44px -14px rgba(7,26,23,0.65)", cursor: "grabbing" } : undefined}
+          style={dragging ? { scale: "1.05", boxShadow: "0 24px 44px -14px color-mix(in_srgb,var(--color-ink)_65%,transparent)", cursor: "grabbing" } : undefined}
           aria-expanded={open}
           aria-controls={`${uid}-card`}
           aria-haspopup="dialog"
-          className="group/cb relative inline-flex h-12 touch-none select-none items-center gap-2 rounded-full bg-signal pl-4 pr-5 text-sm font-semibold text-forest sm:cursor-grab shadow-[0_12px_30px_-10px_rgba(7,26,23,0.55)] transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.03] hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none sm:h-[52px]"
+          className="group/cb relative inline-flex h-12 touch-none select-none items-center gap-2 rounded-full bg-accent pl-4 pr-5 text-sm font-semibold text-on-accent sm:cursor-grab shadow-[0_12px_30px_-10px_color-mix(in_srgb,var(--color-ink)_55%,transparent)] transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.03] hover:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none sm:h-[52px]"
         >
-          {pulse && <span aria-hidden="true" className="cb-ring pointer-events-none absolute inset-0 rounded-full border-2 border-signal" onAnimationEnd={() => setPulse(false)} />}
+          {pulse && <span aria-hidden="true" className="cb-ring pointer-events-none absolute inset-0 rounded-full border-2 border-accent" onAnimationEnd={() => setPulse(false)} />}
           {open ? <X aria-hidden="true" className="h-4 w-4" strokeWidth={2.2} /> : <Phone aria-hidden="true" className="h-4 w-4" strokeWidth={2.2} />}
           Get a call back
         </button>
@@ -542,7 +542,7 @@ export default function CallbackWidget() {
       {open && (
         <>
           {/* Phones: a scrim behind the bottom sheet (a tap closes it). */}
-          <div ref={scrim} aria-hidden="true" className="fixed inset-0 z-[59] bg-deep/55 sm:hidden" />
+          <div ref={scrim} aria-hidden="true" className="fixed inset-0 z-[59] bg-deep-grid/55 sm:hidden" />
           <div
             ref={card}
             id={`${uid}-card`}
@@ -551,7 +551,7 @@ export default function CallbackWidget() {
             aria-labelledby={`${uid}-title`}
             data-lenis-prevent
             style={{ ...lift, opacity: 0, ...cardPlace() }}
-            className="fixed inset-x-0 bottom-0 z-[60] max-h-[88svh] overflow-y-auto overscroll-contain rounded-t-3xl border border-white/10 bg-night p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-white shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:bottom-[calc(1.5rem+52px+0.75rem+var(--cb-lift))] sm:right-6 sm:max-h-[calc(100svh-4rem-1.5rem-52px-0.75rem-var(--cb-lift)-1rem)] sm:w-[360px] sm:origin-bottom-right sm:rounded-3xl sm:pb-5 sm:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]"
+            className="fixed inset-x-0 bottom-0 z-[60] max-h-[88svh] overflow-y-auto overscroll-contain rounded-t-3xl border border-white/10 bg-deep-grid p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-white shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:bottom-[calc(1.5rem+52px+0.75rem+var(--cb-lift))] sm:right-6 sm:max-h-[calc(100svh-4rem-1.5rem-52px-0.75rem-var(--cb-lift)-1rem)] sm:w-[360px] sm:origin-bottom-right sm:rounded-3xl sm:pb-5 sm:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]"
           >
             <span aria-hidden="true" className="mx-auto -mt-1 mb-3 block h-1 w-10 rounded-full bg-white/20 sm:hidden" />
             <div className="flex items-start justify-between gap-3">
@@ -559,13 +559,13 @@ export default function CallbackWidget() {
                 <h2 id={`${uid}-title`} className="text-lg font-semibold leading-tight">
                   Get a call back
                 </h2>
-                <p className="mt-1 text-sm text-ice/75">Tell us what you need, we&rsquo;ll call you.</p>
+                <p className="mt-1 text-sm text-paper/75">Tell us what you need, we&rsquo;ll call you.</p>
               </div>
               <button
                 type="button"
                 onClick={() => close()}
                 aria-label="Close"
-                className="-mr-1.5 -mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full text-ice/75 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-signal"
+                className="-mr-1.5 -mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full text-paper/75 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <X aria-hidden="true" className="h-5 w-5" />
               </button>
@@ -573,7 +573,7 @@ export default function CallbackWidget() {
 
             {done ? (
               <div role="status" className="py-8 text-center">
-                <svg aria-hidden="true" viewBox="0 0 64 64" className="contact-check mx-auto h-14 w-14" fill="none" stroke="#90D988" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg aria-hidden="true" viewBox="0 0 64 64" className="contact-check mx-auto h-14 w-14" fill="none" stroke="var(--accent)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="32" cy="32" r="28" pathLength="1" />
                   <path d="M20 33l8 8 16-17" pathLength="1" />
                 </svg>
@@ -586,7 +586,7 @@ export default function CallbackWidget() {
                 <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
                 <div>
                   <label htmlFor={`${uid}-name`} className={label}>
-                    Name<span className="text-signal"> *</span>
+                    Name<span className="text-accent"> *</span>
                   </label>
                   <input
                     id={`${uid}-name`}
@@ -606,7 +606,7 @@ export default function CallbackWidget() {
                 </div>
                 <div>
                   <label htmlFor={`${uid}-mobile`} className={label}>
-                    Mobile number<span className="text-signal"> *</span>
+                    Mobile number<span className="text-accent"> *</span>
                   </label>
                   <input
                     id={`${uid}-mobile`}
@@ -627,7 +627,7 @@ export default function CallbackWidget() {
                 </div>
                 <fieldset>
                   <legend id={`${uid}-interest-legend`} className={label}>
-                    I&rsquo;m interested in<span className="text-signal"> *</span>
+                    I&rsquo;m interested in<span className="text-accent"> *</span>
                   </legend>
                   <div
                     role="radiogroup"
@@ -664,11 +664,11 @@ export default function CallbackWidget() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="group/send inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-signal px-6 text-sm font-semibold text-forest transition-[background-color,box-shadow,scale] duration-300 hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal motion-reduce:transition-none"
+                  className="group/send inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent transition-[background-color,box-shadow,scale] duration-300 hover:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
                 >
                   {status === "sending" ? (
                     <>
-                      <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-forest/30 border-t-forest" />
+                      <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-on-accent/30 border-t-on-accent" />
                       Sending…
                     </>
                   ) : (
@@ -682,7 +682,7 @@ export default function CallbackWidget() {
                   <a
                     href="/#contact"
                     onClick={toFullForm}
-                    className="font-semibold text-signal underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal"
+                    className="font-semibold text-accent underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                   >
                     Prefer the full form? ↓
                   </a>

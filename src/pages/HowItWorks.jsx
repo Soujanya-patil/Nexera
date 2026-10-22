@@ -22,7 +22,7 @@ export default function HowItWorks() {
         title="From First Call to Fully Operational Distributor"
       />
 
-      <section className="bg-paper">
+      <section className="bg-white">
         <div className="container-site py-16 md:py-20">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             The Five-Stage Distributor Journey
@@ -30,10 +30,10 @@ export default function HowItWorks() {
           <div className="mt-10 space-y-8">
             {journey.map((j) => (
               <div key={j.step} data-sr className="flex gap-6 items-baseline border-b border-line pb-8 last:border-0">
-                <span className="w-12 shrink-0 text-h3 font-semibold tabular-nums text-steel/80">{j.step}</span>
+                <span className="w-12 shrink-0 text-h3 font-semibold tabular-nums text-link/80">{j.step}</span>
                 <div>
                   <h3 className="text-h4 font-semibold text-ink">{j.title}</h3>
-                  <p className="mt-1 text-small text-graphite">{j.copy}</p>
+                  <p className="mt-1 text-small text-copy">{j.copy}</p>
                 </div>
               </div>
             ))}
@@ -41,26 +41,26 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      <section className="bg-ice border-t border-line">
+      <section className="bg-paper border-t border-line">
         <div className="container-site py-16 md:py-20">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Inside the Partner Portal
           </h2>
-          <p data-sr className="mt-heading max-w-measure text-body text-graphite">
+          <p data-sr className="mt-heading max-w-measure text-body text-copy">
             In development — a preview of what every distributor will get: territory
             map, pipeline, training status, warranty tickets, and price sheets.
           </p>
           <div data-sr className="mt-8 aspect-video max-w-2xl rounded-lg border border-line bg-white flex items-center justify-center">
-            <p className="text-small text-graphite">Partner Portal preview — coming soon</p>
+            <p className="text-small text-copy">Partner Portal preview — coming soon</p>
           </div>
         </div>
       </section>
 
-      <section className="bg-paper">
+      <section className="bg-white">
         <div data-sr className="container-site py-14 text-center">
           <Link
             to="/become-a-partner"
-            className="btn-motion inline-flex min-h-11 items-center rounded-full bg-signal px-6 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d]"
+            className="btn-motion inline-flex min-h-11 items-center rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"
           >
             Start Your Application
           </Link>

@@ -123,7 +123,7 @@ const SUBCOPY_CLEAR_END = 0.135;
 // fully opaque well past the mark (to 70%) and only then fades out, which keeps the patch from
 // reading as the hard-edged rectangle a flat fill left against the video's slightly warmer black.
 const LOGO_PATCH = {
-  background: "radial-gradient(100% 100% at 0% 0%, var(--color-night) 70%, transparent 100%)",
+  background: "radial-gradient(100% 100% at 0% 0%, var(--color-deep-grid) 70%, transparent 100%)",
 };
 
 function OpeningCopy() {
@@ -136,7 +136,7 @@ function OpeningCopy() {
         </h1>
       </div>
       <div data-a="copy-sub" className="invisible">
-        <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-bone/80">
+        <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-paper/80">
           Advanced Battery Energy Storage Systems for reliable, scalable power across residential,
           commercial and utility applications.
         </p>
@@ -144,7 +144,7 @@ function OpeningCopy() {
           <a
             ref={magneticRef}
             href="#systems"
-            className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_rgba(0,167,142,0.5)] transition-all duration-300 hover:bg-signal/90 hover:shadow-[0_0_28px_4px_rgba(0,167,142,0.45)]"
+            className="inline-flex items-center rounded-md bg-accent px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_color-mix(in_srgb,var(--accent)_50%,transparent)] transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_28px_4px_color-mix(in_srgb,var(--accent)_45%,transparent)]"
           >
             Explore Our Systems
           </a>
@@ -282,7 +282,7 @@ export default function CabinetAnatomy() {
     // needed) with the full opening wordmark/headline/subcopy/CTAs, statically. No animation, no
     // pin. `copy-sub` doesn't get the `invisible` class here — nothing scrubs it back in.
     return (
-      <section className="relative overflow-hidden bg-night text-bone">
+      <section className="relative overflow-hidden bg-deep-grid text-paper">
         {/* Aspect-locked frame, inset rather than edge-to-edge (breathing room around the
             product) — see the file-top FRAME note for why the wrapper carries the size. */}
         <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
@@ -296,21 +296,21 @@ export default function CabinetAnatomy() {
         </div>
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-night/90 via-night/45 to-night/15"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep-grid/90 via-deep-grid/45 to-deep-grid/15"
         />
         <div className="relative z-10 flex min-h-[100svh] container-site items-center justify-center py-20">
           <div className="mx-auto max-w-2xl text-center">
             <h1 className="font-serif text-4xl font-semibold leading-tight text-balance lg:text-5xl">
               Energy Storage, Built to Scale.
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-bone/80">
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-paper/80">
               Advanced Battery Energy Storage Systems for reliable, scalable power across
               residential, commercial and utility applications.
             </p>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
               <a
                 href="#systems"
-                className="inline-flex items-center rounded-md bg-signal px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_rgba(0,167,142,0.5)] transition-all duration-300 hover:bg-signal/90 hover:shadow-[0_0_28px_4px_rgba(0,167,142,0.45)]"
+                className="inline-flex items-center rounded-md bg-accent px-6 py-3 text-sm font-medium text-ink shadow-[0_0_0_0_color-mix(in_srgb,var(--accent)_50%,transparent)] transition-all duration-300 hover:bg-accent/90 hover:shadow-[0_0_28px_4px_color-mix(in_srgb,var(--accent)_45%,transparent)]"
               >
                 Explore Our Systems
               </a>
@@ -330,7 +330,7 @@ export default function CabinetAnatomy() {
   return (
     // h-[230vh] must stay a literal string (Tailwind's JIT scans source text, not runtime values)
     // — it's OWN_STORY_VH + HELD_VH = 130 + 100 = PIN_VH. Keep these in sync if either changes.
-    <section ref={root} className="relative z-10 h-[230vh] bg-night text-bone">
+    <section ref={root} className="relative z-10 h-[230vh] bg-deep-grid text-paper">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {/* Aspect-locked frame, inset rather than edge-to-edge (breathing room around the
             product) — see the file-top FRAME note for why the wrapper, not the video, is sized. */}
@@ -348,14 +348,14 @@ export default function CabinetAnatomy() {
           data-a="vignette"
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-10"
-          style={{ background: "radial-gradient(65% 65% at 32% 50%, transparent 25%, var(--color-night) 100%)" }}
+          style={{ background: "radial-gradient(65% 65% at 32% 50%, transparent 25%, var(--color-deep-grid) 100%)" }}
         />
 
         {/* Legibility scrim for the opening copy — same convention every other text-over-image
             scene on this page already uses (Hero originally, Storage, ScaleStory, Technology). */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-night/85 via-night/25 to-transparent"
+          className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-deep-grid/85 via-deep-grid/25 to-transparent"
         />
 
         <div className="relative z-20 flex h-full container-site items-center justify-center">
@@ -367,8 +367,8 @@ export default function CabinetAnatomy() {
           aria-hidden="true"
           className="pointer-events-none invisible absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2 text-center lg:bottom-10"
         >
-          <p className="text-xs uppercase tracking-[0.2em] text-bone/70">Scroll to explore</p>
-          <svg className="h-4 w-4 animate-bounce text-bone/70" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <p className="text-xs uppercase tracking-[0.2em] text-paper/70">Scroll to explore</p>
+          <svg className="h-4 w-4 animate-bounce text-paper/70" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
@@ -376,14 +376,14 @@ export default function CabinetAnatomy() {
         {/* Phase indicator — horizontal row, top edge, mobile/tablet */}
         <div className="pointer-events-none absolute inset-x-0 top-5 z-20 flex justify-center gap-3 lg:hidden">
           {PHASES.map((label) => (
-            <span key={label} data-a="phase-dot-mobile" className="h-1.5 w-1.5 rounded-full bg-bone opacity-35" />
+            <span key={label} data-a="phase-dot-mobile" className="h-1.5 w-1.5 rounded-full bg-paper opacity-35" />
           ))}
         </div>
 
         {/* Phase indicator — vertical, right edge, desktop */}
         <div className="pointer-events-none absolute right-6 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-4 lg:flex">
           {PHASES.map((label) => (
-            <span key={label} data-a="phase-dot-desktop" className="h-1.5 w-1.5 rounded-full bg-bone opacity-35" />
+            <span key={label} data-a="phase-dot-desktop" className="h-1.5 w-1.5 rounded-full bg-paper opacity-35" />
           ))}
         </div>
       </div>

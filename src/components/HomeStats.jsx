@@ -28,7 +28,7 @@ export default function HomeStats() {
   );
 
   return (
-    <section ref={root} data-enter={enter} aria-label="Market outlook" className="bg-paper">
+    <section ref={root} data-enter={enter} aria-label="Market outlook" className="bg-white">
       <div className="mx-auto max-w-4xl px-6 py-10">
         <span data-e="hairline" aria-hidden="true" className="mx-auto mb-6 block h-px w-24 bg-line" />
         <div data-e="bar" className="grid grid-cols-2 divide-x divide-line py-2">
@@ -36,9 +36,9 @@ export default function HomeStats() {
             <div key={s.label} className="group/stat relative px-4 text-center sm:px-6">
               <span
                 aria-hidden="true"
-                className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-3 scale-0 rounded-full bg-signal opacity-0 transition-[opacity,scale] duration-fast group-hover/stat:scale-100 group-focus-visible/stat:scale-100 group-focus-within/stat:scale-100 group-hover/stat:opacity-100 group-focus-visible/stat:opacity-100 group-focus-within/stat:opacity-100"
+                className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-3 scale-0 rounded-full bg-accent opacity-0 transition-[opacity,scale] duration-fast group-hover/stat:scale-100 group-focus-visible/stat:scale-100 group-focus-within/stat:scale-100 group-hover/stat:opacity-100 group-focus-visible/stat:opacity-100 group-focus-within/stat:opacity-100"
               />
-              <p className="whitespace-nowrap text-h2 tabular-nums font-semibold text-forest transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink">
+              <p className="whitespace-nowrap text-h2 tabular-nums font-semibold text-accent transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink">
                 <span data-num className="inline-block">
                   <CountUp value={s.text} />
                 </span>
@@ -46,9 +46,9 @@ export default function HomeStats() {
               <span
                 data-rule
                 aria-hidden="true"
-                className="mx-auto mt-2 block h-0.5 w-14 origin-center scale-x-[0.5714] rounded-full bg-signal transition-[scale] duration-base ease-standard group-hover/stat:scale-x-100 group-focus-visible/stat:scale-x-100 group-focus-within/stat:scale-x-100"
+                className="mx-auto mt-2 block h-0.5 w-14 origin-center scale-x-[0.5714] rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover/stat:scale-x-100 group-focus-visible/stat:scale-x-100 group-focus-within/stat:scale-x-100"
               />
-              <p data-label className="mx-auto mt-2 max-w-[16rem] text-small text-graphite transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink">
+              <p data-label className="mx-auto mt-2 max-w-[16rem] text-small text-copy transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink">
                 {s.label}
               </p>
             </div>

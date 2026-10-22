@@ -2,9 +2,9 @@ import { useRef } from "react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
-const DC = "#90D988";
-const AC = "#F2C46D";
-const LINE = "#F4F7F4";
+const DC = "var(--color-signal)";
+const AC = "var(--color-amber)";
+const LINE = "var(--color-paper)";
 // Battery positions: under the DC side, then under the AC side.
 const SLOT = { dc: 110, ac: 290 };
 
@@ -41,9 +41,9 @@ export default function Coupling({ active, motion }) {
 
   const battery = (x, attrs = {}) => (
     <g transform={`translate(${x} 0)`} {...attrs}>
-      <rect x="-26" y="196" width="52" height="34" rx="6" fill="#071A17" stroke={DC} strokeWidth="2" />
+      <rect x="-26" y="196" width="52" height="34" rx="6" fill="var(--color-ink)" stroke={DC} strokeWidth="2" />
       <rect x="-6" y="191" width="12" height="5" rx="1.5" fill={DC} />
-      <text x="0" y="217" textAnchor="middle" className="fill-signal text-[10px] font-semibold uppercase tracking-[0.1em]">
+      <text x="0" y="217" textAnchor="middle" className="fill-accent text-[10px] font-semibold uppercase tracking-[0.1em]">
         Battery
       </text>
     </g>
@@ -54,7 +54,7 @@ export default function Coupling({ active, motion }) {
         {/* the line: solar → inverter → building */}
         <path data-draw d="M64 120 H160" stroke={DC} strokeWidth="3" fill="none" />
         <path data-draw d="M240 120 H336" stroke={AC} strokeWidth="3" fill="none" />
-        <text x="110" y="108" textAnchor="middle" className="fill-signal text-[11px] font-semibold uppercase tracking-[0.16em]">
+        <text x="110" y="108" textAnchor="middle" className="fill-accent text-[11px] font-semibold uppercase tracking-[0.16em]">
           DC side
         </text>
         <text x="290" y="108" textAnchor="middle" className="text-[11px] font-semibold uppercase tracking-[0.16em]" fill={AC}>
@@ -70,7 +70,7 @@ export default function Coupling({ active, motion }) {
         </g>
         {/* inverter */}
         <g>
-          <rect data-draw x="160" y="96" width="80" height="48" rx="8" fill="#071A17" stroke={LINE} strokeOpacity="0.8" strokeWidth="2" />
+          <rect data-draw x="160" y="96" width="80" height="48" rx="8" fill="var(--color-ink)" stroke={LINE} strokeOpacity="0.8" strokeWidth="2" />
           <path d="M176 126 h12 M196 122 q6 -10 12 0 t12 0" fill="none" stroke={LINE} strokeOpacity="0.7" strokeWidth="1.6" strokeLinecap="round" />
           <text x="200" y="166" textAnchor="middle" className="fill-white/85 text-[11px] font-semibold">
             Inverter
@@ -87,7 +87,7 @@ export default function Coupling({ active, motion }) {
         {/* taps from the line down to the battery, one per side */}
         <line data-tap x1={SLOT.dc} y1="122" x2={SLOT.dc} y2="191" stroke={DC} strokeWidth="2.5" strokeDasharray="5 5" />
         <line data-tap x1={SLOT.ac} y1="122" x2={SLOT.ac} y2="191" stroke={AC} strokeWidth="2.5" strokeDasharray="5 5" />
-        <text data-slot-label x={SLOT.dc} y="254" textAnchor="middle" className="fill-signal text-[12px] font-semibold">
+        <text data-slot-label x={SLOT.dc} y="254" textAnchor="middle" className="fill-accent text-[12px] font-semibold">
           DC-coupled
         </text>
         <text data-slot-label x={SLOT.ac} y="254" textAnchor="middle" className="text-[12px] font-semibold" fill={AC}>

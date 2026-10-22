@@ -25,7 +25,7 @@ import {
 } from "./pages/lazy";
 
 // Full viewport height so the footer stays below the fold while a route loads (no layout shift).
-const PageFallback = () => <div className="min-h-svh bg-night" />;
+const PageFallback = () => <div className="min-h-svh bg-deep-grid" />;
 
 // Every page but Home is its own chunk (pages/lazy.jsx): path → page.
 const PAGES = [

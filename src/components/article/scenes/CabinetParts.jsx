@@ -54,9 +54,9 @@ export default function CabinetParts({ active, motion, mode, step, hover }) {
         className="h-full max-h-full w-full"
       >
         {/* Cabinet */}
-        <rect data-draw x="34" y="22" width="180" height="270" rx="10" fill="none" stroke="#F4F7F4" strokeOpacity="0.55" strokeWidth="2" />
-        <line data-draw x1="34" y1="96" x2="214" y2="96" stroke="#F4F7F4" strokeOpacity="0.25" strokeWidth="1.5" />
-        <line data-draw x1="34" y1="182" x2="214" y2="182" stroke="#F4F7F4" strokeOpacity="0.25" strokeWidth="1.5" />
+        <rect data-draw x="34" y="22" width="180" height="270" rx="10" fill="none" stroke="var(--color-paper)" strokeOpacity="0.55" strokeWidth="2" />
+        <line data-draw x1="34" y1="96" x2="214" y2="96" stroke="var(--color-paper)" strokeOpacity="0.25" strokeWidth="1.5" />
+        <line data-draw x1="34" y1="182" x2="214" y2="182" stroke="var(--color-paper)" strokeOpacity="0.25" strokeWidth="1.5" />
 
         {/* 0 Battery modules */}
         <Part i={0} state={state(0)}>
@@ -105,8 +105,8 @@ export default function CabinetParts({ active, motion, mode, step, hover }) {
         {/* Labels, right */}
         {PARTS.map((p, i) => (
           <g key={p.label} data-label className={`article-part-label transition-opacity duration-300 ${state(i) === "off" ? "opacity-35" : "opacity-100"}`}>
-            <line x1="226" y1={LABEL_Y[i] - 4} x2="242" y2={LABEL_Y[i] - 4} stroke={state(i) === "on" ? "#90D988" : "#F4F7F4"} strokeOpacity="0.6" strokeWidth="1.5" />
-            <text x="248" y={LABEL_Y[i]} className={`text-[13px] font-semibold ${state(i) === "on" ? "fill-signal" : "fill-white/85"}`}>
+            <line x1="226" y1={LABEL_Y[i] - 4} x2="242" y2={LABEL_Y[i] - 4} stroke={state(i) === "on" ? "var(--color-signal)" : "var(--color-paper)"} strokeOpacity="0.6" strokeWidth="1.5" />
+            <text x="248" y={LABEL_Y[i]} className={`text-[13px] font-semibold ${state(i) === "on" ? "fill-accent" : "fill-white/85"}`}>
               {p.label}
             </text>
           </g>
@@ -120,10 +120,10 @@ export default function CabinetParts({ active, motion, mode, step, hover }) {
 function Part({ state, children }) {
   return (
     <g
-      stroke={state === "on" ? "#90D988" : "#F4F7F4"}
+      stroke={state === "on" ? "var(--color-signal)" : "var(--color-paper)"}
       strokeOpacity={state === "off" ? 0.35 : 0.9}
       className="article-part transition-[transform,stroke,stroke-opacity] duration-500 ease-out motion-reduce:transition-none"
-      style={{ transform: state === "on" ? "translateX(10px)" : "none", filter: state === "on" ? "drop-shadow(0 0 6px rgba(144,217,136,0.6))" : "none" }}
+      style={{ transform: state === "on" ? "translateX(10px)" : "none", filter: state === "on" ? "drop-shadow(0 0 6px color-mix(in_srgb,var(--accent)_60%,transparent))" : "none" }}
     >
       {children}
     </g>

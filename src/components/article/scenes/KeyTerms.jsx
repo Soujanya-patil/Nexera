@@ -53,16 +53,16 @@ export default function KeyTerms({ active, motion, mode, step }) {
         className="h-auto w-full"
       >
         <g className={`article-term ${focus(1)}`}>
-          <path d="M20 22 H215 V34" fill="none" stroke="#F4F7F4" strokeOpacity="0.7" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="92" cy="22" r="8" fill="#071A17" stroke="#90D988" strokeWidth="2.4" />
-          <line className="article-stream" x1="215" y1="38" x2="215" y2="96" stroke="#90D988" strokeWidth="5" strokeLinecap="round" strokeDasharray="6 7" />
+          <path d="M20 22 H215 V34" fill="none" stroke="var(--color-paper)" strokeOpacity="0.7" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="92" cy="22" r="8" fill="var(--color-ink)" stroke="var(--color-signal)" strokeWidth="2.4" />
+          <line className="article-stream" x1="215" y1="38" x2="215" y2="96" stroke="var(--color-signal)" strokeWidth="5" strokeLinecap="round" strokeDasharray="6 7" />
           <text x="16" y="58" className="fill-white/85 text-[12px] font-semibold">
             kW: how much at once
           </text>
         </g>
         <g className={`article-term ${focus(0)}`}>
-          <rect x="170" y="50" width="190" height="92" rx="8" fill="none" stroke="#F4F7F4" strokeOpacity="0.7" strokeWidth="2.4" />
-          <rect className="article-water" x="174" y="74" width="182" height="64" rx="5" fill="#90D988" fillOpacity="0.85" style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }} />
+          <rect x="170" y="50" width="190" height="92" rx="8" fill="none" stroke="var(--color-paper)" strokeOpacity="0.7" strokeWidth="2.4" />
+          <rect className="article-water" x="174" y="74" width="182" height="64" rx="5" fill="var(--color-signal)" fillOpacity="0.85" style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }} />
           <text x="16" y="128" className="fill-white/85 text-[12px] font-semibold">
             kWh: how much in total
           </text>
@@ -77,7 +77,7 @@ export default function KeyTerms({ active, motion, mode, step }) {
           <label htmlFor={`${uid}-rate`} className="text-sm font-semibold text-white">
             C-rate
           </label>
-          <output htmlFor={`${uid}-rate`} aria-live="polite" className="text-sm text-signal">
+          <output htmlFor={`${uid}-rate`} aria-live="polite" className="text-sm text-accent">
             {r.c}: {r.time}
           </output>
         </div>
@@ -97,7 +97,7 @@ export default function KeyTerms({ active, motion, mode, step }) {
           <span>1C</span>
         </div>
         <div aria-hidden="true" className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-white/10">
-          <div className="article-drain h-full rounded-full bg-signal" />
+          <div className="article-drain h-full rounded-full bg-accent" />
         </div>
       </div>
       </div>
@@ -107,23 +107,23 @@ export default function KeyTerms({ active, motion, mode, step }) {
         {ICONS.map((label, i) => (
           <g key={label} transform={`translate(${66 + i * 134} 0)`} className={`article-term ${focus(3 + i)}`}>
             {i === 0 && (
-              <g fill="none" stroke="#F4F7F4" strokeWidth="2.4" strokeLinecap="round">
+              <g fill="none" stroke="var(--color-paper)" strokeWidth="2.4" strokeLinecap="round">
                 <path d="M-22 40 A22 22 0 0 1 22 40" strokeOpacity="0.7" />
-                <line className="article-needle" x1="0" y1="40" x2="0" y2="22" stroke="#90D988" style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }} />
+                <line className="article-needle" x1="0" y1="40" x2="0" y2="22" stroke="var(--color-signal)" style={{ transformBox: "fill-box", transformOrigin: "50% 100%" }} />
               </g>
             )}
             {i === 1 && (
-              <g className="article-loop" fill="none" stroke="#F4F7F4" strokeWidth="2.4" strokeLinecap="round" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
+              <g className="article-loop" fill="none" stroke="var(--color-paper)" strokeWidth="2.4" strokeLinecap="round" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
                 <path d="M-16 28 A18 18 0 0 1 16 22" strokeOpacity="0.8" />
-                <path d="M16 36 A18 18 0 0 1 -16 42" stroke="#90D988" />
+                <path d="M16 36 A18 18 0 0 1 -16 42" stroke="var(--color-signal)" />
                 <path d="M12 16 l5 6 -7 2" strokeOpacity="0.8" />
-                <path d="M-12 48 l-5 -6 7 -2" stroke="#90D988" />
+                <path d="M-12 48 l-5 -6 7 -2" stroke="var(--color-signal)" />
               </g>
             )}
             {i === 2 && (
               <g fill="none" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                <path className="article-in" d="M-24 24 H4 M-4 16 l8 8 -8 8" stroke="#90D988" />
-                <path className="article-out" d="M24 44 H-4 M4 36 l-8 8 8 8" stroke="#F4F7F4" strokeOpacity="0.8" />
+                <path className="article-in" d="M-24 24 H4 M-4 16 l8 8 -8 8" stroke="var(--color-signal)" />
+                <path className="article-out" d="M24 44 H-4 M4 36 l-8 8 8 8" stroke="var(--color-paper)" strokeOpacity="0.8" />
               </g>
             )}
             <text y="78" textAnchor="middle" className="fill-white/80 text-[11px] font-medium">

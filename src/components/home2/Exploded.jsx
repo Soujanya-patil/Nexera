@@ -99,8 +99,8 @@ function Bullets({ items }) {
   return (
     <ul className="mt-4 space-y-2">
       {items.map((b) => (
-        <li key={b} className="flex items-start gap-2.5 text-sm text-graphite">
-          <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-[#2f7d3a]" strokeWidth={2.2} />
+        <li key={b} className="flex items-start gap-2.5 text-sm text-copy">
+          <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-link" strokeWidth={2.2} />
           {b}
         </li>
       ))}
@@ -194,7 +194,7 @@ export default function Exploded() {
   const c = COMPONENTS[active];
 
   return (
-    <section ref={outer} aria-labelledby="home2-inside" onPointerDown={stop} className="ex2 relative bg-paper text-ink">
+    <section ref={outer} aria-labelledby="home2-inside" onPointerDown={stop} className="ex2 relative bg-white text-ink">
       <noscript>
         <style>{".ex2-tabs{display:none!important}.ex2-acc{display:block!important}.ex2-acc details::details-content{content-visibility:visible;display:block}.ex2-acc summary>span:last-child{display:none}"}</style>
       </noscript>
@@ -219,7 +219,7 @@ export default function Exploded() {
                   <Slab key={x.id} c={x} i={i} on={i === active} dim={i !== active} onPick={() => select(i)} />
                 )).reverse()}
               </svg>
-              <figcaption className="mt-3 text-center text-xs leading-relaxed text-graphite">
+              <figcaption className="mt-3 text-center text-xs leading-relaxed text-copy">
                 Illustrative diagram. Components and configuration vary by product; see each product page for exact specifications.
               </figcaption>
             </figure>
@@ -239,15 +239,15 @@ export default function Exploded() {
                       aria-controls={`${uid}-panel`}
                       tabIndex={on ? 0 : -1}
                       onClick={() => select(i)}
-                      className={`relative flex items-center gap-3 rounded-xl border px-4 py-2.5 text-left transition-[background-color,border-color] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d3a] ${
-                        on ? "border-[#2f7d3a]/50 bg-white" : "border-transparent hover:border-line hover:bg-white/60"
+                      className={`relative flex items-center gap-3 rounded-xl border px-4 py-2.5 text-left transition-[background-color,border-color] duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link ${
+                        on ? "border-link/50 bg-white" : "border-transparent hover:border-line hover:bg-white/60"
                       }`}
                     >
-                      <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${on ? "bg-[#2f7d3a]" : "bg-sage/40"}`} />
-                      <span className={`text-[0.95rem] font-semibold ${on ? "text-ink" : "text-graphite"}`}>{x.title}</span>
+                      <span aria-hidden="true" className={`h-2 w-2 shrink-0 rounded-full ${on ? "bg-link" : "bg-muted/40"}`} />
+                      <span className={`text-[0.95rem] font-semibold ${on ? "text-ink" : "text-copy"}`}>{x.title}</span>
                       {on && auto && (
                         <span aria-hidden="true" className="absolute inset-x-4 bottom-0 h-px overflow-hidden">
-                          <span key={picked} className="ex-progress block h-full w-full bg-[#2f7d3a]/60" />
+                          <span key={picked} className="ex-progress block h-full w-full bg-link/60" />
                         </span>
                       )}
                     </button>
@@ -256,9 +256,9 @@ export default function Exploded() {
               </div>
               <div id={`${uid}-panel`} role="tabpanel" aria-labelledby={`${uid}-tab-${c.id}`} className="ex2-tabs mt-5 hidden min-h-[14rem] lg:block">
                 <div key={picked} className="ex-card rounded-2xl border border-line bg-white p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#2f7d3a]">{c.sub}</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-link">{c.sub}</p>
                   <h3 className="mt-2 text-xl font-semibold">{c.title}</h3>
-                  <p className="mt-2 leading-relaxed text-graphite">{c.text}</p>
+                  <p className="mt-2 leading-relaxed text-copy">{c.text}</p>
                   <Bullets items={c.bullets} />
                 </div>
               </div>
@@ -271,19 +271,19 @@ export default function Exploded() {
                     name={`${uid}-acc`}
                     open={i === COMPONENTS.length - 1}
                     onToggle={(e) => e.currentTarget.open && i !== active && select(i)}
-                    className="group rounded-xl border border-line bg-white open:border-[#2f7d3a]/40"
+                    className="group rounded-xl border border-line bg-white open:border-link/40"
                   >
-                    <summary className="flex cursor-pointer list-none items-start gap-3 rounded-xl px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2f7d3a] [&::-webkit-details-marker]:hidden">
+                    <summary className="flex cursor-pointer list-none items-start gap-3 rounded-xl px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-link [&::-webkit-details-marker]:hidden">
                       <span className="flex-1">
                         <span className="block font-semibold">{x.title}</span>
-                        <span className="mt-0.5 block text-sm text-graphite">{x.sub}</span>
+                        <span className="mt-0.5 block text-sm text-copy">{x.sub}</span>
                       </span>
-                      <span aria-hidden="true" className="mt-0.5 text-lg leading-none text-[#2f7d3a] transition-transform duration-300 group-open:rotate-45 motion-reduce:transition-none">
+                      <span aria-hidden="true" className="mt-0.5 text-lg leading-none text-link transition-transform duration-300 group-open:rotate-45 motion-reduce:transition-none">
                         +
                       </span>
                     </summary>
                     <div className="px-5 pb-5">
-                      <p className="leading-relaxed text-graphite">{x.text}</p>
+                      <p className="leading-relaxed text-copy">{x.text}</p>
                       <Bullets items={x.bullets} />
                     </div>
                   </details>

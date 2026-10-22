@@ -53,8 +53,8 @@ export default function CellCompare({ active, motion, mode, focus = "family" }) 
         {/* "Lithium-ion": one bracket over both cells */}
         {family && (
           <g>
-            <path data-bracket d={`M${CELLS[0].x} 54 V44 H${CELLS[1].x + W} V54`} fill="none" stroke="#90D988" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <text data-family x="200" y="32" textAnchor="middle" className="fill-signal text-[14px] font-semibold tracking-[0.12em]">
+            <path data-bracket d={`M${CELLS[0].x} 54 V44 H${CELLS[1].x + W} V54`} fill="none" stroke="var(--color-signal)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <text data-family x="200" y="32" textAnchor="middle" className="fill-accent text-[14px] font-semibold tracking-[0.12em]">
               LITHIUM-ION
             </text>
           </g>
@@ -62,12 +62,12 @@ export default function CellCompare({ active, motion, mode, focus = "family" }) 
         {CELLS.map((c) => (
           <g key={c.id} data-cell={c.id} className="transition-opacity duration-500" style={{ opacity: dim(c.id) ? 0.38 : 1 }}>
             {/* terminals */}
-            <rect data-draw x={c.x + 22} y={TOP - 10} width="20" height="10" rx="2" fill="none" stroke="#F4F7F4" strokeOpacity="0.6" strokeWidth="1.6" />
-            <rect data-draw x={c.x + W - 42} y={TOP - 10} width="20" height="10" rx="2" fill="none" stroke="#F4F7F4" strokeOpacity="0.6" strokeWidth="1.6" />
+            <rect data-draw x={c.x + 22} y={TOP - 10} width="20" height="10" rx="2" fill="none" stroke="var(--color-paper)" strokeOpacity="0.6" strokeWidth="1.6" />
+            <rect data-draw x={c.x + W - 42} y={TOP - 10} width="20" height="10" rx="2" fill="none" stroke="var(--color-paper)" strokeOpacity="0.6" strokeWidth="1.6" />
             {/* case */}
-            <rect data-draw x={c.x} y={TOP} width={W} height={H} rx="10" fill="none" stroke={dim(c.id) ? "#F4F7F4" : "#90D988"} strokeOpacity={dim(c.id) ? 0.5 : 0.9} strokeWidth="2" />
+            <rect data-draw x={c.x} y={TOP} width={W} height={H} rx="10" fill="none" stroke={dim(c.id) ? "var(--color-paper)" : "var(--color-signal)"} strokeOpacity={dim(c.id) ? 0.5 : 0.9} strokeWidth="2" />
             {/* cathode, filled with its materials */}
-            <rect data-fill x={c.x + 10} y={TOP + 14} width={W - 20} height="52" rx="6" fill="#90D988" fillOpacity="0.16" stroke="#90D988" strokeOpacity="0.55" strokeWidth="1.2" />
+            <rect data-fill x={c.x + 10} y={TOP + 14} width={W - 20} height="52" rx="6" fill="var(--color-signal)" fillOpacity="0.16" stroke="var(--color-signal)" strokeOpacity="0.55" strokeWidth="1.2" />
             <text x={c.x + 16} y={TOP + 28} className="fill-white/55 text-[9px] font-semibold uppercase tracking-[0.16em]">
               Cathode
             </text>
@@ -76,7 +76,7 @@ export default function CellCompare({ active, motion, mode, focus = "family" }) 
               const cx = c.x + W / 2 + (i - (n - 1) / 2) * 30;
               return (
                 <g key={el} data-chip>
-                  <circle cx={cx} cy={TOP + 47} r="12" fill="#071A17" stroke="#90D988" strokeWidth="1.6" />
+                  <circle cx={cx} cy={TOP + 47} r="12" fill="var(--color-ink)" stroke="var(--color-signal)" strokeWidth="1.6" />
                   <text x={cx} y={TOP + 51} textAnchor="middle" className="fill-white text-[11px] font-semibold">
                     {el}
                   </text>
@@ -84,14 +84,14 @@ export default function CellCompare({ active, motion, mode, focus = "family" }) 
               );
             })}
             {/* separator, anode */}
-            <line data-draw x1={c.x + 10} y1={TOP + 80} x2={c.x + W - 10} y2={TOP + 80} stroke="#F4F7F4" strokeOpacity="0.45" strokeWidth="1.4" strokeDasharray="4 4" />
-            <rect data-draw x={c.x + 10} y={TOP + 92} width={W - 20} height="44" rx="6" fill="none" stroke="#F4F7F4" strokeOpacity="0.4" strokeWidth="1.4" />
+            <line data-draw x1={c.x + 10} y1={TOP + 80} x2={c.x + W - 10} y2={TOP + 80} stroke="var(--color-paper)" strokeOpacity="0.45" strokeWidth="1.4" strokeDasharray="4 4" />
+            <rect data-draw x={c.x + 10} y={TOP + 92} width={W - 20} height="44" rx="6" fill="none" stroke="var(--color-paper)" strokeOpacity="0.4" strokeWidth="1.4" />
             <text x={c.x + 16} y={TOP + 106} className="fill-white/45 text-[9px] font-semibold uppercase tracking-[0.16em]">
               Anode
             </text>
             {/* name */}
             <g data-name>
-              <text x={c.x + W / 2} y={TOP + H + 30} textAnchor="middle" className={`text-[20px] font-semibold ${dim(c.id) ? "fill-white/70" : "fill-signal"}`}>
+              <text x={c.x + W / 2} y={TOP + H + 30} textAnchor="middle" className={`text-[20px] font-semibold ${dim(c.id) ? "fill-white/70" : "fill-accent"}`}>
                 {c.name}
               </text>
               <text x={c.x + W / 2} y={TOP + H + 48} textAnchor="middle" className="fill-white/70 text-[10.5px]">

@@ -51,7 +51,7 @@ export default function HomeWhyNow() {
   );
 
   return (
-    <section ref={root} data-enter={enter} className="relative overflow-hidden bg-night text-white">
+    <section ref={root} data-enter={enter} className="relative overflow-hidden bg-deep-grid text-white">
       {/* Closest existing asset to the mockup's sunset skyline (no new imagery for now).
           TODO(india-imagery): energy-night is a cityscape not identified as Indian. */}
       {/* A backdrop: hidden from screen readers (aria-hidden); the photo still carries a description. */}
@@ -64,12 +64,12 @@ export default function HomeWhyNow() {
           />
         </ParallaxMedia>
       </div>
-      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-night/95 via-night/75 to-night/30" />
-      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-night/80 to-transparent" />
+      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-deep-grid/95 via-deep-grid/75 to-deep-grid/30" />
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-deep-grid/80 to-transparent" />
 
       <div className="relative grid container-site items-center gap-12 py-20 md:py-24 lg:grid-cols-2">
         <div ref={copy}>
-          <p data-e="copy" className="eyebrow text-ice/80">
+          <p data-e="copy" className="eyebrow text-paper/80">
             Why Energy Storage, Why Now
           </p>
           <h2 data-e="copy" className="mt-4 text-h2 font-semibold">
@@ -78,7 +78,7 @@ export default function HomeWhyNow() {
             <br />
             More Reliable India
           </h2>
-          <p data-e="copy" className="mt-5 max-w-md text-body text-ice/90">
+          <p data-e="copy" className="mt-5 max-w-md text-body text-paper/90">
             Battery storage makes India&rsquo;s clean energy future possible — storing solar power for when it&rsquo;s
             needed, reducing diesel dependence, and building a more reliable, resilient grid.
           </p>
@@ -98,19 +98,19 @@ export default function HomeWhyNow() {
                 <span aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-white/12" />
                 <span
                   aria-hidden="true"
-                  className={`absolute left-0 top-0 h-px w-full origin-left bg-signal/80 transition-[scale] duration-slow ease-standard ${on ? "scale-x-100" : "scale-x-0"}`}
+                  className={`absolute left-0 top-0 h-px w-full origin-left bg-accent/80 transition-[scale] duration-slow ease-standard ${on ? "scale-x-100" : "scale-x-0"}`}
                 />
                 <span
                   data-icon
                   className={`grid h-11 w-11 place-items-center rounded-full transition-[translate,scale,background-color,box-shadow,opacity] duration-base ease-standard group-hover/benefit:-translate-y-1 group-focus-visible/benefit:-translate-y-1 group-focus-within/benefit:-translate-y-1 ${
-                    filled ? "bg-signal text-forest" : on ? "bg-signal/12 text-signal" : "text-signal"
-                  } ${on ? "scale-110 opacity-100 shadow-[0_0_0_1px_rgba(144,217,136,0.35)]" : "scale-100 opacity-60"}`}
+                    filled ? "bg-accent text-on-accent" : on ? "bg-accent/12 text-accent" : "text-accent"
+                  } ${on ? "scale-110 opacity-100 shadow-[0_0_0_1px_color-mix(in_srgb,var(--accent)_35%,transparent)]" : "scale-100 opacity-60"}`}
                 >
                   <Icon aria-hidden="true" className={filled ? "h-5 w-5" : "h-7 w-7"} strokeWidth={1.6} />
                 </span>
                 <p
                   className={`mt-3 text-small font-semibold transition-colors duration-base group-hover/benefit:text-white group-focus-visible/benefit:text-white group-focus-within/benefit:text-white ${
-                    on ? "text-white" : "text-ice/65"
+                    on ? "text-white" : "text-paper/65"
                   }`}
                 >
                   {label}

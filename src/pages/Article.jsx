@@ -79,24 +79,24 @@ function ArticlePage({ a }) {
       <ReadingProgress />
       <ArticleHeader a={a} play={play} reveal={viaCard} />
 
-      <div className="bg-paper">
+      <div className="bg-white">
         <div className="container-site grid gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,23rem)] lg:gap-12 lg:py-20 xl:grid-cols-[11.5rem_minmax(0,60ch)_minmax(20rem,26.25rem)]">
           {/* Contents: collapsible above the text below 1280px; a sticky list on the left from 1280px. */}
           <aside className="lg:col-span-2 xl:col-span-1">
             <details className="group/toc rounded-2xl border border-line bg-ice/60 xl:hidden">
               <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-4 px-5 py-3 text-small font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px]">
                 On this page
-                <ChevronDown aria-hidden="true" className="h-4 w-4 text-forest transition-transform duration-fast group-open/toc:rotate-180" />
+                <ChevronDown aria-hidden="true" className="h-4 w-4 text-accent transition-transform duration-fast group-open/toc:rotate-180" />
               </summary>
               <TocList items={toc} className="px-5 pb-4" />
             </details>
             <nav aria-label="On this page" className="sticky top-24 hidden xl:block">
-              <p className="eyebrow text-sage">On this page</p>
+              <p className="eyebrow text-muted">On this page</p>
               <TocList items={toc} active={active} indicator className="mt-4" />
             </nav>
           </aside>
 
-          <article ref={body} className="min-w-0 text-body text-graphite">
+          <article ref={body} className="min-w-0 text-body text-copy">
             {a.sections.map((s, i) => (
               <section key={s.id} data-section={s.id} aria-labelledby={s.id} className={i ? "mt-16" : ""}>
                 <div data-rv="h2">
@@ -183,7 +183,7 @@ function TocList({ items, active, indicator = false, className = "" }) {
       {indicator && bar && (
         <span
           aria-hidden="true"
-          className="absolute left-0 top-0 w-0.5 rounded-full bg-signal transition-[transform,height] duration-base ease-standard motion-reduce:transition-none"
+          className="absolute left-0 top-0 w-0.5 rounded-full bg-accent transition-[transform,height] duration-base ease-standard motion-reduce:transition-none"
           style={{ transform: `translateY(${bar.top}px)`, height: bar.height }}
         />
       )}
@@ -197,7 +197,7 @@ function TocList({ items, active, indicator = false, className = "" }) {
                 onClick={goTo(s.id)}
                 aria-current={on ? "location" : undefined}
                 className={`flex min-h-11 items-center border-l-2 border-line py-1.5 pl-3 leading-snug transition-colors duration-fast hover:text-ink focus-visible:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 xl:min-h-0 ${
-                  on ? "font-semibold text-ink" : "text-graphite"
+                  on ? "font-semibold text-ink" : "text-copy"
                 }`}
               >
                 {s.h2}
@@ -268,7 +268,7 @@ function Rich({ r }) {
         {x.b}
       </strong>
     ) : (
-      <Link key={i} to={x.to} className="article-link font-semibold text-forest">
+      <Link key={i} to={x.to} className="article-link font-semibold text-accent">
         {x.a}
       </Link>
     )
@@ -283,7 +283,7 @@ function Item({ it, pulse }) {
       {it.link && (
         <>
           {" "}
-          <Link to={it.link.to} className={`article-link group/il inline-flex items-center gap-1 whitespace-nowrap font-semibold text-forest ${pulse ? "article-pulse" : ""}`}>
+          <Link to={it.link.to} className={`article-link group/il inline-flex items-center gap-1 whitespace-nowrap font-semibold text-accent ${pulse ? "article-pulse" : ""}`}>
             <span>{it.link.label}</span>
             <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/il:translate-x-1 group-focus-within/il:translate-x-1 group-focus-visible/il:translate-x-1" />
           </Link>
@@ -306,7 +306,7 @@ function Block({ b, section, ctx, inCallout = false }) {
   if (b.callout) {
     return (
       <div role="note" aria-label={b.callout.label} data-rv="term" className="article-term-card article-callout relative mt-6 rounded-2xl border border-line bg-ice/70 py-5 pl-6 pr-5">
-        <p data-label className="eyebrow text-sage">
+        <p data-label className="eyebrow text-muted">
           {b.callout.label}
         </p>
         {b.callout.blocks.map((x, j) => (
@@ -319,7 +319,7 @@ function Block({ b, section, ctx, inCallout = false }) {
     const List = b.ol ? "ol" : "ul";
     const hoverable = section === HOVER_SECTION;
     return (
-      <List className={`mt-5 space-y-3 pl-6 marker:text-forest ${b.ol ? "list-decimal marker:font-semibold" : "list-disc"}`}>
+      <List className={`mt-5 space-y-3 pl-6 marker:text-accent ${b.ol ? "list-decimal marker:font-semibold" : "list-disc"}`}>
         {(b.ul ?? b.ol).map((it, i) => (
           <li
             key={i}
@@ -351,7 +351,7 @@ function Block({ b, section, ctx, inCallout = false }) {
             data-of={section}
             className="article-term-card relative rounded-2xl border border-line bg-ice/70 py-4 pl-6 pr-5"
           >
-            <p data-label className="eyebrow text-sage">
+            <p data-label className="eyebrow text-muted">
               Key term
             </p>
             <p className="mt-1.5">
@@ -373,7 +373,7 @@ function Block({ b, section, ctx, inCallout = false }) {
               </MagneticButton>
             </span>
           ) : (
-            <Link key={x.to} to={x.to} className="article-link group/act inline-flex items-center gap-1.5 text-body font-semibold text-forest">
+            <Link key={x.to} to={x.to} className="article-link group/act inline-flex items-center gap-1.5 text-body font-semibold text-accent">
               <span>{x.label}</span>
               <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/act:translate-x-1 group-focus-visible/act:translate-x-1 group-focus-within/act:translate-x-1" />
             </Link>

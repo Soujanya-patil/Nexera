@@ -21,13 +21,13 @@ export default function LiveCount({ count, total }) {
   }, [shown.n, shown.prev]);
 
   return (
-    <p className="flex shrink-0 items-center gap-2 eyebrow text-sage">
+    <p className="flex shrink-0 items-center gap-2 eyebrow text-muted">
       <span aria-hidden="true" className="relative inline-flex h-2 w-2">
-        <span className="absolute inset-0 rounded-full bg-signal/50 motion-safe:animate-ping [animation-duration:2.4s]" />
-        <span className="relative h-2 w-2 rounded-full bg-signal" />
+        <span className="absolute inset-0 rounded-full bg-accent/50 motion-safe:animate-ping [animation-duration:2.4s]" />
+        <span className="relative h-2 w-2 rounded-full bg-accent" />
       </span>
       <span aria-hidden="true">Showing</span>
-      <span aria-hidden="true" className="relative inline-flex h-[1.4em] min-w-[1.2ch] items-center justify-center overflow-hidden text-body text-forest">
+      <span aria-hidden="true" className="relative inline-flex h-[1.4em] min-w-[1.2ch] items-center justify-center overflow-hidden text-body text-accent">
         {shown.prev !== null && (
           <span key={`out-${shown.n}`} className="count-out absolute tabular-nums">
             {shown.prev}
@@ -38,7 +38,7 @@ export default function LiveCount({ count, total }) {
         </span>
       </span>
       <span aria-hidden="true">
-        {count === 1 ? "system" : "systems"} <span className="text-sage/70">of {total}</span>
+        {count === 1 ? "system" : "systems"} <span className="text-muted/70">of {total}</span>
       </span>
       <span className="sr-only" aria-live="polite">
         Showing {count} of {total} systems

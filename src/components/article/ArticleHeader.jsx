@@ -29,12 +29,12 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
   const words = a.h1.split(" ");
 
   return (
-    <section data-play={play} data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-night text-white">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, rgba(144,217,136,0.10), transparent 70%)" }} />
+    <section data-play={play} data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid text-white">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in_srgb,var(--accent)_10%,transparent), transparent 70%)" }} />
       <EnergyGrid />
 
       <div className="relative container-site pb-16 pt-14 lg:pb-24 lg:pt-20">
-        <nav aria-label="Breadcrumb" className="text-micro text-ice/75">
+        <nav aria-label="Breadcrumb" className="text-micro text-paper/75">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
               <Link to="/" className="hit-area hover:text-white focus-visible:text-white">
@@ -52,13 +52,13 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
             <li aria-hidden="true">
               <ChevronRight className="h-3.5 w-3.5" />
             </li>
-            <li aria-current="page" className="text-ice/90">
+            <li aria-current="page" className="text-paper/90">
               {a.shortTitle}
             </li>
           </ol>
         </nav>
         <div className="mt-10 max-w-3xl">
-          <p className="article-eyebrow eyebrow text-signal">{a.eyebrow}</p>
+          <p className="article-eyebrow eyebrow text-accent">{a.eyebrow}</p>
           <h1 className="article-h1 mt-5 text-h1 font-semibold">
             {words.map((w, i) => (
               <span key={i}>
@@ -69,8 +69,8 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
               </span>
             ))}
           </h1>
-          <p className="article-intro mt-6 max-w-2xl text-lead text-ice/90">{a.intro}</p>
-          <p className="article-byline mt-6 text-small text-ice/75">
+          <p className="article-intro mt-6 max-w-2xl text-lead text-paper/90">{a.intro}</p>
+          <p className="article-byline mt-6 text-small text-paper/75">
             By NEXERA Powertech · <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time> ·{" "}
             <span className="article-count" style={{ "--to": a.readingTime }}>
               <span className="article-count-num">{a.readingTime}</span>
@@ -78,7 +78,7 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
             min read
           </p>
         </div>
-        <p aria-hidden="true" className={`article-cue absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-1.5 text-micro font-medium text-ice/70 transition-opacity duration-base ${scrolled ? "opacity-0" : ""}`}>
+        <p aria-hidden="true" className={`article-cue absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-1.5 text-micro font-medium text-paper/70 transition-opacity duration-base ${scrolled ? "opacity-0" : ""}`}>
           Scroll to explore
           <ChevronDown className="h-4 w-4" />
         </p>

@@ -43,8 +43,8 @@ export default function WhyLfp({ active, motion, mode, step }) {
             <li key={label} data-reason aria-hidden="true" className="flex flex-col items-center gap-3 text-center">
               <span
                 className={`grid place-items-center rounded-full border transition-[background-color,border-color,color,box-shadow,scale] duration-500 ${compact ? "h-16 w-16" : "h-20 w-20"} ${
-                  on ? "border-signal bg-signal/15 text-signal" : "border-white/15 text-white/40"
-                } ${now ? "scale-110 shadow-[0_0_28px_rgba(144,217,136,0.45)]" : "scale-100"}`}
+                  on ? "border-accent bg-accent/15 text-accent" : "border-white/15 text-white/40"
+                } ${now ? "scale-110 shadow-[0_0_28px_color-mix(in_srgb,var(--accent)_45%,transparent)]" : "scale-100"}`}
               >
                 <Icon className={compact ? "h-7 w-7" : "h-9 w-9"} strokeWidth={1.6} />
               </span>

@@ -515,7 +515,7 @@ export default function HomeHero() {
     <section
       ref={section}
       data-home-hero
-      className={`relative bg-night text-white ${story ? "overflow-clip" : "overflow-hidden"}`}
+      className={`relative bg-deep-grid text-white ${story ? "overflow-clip" : "overflow-hidden"}`}
       style={story ? { height: `calc(100svh - 4rem + ${STORY_VH}svh)` } : undefined}
     >
       <div className={story ? "sticky top-16 h-[calc(100svh-4rem)] overflow-clip" : undefined}>
@@ -526,14 +526,14 @@ export default function HomeHero() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(55% 60% at 8% 0%, rgba(244,247,244,0.05), transparent 70%), linear-gradient(to bottom, transparent 70%, var(--color-deep))",
+              "radial-gradient(55% 60% at 8% 0%, color-mix(in srgb, var(--color-paper) 5%, transparent), transparent 70%), linear-gradient(to bottom, transparent 70%, var(--color-deep-grid))",
           }}
         />
         <div
           className="absolute inset-0 opacity-60"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(244,247,244,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(244,247,244,0.035) 1px, transparent 1px)",
+              "linear-gradient(color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px)",
             backgroundSize: "64px 64px",
             maskImage: "radial-gradient(70% 80% at 70% 45%, #000, transparent 75%)",
             WebkitMaskImage: "radial-gradient(70% 80% at 70% 45%, #000, transparent 75%)",
@@ -553,11 +553,11 @@ export default function HomeHero() {
           {story && (
             <p
               aria-hidden="true"
-              className={`absolute -top-9 left-0 flex items-center gap-2 eyebrow text-signal transition-[opacity,translate] duration-base ease-standard ${
+              className={`absolute -top-9 left-0 flex items-center gap-2 eyebrow text-accent transition-[opacity,translate] duration-base ease-standard ${
                 CONTEXT[storyStage] ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0"
               }`}
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               {CONTEXT[storyStage] ?? CONTEXT[2]}
             </p>
           )}
@@ -612,7 +612,7 @@ export default function HomeHero() {
               style={{
                 ...(story ? { opacity: "calc(1 - var(--settle, 0) * 0.55)", scale: "calc(1 + var(--recede, 0) * 0.12)" } : null),
                 background:
-                  "radial-gradient(34% 36% at 50% 52%, rgba(144,217,136,0.07), rgba(144,217,136,0.035) 40%, rgba(144,217,136,0.01) 65%, transparent 85%)",
+                  "radial-gradient(34% 36% at 50% 52%, color-mix(in_srgb,var(--accent)_7%,transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 40%, color-mix(in_srgb,var(--accent)_1%,transparent) 65%, transparent 85%)",
               }}
             />
             {/* Ground plate (nexera-hero-ground.webp): the footage's own first frame, heavily blurred,
@@ -697,7 +697,7 @@ export default function HomeHero() {
                 <div
                   aria-hidden="true"
                   className={`pointer-events-none absolute inset-0 mix-blend-screen transition-opacity duration-base ${inspect ? "opacity-100" : "opacity-0"}`}
-                  style={{ background: "radial-gradient(22% 26% at var(--ix, 50%) var(--iy, 50%), rgba(244,247,244,0.07), rgba(144,217,136,0.04) 45%, transparent 75%)" }}
+                  style={{ background: "radial-gradient(22% 26% at var(--ix, 50%) var(--iy, 50%), color-mix(in srgb, var(--color-paper) 7%, transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 45%, transparent 75%)" }}
                 />
               )}
               {/* One soft light sweep across the cabinet (its bounding box) as it settles open. */}
@@ -711,7 +711,7 @@ export default function HomeHero() {
                     className="animate-scan-sweep absolute inset-y-0 left-0 w-[22%] mix-blend-screen"
                     style={{
                       background:
-                        "linear-gradient(90deg, transparent, rgba(244,247,244,0.05) 40%, rgba(144,217,136,0.14) 50%, rgba(244,247,244,0.05) 60%, transparent)",
+                        "linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-paper) 5%, transparent) 40%, color-mix(in_srgb,var(--accent)_14%,transparent) 50%, color-mix(in srgb, var(--color-paper) 5%, transparent) 60%, transparent)",
                     }}
                   />
                 </div>
@@ -730,7 +730,7 @@ export default function HomeHero() {
       {story && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-60% to-deep"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent from-60% to-deep-grid"
           style={{ opacity: "calc(var(--settle, 0) * 0.85)" }}
         />
       )}
@@ -742,7 +742,7 @@ export default function HomeHero() {
           <div className="flex container-site items-center gap-8">
             <div className="relative shrink-0">
               <span aria-hidden="true" className="absolute inset-x-0 -top-2 h-px bg-white/12" />
-              <span aria-hidden="true" className="absolute inset-x-0 -top-2 h-px origin-left bg-signal/80" style={{ scale: "var(--story, 0) 1" }} />
+              <span aria-hidden="true" className="absolute inset-x-0 -top-2 h-px origin-left bg-accent/80" style={{ scale: "var(--story, 0) 1" }} />
             <ol className="flex items-center gap-6" aria-label="Product story">
               {STAGES.map((st, i) => {
                 const on = i === storyStage;
@@ -754,17 +754,17 @@ export default function HomeHero() {
                       aria-current={on ? "step" : undefined}
                       // The story controls keep their own small label size: the hero reserves exactly their height.
                       className={`text-[0.625rem] font-semibold uppercase tracking-[0.18em] transition-colors duration-base focus-visible:outline-2 focus-visible:outline-offset-4 ${
-                        on ? "text-white" : "text-ice/40 hover:text-ice/75 focus-visible:text-ice/75"
+                        on ? "text-white" : "text-paper/40 hover:text-paper/75 focus-visible:text-paper/75"
                       }`}
                     >
-                      <span className={on ? "text-signal" : undefined}>{String(i + 1).padStart(2, "0")}</span> {st.label}
+                      <span className={on ? "text-accent" : undefined}>{String(i + 1).padStart(2, "0")}</span> {st.label}
                     </button>
                   </li>
                 );
               })}
             </ol>
             </div>
-            <p key={storyStage} className="journey-detail min-w-0 truncate text-xs text-ice/60" aria-live="polite">
+            <p key={storyStage} className="journey-detail min-w-0 truncate text-xs text-paper/60" aria-live="polite">
               {STAGES[storyStage].caption}
             </p>
           </div>

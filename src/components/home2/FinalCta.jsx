@@ -29,8 +29,8 @@ function Skyline() {
       <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMax slice" className="absolute inset-x-0 bottom-0 h-[70%] w-full">
         <defs>
           <linearGradient id="sky-dawn" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#90D988" stopOpacity="0" />
-            <stop offset="1" stopColor="#90D988" stopOpacity="0.16" />
+            <stop offset="0" stopColor="var(--color-signal)" stopOpacity="0" />
+            <stop offset="1" stopColor="var(--color-signal)" stopOpacity="0.16" />
           </linearGradient>
         </defs>
         <rect x="0" y="360" width="1600" height="120" fill="url(#sky-dawn)" />
@@ -40,7 +40,7 @@ function Skyline() {
           <path key={o} fill="#f2c27a" opacity={o} d={windows.filter((_, i) => i % 3 === k).map(([wx, wy]) => `M${wx} ${wy}h4v6h-4z`).join("")} />
         ))}
         {/* the current into the city */}
-        <path d="M0 380 C 400 360, 800 400, 1600 370" stroke="#90D988" strokeOpacity="0.45" strokeWidth="1.2" fill="none" />
+        <path d="M0 380 C 400 360, 800 400, 1600 370" stroke="var(--color-signal)" strokeOpacity="0.45" strokeWidth="1.2" fill="none" />
       </svg>
     </div>
   );
@@ -135,17 +135,17 @@ export default function FinalCta() {
   }, []);
 
   return (
-    <section ref={root} aria-labelledby="home2-cta" className="cta2 relative isolate overflow-hidden bg-deep text-white">
+    <section ref={root} aria-labelledby="home2-cta" className="cta2 relative isolate overflow-hidden bg-deep-grid text-white">
       <ParallaxMedia amount={6} className="-z-10">
         <MediaSlot file="cta-tomorrow.png" sizes="100vw" className="h-full w-full object-cover" fallback={<Skyline />} />
       </ParallaxMedia>
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-deep/90 via-deep/60 to-deep/10" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-deep-grid/90 via-deep-grid/60 to-deep-grid/10" />
       <div aria-hidden="true" data-ch="Store today. Power tomorrow. Store today. Power tomorrow." className="cta2-mark seq-ch pointer-events-none absolute inset-x-0 top-5 -z-10 whitespace-nowrap lg:top-6" />
 
       {geo && (
         <svg aria-hidden="true" className="pointer-events-none absolute left-0 top-0 hidden overflow-visible md:block" width={geo.w} height={geo.h} viewBox={`0 0 ${geo.w} ${geo.h}`} fill="none">
-          <path d={geo.d} stroke="#90D988" strokeWidth="7" strokeOpacity="0.14" strokeLinecap="round" />
-          <path ref={path} d={geo.d} stroke="#90D988" strokeWidth="2" strokeLinecap="round" />
+          <path d={geo.d} stroke="var(--color-signal)" strokeWidth="7" strokeOpacity="0.14" strokeLinecap="round" />
+          <path ref={path} d={geo.d} stroke="var(--color-signal)" strokeWidth="2" strokeLinecap="round" />
         </svg>
       )}
 
@@ -155,7 +155,7 @@ export default function FinalCta() {
           <h2 id="home2-cta" className="mt-4 text-[clamp(2.4rem,1.4rem+3.6vw,5rem)] font-semibold leading-[0.98] tracking-tight [text-wrap:balance]">
             Ready to Explore Energy Storage?
           </h2>
-          <p className="mt-6 text-lg leading-relaxed text-ice/85">Talk to NEXERA Powertech about the right Battery Energy Storage System for your application.</p>
+          <p className="mt-6 text-lg leading-relaxed text-paper/85">Talk to NEXERA Powertech about the right Battery Energy Storage System for your application.</p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <span ref={btn} data-energy="cta" className="inline-block rounded-full">
               <MagneticButton to="/contact" arrow spotlight ripple>
@@ -168,8 +168,8 @@ export default function FinalCta() {
           </div>
           <ul ref={badges} className="mt-16 flex flex-wrap gap-x-8 gap-y-4">
             {BADGES.map((b) => (
-              <li key={b.text} className="flex items-center gap-3 text-sm font-medium text-ice/90">
-                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-10 w-10 rounded-full border border-signal/40 p-2.5 text-signal" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <li key={b.text} className="flex items-center gap-3 text-sm font-medium text-paper/90">
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-10 w-10 rounded-full border border-accent/40 p-2.5 text-accent" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                   {b.d.map((d, j) => (
                     <path key={j} d={d} />
                   ))}

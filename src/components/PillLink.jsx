@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 const VARIANTS = {
-  solid: "bg-signal text-forest hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)]",
+  solid: "bg-accent text-on-accent hover:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)]",
   outline: "border border-white/60 text-white hover:border-white hover:bg-white/10",
 };
 

@@ -229,29 +229,29 @@ export default function SolutionsUtility() {
         <CompareProvider>
           <div className="mt-12 space-y-16">
             {PARTNERS.map((p) => (
-              <div key={p.id} className="group/card rounded-3xl border border-line bg-paper p-6 md:p-10">
+              <div key={p.id} className="group/card rounded-3xl border border-line bg-white p-6 md:p-10">
                 <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
                   <div>
                     <PartnerMark partner={p.id} decorative />
                     <h3 className="mt-5 text-h3 font-semibold text-ink">{p.title}</h3>
-                    <p className="mt-3 text-body text-graphite">{p.copy}</p>
+                    <p className="mt-3 text-body text-copy">{p.copy}</p>
                     <Stats items={p.stats} />
                     <ArrowLink to={`/partners/${p.id}`} className="mt-6">
                       All {p.id === "clou" ? "CLOU" : "Hithium"} systems
                     </ArrowLink>
                   </div>
                   <div>
-                    <p className="eyebrow text-sage">{p.whyTitle}</p>
+                    <p className="eyebrow text-muted">{p.whyTitle}</p>
                     <ul className="mt-4 divide-y divide-line">
                       {p.why.map(([t, d]) => (
-                        <li key={t} className="py-3 text-small text-graphite">
+                        <li key={t} className="py-3 text-small text-copy">
                           <strong className="font-semibold text-ink">{t}:</strong> {d}
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-                <p className="mt-10 eyebrow text-sage">Featured systems</p>
+                <p className="mt-10 eyebrow text-muted">Featured systems</p>
                 <CardGrid columns={2} className="mt-4">
                   {p.systems.map((s) => (
                     <SolutionProductCard key={s.name} {...s} level={4} product={getProduct(s.product)} />
@@ -316,12 +316,12 @@ export default function SolutionsUtility() {
             "Grid fluctuations",
             "Remote project locations",
           ].map((c) => (
-            <li key={c} className="rounded-full border border-line bg-paper px-4 py-2 text-small font-medium text-forest">
+            <li key={c} className="rounded-full border border-line bg-white px-4 py-2 text-small font-medium text-accent">
               {c}
             </li>
           ))}
         </ul>
-        <p className="mt-8 max-w-3xl text-body text-graphite">
+        <p className="mt-8 max-w-3xl text-body text-copy">
           For example, the CLOU Aqua C2.5S platform specifies operation from –30°C to +55°C, IP55 protection and C4 corrosion protection, with C5
           available as an option.
         </p>
@@ -349,7 +349,7 @@ export default function SolutionsUtility() {
 
       <Section id="lifecycle" tone="ice" eyebrow="From MWh to GWh" mark="Complete Project Lifecycle" title="NEXERA Supports the Complete Project Lifecycle">
         <NumberedSteps
-          surface="bg-ice"
+          surface="bg-paper"
           items={[
             { title: "Project Assessment", text: "Understand generation profile, load profile, grid requirements and operating objective." },
             { title: "System Sizing", text: "Determine the right MW / MWh configuration and duration." },

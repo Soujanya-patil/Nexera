@@ -148,8 +148,8 @@ export default function HomeContact() {
     requestAnimationFrame(() => form.current?.querySelector(`#${uid}-name`)?.focus());
   };
 
-  const input = "mt-2 block w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-body text-white placeholder:text-ice/40 transition-colors focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-signal aria-[invalid=true]:border-[#ffb0a3]";
-  const label = "block text-small font-medium text-ice/90";
+  const input = "mt-2 block w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-body text-white placeholder:text-paper/40 transition-colors focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent aria-[invalid=true]:border-[#ffb0a3]";
+  const label = "block text-small font-medium text-paper/90";
   const err = (k) => (
     <p id={`${uid}-${k}-err`} aria-live="polite" className="mt-1.5 min-h-0 text-small text-[#ffb0a3]">
       {errors[k] || ""}
@@ -159,7 +159,7 @@ export default function HomeContact() {
     <div>
       <label htmlFor={`${uid}-${k}`} className={label}>
         {text}
-        {required ? <span className="text-signal"> *</span> : <span className="text-ice/60"> (optional)</span>}
+        {required ? <span className="text-accent"> *</span> : <span className="text-paper/60"> (optional)</span>}
       </label>
       <input
         id={`${uid}-${k}`}
@@ -181,28 +181,28 @@ export default function HomeContact() {
   );
 
   return (
-    <section ref={root} id="contact" data-sr-state={reveal} aria-labelledby={`${uid}-title`} className="relative scroll-mt-16 overflow-hidden bg-night text-white">
+    <section ref={root} id="contact" data-sr-state={reveal} aria-labelledby={`${uid}-title`} className="relative scroll-mt-16 overflow-hidden bg-deep-grid text-white">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(60% 60% at 85% 20%, rgba(144,217,136,0.10), transparent 70%), radial-gradient(50% 60% at 0% 100%, rgba(144,217,136,0.07), transparent 70%)" }}
+        style={{ background: "radial-gradient(60% 60% at 85% 20%, color-mix(in_srgb,var(--accent)_10%,transparent), transparent 70%), radial-gradient(50% 60% at 0% 100%, color-mix(in_srgb,var(--accent)_7%,transparent), transparent 70%)" }}
       />
       <div className="relative container-site grid gap-12 py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
         {/* Left: the pitch */}
         <div className="lg:col-span-5">
-          <p data-sr className="eyebrow text-signal">
+          <p data-sr className="eyebrow text-accent">
             Get in touch
           </p>
           <h2 id={`${uid}-title`} data-sr className="mt-4 text-h2 font-semibold">
             Let&rsquo;s power your project.
           </h2>
-          <p data-sr className="mt-5 max-w-md text-lead text-ice/80">
+          <p data-sr className="mt-5 max-w-md text-lead text-paper/80">
             Tell us about your home, business or utility project. Our team will help you choose the right battery energy storage system.
           </p>
           <ul data-sr className="mt-8 space-y-4">
             {TRUST.map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-start gap-3 text-ice/90">
-                <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-signal/50 text-signal">
+              <li key={text} className="flex items-start gap-3 text-paper/90">
+                <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full border border-accent/50 text-accent">
                   <Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
                 </span>
                 <span className="pt-1">{text}</span>
@@ -210,11 +210,11 @@ export default function HomeContact() {
             ))}
           </ul>
           {(CONTACT_PHONE || CONTACT_EMAIL) && (
-            <p data-sr className="mt-8 text-ice/85">
+            <p data-sr className="mt-8 text-paper/85">
               {CONTACT_PHONE && (
                 <>
                   Prefer to talk? Call{" "}
-                  <a href={telHref(CONTACT_PHONE)} className="font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
+                  <a href={telHref(CONTACT_PHONE)} className="font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
                     {CONTACT_PHONE}
                   </a>
                   {CONTACT_EMAIL ? " " : ""}
@@ -223,19 +223,19 @@ export default function HomeContact() {
               {CONTACT_EMAIL && (
                 <>
                   {CONTACT_PHONE ? "or email " : "Prefer email? Write to "}
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
                     {CONTACT_EMAIL}
                   </a>
                 </>
               )}
             </p>
           )}
-          <address data-sr className="mt-3 max-w-md text-small not-italic text-ice/75">
+          <address data-sr className="mt-3 max-w-md text-small not-italic text-paper/75">
             {ADDRESS}
           </address>
-          <p data-sr className="mt-8 text-small text-ice/75">
+          <p data-sr className="mt-8 text-small text-paper/75">
             Want to become a distributor?{" "}
-            <Link to="/become-a-partner" className="group inline-flex items-center gap-1 font-semibold text-signal underline-offset-4 hover:underline focus-visible:underline">
+            <Link to="/become-a-partner" className="group inline-flex items-center gap-1 font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
               Explore our partner program
               <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 group-focus-within:translate-x-0.5" />
             </Link>
@@ -247,14 +247,14 @@ export default function HomeContact() {
           <div ref={card} data-sr className="contact-card relative rounded-3xl border border-white/12 bg-white/[0.03] p-6 sm:p-8">
             {status === "done" ? (
               <div role="status" className="py-10 text-center">
-                <svg aria-hidden="true" viewBox="0 0 64 64" className="contact-check mx-auto h-20 w-20" fill="none" stroke="#90D988" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <svg aria-hidden="true" viewBox="0 0 64 64" className="contact-check mx-auto h-20 w-20" fill="none" stroke="var(--accent)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="32" cy="32" r="29" pathLength="1" />
                   <path d="M20 33l8 8 16-17" pathLength="1" />
                 </svg>
                 <p className="mx-auto mt-6 max-w-md text-h3 font-semibold text-white">
                   Thank you, {firstName}. We&rsquo;ve received your enquiry and our team will get back to you shortly.
                 </p>
-                <button type="button" onClick={again} className="mt-6 rounded-md text-button font-semibold text-signal underline underline-offset-4 hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-4">
+                <button type="button" onClick={again} className="mt-6 rounded-md text-button font-semibold text-accent underline underline-offset-4 hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-4">
                   Send another enquiry
                 </button>
               </div>
@@ -273,7 +273,7 @@ export default function HomeContact() {
 
                 <fieldset>
                   <legend id={`${uid}-interest-legend`} className={label}>
-                    I&rsquo;m interested in<span className="text-signal"> *</span>
+                    I&rsquo;m interested in<span className="text-accent"> *</span>
                   </legend>
                   <div role="radiogroup" aria-labelledby={`${uid}-interest-legend`} aria-required="true" aria-invalid={!!errors.interest || undefined} aria-describedby={`${uid}-interest-err`} className="mt-2 flex flex-wrap gap-2">
                     {INTERESTS.map((it) => (
@@ -299,9 +299,9 @@ export default function HomeContact() {
                 <div>
                   <div className="flex items-baseline justify-between gap-3">
                     <label htmlFor={`${uid}-message`} className={label}>
-                      Message<span className="text-ice/60"> (optional)</span>
+                      Message<span className="text-paper/60"> (optional)</span>
                     </label>
-                    <span id={`${uid}-count`} className="text-micro tabular-nums text-ice/60">
+                    <span id={`${uid}-count`} className="text-micro tabular-nums text-paper/60">
                       {values.message.length} / {LIMITS.message}
                     </span>
                   </div>
@@ -334,7 +334,7 @@ export default function HomeContact() {
                     {CONTACT_PHONE && (
                       <>
                         {" "}
-                        <a href={telHref(CONTACT_PHONE)} className="font-semibold text-signal underline">
+                        <a href={telHref(CONTACT_PHONE)} className="font-semibold text-accent underline">
                           {CONTACT_PHONE}
                         </a>
                       </>
@@ -342,7 +342,7 @@ export default function HomeContact() {
                     {CONTACT_EMAIL && (
                       <>
                         {" "}
-                        <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-signal underline">
+                        <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent underline">
                           {CONTACT_EMAIL}
                         </a>
                       </>
@@ -351,15 +351,15 @@ export default function HomeContact() {
                 )}
 
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-                  <p className="text-micro text-ice/70">We&rsquo;ll only use your details to respond to this enquiry.</p>
+                  <p className="text-micro text-paper/70">We&rsquo;ll only use your details to respond to this enquiry.</p>
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-signal px-6 py-3 text-button font-semibold text-forest hover:bg-[#a4e39d] focus-visible:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] focus-visible:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4"
+                    className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] focus-visible:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-4"
                   >
                     {status === "sending" ? (
                       <>
-                        <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-forest/30 border-t-forest" />
+                        <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-on-accent/30 border-t-on-accent" />
                         Sending…
                       </>
                     ) : (

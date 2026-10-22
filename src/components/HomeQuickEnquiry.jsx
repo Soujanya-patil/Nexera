@@ -141,9 +141,9 @@ export default function HomeQuickEnquiry() {
   };
 
   const done = status === "done";
-  const label = "block text-xs font-medium text-ice/85 lg:pointer-events-none lg:absolute lg:left-4 lg:top-[7px] lg:z-10 lg:text-[11px] lg:tracking-wide";
+  const label = "block text-xs font-medium text-paper/85 lg:pointer-events-none lg:absolute lg:left-4 lg:top-[7px] lg:z-10 lg:text-[11px] lg:tracking-wide";
   const box =
-    "block h-11 w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 text-base placeholder:text-ice/40 transition-colors hover:border-white/30 focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-signal aria-[invalid=true]:border-[#ffb0a3] lg:h-[52px] lg:pt-[18px] lg:text-[15px]";
+    "block h-11 w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 text-base placeholder:text-paper/40 transition-colors hover:border-white/30 focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent aria-[invalid=true]:border-[#ffb0a3] lg:h-[52px] lg:pt-[18px] lg:text-[15px]";
   const input = `${box} mt-1.5 text-white lg:mt-0`;
   const err = (k) => (
     <p id={`${uid}-${k}-err`} aria-live="polite" className="mt-1 text-xs leading-4 text-[#ffb0a3]">
@@ -153,17 +153,17 @@ export default function HomeQuickEnquiry() {
   const describe = (k) => `${uid}-${k}-err`;
 
   return (
-    <div className="relative bg-night text-white">
+    <div className="relative bg-deep-grid text-white">
       {/* The soft signal-green line along the top, and its glow. */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, rgba(144,217,136,0.6) 25%, rgba(144,217,136,0.6) 75%, transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, color-mix(in_srgb,var(--accent)_60%,transparent) 25%, color-mix(in_srgb,var(--accent)_60%,transparent) 75%, transparent)" }}
       />
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-10"
-        style={{ background: "radial-gradient(50% 100% at 50% 0%, rgba(144,217,136,0.12), transparent 75%)" }}
+        style={{ background: "radial-gradient(50% 100% at 50% 0%, color-mix(in_srgb,var(--accent)_12%,transparent), transparent 75%)" }}
       />
       <div ref={content} className="qe-reveal relative container-site grid py-6 lg:py-3" style={first ? undefined : { "--qe-delay": "1.75s" }}>
         <form
@@ -186,14 +186,14 @@ export default function HomeQuickEnquiry() {
             <p id={`${uid}-title`} className="text-base font-semibold leading-tight text-white">
               Get a call back
             </p>
-            <p id={`${uid}-sub`} className="mt-1 text-sm leading-snug text-ice/80 lg:text-xs">
+            <p id={`${uid}-sub`} className="mt-1 text-sm leading-snug text-paper/80 lg:text-xs">
               Tell us what you need, we&rsquo;ll call you.
             </p>
           </div>
 
           <div className="relative">
             <label htmlFor={`${uid}-name`} className={label}>
-              Name<span className="text-signal"> *</span>
+              Name<span className="text-accent"> *</span>
             </label>
             <input
               id={`${uid}-name`}
@@ -213,7 +213,7 @@ export default function HomeQuickEnquiry() {
 
           <div className="relative">
             <label htmlFor={`${uid}-mobile`} className={label}>
-              Mobile number<span className="text-signal"> *</span>
+              Mobile number<span className="text-accent"> *</span>
             </label>
             <input
               id={`${uid}-mobile`}
@@ -234,7 +234,7 @@ export default function HomeQuickEnquiry() {
 
           <div className="relative col-span-2 lg:col-span-1">
             <label htmlFor={`${uid}-interest`} className={label}>
-              I&rsquo;m interested in<span className="text-signal"> *</span>
+              I&rsquo;m interested in<span className="text-accent"> *</span>
             </label>
             <div className="relative mt-1.5 lg:mt-0">
               <select
@@ -245,7 +245,7 @@ export default function HomeQuickEnquiry() {
                 onChange={set("interest")}
                 aria-invalid={!!errors.interest || undefined}
                 aria-describedby={describe("interest")}
-                className={`${box} cursor-pointer appearance-none pr-10 [&>option]:bg-night [&>option]:text-white ${values.interest ? "text-white" : "text-ice/50"}`}
+                className={`${box} cursor-pointer appearance-none pr-10 [&>option]:bg-deep-grid [&>option]:text-white ${values.interest ? "text-white" : "text-paper/50"}`}
               >
                 <option value="" disabled>
                   Choose one
@@ -256,7 +256,7 @@ export default function HomeQuickEnquiry() {
                   </option>
                 ))}
               </select>
-              <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ice/70" />
+              <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-paper/70" />
             </div>
             {err("interest")}
           </div>
@@ -282,7 +282,7 @@ export default function HomeQuickEnquiry() {
                   e.currentTarget.style.setProperty("--sx", `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
                   e.currentTarget.style.setProperty("--sy", `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
                 }}
-                className="group/pill relative isolate inline-flex h-12 w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-signal px-6 text-sm font-semibold text-forest transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.02] hover:bg-[#a4e39d] hover:shadow-[0_0_24px_2px_rgba(144,217,136,0.35)] active:scale-[0.97] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal lg:h-[52px] lg:w-auto"
+                className="group/pill relative isolate inline-flex h-12 w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-6 text-sm font-semibold text-on-accent transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.02] hover:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.97] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:h-[52px] lg:w-auto"
               >
                 <span
                   aria-hidden="true"
@@ -291,7 +291,7 @@ export default function HomeQuickEnquiry() {
                 />
                 {status === "sending" ? (
                   <>
-                    <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-forest/30 border-t-forest" />
+                    <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-on-accent/30 border-t-on-accent" />
                     Sending…
                   </>
                 ) : (
@@ -302,9 +302,9 @@ export default function HomeQuickEnquiry() {
                 )}
               </button>
             </span>
-            <p className="mt-2 text-center text-xs leading-4 text-ice/75 lg:mt-1 lg:text-right">
+            <p className="mt-2 text-center text-xs leading-4 text-paper/75 lg:mt-1 lg:text-right">
               Prefer to share more details?{" "}
-              <a href="#contact" onClick={scrollToId("contact")} className="whitespace-nowrap font-semibold text-signal underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal">
+              <a href="#contact" onClick={scrollToId("contact")} className="whitespace-nowrap font-semibold text-accent underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
                 Use the full form ↓
               </a>
             </p>
@@ -313,7 +313,7 @@ export default function HomeQuickEnquiry() {
           {status === "error" && (
             <p role="alert" className="col-span-2 rounded-xl border border-[#ffb0a3]/40 bg-[#ffb0a3]/10 px-4 py-2.5 text-sm text-white lg:col-span-5 lg:mt-2">
               Couldn&rsquo;t send. Please try again, or{" "}
-              <a href="#contact" onClick={scrollToId("contact")} className="font-semibold text-signal underline underline-offset-4">
+              <a href="#contact" onClick={scrollToId("contact")} className="font-semibold text-accent underline underline-offset-4">
                 use the full form ↓
               </a>
             </p>
@@ -329,7 +329,7 @@ export default function HomeQuickEnquiry() {
         >
           {done && (
             <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
-              <svg aria-hidden="true" viewBox="0 0 64 64" className="contact-check h-8 w-8 shrink-0" fill="none" stroke="#90D988" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+              <svg aria-hidden="true" viewBox="0 0 64 64" className="contact-check h-8 w-8 shrink-0" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="32" cy="32" r="28" pathLength="1" />
                 <path d="M20 33l8 8 16-17" pathLength="1" />
               </svg>
@@ -339,7 +339,7 @@ export default function HomeQuickEnquiry() {
               <button
                 type="button"
                 onClick={again}
-                className="rounded-sm text-sm font-semibold text-signal underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+                className="rounded-sm text-sm font-semibold text-accent underline underline-offset-4 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
               >
                 Send another
               </button>

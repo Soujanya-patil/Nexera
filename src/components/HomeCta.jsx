@@ -36,13 +36,13 @@ export default function HomeCta({ contactTo = "/contact" }) {
   });
 
   return (
-    <section ref={root} data-enter={enter} className="relative overflow-hidden bg-deep text-white">
+    <section ref={root} data-enter={enter} className="relative overflow-hidden bg-deep-grid text-white">
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[8%]"
         style={{
           background:
-            "radial-gradient(55% 70% at 78% 120%, rgba(144,217,136,0.16), transparent 70%), radial-gradient(40% 60% at 15% 130%, rgba(144,217,136,0.08), transparent 70%)",
+            "radial-gradient(55% 70% at 78% 120%, color-mix(in_srgb,var(--accent)_16%,transparent), transparent 70%), radial-gradient(40% 60% at 15% 130%, color-mix(in_srgb,var(--accent)_8%,transparent), transparent 70%)",
         }}
       />
       <svg
@@ -52,18 +52,18 @@ export default function HomeCta({ contactTo = "/contact" }) {
         preserveAspectRatio="none"
         fill="none"
       >
-        <path data-line pathLength="1" strokeDasharray="1" d="M0 210 C 360 150, 720 250, 1440 120" stroke="rgba(144,217,136,0.35)" strokeWidth="1.2" />
-        <path data-line pathLength="1" strokeDasharray="1" d="M0 230 C 420 170, 820 240, 1440 150" stroke="rgba(144,217,136,0.2)" strokeWidth="1" />
-        <path data-line pathLength="1" strokeDasharray="1" d="M0 240 C 500 200, 900 230, 1440 185" stroke="rgba(144,217,136,0.12)" strokeWidth="1" />
+        <path data-line pathLength="1" strokeDasharray="1" d="M0 210 C 360 150, 720 250, 1440 120" stroke="color-mix(in_srgb,var(--accent)_35%,transparent)" strokeWidth="1.2" />
+        <path data-line pathLength="1" strokeDasharray="1" d="M0 230 C 420 170, 820 240, 1440 150" stroke="color-mix(in_srgb,var(--accent)_20%,transparent)" strokeWidth="1" />
+        <path data-line pathLength="1" strokeDasharray="1" d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in_srgb,var(--accent)_12%,transparent)" strokeWidth="1" />
       </svg>
 
       <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
-          <p className="flex items-center gap-3 eyebrow text-ice/80">
+          <p className="flex items-center gap-3 eyebrow text-paper/80">
             {STEPS.map((w, i) => (
               <Fragment key={w}>
-                {i > 0 && <span data-sep aria-hidden="true" className="inline-block h-3 w-px origin-center bg-ice/40" />}
-                <span data-step className={i === STEPS.length - 1 ? "text-signal" : undefined}>
+                {i > 0 && <span data-sep aria-hidden="true" className="inline-block h-3 w-px origin-center bg-paper/40" />}
+                <span data-step className={i === STEPS.length - 1 ? "text-accent" : undefined}>
                   {w}
                 </span>
               </Fragment>
@@ -72,7 +72,7 @@ export default function HomeCta({ contactTo = "/contact" }) {
           <h2 data-e="rest" className="mt-4 text-h2 font-semibold">
             Let&rsquo;s Build India&rsquo;s Energy Storage Future Together
           </h2>
-          <p data-e="rest" className="mt-4 max-w-xl text-body text-ice/80">
+          <p data-e="rest" className="mt-4 max-w-xl text-body text-paper/80">
             Whether you&rsquo;re a solar EPC looking to partner, or an end customer exploring a solution, Nexera is your
             trusted partner for BESS.
           </p>
@@ -81,7 +81,7 @@ export default function HomeCta({ contactTo = "/contact" }) {
           <MagneticButton to={contactTo} arrow spotlight>
             Get in Touch
           </MagneticButton>
-          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)] focus-visible:shadow-[0_0_22px_-4px_rgba(144,217,136,0.45)]">
+          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:shadow-[0_0_22px_-4px_color-mix(in_srgb,var(--accent)_45%,transparent)] focus-visible:shadow-[0_0_22px_-4px_color-mix(in_srgb,var(--accent)_45%,transparent)]">
             Become a Partner
           </MagneticButton>
         </div>

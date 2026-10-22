@@ -42,7 +42,7 @@ export default function Technology() {
   return (
     <section ref={root} className={cine ? "relative z-10 -mt-[100vh] h-[290vh]" : "relative"}>
       <div
-        className={cine ? "sticky top-0 h-screen overflow-hidden bg-night text-bone" : "relative bg-night text-bone"}
+        className={cine ? "sticky top-0 h-screen overflow-hidden bg-deep-grid text-paper" : "relative bg-deep-grid text-paper"}
         style={cine ? FEATHER : undefined}
       >
         <div className={cine ? "absolute inset-0" : "relative"}>
@@ -59,14 +59,14 @@ export default function Technology() {
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(60% 60% at 50% 48%, transparent 30%, var(--color-night) 100%), linear-gradient(to bottom, var(--color-night), transparent 22%, transparent 78%, var(--color-night))",
+                "radial-gradient(60% 60% at 50% 48%, transparent 30%, var(--color-deep-grid) 100%), linear-gradient(to bottom, var(--color-deep-grid), transparent 22%, transparent 78%, var(--color-deep-grid))",
             }}
           />
         </div>
         {cine && (
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 left-0 w-[70%] bg-gradient-to-r from-night via-night/80 to-transparent"
+            className="absolute inset-y-0 left-0 w-[70%] bg-gradient-to-r from-deep-grid via-deep-grid/80 to-transparent"
           />
         )}
 
@@ -76,7 +76,7 @@ export default function Technology() {
           }`}
         >
           <div>
-            <p data-a="label" data-reveal className="font-serif text-[clamp(2rem,4vw,3.75rem)] font-semibold leading-none text-bone">
+            <p data-a="label" data-reveal className="font-serif text-[clamp(2rem,4vw,3.75rem)] font-semibold leading-none text-paper">
               Why Hithium
             </p>
             <ul className="mt-8 space-y-4">
@@ -86,9 +86,9 @@ export default function Technology() {
                   data-a="point"
                   data-reveal
                   style={{ "--reveal-delay": `${i * 0.08}s` }}
-                  className="flex items-center gap-4 border-t border-bone/20 pt-4 text-lg text-bone md:text-xl"
+                  className="flex items-center gap-4 border-t border-paper/20 pt-4 text-lg text-paper md:text-xl"
                 >
-                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-signal" />
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
                   {p}
                 </li>
               ))}
