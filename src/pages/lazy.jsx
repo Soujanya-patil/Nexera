@@ -48,5 +48,3 @@ export const ResourcesRoute = preloadable(() => import("./Resources"));
 export const ContactRoute = preloadable(() => import("./Contact"));
 export const NotFoundRoute = preloadable(() => import("./NotFound"));
 
-// Preview of the new Home (noindex, not in the sitemap or the nav) — /home-v2.
-export const HomeV2Route = preloadable(() => import("./HomeV2"));

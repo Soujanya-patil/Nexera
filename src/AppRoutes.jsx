@@ -9,7 +9,6 @@ import {
   BecomePartnerRoute,
   BlogRoute,
   ContactRoute,
-  HomeV2Route,
   HowItWorksRoute,
   NotFoundRoute,
   PartnerRoute,
@@ -45,7 +44,6 @@ const PAGES = [
   ["/blog", BlogRoute],
   ["/blog/:slug", ArticleRoute],
   ["/contact", ContactRoute],
-  ["/home-v2", HomeV2Route], // preview of the new Home (noindex; routes.js PREVIEW_ROUTES)
 ];
 
 /**
@@ -89,6 +87,8 @@ export default function AppRoutes() {
         ))}
         {/* The catalogue replaced the Our Brands page; keep old links working. */}
         <Route path="/brands" element={<Navigate to="/products" replace />} />
+        {/* The Home v2 preview was retired: /home-v2 goes to Home (also a 301 in .htaccess). */}
+        <Route path="/home-v2" element={<Navigate to="/" replace />} />
         {/* No partners hub page: /partners goes to the catalogue (also a 301 in .htaccess). */}
         <Route path="/partners" element={<Navigate to="/products" replace />} />
         {/* The articles moved to the Blog: /resources/<slug> -> /blog/<slug> (also a 301 in .htaccess). */}

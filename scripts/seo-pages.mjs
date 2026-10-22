@@ -311,9 +311,9 @@ fs.writeFileSync(
     await renderPage("/404")
   )
 );
-// Preview pages (routes.js PREVIEW_ROUTES, e.g. /home-v2): pre-rendered like any page, but not
+// Preview pages (routes.js PREVIEW_ROUTES, e.g. a draft article in development): pre-rendered like any page, but not
 // indexed — title and noindex only (no description, canonical, social tags or JSON-LD), and never in
-// the sitemap. The server serves them like any route (/home-v2 -> home-v2.html).
+// the sitemap. The server serves them like any route (/x -> x.html).
 for (const r of PREVIEW_ROUTES) {
   if (ROUTES.some((x) => x.path === r.path) || sitemap.includes(SITE_URL + r.path)) throw new Error(`${r.path}: a preview page must not be a sitemap route`);
   const html = withMarkup(

@@ -282,10 +282,8 @@ export const ROUTES = [...PAGES.slice(0, afterProducts), ...PRODUCTS.map(product
 /**
  * Preview pages: real pages that are not part of the site yet (a director's comparison). Never in the
  * sitemap or ROUTES, never indexed: served with `noindex` and no canonical, description or JSON-LD.
- * /home-v2 carries the current Home title until it replaces Home.
  */
 export const PREVIEW_ROUTES = [
-  { path: "/home-v2", title: PAGES[0].title, noindex: true },
   // Draft articles (data/articles.js), in development only: their own title and noindex for review.
   ...DRAFT_ARTICLES.map((a) => ({ path: `/blog/${a.slug}`, title: a.title, noindex: true })),
 ];
