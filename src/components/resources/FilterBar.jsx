@@ -37,7 +37,7 @@ export default function FilterBar({ items, active }) {
           {pill && (
             <span
               aria-hidden="true"
-              className="absolute top-2.5 h-11 rounded-full bg-accent transition-[transform,width] duration-base ease-standard motion-reduce:transition-none"
+              className="absolute top-2.5 z-0 h-11 rounded-full bg-accent transition-[transform,width] duration-base ease-standard motion-reduce:transition-none"
               style={{ transform: `translateX(${pill.x}px)`, width: pill.w }}
             />
           )}
@@ -51,7 +51,7 @@ export default function FilterBar({ items, active }) {
                 onClick={scrollToId(it.target, { offset: it.target === items[0].target ? -64 : BAR_OFFSET })}
                 aria-current={on ? "location" : undefined}
                 className={`relative z-10 inline-flex min-h-11 shrink-0 items-center rounded-full px-4 text-button font-semibold transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 ${
-                  on ? "text-accent" : "text-copy hover:text-ink focus-visible:text-ink"
+                  on ? "text-on-accent" : "text-copy hover:text-ink focus-visible:text-ink"
                 }`}
               >
                 {it.label}
