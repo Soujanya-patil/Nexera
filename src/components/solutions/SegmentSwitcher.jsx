@@ -80,7 +80,7 @@ export default function SegmentSwitcher({ current }) {
       <div
         ref={row}
         onPointerLeave={() => setTarget(current)}
-        className="rail relative flex max-w-full overflow-x-auto rounded-full border border-white/10 bg-forest/90 p-1 shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)] backdrop-blur"
+        className="rail relative flex max-w-full overflow-x-auto rounded-full border border-white/10 bg-forest/90 p-1 shadow-float backdrop-blur"
       >
         {SEGMENTS.map((id) => (
           <SegmentPill key={id} id={id} current={current} onPoint={() => setTarget(id)} onBlur={() => setTarget(current)} />

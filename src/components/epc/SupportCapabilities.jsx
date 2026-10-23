@@ -90,7 +90,7 @@ export default function SupportCapabilities() {
     >
       <div
         className={`relative flex flex-col justify-center overflow-clip ${
-          pinned ? "sticky top-16 h-[calc(100svh-4rem)] py-8" : "py-20 md:py-24"
+          pinned ? "sticky top-16 h-[calc(100svh-4rem)] py-8" : "py-section"
         }`}
       >
         <div className="container-site">
@@ -146,7 +146,7 @@ export default function SupportCapabilities() {
                   <Link
                     to={c.to}
                     onFocus={showCard}
-                    className={`group relative flex ${pinned ? "h-[clamp(16.5rem,calc(100svh-19rem),24rem)]" : "h-full min-h-[17rem]"} flex-col overflow-hidden rounded-2xl border border-line bg-ice/60 p-8 card-hover hover:bg-white focus-visible:bg-white focus-visible:outline-2 focus-visible:outline-offset-2`}
+                    className={`group relative flex ${pinned ? "h-[clamp(16.5rem,calc(100svh-19rem),24rem)]" : "h-full min-h-[17rem]"} flex-col overflow-hidden rounded-card border border-line bg-ice/60 p-8 card-hover hover:bg-white focus-visible:bg-white focus-visible:outline-2 focus-visible:outline-offset-2`}
                   >
                     {/* Background: faint grid + soft light, sliding in on hover */}
                     <span
@@ -166,7 +166,7 @@ export default function SupportCapabilities() {
                       <span className="text-display tabular-nums font-semibold leading-none text-accent/15 transition-colors duration-fast group-hover:text-accent/30 group-focus-visible:text-accent/30 group-focus-within:text-accent/30">
                         {pad(i + 1)}
                       </span>
-                      <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-white text-accent transition-[background-color,border-color,color] duration-fast group-hover:text-on-accent group-focus-visible:text-on-accent group-focus-within:text-on-accent group-hover:border-accent group-focus-visible:border-accent group-focus-within:border-accent group-hover:bg-accent group-focus-visible:bg-accent group-focus-within:bg-accent">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-control border border-line bg-white text-ink transition-[background-color,border-color,color] duration-fast group-hover:text-on-accent group-focus-visible:text-on-accent group-focus-within:text-on-accent group-hover:border-accent group-focus-visible:border-accent group-focus-within:border-accent group-hover:bg-accent group-focus-visible:bg-accent group-focus-within:bg-accent">
                         <Icon aria-hidden="true" className="h-5 w-5 transition-transform duration-base ease-standard group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5 group-focus-within:-translate-y-0.5 group-hover:rotate-[-6deg] group-focus-visible:rotate-[-6deg] group-focus-within:rotate-[-6deg]" strokeWidth={1.75} />
                       </span>
                     </div>

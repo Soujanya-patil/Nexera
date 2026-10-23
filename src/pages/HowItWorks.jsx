@@ -23,7 +23,7 @@ export default function HowItWorks() {
       />
 
       <section className="bg-white">
-        <div className="container-site py-16 md:py-20">
+        <div className="container-site py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             The Five-Stage Distributor Journey
           </h2>
@@ -42,7 +42,7 @@ export default function HowItWorks() {
       </section>
 
       <section className="bg-paper border-t border-line">
-        <div className="container-site py-16 md:py-20">
+        <div className="container-site py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Inside the Partner Portal
           </h2>
@@ -50,7 +50,7 @@ export default function HowItWorks() {
             In development — a preview of what every distributor will get: territory
             map, pipeline, training status, warranty tickets, and price sheets.
           </p>
-          <div data-sr className="mt-8 aspect-video max-w-2xl rounded-lg border border-line bg-white flex items-center justify-center">
+          <div data-sr className="mt-8 aspect-video max-w-2xl rounded-card border border-line bg-white flex items-center justify-center">
             <p className="text-small text-copy">Partner Portal preview — coming soon</p>
           </div>
         </div>

@@ -126,7 +126,7 @@ function PartnerHero({ id, name, contact }) {
         </nav>
         <div className="mt-10 max-w-2xl">
           {/* The logo on a light panel (as on the product pages); Midea has no logo file: its name in type. */}
-          <div data-a="logo" className="inline-flex h-14 items-center rounded-xl bg-white px-5">
+          <div data-a="logo" className="inline-flex h-14 items-center rounded-control bg-white px-5">
             {logo ? (
               <img src={logo.logo} alt={name} decoding="async" className={`${id === "clou" ? "h-8" : "h-6"} w-auto`} />
             ) : (

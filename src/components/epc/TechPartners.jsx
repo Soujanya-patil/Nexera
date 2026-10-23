@@ -37,7 +37,7 @@ export default function TechPartners() {
   };
 
   return (
-    <section aria-labelledby="partners-title" className="border-y border-line bg-paper py-20 md:py-28">
+    <section aria-labelledby="partners-title" className="border-y border-line bg-paper py-section">
       <div className="grid container-site gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
         <div>
           <p className="eyebrow text-muted">Technology partners</p>
@@ -64,8 +64,8 @@ export default function TechPartners() {
                   tabIndex={on ? 0 : -1}
                   onPointerEnter={(e) => e.pointerType === "mouse" && setActive(p.id)}
                   onClick={() => setActive(p.id)}
-                  className={`group relative flex h-16 items-center justify-center overflow-hidden rounded-xl border bg-white px-4 transition-[border-color,box-shadow,translate] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 lg:h-[4.5rem] lg:justify-between lg:px-6 ${
-                    on ? "border-accent/25 shadow-[0_14px_30px_-22px_color-mix(in_srgb,var(--color-ink)_45%,transparent)] lg:translate-x-1" : "border-line hover:border-accent/20 focus-visible:border-accent/20"
+                  className={`group relative flex h-16 items-center justify-center overflow-hidden rounded-control border bg-white px-4 transition-[border-color,box-shadow,translate] duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 lg:h-[4.5rem] lg:justify-between lg:px-6 ${
+                    on ? "border-accent/25 shadow-raised lg:translate-x-1" : "border-line hover:border-accent/20 focus-visible:border-accent/20"
                   }`}
                 >
                   <span aria-hidden="true" className={`absolute inset-y-3 left-0 w-[3px] rounded-r-full bg-accent transition-[scale] duration-fast ${on ? "scale-y-100" : "scale-y-0"}`} />
@@ -92,14 +92,14 @@ export default function TechPartners() {
           id="partner-panel"
           role="tabpanel"
           aria-labelledby={`partner-tab-${active}`}
-          className="relative min-h-[23rem] overflow-hidden rounded-2xl border border-line bg-white sm:min-h-[24rem]"
+          className="relative min-h-[23rem] overflow-hidden rounded-card border border-line bg-white sm:min-h-[24rem]"
         >
           <div key={active} className="journey-detail flex h-full flex-col p-6 sm:p-8">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="eyebrow text-muted">{partner.name} · in the NEXERA catalogue</p>
               <ul className="flex flex-wrap gap-1.5" aria-label="Applications">
                 {apps.map((a) => (
-                  <li key={a} className="rounded-full bg-ice px-2.5 py-0.5 text-micro font-medium text-accent">
+                  <li key={a} className="rounded-full bg-ice px-2.5 py-0.5 text-micro font-medium text-copy">
                     {applicationLabel(a)}
                   </li>
                 ))}
@@ -112,7 +112,7 @@ export default function TechPartners() {
                     to={`/products/${x.id}`}
                     className="group/row flex items-center gap-4 py-3.5 focus-visible:outline-2 focus-visible:outline-offset-2"
                   >
-                    <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-ice">
+                    <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-control bg-ice">
                       <img
                         src={x.image}
                         alt={x.imageAlt}

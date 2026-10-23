@@ -140,9 +140,9 @@ export default function Contact() {
       />
 
       <section className="bg-white">
-        <div className="mx-auto max-w-2xl px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-2xl px-6 py-section">
           {/* Where to find and call us (data/business: as on the Google Business Profile). */}
-          <address data-sr className="mb-8 rounded-lg border border-line bg-ice px-5 py-4 text-small not-italic text-copy">
+          <address data-sr className="mb-8 rounded-control border border-line bg-ice px-5 py-4 text-small not-italic text-copy">
             <span className="block font-medium text-ink">{ADDRESS}</span>
             {CONTACT_PHONE && (
               <span className="mt-1 block">
@@ -188,7 +188,7 @@ export default function Contact() {
 
           <div data-sr>
           {status === "done" ? (
-            <div role="status" className="mt-8 rounded-lg border border-accent/30 bg-ice p-6">
+            <div role="status" className="mt-8 rounded-card border border-accent/30 bg-ice p-6">
               <p className="font-medium text-ink">Message received.</p>
               <p className="mt-1 text-small text-copy">
                 We'll be in touch shortly at the email address you provided.
@@ -206,7 +206,7 @@ export default function Contact() {
               {path === "general" && (
                 <>
                   {(product || quote || type || brand) && (
-                    <p className="rounded-lg bg-ice px-4 py-3 text-small text-ink">
+                    <p className="rounded-control bg-ice px-4 py-3 text-small text-ink">
                       <span className="font-semibold">
                         {quote ? "Quote request" : product ? "Product enquiry" : `${type.label} enquiry`}
                       </span>
@@ -225,7 +225,7 @@ export default function Contact() {
                       required
                       aria-invalid={!!errors.enquiry_type || undefined}
                       aria-describedby="enquiry_type-err"
-                      className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
+                      className="w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
                     >
                       <option value="">Select…</option>
                       {ENQUIRY_TYPES.map((t) => (
@@ -278,7 +278,7 @@ export default function Contact() {
               </div>
 
               {status === "error" && (
-                <p role="alert" className="rounded-lg border border-[#b3261e]/30 bg-[#b3261e]/[0.06] px-4 py-3 text-small text-ink">
+                <p role="alert" className="rounded-control border border-[#b3261e]/30 bg-[#b3261e]/[0.06] px-4 py-3 text-small text-ink">
                   Something went wrong. Please try again, or call/email us.
                   {CONTACT_PHONE && (
                     <>
@@ -341,7 +341,7 @@ function Field({ label, name, required, type = "text", as, defaultValue, error }
         rows={as === "textarea" ? 4 : undefined}
         aria-invalid={!!error || undefined}
         aria-describedby={`${name}-err`}
-        className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
+        className="w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
       />
       <FieldError name={name} error={error} />
     </div>

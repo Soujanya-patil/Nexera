@@ -54,7 +54,7 @@ export default function EpcHero() {
               doesn't); it looks as before. The h1 itself has no classes: leading/tracking set inherited
               variables that would reach the eyebrow, so the headline's styles sit on its own span. */}
           <h1>
-            <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-accent">
+            <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-label">
               <span aria-hidden="true" className="h-px w-8 bg-accent/70" />
               Become a BESS Distributor
             </span>{" "}

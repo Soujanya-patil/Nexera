@@ -23,7 +23,7 @@ export default function WhereWeOperate() {
       />
 
       <section className="bg-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-4xl px-6 py-section">
           <div className="space-y-6">
             {offices.map((o) => (
               <div
@@ -49,14 +49,14 @@ export default function WhereWeOperate() {
             ))}
           </div>
 
-          <div data-sr className="mt-12 rounded-lg bg-ice border border-line p-8 text-center">
+          <div data-sr className="mt-12 rounded-card bg-ice border border-line p-8 text-center">
             <p className="text-h4 font-semibold text-ink">Not in our network yet?</p>
             <p className="mt-1 text-small text-copy">
               Apply to bring Nexera to your state.
             </p>
             <Link
               to="/become-a-partner"
-              className="mt-4 btn-motion inline-flex min-h-11 items-center rounded-full bg-accent px-5 py-2.5 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"
+              className="mt-4 btn-motion inline-flex min-h-11 items-center rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"
             >
               Become a Partner
             </Link>

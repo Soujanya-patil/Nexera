@@ -159,7 +159,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
                 that would reach the eyebrow (and .solutions-page balances h1 text), so the headline's
                 styles sit on its own span. */}
             <h1>
-              <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-accent [text-wrap:wrap]">
+              <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-label [text-wrap:wrap]">
                 <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-accent/70" />
                 {eyebrow}
               </span>{" "}
@@ -187,7 +187,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
               </p>
             ))}
             {tagline && (
-              <p data-a="desc" className="mt-5 text-small font-semibold text-accent">
+              <p data-a="desc" className="mt-5 text-small font-semibold text-paper/85">
                 {tagline}
               </p>
             )}
@@ -257,7 +257,7 @@ export function BenefitStrip({ items }) {
       <ul ref={list} className="grid container-site gap-x-8 gap-y-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(({ icon: Icon, title, text }) => (
           <li key={title} className="group/ben flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-accent/60 text-accent transition-[translate,box-shadow,border-color] duration-fast group-hover/ben:-translate-y-1 group-focus-visible/ben:-translate-y-1 group-focus-within/ben:-translate-y-1 group-hover/ben:border-accent group-focus-visible/ben:border-accent group-focus-within/ben:border-accent group-hover/ben:shadow-[0_0_22px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] group-focus-visible/ben:shadow-[0_0_22px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] group-focus-within/ben:shadow-[0_0_22px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)]">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/20 text-white transition-[translate,box-shadow,border-color,color] duration-fast group-hover/ben:-translate-y-1 group-focus-visible/ben:-translate-y-1 group-focus-within/ben:-translate-y-1 group-hover/ben:border-accent group-focus-visible/ben:border-accent group-focus-within/ben:border-accent group-hover/ben:text-accent group-focus-visible/ben:text-accent group-focus-within/ben:text-accent group-hover/ben:shadow-glow group-focus-visible/ben:shadow-glow group-focus-within/ben:shadow-glow">
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <div>
@@ -296,23 +296,23 @@ export function Section({ id, tone = "paper", eyebrow, title, mark, intro, push 
       ref={ref}
       id={id}
       aria-labelledby={`${id}-title`}
-      className={`${TONES[tone]} relative py-14 lg:py-20 ${dark ? "overflow-hidden" : ""} ${
+      className={`${TONES[tone]} relative py-section ${dark ? "overflow-hidden" : ""} ${
         push ? "z-10 -mt-6 rounded-t-[24px] shadow-[0_-24px_48px_-28px_rgba(0,0,0,0.55)]" : ""
       } ${className}`}
     >
       {dark && <Spotlight />}
       <div className="relative container-site">
-        <div className="max-w-3xl">
+        <div className="max-w-intro">
           {eyebrow && (
-            <KineticEyebrow className={`eyebrow ${dark ? "text-accent" : "text-muted"}`} ruleClass={dark ? "bg-accent" : "bg-muted"}>
+            <KineticEyebrow className="eyebrow text-label" ruleClass="bg-accent">
               {eyebrow}
             </KineticEyebrow>
           )}
-          <KineticHeading id={`${id}-title`} mark={mark} className={`text-h2 ${eyebrow ? "mt-3" : ""} font-semibold ${dark ? "text-white" : "text-ink"}`}>
+          <KineticHeading id={`${id}-title`} mark={mark} className={`text-h2 ${eyebrow ? "mt-eyebrow" : ""} font-semibold ${dark ? "text-white" : "text-ink"}`}>
             {title}
           </KineticHeading>
           {intros.map((p) => (
-            <p key={p} className={`mt-4 text-body ${dark ? "text-paper/75" : "text-copy"}`}>
+            <p key={p} className={`mt-heading max-w-measure text-body ${dark ? "text-paper/75" : "text-copy"}`}>
               {p}
             </p>
           ))}
@@ -335,8 +335,8 @@ export function FeatureGrid({ items, columns = 3, dark = false, level = 3, class
         <li data-sr key={title} className="group/hl">
           {Icon && (
             <span
-              className={`grid h-11 w-11 place-items-center rounded-full transition-[background-color,scale] duration-fast group-hover/hl:scale-105 group-focus-visible/hl:scale-105 group-focus-within/hl:scale-105 ${
-                dark ? "bg-white/10 text-accent" : "bg-ice text-accent group-hover/hl:bg-accent/25 group-focus-visible/hl:bg-accent/25 group-focus-within/hl:bg-accent/25"
+              className={`grid h-11 w-11 place-items-center rounded-full transition-[background-color,color,scale] duration-fast group-hover/hl:scale-105 group-focus-visible/hl:scale-105 group-focus-within/hl:scale-105 ${
+                dark ? "bg-white/10 text-white group-hover/hl:text-accent group-focus-visible/hl:text-accent group-focus-within/hl:text-accent" : "bg-ice text-ink group-hover/hl:bg-accent/25 group-focus-visible/hl:bg-accent/25 group-focus-within/hl:bg-accent/25 group-hover/hl:text-accent group-focus-visible/hl:text-accent group-focus-within/hl:text-accent"
               }`}
             >
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
@@ -445,12 +445,12 @@ function Timeline({ items, cols, variant, surface = "bg-paper", className }) {
               </span>
             )}
             {variant === "card" ? (
-              <div className="flex-1 rounded-2xl border border-line bg-white p-6">
+              <div className="flex-1 rounded-card border border-line bg-white p-6">
                 <h3 className="font-semibold text-ink">{title}</h3>
                 <p className="mt-1.5 text-small text-copy">{it.text}</p>
               </div>
             ) : (
-              <span className="rounded-full border border-line bg-white px-4 py-2 text-small font-semibold text-accent">{title}</span>
+              <span className="rounded-full border border-line bg-white px-4 py-2 text-small font-semibold text-ink">{title}</span>
             )}
           </li>
         );
@@ -521,7 +521,7 @@ export function LayerStack({ items, className = "mt-12" }) {
           >
             {i + 1}
           </span>
-          <div className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] p-4 md:ml-[calc(var(--step)*1.5rem)] md:flex md:items-baseline md:gap-4 md:p-5">
+          <div className="flex-1 rounded-card border border-white/10 bg-white/[0.04] p-4 md:ml-[calc(var(--step)*1.5rem)] md:flex md:items-baseline md:gap-4 md:p-5">
             <h3 className="font-semibold text-white md:w-40 md:shrink-0">{title}</h3>
             <p className="mt-1 text-small text-paper/75 md:mt-0">{text}</p>
           </div>
@@ -540,7 +540,7 @@ export function DataTable({ caption, head, rows, icons = {}, className = "mt-10"
   const body = useRef(null);
   const reveal = useScrollReveal(body);
   return (
-    <div className={`overflow-x-auto rounded-2xl border border-line bg-white ${className}`}>
+    <div className={`overflow-x-auto rounded-card border border-line bg-white ${className}`}>
       <table className="w-full min-w-[30rem] border-collapse text-left text-small">
         <caption className="border-b border-line px-5 py-4 text-left text-small font-semibold text-ink sm:px-6">{caption}</caption>
         <thead>
@@ -563,7 +563,7 @@ export function DataTable({ caption, head, rows, icons = {}, className = "mt-10"
                     className="absolute inset-y-0 left-0 w-[3px] -translate-x-full bg-accent transition-transform duration-fast ease-standard group-hover/row:translate-x-0 group-focus-visible/row:translate-x-0 group-focus-within/row:translate-x-0"
                   />
                   <span className="flex items-center gap-2.5">
-                    {Icon && <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-accent/70" strokeWidth={1.8} />}
+                    {Icon && <Icon aria-hidden="true" className="h-4 w-4 shrink-0 text-muted" strokeWidth={1.8} />}
                     {first}
                   </span>
                 </th>
@@ -587,7 +587,7 @@ export function Checklist({ items, dark = false, className = "mt-6" }) {
     <ul className={`grid gap-3 sm:grid-cols-2 ${className}`}>
       {items.map((t) => (
         <li key={t} className={`flex items-start gap-3 text-small ${dark ? "text-paper/85" : "text-ink"}`}>
-          <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={2.4} />
+          <Check aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-label" strokeWidth={2.4} />
           {t}
         </li>
       ))}
@@ -737,7 +737,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
     <article
       ref={card}
       style={{ transform: "perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))" }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white card-hover"
+      className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-white card-hover"
     >
       {/* Glare: a soft highlight that follows the cursor while tilting (desktop). */}
       <span
@@ -778,7 +778,7 @@ export function SolutionProductCard({ product, photo, to, name, sub, figures, ta
           <ul className="mt-4 space-y-1.5 text-small text-ink">
             {specs.map((s) => (
               <li key={s} className="flex items-start gap-2">
-                <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-label" />
                 {s}
               </li>
             ))}
@@ -827,12 +827,12 @@ export function FaqList({ id, title, items, tone = "ice" }) {
     }
   };
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "paper" ? "bg-white" : "bg-paper"} relative py-14 lg:py-20`}>
+    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "paper" ? "bg-white" : "bg-paper"} relative py-section`}>
       <div className="container-site">
-        <KineticHeading id={`${id}-title`} className="text-h2 max-w-3xl font-semibold text-ink">
+        <KineticHeading id={`${id}-title`} className="text-h2 max-w-intro font-semibold text-ink">
           {title}
         </KineticHeading>
-        <div className={`mt-10 max-w-3xl divide-y divide-line rounded-2xl border border-line ${tone === "paper" ? "bg-ice/60" : "bg-white"}`}>
+        <div className={`mt-10 max-w-3xl divide-y divide-line rounded-card border border-line ${tone === "paper" ? "bg-ice/60" : "bg-white"}`}>
           {items.map(({ q, a }, i) => (
             <details key={q} className="faq-item group/faq" open={i === 0 || undefined}>
               <summary
@@ -911,17 +911,17 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
   const toggle = (t) => setSelected((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : checklist.filter((x) => x === t || cur.includes(x))));
   const to = segment && selected.length ? `${button.to}&topics=${selected.map(topicSlug).join(",")}` : button.to;
   return (
-    <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-deep-grid py-14 text-white lg:py-20">
+    <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-deep-grid py-section text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%)" }} />
       <Spotlight />
       <div className="relative container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
         <div>
           {eyebrow && (
-            <KineticEyebrow className="eyebrow text-accent" ruleClass="bg-accent">
+            <KineticEyebrow className="eyebrow text-label" ruleClass="bg-accent">
               {eyebrow}
             </KineticEyebrow>
           )}
-          <KineticHeading id={`${id}-title`} className={`text-h2 ${eyebrow ? "mt-3" : ""} font-semibold`}>
+          <KineticHeading id={`${id}-title`} className={`text-h2 ${eyebrow ? "mt-eyebrow" : ""} font-semibold`}>
             {title}
           </KineticHeading>
           {subheading && <p className="mt-4 text-lead font-medium text-white">{subheading}</p>}
@@ -932,7 +932,7 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
             {button.label}
           </PillLink>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 md:p-8">
+        <div className="rounded-card border border-white/10 bg-white/[0.04] p-6 md:p-8">
           {segment ? (
             <TopicChips items={checklist} selected={selected} onToggle={toggle} labelledBy={`${id}-body`} />
           ) : (

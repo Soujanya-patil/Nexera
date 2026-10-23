@@ -174,7 +174,7 @@ export function KeywordTicker({ items, label }) {
     <ul aria-hidden={hidden || undefined} className="ticker-track flex shrink-0 items-center">
       {items.map((k) => (
         <li key={k} className="flex items-center whitespace-nowrap px-5 text-small font-medium text-paper/80">
-          <span aria-hidden="true" className="mr-10 h-1 w-1 rounded-full bg-accent/80" />
+          <span aria-hidden="true" className="mr-10 h-1 w-1 rounded-full bg-label" />
           {k}
         </li>
       ))}
@@ -277,9 +277,9 @@ export function AppRail({ items, label }) {
         {items.map(({ icon: Icon, title, text }) => (
           <li
             key={title}
-            className="group/app w-[16.5rem] shrink-0 snap-start select-none rounded-2xl border border-line bg-white p-6 card-hover sm:w-[18rem]"
+            className="group/app w-[16.5rem] shrink-0 snap-start select-none rounded-card border border-line bg-white p-6 card-hover sm:w-[18rem]"
           >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-ice text-accent transition-colors duration-fast group-hover/app:bg-accent/30 group-focus-visible/app:bg-accent/30 group-focus-within/app:bg-accent/30">
+            <span className="grid h-12 w-12 place-items-center rounded-full bg-ice text-ink transition-colors duration-fast group-hover/app:text-accent group-focus-visible/app:text-accent group-focus-within/app:text-accent group-hover/app:bg-accent/30 group-focus-visible/app:bg-accent/30 group-focus-within/app:bg-accent/30">
               <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <h3 className="mt-5 font-semibold text-ink">{title}</h3>
@@ -347,7 +347,7 @@ export function PartnerStrip({ partners, label = "Technology partners", classNam
           <li data-sr key={id}>
             <Link
               to={`/partners/${id}`}
-              className="grid h-11 place-items-center rounded-md px-2 opacity-70 grayscale transition-[opacity,filter] duration-fast hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
+              className="grid h-11 place-items-center rounded-control px-2 opacity-70 grayscale transition-[opacity,filter] duration-fast hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
             >
               {p ? (
                 <img src={p.logo} alt={name} loading="lazy" decoding="async" className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto`} />
@@ -411,7 +411,7 @@ export function SectionRail() {
   };
   return (
     <nav aria-label="Page sections" className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 xl:block">
-      <ol className="flex flex-col gap-1 rounded-full bg-white/85 px-1.5 py-3 shadow-[0_10px_30px_-18px_color-mix(in_srgb,var(--color-ink)_50%,transparent)] ring-1 ring-black/5 backdrop-blur">
+      <ol className="flex flex-col gap-1 rounded-full bg-white/85 px-1.5 py-3 shadow-float ring-1 ring-black/5 backdrop-blur">
         {sections.map((s, i) => (
           <li key={s.id || s.label} className="relative">
             <button
@@ -425,7 +425,7 @@ export function SectionRail() {
                   i === active ? "scale-100 bg-accent ring-2 ring-accent/70" : "scale-[0.6] bg-forest/35 group-hover/dot:bg-forest group-focus-visible/dot:bg-forest group-focus-within/dot:bg-forest"
                 }`}
               />
-              <span className="pointer-events-none absolute right-full mr-3 max-w-[16rem] truncate whitespace-nowrap rounded-md bg-forest px-2.5 py-1 text-micro font-medium text-white opacity-0 transition-opacity duration-fast group-hover/dot:opacity-100 group-focus-within/dot:opacity-100 group-focus-visible/dot:opacity-100 motion-reduce:transition-none">
+              <span className="pointer-events-none absolute right-full mr-3 max-w-[16rem] truncate whitespace-nowrap rounded-control bg-forest px-2.5 py-1 text-micro font-medium text-white opacity-0 transition-opacity duration-fast group-hover/dot:opacity-100 group-focus-within/dot:opacity-100 group-focus-visible/dot:opacity-100 motion-reduce:transition-none">
                 {s.label}
               </span>
             </button>

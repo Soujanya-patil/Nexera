@@ -101,7 +101,7 @@ export default function Nav() {
       <span aria-hidden="true" className="absolute inset-0 -z-20 backdrop-blur-md" />
       <span
         aria-hidden="true"
-        className={`absolute inset-0 -z-10 border-b border-white/10 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] transition-opacity duration-base ease-emphasized ${scrolled ? "" : "opacity-0"}`}
+        className={`absolute inset-0 -z-10 border-b border-white/10 shadow-float transition-opacity duration-base ease-emphasized ${scrolled ? "" : "opacity-0"}`}
       />
       <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 -z-10 h-px bg-white/5 ${scrolled ? "opacity-0" : ""}`} />
       <nav className={`flex h-16 container-site items-center justify-between transition-[translate] duration-base ease-emphasized ${scrolled ? "translate-y-1" : ""}`}>
@@ -133,7 +133,7 @@ export default function Nav() {
           <Magnetic max={5}>
             <Link
               to="/contact"
-              className="btn-motion inline-flex items-center rounded-full bg-accent px-5 py-2 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-[0_0_20px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] focus-visible:shadow-[0_0_20px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)]"
+              className="hit-area btn-motion inline-flex min-h-10 items-center rounded-full bg-accent px-5 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-glow focus-visible:shadow-glow"
             >
               Contact Us
             </Link>
@@ -165,7 +165,7 @@ export default function Nav() {
         id="mobile-menu"
         data-open={open || undefined}
         inert={!open}
-        className="mobile-menu absolute inset-x-0 top-full border-t border-white/10 bg-forest px-6 pb-6 pt-2 shadow-[0_24px_40px_-24px_rgba(0,0,0,0.7)] lg:hidden"
+        className="mobile-menu absolute inset-x-0 top-full border-t border-white/10 bg-forest px-6 pb-6 pt-2 shadow-float lg:hidden"
       >
           <ul className="flex flex-col">
             {links.map((link) => (

@@ -45,8 +45,8 @@ export default function StandardsStack({ active, motion, mode, step }) {
               key={l.name}
               data-layer
               aria-hidden="true"
-              className={`flex items-center justify-between gap-3 rounded-xl border font-semibold transition-[border-color,background-color,box-shadow] duration-500 ${compact ? "px-3 py-2.5" : "px-4 py-3.5"} ${
-                on ? "border-accent/70 bg-accent/15 shadow-[0_0_24px_color-mix(in_srgb,var(--accent)_30%,transparent)]" : lit >= 0 ? "border-white/10 bg-white/[0.03] opacity-50" : "border-white/15 bg-white/[0.04]"
+              className={`flex items-center justify-between gap-3 rounded-control border font-semibold transition-[border-color,background-color,box-shadow] duration-500 ${compact ? "px-3 py-2.5" : "px-4 py-3.5"} ${
+                on ? "border-accent/70 bg-accent/15 shadow-glow" : lit >= 0 ? "border-white/10 bg-white/[0.03] opacity-50" : "border-white/15 bg-white/[0.04]"
               }`}
               style={{ marginInline: `${(LAYERS.length - 1 - i) * (compact ? 4 : 8)}px` }}
             >

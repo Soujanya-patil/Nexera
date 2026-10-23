@@ -42,7 +42,7 @@ function SheetCard({ product, kind }) {
   const partner = partnerOf(product.partner);
   const name = `${partner.name} ${product.name}`;
   return (
-    <article className="sheet-card group/sheet relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-white card-hover motion-reduce:transition-none">
+    <article className="sheet-card group/sheet relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-white card-hover motion-reduce:transition-none">
       <div className="relative aspect-[4/3] overflow-hidden bg-[radial-gradient(80%_70%_at_50%_45%,var(--color-white)_0%,var(--color-white)_70%,var(--color-paper)_100%)]">
         <span
           aria-hidden="true"
@@ -63,7 +63,7 @@ function SheetCard({ product, kind }) {
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center justify-between gap-3">
           <p className="eyebrow text-muted">{partner.name}</p>
-          <span className="rounded-full border border-accent/20 bg-ice px-2.5 py-1 eyebrow text-accent">{kind}</span>
+          <span className="rounded-full border border-line bg-ice px-2.5 py-1 eyebrow text-label">{kind}</span>
         </div>
         <h3 className="mt-2 text-h4 font-semibold text-ink">{product.name}</h3>
         {product.cardSpecs.length > 0 && (
@@ -80,7 +80,7 @@ function SheetCard({ product, kind }) {
 
         <Link
           to={docHref(product, kind)}
-          className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-accent px-5 text-button font-semibold text-white transition-colors duration-fast after:absolute after:inset-0 after:content-[''] group-hover/sheet:bg-forest group-focus-visible/sheet:bg-forest group-focus-within/sheet:bg-forest focus-visible:outline-none focus-visible:after:rounded-3xl focus-visible:after:ring-2 focus-visible:after:ring-link"
+          className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-accent px-6 text-button font-semibold text-white transition-colors duration-fast after:absolute after:inset-0 after:content-[''] group-hover/sheet:bg-forest group-focus-visible/sheet:bg-forest group-focus-within/sheet:bg-forest focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:ring-2 focus-visible:after:ring-link"
         >
           Download {kind}
           <span className="sr-only">: {name}</span>

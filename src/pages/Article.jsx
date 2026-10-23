@@ -83,7 +83,7 @@ function ArticlePage({ a }) {
         <div className="container-site grid gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,23rem)] lg:gap-12 lg:py-20 xl:grid-cols-[11.5rem_minmax(0,60ch)_minmax(20rem,26.25rem)]">
           {/* Contents: collapsible above the text below 1280px; a sticky list on the left from 1280px. */}
           <aside className="lg:col-span-2 xl:col-span-1">
-            <details className="group/toc rounded-2xl border border-line bg-ice/60 xl:hidden">
+            <details className="group/toc rounded-card border border-line bg-ice/60 xl:hidden">
               <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-4 px-5 py-3 text-small font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px]">
                 On this page
                 <ChevronDown aria-hidden="true" className="h-4 w-4 text-accent transition-transform duration-fast group-open/toc:rotate-180" />
@@ -305,7 +305,7 @@ function Block({ b, section, ctx, inCallout = false }) {
   if (b.table) return <GlanceTable t={b.table} section={section} reading={reading} />;
   if (b.callout) {
     return (
-      <div role="note" aria-label={b.callout.label} data-rv="term" className="article-term-card article-callout relative mt-6 rounded-2xl border border-line bg-ice/70 py-5 pl-6 pr-5">
+      <div role="note" aria-label={b.callout.label} data-rv="term" className="article-term-card article-callout relative mt-6 rounded-card border border-line bg-ice/70 py-5 pl-6 pr-5">
         <p data-label className="eyebrow text-muted">
           {b.callout.label}
         </p>
@@ -349,7 +349,7 @@ function Block({ b, section, ctx, inCallout = false }) {
             data-tilt
             data-step={i}
             data-of={section}
-            className="article-term-card relative rounded-2xl border border-line bg-ice/70 py-4 pl-6 pr-5"
+            className="article-term-card relative rounded-card border border-line bg-ice/70 py-4 pl-6 pr-5"
           >
             <p data-label className="eyebrow text-muted">
               Key term

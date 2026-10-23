@@ -67,18 +67,18 @@ export default function HomeWhyNow() {
       <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-deep-grid/95 via-deep-grid/75 to-deep-grid/30" />
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-deep-grid/80 to-transparent" />
 
-      <div className="relative grid container-site items-center gap-12 py-20 md:py-24 lg:grid-cols-2">
+      <div className="relative grid container-site items-center gap-12 py-section lg:grid-cols-2">
         <div ref={copy}>
           <p data-e="copy" className="eyebrow text-paper/80">
             Why Energy Storage, Why Now
           </p>
-          <h2 data-e="copy" className="mt-4 text-h2 font-semibold">
+          <h2 data-e="copy" className="mt-eyebrow text-h2 font-semibold">
             {/* The space keeps "Cleaner," and "More" apart in the heading's text; before a <br> it renders nothing. */}
             A Stronger, Cleaner,{" "}
             <br />
             More Reliable India
           </h2>
-          <p data-e="copy" className="mt-5 max-w-md text-body text-paper/90">
+          <p data-e="copy" className="mt-heading max-w-measure text-body text-paper/90">
             Battery storage makes India&rsquo;s clean energy future possible — storing solar power for when it&rsquo;s
             needed, reducing diesel dependence, and building a more reliable, resilient grid.
           </p>

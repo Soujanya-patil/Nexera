@@ -15,8 +15,8 @@ export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], r
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%)" }} />
       <EnergyGrid />
       <div className="relative container-site pb-14 pt-14 lg:pb-20 lg:pt-20">
-        <p className="article-eyebrow eyebrow text-accent">{eyebrow}</p>
-        <h1 className="article-h1 mt-5 max-w-3xl text-h1 font-semibold">
+        <p className="article-eyebrow eyebrow text-label">{eyebrow}</p>
+        <h1 className="article-h1 mt-eyebrow max-w-intro text-h1 font-semibold">
           {words.map((w, i) => (
             <span key={i}>
               {i > 0 && " "}
@@ -26,7 +26,7 @@ export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], r
             </span>
           ))}
         </h1>
-        {intro && <p className="article-intro mt-6 max-w-2xl text-lead text-paper/90">{intro}</p>}
+        {intro && <p className="article-intro mt-heading max-w-measure text-lead text-paper/90">{intro}</p>}
         {chips.length > 0 && (
           <ul aria-label="On this page" className="resources-chips mt-8 flex flex-wrap gap-2.5">
             {chips.map((c, i) => (

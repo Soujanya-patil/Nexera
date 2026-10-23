@@ -45,7 +45,7 @@ export default function UseCaseHotspots({ items, active, setActive }) {
             {desktop && on && (
               <div
                 aria-hidden="true"
-                className={`journey-detail pointer-events-none absolute z-20 w-64 rounded-xl border border-white/60 bg-white/75 p-4 text-left shadow-[0_18px_40px_-20px_color-mix(in_srgb,var(--color-ink)_50%,transparent)] backdrop-blur-md ${
+                className={`journey-detail pointer-events-none absolute z-20 w-64 rounded-control border border-white/60 bg-white/75 p-4 text-left shadow-float backdrop-blur-md ${
                   y < 40 ? "top-6" : "bottom-6"
                 } ${x > 62 ? "right-0" : "-left-4"}`}
               >

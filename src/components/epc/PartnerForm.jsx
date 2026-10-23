@@ -19,7 +19,7 @@ const NEXT = [
 ];
 
 const input =
-  "w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink transition-[border-color,box-shadow] focus:border-accent/40 focus:outline-none focus:ring-2 focus:ring-accent/50";
+  "w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink transition-[border-color,box-shadow] focus:border-accent/40 focus:outline-none focus:ring-2 focus:ring-accent/50";
 
 /**
  * Partner enquiry — the Become a Partner application form (this page's existing enquiry flow, which
@@ -118,7 +118,7 @@ export default function PartnerForm() {
   }
 
   return (
-    <section id="apply" aria-labelledby="apply-title" className="bg-white py-20 focus:outline-none md:py-28">
+    <section id="apply" aria-labelledby="apply-title" className="bg-white py-section focus:outline-none">
       <div className="grid container-site gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
         <div>
           <p className="eyebrow text-muted">Partner enquiry</p>
@@ -142,7 +142,7 @@ export default function PartnerForm() {
           </ol>
         </div>
 
-        <div className="rounded-2xl border border-line bg-ice/60 p-6 sm:p-8">
+        <div className="rounded-card border border-line bg-ice/60 p-6 sm:p-8">
           {submitted ? (
             <div role="status" className="journey-detail flex flex-col items-start py-6">
               <CheckCircle2 aria-hidden="true" className="h-8 w-8 text-accent" strokeWidth={1.75} />
@@ -183,7 +183,7 @@ export default function PartnerForm() {
                 </label>
               </div>
               {status === "error" && (
-                <p role="alert" className="rounded-lg border border-[#b3261e]/30 bg-[#b3261e]/[0.06] px-4 py-3 text-small text-ink">
+                <p role="alert" className="rounded-control border border-[#b3261e]/30 bg-[#b3261e]/[0.06] px-4 py-3 text-small text-ink">
                   Something went wrong. Please try again, or call/email us.
                   {CONTACT_PHONE && (
                     <>
@@ -207,7 +207,7 @@ export default function PartnerForm() {
                 type="submit"
                 disabled={status === "sending"}
                 aria-busy={status === "sending" || undefined}
-                className="group btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold uppercase tracking-[0.08em] text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] focus-visible:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="group btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold uppercase tracking-[0.08em] text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-glow focus-visible:shadow-glow active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 Submit Enquiry
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover:translate-x-1 group-focus-visible:translate-x-1 group-focus-within:translate-x-1" />

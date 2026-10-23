@@ -26,7 +26,7 @@ export default function ArticleClosingBand() {
         <path className="article-band-line" d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in srgb, var(--accent) 12%, transparent)" strokeWidth="1" />
       </svg>
 
-      <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative flex container-site flex-col gap-8 py-section lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
           <p className="flex items-center gap-3 eyebrow text-paper/80">
             {STEPS.map((w, i) => (
@@ -36,10 +36,10 @@ export default function ArticleClosingBand() {
               </Fragment>
             ))}
           </p>
-          <h2 data-rv="split" className="mt-4 text-h2 font-semibold">
+          <h2 data-rv="split" className="mt-eyebrow text-h2 font-semibold">
             Let&rsquo;s Build India&rsquo;s Energy Storage Future Together
           </h2>
-          <p data-rv="text" className="mt-4 max-w-xl text-body text-paper/80">
+          <p data-rv="text" className="mt-heading max-w-measure text-body text-paper/80">
             Whether you&rsquo;re a solar EPC looking to partner, or an end customer exploring a solution, Nexera is your trusted partner for BESS.
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function ArticleClosingBand() {
           <MagneticButton to="/#contact" arrow spotlight>
             Get in Touch
           </MagneticButton>
-          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:shadow-[0_0_22px_-4px_color-mix(in_srgb,var(--accent)_45%,transparent)] focus-visible:shadow-[0_0_22px_-4px_color-mix(in_srgb,var(--accent)_45%,transparent)]">
+          <MagneticButton to="/become-a-partner" variant="outline" sweep className="hover:shadow-glow focus-visible:shadow-glow">
             Become a Partner
           </MagneticButton>
         </div>

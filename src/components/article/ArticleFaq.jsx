@@ -9,7 +9,7 @@ import { toggleDetails } from "../../lib/accordion";
 export default function ArticleFaq({ id, title, items, tone = "ice" }) {
   return (
     // tone="none": no background of its own (a page that shifts its sections' tone itself, /resources)
-    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "ice" ? "scroll-mt-24 bg-paper" : "scroll-mt-32"} py-14 lg:py-20`}>
+    <section id={id} aria-labelledby={`${id}-title`} className={`${tone === "ice" ? "scroll-mt-24 bg-paper" : "scroll-mt-32"} py-section`}>
       <div className="container-site">
         <div data-rv="h2">
           <svg aria-hidden="true" className="article-h2-line" viewBox="0 0 64 4" preserveAspectRatio="none">
@@ -21,10 +21,10 @@ export default function ArticleFaq({ id, title, items, tone = "ice" }) {
         </div>
         <div className="mt-10 max-w-3xl space-y-3">
           {items.map(({ q, a }, i) => (
-            <details key={q} data-rv="text" className="article-faq group/faq rounded-2xl border border-line bg-white" open={i === 0 || undefined}>
+            <details key={q} data-rv="text" className="article-faq group/faq rounded-card border border-line bg-white" open={i === 0 || undefined}>
               <summary
                 onClick={toggleDetails}
-                className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-2 sm:px-6 [&::-webkit-details-marker]:hidden"
+                className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-card px-5 py-4 focus-visible:outline-2 focus-visible:outline-offset-2 sm:px-6 [&::-webkit-details-marker]:hidden"
               >
                 <h3 className="font-semibold text-ink">{q}</h3>
                 <span aria-hidden="true" className="article-faq-icon grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-accent">

@@ -19,8 +19,8 @@ export default function UseCaseMap({ items }) {
   return (
     <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)] lg:items-start">
       <figure>
-        <div className="relative aspect-[2/1] rounded-2xl bg-ice ring-1 ring-line">
-          <div className="absolute inset-0 overflow-hidden rounded-2xl">
+        <div className="relative aspect-[2/1] rounded-card bg-ice ring-1 ring-line">
+          <div className="absolute inset-0 overflow-hidden rounded-card">
             <SceneImg
               name="utility-grid"
               sizes="(min-width: 1024px) 58vw, 100vw"
@@ -45,11 +45,11 @@ export default function UseCaseMap({ items }) {
             onPointerLeave={() => setActive(null)}
             onFocus={() => setActive(i)}
             tabIndex={-1}
-            className={`flex gap-3.5 rounded-xl p-3 transition-colors duration-fast ${active === i ? "bg-accent/15" : ""}`}
+            className={`flex gap-3.5 rounded-control p-3 transition-colors duration-fast ${active === i ? "bg-accent/15" : ""}`}
           >
             <span
               className={`grid h-9 w-9 shrink-0 place-items-center rounded-full transition-colors duration-fast ${
-                active === i ? "bg-accent text-on-accent" : "bg-ice text-accent"
+                active === i ? "bg-accent text-on-accent" : "bg-ice text-ink"
               }`}
             >
               <Icon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />

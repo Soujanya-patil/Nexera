@@ -187,7 +187,7 @@ function ProductView({ product }) {
                   {partner.name}
                 </Link>
               </p>
-              <h1 data-a="title" className="mt-4 text-h1 font-semibold">
+              <h1 data-a="title" className="mt-eyebrow text-h1 font-semibold">
                 {product.name}
               </h1>
               <div data-a="meta">
@@ -256,7 +256,7 @@ function ProductView({ product }) {
                       <div
                         data-vt-hero={product.id}
                         style={{ viewTransitionName: `product-${product.id}` }}
-                        className="absolute inset-[16%] grid place-items-center rounded-3xl bg-white/95"
+                        className="absolute inset-[16%] grid place-items-center rounded-card bg-white/95"
                       >
                         <img
                           src={product.image}
@@ -289,18 +289,18 @@ function ProductView({ product }) {
       </section>
 
       {/* Key specifications */}
-      <section className="bg-paper py-16 md:py-20">
+      <section className="bg-paper py-section">
         <div className="container-site">
           <p className="eyebrow text-muted">Key specifications</p>
-          <AnimatedText className="mt-3 text-h2 font-semibold text-ink">At a glance</AnimatedText>
+          <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">At a glance</AnimatedText>
           <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {product.keySpecs.map((s) => (
               <div
                 data-sr
                 key={s.label}
-                className="group/spec relative overflow-hidden rounded-2xl border border-line bg-white p-5 card-hover"
+                className="group/spec relative overflow-hidden rounded-card border border-line bg-white p-5 card-hover"
               >
-                <span aria-hidden="true" className="absolute left-5 top-0 h-0.5 w-10 origin-left scale-x-[0.6] rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover/spec:scale-x-100 group-focus-visible/spec:scale-x-100 group-focus-within/spec:scale-x-100" />
+                <span aria-hidden="true" className="absolute left-5 top-0 h-0.5 w-10 origin-left scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover/spec:scale-x-100 group-focus-visible/spec:scale-x-100 group-focus-within/spec:scale-x-100" />
                 <dt className="eyebrow text-muted">{s.label}</dt>
                 <dd className="mt-2 text-h3 tabular-nums font-semibold text-accent">
                   <CountUp value={s.value} />
@@ -314,16 +314,16 @@ function ProductView({ product }) {
 
       {/* TECHNOLOGY */}
       {product.highlights.length > 0 && (
-        <section className="bg-white py-16 md:py-20">
+        <section className="bg-white py-section">
           <div className="container-site">
             <p className="eyebrow text-muted">Product highlights</p>
-            <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Why this system</AnimatedText>
+            <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Why this system</AnimatedText>
             <ul className="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               {product.highlights.map((h) => {
                 const Icon = ICONS[h.icon] ?? ShieldCheck;
                 return (
                   <li data-sr key={h.title} className="group/hl">
-                    <span className="grid h-11 w-11 place-items-center rounded-full bg-ice text-accent transition-[background-color,scale] duration-fast group-hover/hl:scale-105 group-focus-visible/hl:scale-105 group-focus-within/hl:scale-105 group-hover/hl:bg-accent/25 group-focus-visible/hl:bg-accent/25 group-focus-within/hl:bg-accent/25">
+                    <span className="grid h-11 w-11 place-items-center rounded-full bg-ice text-ink transition-[background-color,color,scale] duration-fast group-hover/hl:text-accent group-focus-visible/hl:text-accent group-focus-within/hl:text-accent group-hover/hl:scale-105 group-focus-visible/hl:scale-105 group-focus-within/hl:scale-105 group-hover/hl:bg-accent/25 group-focus-visible/hl:bg-accent/25 group-focus-within/hl:bg-accent/25">
                       <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.7} />
                     </span>
                     <h3 className="mt-4 font-semibold text-ink">{h.title}</h3>
@@ -338,11 +338,11 @@ function ProductView({ product }) {
 
       {/* SPECIFICATIONS */}
       {hasTech && (
-        <section className="bg-paper py-16 md:py-20">
+        <section className="bg-paper py-section">
           <div className="grid container-site gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
             <div>
               <p className="eyebrow text-muted">Technical information</p>
-              <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Specifications</AnimatedText>
+              <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Specifications</AnimatedText>
               {product.specsNote && <p className="mt-4 text-small text-copy">{product.specsNote}</p>}
             </div>
             <div data-sr className="min-w-0">
@@ -354,12 +354,12 @@ function ProductView({ product }) {
 
       {/* SAFETY — interactive view, only where a partner reference confirms the components */}
       {product.hotspots && (
-        <section className="relative overflow-hidden bg-deep-grid py-16 text-white md:py-20">
+        <section className="relative overflow-hidden bg-deep-grid py-section text-white">
           <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 35% 50%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%)" }} />
           <div className="relative container-site">
             <p className="eyebrow text-paper/80">Interactive product view</p>
-            <AnimatedText className="mt-3 text-h2 font-semibold">Explore the protection architecture</AnimatedText>
-            <p className="mt-3 max-w-2xl text-small text-paper/70">Hover or select a point to see the component.</p>
+            <AnimatedText className="mt-eyebrow text-h2 font-semibold">Explore the protection architecture</AnimatedText>
+            <p className="mt-heading max-w-measure text-small text-paper/70">Hover or select a point to see the component.</p>
             <div data-sr className="mt-10">
               <HotspotViewer hotspots={product.hotspots} partnerName={partner.name} />
             </div>
@@ -379,7 +379,7 @@ function ProductView({ product }) {
 
       {/* More from this partner */}
       {related.length > 0 && (
-        <section className="bg-paper py-16 md:py-20">
+        <section className="bg-paper py-section">
           <div className="container-site">
             <div className="flex items-end justify-between gap-4">
               <h2 className="text-h2 font-semibold text-ink">More from {partner.name}</h2>

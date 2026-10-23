@@ -25,10 +25,10 @@ export default function NetworkMap() {
   const cp = pos(current);
 
   return (
-    <section aria-labelledby="network-title" className="relative overflow-hidden bg-deep-grid py-20 text-white md:py-28">
+    <section aria-labelledby="network-title" className="relative overflow-hidden bg-deep-grid py-section text-white">
       <div className="grid container-site items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <p className="eyebrow text-accent">Our network</p>
+          <p className="eyebrow text-label">Our network</p>
           <AnimatedText id="network-title" className="mt-3 text-h2 font-semibold">
             Rooted in Karnataka. Growing Across India.
           </AnimatedText>
@@ -79,7 +79,7 @@ export default function NetworkMap() {
         <div className="relative mx-auto w-full max-w-[17rem] sm:max-w-md" aria-hidden="true">
           <div className="relative" style={{ aspectRatio: `${W} / ${H}` }}>
             <div
-              className="absolute inset-0 rounded-3xl"
+              className="absolute inset-0 rounded-card"
               style={{
                 backgroundImage: "radial-gradient(color-mix(in srgb, var(--color-paper) 13%, transparent) 1px, transparent 1.4px)",
                 backgroundSize: "18px 18px",
@@ -140,7 +140,7 @@ export default function NetworkMap() {
             {/* Info card for the active location (floats beside the point from sm up) */}
             <div
               key={current.id}
-              className="journey-detail pointer-events-none absolute z-10 hidden w-52 rounded-lg border border-white/12 bg-deep-grid/90 p-3.5 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.8)] backdrop-blur-sm sm:block"
+              className="journey-detail pointer-events-none absolute z-10 hidden w-52 rounded-control border border-white/10 bg-deep-grid/90 p-3.5 shadow-float backdrop-blur-sm sm:block"
               style={{
                 left: `${cp.x}%`,
                 top: `${cp.y}%`,
@@ -151,7 +151,7 @@ export default function NetworkMap() {
             </div>
           </div>
           {/* Phones: the same card, below the schematic */}
-          <div key={`m-${current.id}`} className="journey-detail mt-4 rounded-lg border border-white/12 bg-deep-grid/90 p-3.5 sm:hidden">
+          <div key={`m-${current.id}`} className="journey-detail mt-4 rounded-control border border-white/10 bg-deep-grid/90 p-3.5 sm:hidden">
             <OfficeCard office={current} />
           </div>
           <p className="mt-4 text-center eyebrow text-paper/40">
@@ -166,7 +166,7 @@ export default function NetworkMap() {
 function OfficeCard({ office }) {
   return (
     <>
-      <p className="eyebrow text-accent">
+      <p className="eyebrow text-label">
         {office.status === "active" ? office.role : "Planned expansion"}
       </p>
       <p className="mt-1 text-small font-semibold text-white">{office.city}</p>

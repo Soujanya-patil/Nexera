@@ -64,8 +64,8 @@ export default function NexeraLfp({ active, motion, mode, step }) {
             <li
               key={s.name}
               data-tile
-              className={`flex flex-col overflow-hidden rounded-2xl border transition-[border-color,box-shadow] duration-500 ${
-                on ? "border-accent/70 shadow-[0_0_26px_color-mix(in_srgb,var(--accent)_30%,transparent)]" : any ? "border-white/10 opacity-55" : "border-white/15"
+              className={`flex flex-col overflow-hidden rounded-card border transition-[border-color,box-shadow] duration-500 ${
+                on ? "border-accent/70 shadow-glow" : any ? "border-white/10 opacity-55" : "border-white/15"
               }`}
             >
               <div className={`relative shrink-0 overflow-hidden bg-paper ${compact ? "h-24" : "h-36"}`}>

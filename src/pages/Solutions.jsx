@@ -116,7 +116,7 @@ function HubHeader({ eyebrow, title, subtitle }) {
       <Spotlight />
       <div data-intro={state} className="relative container-site grid items-center gap-12 py-16 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
         <div>
-          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-small font-medium text-accent">
+          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-small font-medium text-label">
             <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-accent/70" />
             {eyebrow}
           </p>
@@ -161,7 +161,7 @@ function SegmentCard({ s }) {
       to={s.page}
       onClick={open}
       data-vt-card={s.id}
-      className="card-hover group relative flex aspect-[4/3] focus-visible:outline-link flex-col justify-end overflow-hidden rounded-2xl bg-deep-grid text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
+      className="card-hover group relative flex aspect-[4/3] focus-visible:outline-link flex-col justify-end overflow-hidden rounded-card bg-deep-grid text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
     >
       <div data-vt-img className="absolute inset-0 overflow-hidden">
         <SceneImg
@@ -176,7 +176,7 @@ function SegmentCard({ s }) {
       {/* In the panels the card's own outline would be clipped by its window: the ring is drawn on the text. */}
       <div
         data-panel-text
-        className="relative rounded-2xl p-6 group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-accent md:p-7"
+        className="relative rounded-card p-6 group-focus-visible:outline-2 group-focus-visible:-outline-offset-4 group-focus-visible:outline-accent md:p-7"
       >
         <h2
           className="text-h2 font-semibold transition-colors duration-fast group-hover:text-accent group-focus-within:text-accent group-focus-visible:text-accent"
@@ -205,7 +205,7 @@ export default function Solutions() {
       />
 
       {/* Same card treatment as For EPCs' application cards: partner imagery under a dark gradient. */}
-      <section aria-label="Solutions by segment" className="bg-white py-14 lg:py-20">
+      <section aria-label="Solutions by segment" className="bg-white py-section">
         <ul ref={grid} data-sr-state={reveal} className="seg-panels grid container-site gap-5 md:grid-cols-3">
           {SEGMENTS.map((s) => (
             <li key={s.id} id={s.id} data-sr className="scroll-mt-20">

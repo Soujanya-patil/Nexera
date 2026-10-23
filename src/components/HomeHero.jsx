@@ -553,7 +553,7 @@ export default function HomeHero() {
           {story && (
             <p
               aria-hidden="true"
-              className={`absolute -top-9 left-0 flex items-center gap-2 eyebrow text-accent transition-[opacity,translate] duration-base ease-standard ${
+              className={`absolute -top-9 left-0 flex items-center gap-2 eyebrow text-label transition-[opacity,translate] duration-base ease-standard ${
                 CONTEXT[storyStage] ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0"
               }`}
             >
@@ -651,7 +651,7 @@ export default function HomeHero() {
                   ? "Product view. Scroll to open the cabinet and show its protection components, or press Enter to go to them."
                   : "Product view. Hover, tap or press Enter to open the cabinet and show its protection components."
               }
-              className={`group/stage relative aspect-[65/54] w-full rounded-lg transition-[scale] duration-slow ease-standard focus-visible:outline-2 focus-visible:outline-offset-4 ${
+              className={`group/stage relative aspect-[65/54] w-full rounded-control transition-[scale] duration-slow ease-standard focus-visible:outline-2 focus-visible:outline-offset-4 ${
                 story && inspect ? "scale-[1.01]" : ""
               }`}
             >

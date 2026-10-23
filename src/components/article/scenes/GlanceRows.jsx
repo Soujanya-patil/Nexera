@@ -51,7 +51,7 @@ export default function GlanceRows({ active, motion, mode, step, table = LFP_NMC
               <li
                 key={label}
                 data-row
-                className={`flex items-center gap-2.5 rounded-xl border px-3 font-semibold transition-[border-color,background-color,color] duration-500 ${compact ? "py-1.5 text-[12px]" : "py-2 text-sm"} ${
+                className={`flex items-center gap-2.5 rounded-control border px-3 font-semibold transition-[border-color,background-color,color] duration-500 ${compact ? "py-1.5 text-[12px]" : "py-2 text-sm"} ${
                   on ? "border-accent/60 bg-accent/10 text-white" : any ? "border-white/10 text-white/45" : "border-white/10 text-white/80"
                 }`}
               >
@@ -66,7 +66,7 @@ export default function GlanceRows({ active, motion, mode, step, table = LFP_NMC
             [names[0], lfp],
             [names[1], nmc],
           ].map(([name, v]) => (
-            <div key={name} data-pair className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5">
+            <div key={name} data-pair className="rounded-control border border-white/10 bg-white/[0.04] px-3 py-2.5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">{name}</p>
               <p key={`${name}-${shown}`} className={`mt-1 font-semibold leading-snug text-white ${compact ? "text-[13px]" : "text-[15px]"} article-glance-value`}>
                 {lead(v)}

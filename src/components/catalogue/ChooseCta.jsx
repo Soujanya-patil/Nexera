@@ -21,13 +21,13 @@ export default function ChooseCta({ productId }) {
         className="ambient-drift pointer-events-none absolute -inset-[10%]"
         style={{ background: "radial-gradient(45% 70% at 78% 105%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 70%)" }}
       />
-      <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative flex container-site flex-col gap-8 py-section lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">
           <p data-sr className="eyebrow text-paper/80">
             Talk to an engineer
           </p>
-          <AnimatedText className="mt-4 text-h2 font-semibold">Need help choosing the right system?</AnimatedText>
-          <p data-sr className="mt-4 max-w-xl text-body text-paper/80">
+          <AnimatedText className="mt-eyebrow text-h2 font-semibold">Need help choosing the right system?</AnimatedText>
+          <p data-sr className="mt-heading max-w-measure text-body text-paper/80">
             Tell us about your site and load. NEXERA&rsquo;s team will recommend and size a system from our technology partners.
           </p>
         </div>

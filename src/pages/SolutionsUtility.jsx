@@ -229,7 +229,7 @@ export default function SolutionsUtility() {
         <CompareProvider>
           <div className="mt-12 space-y-16">
             {PARTNERS.map((p) => (
-              <div key={p.id} className="group/card rounded-3xl border border-line bg-white p-6 md:p-10">
+              <div key={p.id} className="group/card rounded-card border border-line bg-white p-6 md:p-10">
                 <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
                   <div>
                     <PartnerMark partner={p.id} decorative />
@@ -316,7 +316,7 @@ export default function SolutionsUtility() {
             "Grid fluctuations",
             "Remote project locations",
           ].map((c) => (
-            <li key={c} className="rounded-full border border-line bg-white px-4 py-2 text-small font-medium text-accent">
+            <li key={c} className="rounded-full border border-line bg-white px-4 py-2 text-small font-medium text-ink">
               {c}
             </li>
           ))}

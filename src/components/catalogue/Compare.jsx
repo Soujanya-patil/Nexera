@@ -22,7 +22,7 @@ export function CompareTray({ ids, onRemove, onClear, onOpen }) {
       }`}
       aria-hidden={!ids.length}
     >
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-forest/95 px-4 py-3 text-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur sm:flex-nowrap sm:px-5">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 rounded-card border border-white/10 bg-forest/95 px-4 py-3 text-white shadow-float backdrop-blur sm:flex-nowrap sm:px-5">
         <p className="hidden shrink-0 eyebrow text-paper/70 md:block">Compare</p>
         <ul className="flex min-w-0 flex-1 flex-wrap gap-2">
           {products.map((p) => (
@@ -90,7 +90,7 @@ export function CompareDialog({ ids, open, onClose }) {
       onClose={onClose}
       onClick={(e) => e.target === ref.current && onClose()}
       aria-labelledby="compare-title"
-      className="m-auto max-h-[88svh] w-[min(64rem,calc(100vw-2rem))] overflow-hidden rounded-2xl bg-white p-0 text-ink shadow-2xl backdrop:bg-deep-grid/70 backdrop:backdrop-blur-sm"
+      className="m-auto max-h-[88svh] w-[min(64rem,calc(100vw-2rem))] overflow-hidden rounded-card bg-white p-0 text-ink shadow-float backdrop:bg-deep-grid/70 backdrop:backdrop-blur-sm"
     >
       <div className="flex max-h-[88svh] flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
@@ -110,7 +110,7 @@ export function CompareDialog({ ids, open, onClose }) {
                 </th>
                 {products.map((p) => (
                   <th key={p.id} scope="col" className="px-4 py-4 align-bottom font-normal">
-                    <div className="relative mb-3 aspect-[4/3] w-full max-w-[11rem] overflow-hidden rounded-xl bg-ice">
+                    <div className="relative mb-3 aspect-[4/3] w-full max-w-[11rem] overflow-hidden rounded-control bg-ice">
                       <img
                         src={p.image}
                         loading="lazy"

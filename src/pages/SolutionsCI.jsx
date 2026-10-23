@@ -262,7 +262,7 @@ export default function SolutionsCI() {
       >
         <CardGrid>
           {PARTNERS.map((p) => (
-            <article key={p.id} className="group/card flex h-full flex-col rounded-2xl border border-line bg-white p-6 md:p-8">
+            <article key={p.id} className="group/card flex h-full flex-col rounded-card border border-line bg-white p-6 md:p-8">
               <PartnerMark partner={p.id} decorative />
               <h3 className="mt-5 text-h4 font-semibold text-ink">{p.title}</h3>
               {p.statsFirst ? (

@@ -72,7 +72,7 @@ export default function KeyTerms({ active, motion, mode, step }) {
       {/* C-rate */}
       {/* data-in on a wrapper: the panel itself carries a CSS opacity transition (its highlight) */}
       <div data-in>
-      <div className={`article-term rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2.5 ${focus(2)}`}>
+      <div className={`article-term rounded-card border border-white/10 bg-white/[0.04] px-4 py-2.5 ${focus(2)}`}>
         <div className="flex items-baseline justify-between gap-3">
           <label htmlFor={`${uid}-rate`} className="text-sm font-semibold text-white">
             C-rate

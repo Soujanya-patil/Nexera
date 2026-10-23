@@ -57,7 +57,7 @@ export function Stage({ sections, reading, hover, motion }) {
 
   return (
     <div ref={root} aria-label="Illustration for the section being read" role="region" className="article-stage sticky top-[max(5.5rem,calc(50svh-14rem))] hidden lg:block">
-      <div className="article-stage-frame relative h-[30rem] overflow-hidden rounded-[28px] border border-white/10 bg-deep-grid text-white shadow-[0_30px_60px_-30px_color-mix(in_srgb,var(--color-ink)_55%,transparent)]">
+      <div className="article-stage-frame relative h-[30rem] overflow-hidden rounded-card border border-white/10 bg-deep-grid text-white">
         <div aria-hidden="true" className="article-stage-grid pointer-events-none absolute inset-0" />
         {/* Until the scenes mount: the first scene, static (in the browser only — the pre-rendered page
             keeps just the stage's reserved frame, so the HTML stays light). */}
@@ -108,7 +108,7 @@ export function SceneInline({ section, reading, motion }) {
     <div
       ref={root}
       style={{ height: inline }}
-      className="article-inline-scene relative mt-6 overflow-hidden rounded-3xl border border-white/10 bg-deep-grid text-white lg:hidden"
+      className="article-inline-scene relative mt-6 overflow-hidden rounded-card border border-white/10 bg-deep-grid text-white lg:hidden"
     >
       <div aria-hidden="true" className="article-stage-grid pointer-events-none absolute inset-0" />
       <div className="relative h-full">

@@ -26,7 +26,7 @@ const spotlight = (e) => {
  */
 export default function ArticleRelated({ items }) {
   return (
-    <section aria-labelledby="related-title" className="bg-white py-14 lg:py-20">
+    <section aria-labelledby="related-title" className="bg-white py-section">
       <div className="container-site">
         <div data-rv="h2">
           <svg aria-hidden="true" className="article-h2-line" viewBox="0 0 64 4" preserveAspectRatio="none">
@@ -42,7 +42,7 @@ export default function ArticleRelated({ items }) {
               <Link
                 to={r.to}
                 onPointerMove={spotlight}
-                className="article-related group/rel relative flex h-full min-h-28 flex-col justify-between gap-6 overflow-hidden rounded-2xl border border-line bg-white p-5 font-semibold text-ink card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
+                className="article-related group/rel relative flex h-full min-h-28 flex-col justify-between gap-6 overflow-hidden rounded-card border border-line bg-white p-5 font-semibold text-ink card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
               >
                 <svg aria-hidden="true" viewBox="0 0 36 32" className="h-8 w-9" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path data-icon d={ICONS[r.to] ?? ICONS["/products"]} className="text-accent" />

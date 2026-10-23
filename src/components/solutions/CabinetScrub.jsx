@@ -48,7 +48,7 @@ export default function CabinetScrub() {
 
   return (
     <section ref={section} id="inside-cabinet" aria-labelledby="inside-cabinet-title" className="relative overflow-hidden bg-deep-grid text-white">
-      <div className={scrub ? "flex h-[calc(100svh-3.5rem)] items-center py-8" : "py-14 lg:py-20"}>
+      <div className={scrub ? "flex h-[calc(100svh-3.5rem)] items-center py-8" : "py-section"}>
         <div className="grid w-full container-site items-center gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
           <div>
             <KineticHeading id="inside-cabinet-title" className="text-h2 font-semibold">
@@ -104,7 +104,7 @@ export default function CabinetScrub() {
               <ul aria-label="Protection components" className="mt-5 grid gap-2 sm:grid-cols-2">
                 {CALLOUTS.map((c) => (
                   <li key={c.label} className="flex items-center gap-3 text-small text-paper/85">
-                    <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                    <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-label" />
                     {c.label}
                   </li>
                 ))}

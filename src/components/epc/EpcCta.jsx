@@ -26,14 +26,14 @@ export default function EpcCta() {
         <path d="M0 230 C 420 170, 820 240, 1440 150" stroke="color-mix(in srgb, var(--accent) 18%, transparent)" strokeWidth="1" />
         <path d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in srgb, var(--accent) 10%, transparent)" strokeWidth="1" />
       </svg>
-      <div className="relative mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
-        <p data-sr className="eyebrow text-accent">
+      <div className="relative mx-auto max-w-4xl px-6 py-section text-center">
+        <p data-sr className="eyebrow text-label">
           Partner with NEXERA
         </p>
-        <AnimatedText id="epc-cta-title" className="mx-auto mt-4 max-w-3xl text-h2 font-semibold">
+        <AnimatedText id="epc-cta-title" className="mx-auto mt-eyebrow max-w-intro text-h2 font-semibold">
           Ready to Build Your Next Energy Storage Project?
         </AnimatedText>
-        <p data-sr className="mx-auto mt-5 max-w-xl text-body text-paper/80">
+        <p data-sr className="mx-auto mt-heading max-w-measure text-body text-paper/80">
           Talk to NEXERA about technology access, project requirements, and partnership opportunities.
         </p>
         <div data-sr className="mt-9 flex flex-wrap items-center justify-center gap-4">

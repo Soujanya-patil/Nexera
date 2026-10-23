@@ -133,7 +133,7 @@ export default function PartnerJourney() {
 
   const title = (
     <>
-      <p className="eyebrow text-accent">Partnership journey</p>
+      <p className="eyebrow text-label">Partnership journey</p>
       <AnimatedText id="journey-title" className="mt-3 text-h2 font-semibold">
         How Your Project Moves With NEXERA
       </AnimatedText>
@@ -144,7 +144,7 @@ export default function PartnerJourney() {
     // ---------------- Vertical sequence (phones, reduced motion) ----------------
     return (
       <section aria-labelledby="journey-title" className="relative bg-deep-grid text-white">
-        <div className="relative mx-auto max-w-3xl px-6 py-20 md:py-24">
+        <div className="relative mx-auto max-w-3xl px-6 py-section">
           {title}
           <ol ref={list} className="mt-10 space-y-14">
             {JOURNEY.map((s, i) => {
@@ -166,7 +166,7 @@ export default function PartnerJourney() {
                   </div>
                   <figure className="mt-4">
                     {/* The whole image at its own proportions — never cropped */}
-                    <div className="relative overflow-hidden rounded-xl border border-white/10 bg-deep-grid">
+                    <div className="relative overflow-hidden rounded-card border border-white/10 bg-deep-grid">
                       {s.contain && <Board />}
                       <img
                         src={img.src}
@@ -291,7 +291,7 @@ export default function PartnerJourney() {
                 <li
                   key={s.n}
                   onClick={() => goTo(i)}
-                  className={`group/card relative aspect-square max-h-[calc(100svh-23rem)] w-[calc((100%-1.5rem)/2)] shrink-0 cursor-pointer overflow-hidden rounded-2xl border bg-deep-grid transition-[opacity,scale,filter,border-color] duration-base ease-standard lg:w-[calc((100%-3rem)/3)] ${
+                  className={`group/card relative aspect-square max-h-[calc(100svh-23rem)] w-[calc((100%-1.5rem)/2)] shrink-0 cursor-pointer overflow-hidden rounded-card border bg-deep-grid transition-[opacity,scale,filter,border-color] duration-base ease-standard lg:w-[calc((100%-3rem)/3)] ${
                     on ? "scale-100 border-white/15 opacity-100 brightness-100" : "scale-[0.97] border-white/5 opacity-75 brightness-[0.82] hover:opacity-100 focus-visible:opacity-100 hover:brightness-100 focus-visible:brightness-100"
                   }`}
                 >
@@ -339,7 +339,7 @@ export default function PartnerJourney() {
               key={`panel-${active}`}
               className={`${dir.current === "next" ? "journey-in-next" : "journey-in-prev"} grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4`}
             >
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-on-accent">
+              <span className="flex h-9 w-9 items-center justify-center rounded-control bg-accent text-on-accent">
                 <Icon aria-hidden="true" className="h-4.5 w-4.5" strokeWidth={1.9} />
               </span>
               <div>

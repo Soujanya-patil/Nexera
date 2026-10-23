@@ -33,7 +33,7 @@ export default function InsightCards({ items }) {
           <>
             <span className="flex items-start justify-between gap-3">
               <span className="text-micro font-semibold tracking-[0.2em] text-muted">{String(i + 1).padStart(2, "0")}</span>
-              <svg aria-hidden="true" viewBox="0 0 36 34" className="h-9 w-9 text-accent" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <svg aria-hidden="true" viewBox="0 0 36 34" className="h-9 w-9 text-ink" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <path data-icon d={ICONS[i % ICONS.length]} />
               </svg>
             </span>
@@ -41,7 +41,7 @@ export default function InsightCards({ items }) {
             {to ? (
               <ArrowRight aria-hidden="true" className="mt-5 h-4 w-4 text-accent transition-transform duration-fast group-hover/ins:translate-x-1 group-focus-visible/ins:translate-x-1 group-focus-within/ins:translate-x-1" />
             ) : (
-              <span className="mt-5 self-start rounded-full border border-accent/20 bg-ice px-2.5 py-1 eyebrow text-accent">Coming soon</span>
+              <span className="mt-5 self-start rounded-full border border-line bg-ice px-2.5 py-1 eyebrow text-label">Coming soon</span>
             )}
           </>
         );
@@ -50,12 +50,12 @@ export default function InsightCards({ items }) {
             {to ? (
               <a
                 href={to}
-                className="guide-card group/ins relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-white p-6 card-hover focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="guide-card group/ins relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-white p-6 card-hover focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 {body}
               </a>
             ) : (
-              <div className="insight-soon relative flex h-full flex-col rounded-3xl bg-white p-6">{body}</div>
+              <div className="insight-soon relative flex h-full flex-col rounded-card bg-white p-6">{body}</div>
             )}
           </li>
         );

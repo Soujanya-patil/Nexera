@@ -15,7 +15,7 @@ export default function ServiceTraining() {
       />
 
       <section className="bg-white border-b border-line">
-        <div className="container-site py-16 md:py-20">
+        <div className="container-site py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Design & Commissioning Support
           </h2>
@@ -27,7 +27,7 @@ export default function ServiceTraining() {
       </section>
 
       <section className="bg-paper border-b border-line">
-        <div className="container-site py-16 md:py-20">
+        <div className="container-site py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             After-Sales & Warranty
           </h2>
@@ -40,7 +40,7 @@ export default function ServiceTraining() {
       </section>
 
       <section className="bg-white">
-        <div className="container-site py-16 md:py-20">
+        <div className="container-site py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Kalaburagi Technician Training Center
           </h2>
@@ -52,16 +52,16 @@ export default function ServiceTraining() {
             hardware — not manuals and PDFs.
           </p>
           <ul data-sr className="mt-6 space-y-2 text-body text-copy">
-            <li className="flex gap-3"><span className="text-accent">✓</span> Hands-on installation and commissioning practice</li>
-            <li className="flex gap-3"><span className="text-accent">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
-            <li className="flex gap-3"><span className="text-accent">✓</span> Certification path for field-ready technicians</li>
+            <li className="flex gap-3"><span className="text-label">✓</span> Hands-on installation and commissioning practice</li>
+            <li className="flex gap-3"><span className="text-label">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
+            <li className="flex gap-3"><span className="text-label">✓</span> Certification path for field-ready technicians</li>
           </ul>
         </div>
       </section>
 
       {/* FAQ: the same list is the page's FAQPage structured data (src/seo/routes.js), word for word. */}
       <section className="bg-paper border-t border-line">
-        <div className="container-site py-16 md:py-20">
+        <div className="container-site py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
             Frequently Asked Questions
           </h2>
@@ -90,7 +90,7 @@ function FileComplaint() {
   }
 
   return (
-    <div data-sr className="mt-8 rounded-lg border border-line bg-white p-6 max-w-xl">
+    <div data-sr className="mt-8 rounded-card border border-line bg-white p-6 max-w-xl">
       {!open ? (
         <button
           type="button"
@@ -120,7 +120,7 @@ function FileComplaint() {
           <Field label="What's wrong" name="issue" as="textarea" />
           <button
             type="submit"
-            className="btn-motion inline-flex min-h-11 items-center rounded-full bg-accent px-5 py-2.5 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"
+            className="btn-motion inline-flex min-h-11 items-center rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"
           >
             Submit
           </button>
@@ -143,7 +143,7 @@ function Field({ label, name, required, type = "text", as }) {
         type={as ? undefined : type}
         required={required}
         rows={as === "textarea" ? 3 : undefined}
-        className="w-full rounded-md border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40"
+        className="w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40"
       />
     </div>
   );

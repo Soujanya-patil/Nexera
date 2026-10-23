@@ -152,6 +152,23 @@
   --spacing-heading: 1rem;
   /* Reading measure for paragraphs: about 65 characters a line (max-w-measure). */
   --container-measure: 65ch;
+  /* Text widths: a section's heading and intro block (max-w-intro); tables, FAQ lists and forms
+     (max-w-wide). The page itself is container-site (1440 px with gutters). */
+  --container-intro: 42rem;
+  --container-wide: 56rem;
+
+  /* Shape: cards, panels and media frames (rounded-card); inputs, small boxes, popovers, tiles and
+     list rows (rounded-control); buttons, chips and badges stay rounded-full. */
+  --radius-card: 1rem;
+  --radius-control: 0.5rem;
+
+  /* Elevation. Content cards have a 1 px border and no shadow at rest; they lift on hover / focus
+     (shadow-raised, via card-hover). Only things floating over the page get shadow-float (the compare
+     tray, dialogs, popovers, the scrolled header, menus, the call-back widget). The green glow is
+     shadow-glow (in the inline theme below: it follows the ground's accent), for hover, focus and
+     active states only. */
+  --shadow-raised: 0 22px 44px -26px rgb(14 26 22 / 0.42);
+  --shadow-float: 0 20px 50px -20px rgb(0 0 0 / 0.55);
 
   /* Motion easings (utilities ease-standard / ease-emphasized / ease-in-out). The same curves as
      lib/tokens.js EASE, which GSAP uses. */
@@ -170,19 +187,44 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-on-accent: var(--on-accent);
+  /* Labels (eyebrows, small badges, list markers): quiet on either ground — muted on light, paper at
+     70% on dark. Green is kept for actions, active states, key figures and focus. */
+  --color-label: var(--label);
+  --shadow-glow: 0 0 24px 2px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 :root,
 :where(.bg-white, .bg-paper, .bg-ice, .bg-white\/90, .bg-white\/95, .bg-paper\/90, .bg-paper\/95) {
   --accent: var(--color-link);
   --accent-hover: color-mix(in srgb, var(--color-link) 82%, black);
   --on-accent: var(--color-white);
+  --label: var(--color-muted);
   --blend-sky: transparent; /* .photo-blend: no sky tint on a light ground */
 }
 :where(.bg-deep-grid, .bg-forest, .bg-black, [data-ground="dark"], [class*="bg-deep-grid/"], [class*="bg-forest/"]):not([class*=":bg-deep-grid"], [class*=":bg-forest"]) {
   --accent: var(--color-signal);
   --accent-hover: color-mix(in srgb, var(--color-signal) 80%, white);
   --on-accent: var(--color-ink);
+  --label: rgb(245 247 244 / 0.7);
   --blend-sky: var(--color-deep-grid);
+}
+
+/* Section spacing: one vertical padding for every content section — 64 px on phones, 80 px from 768 px
+   (py-section; pt-section / pb-section for a section whose other edge is set by a bar above it).
+   Heroes, page headers, the footer and the article body keep their own. */
+:root {
+  --section-y: 4rem;
+  @media (width >= 48rem) {
+    --section-y: 5rem;
+  }
+}
+@utility py-section {
+  padding-block: var(--section-y);
+}
+@utility pt-section {
+  padding-top: var(--section-y);
+}
+@utility pb-section {
+  padding-bottom: var(--section-y);
 }
 
 /* Motion durations (lib/tokens.js DUR): fast for hovers and presses, base for reveals, menus and
@@ -312,14 +354,14 @@
     &:hover {
       translate: 0 -4px;
       border-color: color-mix(in srgb, var(--accent) 60%, transparent);
-      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 22px 44px -26px rgb(7 26 23 / 0.42);
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), var(--shadow-raised);
     }
   }
   &:focus-visible,
   &:focus-within {
     translate: 0 -4px;
     border-color: color-mix(in srgb, var(--accent) 60%, transparent);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), 0 22px 44px -26px rgb(7 26 23 / 0.42);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent), var(--shadow-raised);
   }
 }
 @utility card-media {

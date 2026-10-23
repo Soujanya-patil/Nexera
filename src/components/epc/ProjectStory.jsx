@@ -59,7 +59,7 @@ export default function ProjectStory() {
           !staged || step >= 1 ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0"
         } ${staged ? "" : "hidden sm:block"}`}
       >
-        <p className="eyebrow text-accent">{partner.name}</p>
+        <p className="eyebrow text-label">{partner.name}</p>
         <p className="mt-0.5 text-small font-semibold text-white">{product.cardSpecs.join(" · ")}</p>
       </div>
     </div>
@@ -79,11 +79,11 @@ export default function ProjectStory() {
             WebkitMaskImage: "radial-gradient(70% 80% at 35% 50%, #000, transparent 80%)",
           }}
         />
-        <div className="relative grid h-full container-site items-center gap-12 py-20 md:py-24 lg:grid-cols-2 stage:py-0">
+        <div className="relative grid h-full container-site items-center gap-12 py-section lg:grid-cols-2 stage:py-0">
           <div className="order-2 lg:order-1">{productFigure}</div>
 
           <div className="order-1 lg:order-2">
-            <p className="eyebrow text-accent">From requirement to support</p>
+            <p className="eyebrow text-label">From requirement to support</p>
             <AnimatedText id="story-title" className="mt-3 text-h2 font-semibold">
               How a Project Comes Together
             </AnimatedText>
@@ -121,7 +121,7 @@ export default function ProjectStory() {
               <ol className="mt-8 space-y-6">
                 {STORY.map((s, i) => (
                   <li key={s.label} className="border-l border-accent/40 pl-5">
-                    <p className="eyebrow text-accent">
+                    <p className="eyebrow text-label">
                       {String(i + 1).padStart(2, "0")} · {s.label}
                     </p>
                     <h3 className="mt-1.5 text-h4 font-semibold">{s.title}</h3>

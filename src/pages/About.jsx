@@ -28,7 +28,7 @@ export default function About() {
       />
 
       <section className="bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-3xl px-6 py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">Our Story</h2>
           <p data-sr className="mt-heading max-w-measure text-body text-copy">
             Nexera Powertech was founded to solve a problem we lived ourselves as a
@@ -40,7 +40,7 @@ export default function About() {
       </section>
 
       <section className="bg-paper border-y border-line">
-        <div className="container-site py-16 md:py-20">
+        <div className="container-site py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">Leadership Team</h2>
           <div className="mt-8 grid sm:grid-cols-2 md:grid-cols-4 gap-8">
             {leaders.map((l) => (
@@ -54,12 +54,12 @@ export default function About() {
       </section>
 
       <section className="bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-3xl px-6 py-section">
           <h2 data-sr="heading" className="text-h2 font-semibold text-ink">Why Nexera</h2>
           <ul className="mt-6 space-y-3">
             {why.map((w) => (
               <li key={w} data-sr className="flex gap-3 text-body text-copy">
-                <span className="text-accent">✓</span>
+                <span className="text-label">✓</span>
                 {w}
               </li>
             ))}

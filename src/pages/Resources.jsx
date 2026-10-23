@@ -122,7 +122,7 @@ export default function Resources() {
       <FilterBar active={active} items={[{ id: "all", label: "All", target: "hub" }, ...SECTIONS.map((s) => ({ id: s.id, label: s.label, target: s.id }))]} />
 
       <div data-tone={tone} className="resources-body">
-        <section id="datasheets" aria-labelledby="datasheets-title" className="scroll-mt-32 py-14 lg:py-20">
+        <section id="datasheets" aria-labelledby="datasheets-title" className="scroll-mt-32 py-section">
           <div className="container-site">
             <Heading id="datasheets-title">Datasheets &amp; Brochures</Heading>
             <DatasheetCards items={datasheets} />
@@ -131,7 +131,7 @@ export default function Resources() {
 
         <ArticleFaq id="faqs" title="FAQs" items={faqs} tone="none" />
 
-        <section id="insights" aria-labelledby="insights-title" className="scroll-mt-32 py-14 lg:py-20">
+        <section id="insights" aria-labelledby="insights-title" className="scroll-mt-32 py-section">
           <div className="container-site">
             <Heading id="insights-title">News &amp; Insights</Heading>
             <InsightCards items={articles} />

@@ -41,7 +41,7 @@ export default function Blog() {
   return (
     <div ref={page}>
       <ResourcesHero id="blog" eyebrow="Blog" title="NEXERA Blog" intro="Plain guides on battery energy storage for homes, businesses and the grid." reveal={arrived} />
-      <section aria-label="Articles" className="bg-white pb-14 pt-6 lg:pb-20 lg:pt-12">
+      <section aria-label="Articles" className="bg-white pb-section pt-6 lg:pt-12">
         <div className="container-site">
           <GuidesBento articles={posts} motion={motion} />
         </div>

@@ -302,7 +302,7 @@ export default function Callouts({ show, count, animate, onActive, compact = fal
                 <span className="block" style={{ opacity: shown ? 1 : 0, transform: shown ? "none" : from, ...tr(shown, "opacity, transform", base + CHIP_DELAY, CHIP_IN) }}>
                   <span
                     className={`block rounded-[3px] border px-1.5 py-1 leading-tight backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 sm:px-2 ${
-                      hot ? "border-accent/45 bg-deep-grid/90 shadow-[0_0_14px_-2px_color-mix(in_srgb,var(--accent)_35%,transparent)]" : "border-white/15 bg-deep-grid/85"
+                      hot ? "border-accent/45 bg-deep-grid/90 shadow-glow" : "border-white/15 bg-deep-grid/85"
                     }`}
                   >
                     <span

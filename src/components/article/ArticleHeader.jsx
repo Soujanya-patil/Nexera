@@ -58,8 +58,8 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
           </ol>
         </nav>
         <div className="mt-10 max-w-3xl">
-          <p className="article-eyebrow eyebrow text-accent">{a.eyebrow}</p>
-          <h1 className="article-h1 mt-5 text-h1 font-semibold">
+          <p className="article-eyebrow eyebrow text-label">{a.eyebrow}</p>
+          <h1 className="article-h1 mt-eyebrow text-h1 font-semibold">
             {words.map((w, i) => (
               <span key={i}>
                 {i > 0 && " "}
@@ -69,7 +69,7 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
               </span>
             ))}
           </h1>
-          <p className="article-intro mt-6 max-w-2xl text-lead text-paper/90">{a.intro}</p>
+          <p className="article-intro mt-heading max-w-measure text-lead text-paper/90">{a.intro}</p>
           <p className="article-byline mt-6 text-small text-paper/75">
             By NEXERA Powertech · <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time> ·{" "}
             <span className="article-count" style={{ "--to": a.readingTime }}>

@@ -87,14 +87,14 @@ export default function HomePartners() {
   const partner = logos.find((l) => l.id === hot);
 
   return (
-    <section ref={root} data-enter={enter} className="border-y border-line bg-white py-16 md:py-20">
+    <section ref={root} data-enter={enter} className="border-y border-line bg-white py-section">
       <div className="grid container-site items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
           <p data-e="eyebrow" className="eyebrow text-muted">
             Our Technology Partners
           </p>
-          <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Global Technology. Local Impact.</AnimatedText>
-          <p data-e="desc" className="mt-3 max-w-lg text-copy">
+          <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Global Technology. Local Impact.</AnimatedText>
+          <p data-e="desc" className="mt-heading max-w-measure text-copy">
             NEXERA brings systems from world-leading BESS manufacturers —{" "}
             {NAMED.map(([id, name], i) => (
               <Fragment key={id}>

@@ -17,11 +17,11 @@ export default function PageHeader({ eyebrow, title, subtitle }) {
     <section ref={root} data-intro={intro} className="bg-deep-grid text-white">
       <div className="container-site py-16 md:py-24">
         {eyebrow && (
-          <p data-a className="eyebrow text-accent">
+          <p data-a className="eyebrow text-label">
             {eyebrow}
           </p>
         )}
-        <h1 data-a className="mt-eyebrow max-w-3xl text-h1 font-semibold">
+        <h1 data-a className="mt-eyebrow max-w-intro text-h1 font-semibold">
           {title}
         </h1>
         {subtitle && (

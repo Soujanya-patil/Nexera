@@ -77,7 +77,7 @@ export default function HomeSolutions() {
     );
   });
   return (
-    <section onPointerMove={trackSpotlight} className="group/sol relative overflow-hidden bg-paper py-20 md:py-24">
+    <section onPointerMove={trackSpotlight} className="group/sol relative overflow-hidden bg-paper py-section">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-slow group-hover/sol:opacity-100 group-focus-visible/sol:opacity-100 group-focus-within/sol:opacity-100"
@@ -87,8 +87,8 @@ export default function HomeSolutions() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="eyebrow text-muted">Our Solutions</p>
-            <AnimatedText className="mt-3 text-h2 font-semibold text-ink">Energy Storage for Every Need</AnimatedText>
-            <p className="mt-3 max-w-2xl text-copy">
+            <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Energy Storage for Every Need</AnimatedText>
+            <p className="mt-heading max-w-measure text-copy">
               From homes to industries to the grid — Nexera brings the right storage solution for every application.
             </p>
           </div>
@@ -106,7 +106,7 @@ export default function HomeSolutions() {
             <article
               key={c.id}
               data-e
-              className="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_1px_2px_color-mix(in_srgb,var(--color-ink)_6%,transparent),0_12px_28px_-16px_color-mix(in_srgb,var(--color-ink)_22%,transparent)] card-hover"
+              className="group relative flex flex-col overflow-hidden rounded-card border border-line bg-white card-hover"
             >
               <span aria-hidden="true" className="absolute left-6 top-0 z-10 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-visible:scale-x-100 group-focus-within:scale-x-100 " />
               <div className="relative aspect-[16/10] overflow-hidden">
@@ -139,8 +139,8 @@ export default function HomeSolutions() {
                 <p className="mt-2 flex-1 text-small text-copy">{c.copy}</p>
                 {/* Product preview (space always reserved, so hovering never shifts the layout) */}
                 <p className="mt-4 flex translate-y-1 items-center gap-2 text-micro text-copy transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-                  <span className="font-semibold text-accent">{partnersFor(c.id).map((p) => p.name).join(" · ")}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-label" aria-hidden="true" />
+                  <span className="font-semibold text-copy">{partnersFor(c.id).map((p) => p.name).join(" · ")}</span>
                   <span aria-hidden="true">·</span>
                   {countFor(c.id)} {countFor(c.id) === 1 ? "system" : "systems"}
                 </p>

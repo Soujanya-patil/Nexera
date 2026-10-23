@@ -150,7 +150,7 @@ function HeroProduct() {
                   tag ? "scale-100 opacity-100 delay-150" : "scale-95 opacity-0"
                 }`}
               >
-                <p className="eyebrow text-accent">{partner.name}</p>
+                <p className="eyebrow text-label">{partner.name}</p>
                 <p className="mt-0.5 text-small font-semibold text-white">{product.cardSpecs[0]}</p>
                 <p className="mt-0.5 eyebrow text-paper/70">
                   {product.applications.map(applicationLabel).join(" · ")}
@@ -353,7 +353,7 @@ export default function Products() {
             <p data-a="eyebrow" className="eyebrow text-paper/80">
               Energy Storage Systems
             </p>
-            <h1 className="mt-5 text-h1 font-semibold">
+            <h1 className="mt-eyebrow text-h1 font-semibold">
               <span data-a="line1" className="block">
                 Energy Storage,
               </span>
@@ -363,14 +363,14 @@ export default function Products() {
                 Built to Scale.
               </span>
             </h1>
-            <p data-a="desc" className="mt-6 max-w-md text-body text-paper/80">
+            <p data-a="desc" className="mt-heading max-w-measure text-body text-paper/80">
               Explore BESS solutions from NEXERA&rsquo;s technology partners for residential, commercial &amp; industrial, and utility-scale applications.
             </p>
             <div data-a="cta" className="mt-8 inline-block">
               <button
                 type="button"
                 onClick={toCatalogue}
-                className="group/pill btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] focus-visible:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="group/pill btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-glow focus-visible:shadow-glow active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
               >
                 Explore Systems
                 <ArrowDown aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/pill:translate-y-0.5 group-focus-visible/pill:translate-y-0.5 group-focus-within/pill:translate-y-0.5" strokeWidth={2} />
@@ -433,7 +433,7 @@ export default function Products() {
       </section>
 
       {/* Catalogue */}
-      <section className="bg-paper pb-20 pt-10 md:pb-24">
+      <section className="bg-paper pb-section pt-10">
         <div className="container-site">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <CategoryHeading app={app} partner={partner} />
@@ -467,13 +467,13 @@ export default function Products() {
           </ul>
 
           {visibleCount === 0 && (
-            <div className="mt-8 rounded-2xl border border-dashed border-line bg-white px-6 py-14 text-center">
+            <div className="mt-8 rounded-card border border-dashed border-line bg-white px-6 py-14 text-center">
               <p className="eyebrow text-muted">No systems found</p>
               <p className="mt-2 text-small text-copy">No system in the catalogue matches this application and partner.</p>
               <button
                 type="button"
                 onClick={() => applyParams(new URLSearchParams())}
-                className="group/clear btn-motion mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-button font-semibold text-white hover:bg-accent/90 focus-visible:bg-accent/90"
+                className="group/clear btn-motion mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-white hover:bg-accent/90 focus-visible:bg-accent/90"
               >
                 Clear Filters
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/clear:translate-x-1 group-focus-visible/clear:translate-x-1 group-focus-within/clear:translate-x-1" />

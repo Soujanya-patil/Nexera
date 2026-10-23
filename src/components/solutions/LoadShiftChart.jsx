@@ -156,7 +156,7 @@ export default function LoadShiftChart({ variant = "ci" }) {
   const label = "pointer-events-none absolute whitespace-nowrap text-micro font-semibold";
 
   return (
-    <figure ref={root} className="flex aspect-[4/3] w-full flex-col rounded-2xl border border-line bg-white p-4 sm:aspect-[16/10] sm:p-6">
+    <figure ref={root} className="flex aspect-[4/3] w-full flex-col rounded-card border border-line bg-white p-4 sm:aspect-[16/10] sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div role="group" aria-label={v.caption} className="inline-flex rounded-full bg-ice p-1">
           {OPTIONS.map(([value, text]) => (

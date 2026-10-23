@@ -16,7 +16,7 @@ export default function WhyPartner() {
   const lit = (i) => reduce || i < step;
 
   return (
-    <section aria-labelledby="why-partner" className="bg-paper py-20 md:py-28">
+    <section aria-labelledby="why-partner" className="bg-paper py-section">
       <div className="container-site">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-end lg:gap-16">
           <div>

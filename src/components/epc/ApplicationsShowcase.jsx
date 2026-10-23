@@ -42,7 +42,7 @@ export default function ApplicationsShowcase() {
   const grid = useRef(null);
   const reveal = useScrollReveal(grid);
   return (
-    <section aria-labelledby="applications-title" className="bg-white py-20 md:py-28">
+    <section aria-labelledby="applications-title" className="bg-white py-section">
       <div className="container-site">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -59,7 +59,7 @@ export default function ApplicationsShowcase() {
             <li key={a.id} data-sr>
               <Link
                 to={`/products?app=${a.id}`}
-                className="card-hover group relative flex aspect-[4/3] focus-visible:outline-link flex-col justify-end overflow-hidden rounded-2xl bg-deep-grid text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
+                className="card-hover group relative flex aspect-[4/3] focus-visible:outline-link flex-col justify-end overflow-hidden rounded-card bg-deep-grid text-white focus-visible:outline-2 focus-visible:outline-offset-2 md:aspect-[4/5]"
               >
                 <SceneImg
                   name={a.img}

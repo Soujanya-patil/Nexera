@@ -23,7 +23,7 @@ export default function ProductCard({ product, compared, compareFull, onToggleCo
   const open = useProductTransition(product.id);
   return (
     <article
-      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white card-hover ${
+      className={`group relative flex h-full flex-col overflow-hidden rounded-card border bg-white card-hover ${
         compared ? "border-accent shadow-[0_0_0_1px_var(--accent)]" : "border-line"
       }`}
     >
@@ -57,7 +57,7 @@ export default function ProductCard({ product, compared, compareFull, onToggleCo
           <p className="eyebrow text-muted">{partner.name}</p>
           <ul className="flex flex-wrap justify-end gap-1.5" aria-label="Applications">
             {product.applications.map((a) => (
-              <li key={a} className="rounded-full bg-ice px-2.5 py-0.5 text-micro font-medium text-accent">
+              <li key={a} className="rounded-full bg-ice px-2.5 py-0.5 text-micro font-medium text-copy">
                 {applicationLabel(a)}
               </li>
             ))}
@@ -81,7 +81,7 @@ export default function ProductCard({ product, compared, compareFull, onToggleCo
           <Link
             to={`/products/${product.id}`}
             onClick={open}
-            className="inline-flex items-center gap-2 text-button font-semibold text-accent after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:rounded-2xl focus-visible:after:ring-2 focus-visible:after:ring-link"
+            className="inline-flex items-center gap-2 text-button font-semibold text-accent after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:ring-2 focus-visible:after:ring-link"
           >
             Explore Product
             <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover:translate-x-1.5 group-focus-visible:translate-x-1.5 group-focus-within:translate-x-1.5" />

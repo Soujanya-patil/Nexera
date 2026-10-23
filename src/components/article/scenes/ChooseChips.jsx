@@ -60,7 +60,7 @@ export default function ChooseChips({ active, motion, mode, step, chips = CHIPS,
         to={to}
         tabIndex={all ? 0 : -1}
         aria-hidden={all ? undefined : true}
-        className={`article-expert inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-accent px-5 text-sm font-semibold text-on-accent transition-[opacity,translate] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        className={`article-expert inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-accent px-6 text-sm font-semibold text-on-accent transition-[opacity,translate] duration-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
           all ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-2 opacity-0"
         }`}
       >

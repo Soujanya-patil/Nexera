@@ -469,7 +469,7 @@ export default function CallbackWidget() {
 
   const label = "block text-sm font-medium text-paper/90";
   const input =
-    "mt-1.5 block h-11 w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 text-base text-white placeholder:text-paper/40 transition-colors hover:border-white/30 focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent aria-[invalid=true]:border-[#ffb0a3]";
+    "mt-1.5 block h-11 w-full rounded-control border border-white/15 bg-white/[0.05] px-4 text-base text-white placeholder:text-paper/40 transition-colors hover:border-white/30 focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-accent aria-[invalid=true]:border-[#ffb0a3]";
   const err = (k) => (
     <p id={`${uid}-${k}-err`} aria-live="polite" className="mt-1 text-xs leading-4 text-[#ffb0a3]">
       {errors[k] || ""}
@@ -503,7 +503,7 @@ export default function CallbackWidget() {
               nudgeRight ? "left-0 sm:left-full sm:ml-3" : "right-0 sm:right-full sm:mr-3"
             }`}
           >
-            <div className="relative flex items-start gap-1 rounded-2xl border border-white/10 bg-forest py-2.5 pl-4 pr-1.5 text-sm leading-snug text-white shadow-[0_16px_40px_-16px_rgba(0,0,0,0.6)]">
+            <div className="relative flex items-start gap-1 rounded-card border border-white/10 bg-forest py-2.5 pl-4 pr-1.5 text-sm leading-snug text-white shadow-float">
               <button type="button" onClick={toggle} className="text-left focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent">
                 Need help choosing a battery? We&rsquo;ll call you.
               </button>
@@ -531,7 +531,7 @@ export default function CallbackWidget() {
           aria-expanded={open}
           aria-controls={`${uid}-card`}
           aria-haspopup="dialog"
-          className="group/cb relative inline-flex h-12 touch-none select-none items-center gap-2 rounded-full bg-accent pl-4 pr-5 text-sm font-semibold text-on-accent sm:cursor-grab shadow-[0_12px_30px_-10px_color-mix(in_srgb,var(--color-ink)_55%,transparent)] transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.03] hover:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none sm:h-[52px]"
+          className="group/cb relative inline-flex h-12 touch-none select-none items-center gap-2 rounded-full bg-accent pl-4 pr-5 text-sm font-semibold text-on-accent sm:cursor-grab shadow-float transition-[background-color,box-shadow,scale] duration-300 hover:scale-[1.03] hover:bg-accent-hover hover:shadow-glow active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none sm:h-[52px]"
         >
           {pulse && <span aria-hidden="true" className="cb-ring pointer-events-none absolute inset-0 rounded-full border-2 border-accent" onAnimationEnd={() => setPulse(false)} />}
           {open ? <X aria-hidden="true" className="h-4 w-4" strokeWidth={2.2} /> : <Phone aria-hidden="true" className="h-4 w-4" strokeWidth={2.2} />}
@@ -551,7 +551,7 @@ export default function CallbackWidget() {
             aria-labelledby={`${uid}-title`}
             data-lenis-prevent
             style={{ ...lift, opacity: 0, ...cardPlace() }}
-            className="fixed inset-x-0 bottom-0 z-[60] max-h-[88svh] overflow-y-auto overscroll-contain rounded-t-3xl border border-white/10 bg-deep-grid p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-white shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:bottom-[calc(1.5rem+52px+0.75rem+var(--cb-lift))] sm:right-6 sm:max-h-[calc(100svh-4rem-1.5rem-52px-0.75rem-var(--cb-lift)-1rem)] sm:w-[360px] sm:origin-bottom-right sm:rounded-3xl sm:pb-5 sm:shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]"
+            className="fixed inset-x-0 bottom-0 z-[60] max-h-[88svh] overflow-y-auto overscroll-contain rounded-t-3xl border border-white/10 bg-deep-grid p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-white shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:bottom-[calc(1.5rem+52px+0.75rem+var(--cb-lift))] sm:right-6 sm:max-h-[calc(100svh-4rem-1.5rem-52px-0.75rem-var(--cb-lift)-1rem)] sm:w-[360px] sm:origin-bottom-right sm:rounded-card sm:pb-5 sm:shadow-float"
           >
             <span aria-hidden="true" className="mx-auto -mt-1 mb-3 block h-1 w-10 rounded-full bg-white/20 sm:hidden" />
             <div className="flex items-start justify-between gap-3">
@@ -656,7 +656,7 @@ export default function CallbackWidget() {
                 </div>
 
                 {status === "error" && (
-                  <p role="alert" className="rounded-xl border border-[#ffb0a3]/40 bg-[#ffb0a3]/10 px-3.5 py-2.5 text-sm text-white">
+                  <p role="alert" className="rounded-control border border-[#ffb0a3]/40 bg-[#ffb0a3]/10 px-3.5 py-2.5 text-sm text-white">
                     Couldn&rsquo;t send. Please try again.
                   </p>
                 )}
@@ -664,7 +664,7 @@ export default function CallbackWidget() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="group/send inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent transition-[background-color,box-shadow,scale] duration-300 hover:bg-accent-hover hover:shadow-[0_0_24px_2px_color-mix(in_srgb,var(--accent)_35%,transparent)] active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
+                  className="group/send inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent transition-[background-color,box-shadow,scale] duration-300 hover:bg-accent-hover hover:shadow-glow active:scale-[0.98] disabled:cursor-wait disabled:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none"
                 >
                   {status === "sending" ? (
                     <>

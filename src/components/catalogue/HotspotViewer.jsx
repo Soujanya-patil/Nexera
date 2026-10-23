@@ -21,7 +21,7 @@ export default function HotspotViewer({ hotspots, partnerName }) {
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-start">
       <figure>
-        <div className="relative aspect-[65/54] overflow-hidden rounded-2xl bg-deep-grid ring-1 ring-white/10 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.75)]">
+        <div className="relative aspect-[65/54] overflow-hidden rounded-card bg-deep-grid ring-1 ring-white/10">
           <img src={image} alt={imageAlt} loading="lazy" decoding="async" className="h-full w-full object-contain" />
           <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(75% 70% at 50% 52%, transparent 60%, color-mix(in srgb, var(--color-deep-grid) 35%, transparent) 100%)" }} />
           {points.map((p, i) => {
@@ -82,9 +82,9 @@ export default function HotspotViewer({ hotspots, partnerName }) {
         {caption && <figcaption className="mt-3 text-micro text-paper/60">{caption}</figcaption>}
       </figure>
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+      <div className="rounded-card border border-white/10 bg-white/[0.03] p-5 sm:p-6">
         <div aria-live="polite" className="min-h-[7.5rem]">
-          <p className="eyebrow text-accent">
+          <p className="eyebrow text-label">
             {String(points.indexOf(current) + 1).padStart(2, "0")} / {String(points.length).padStart(2, "0")}
           </p>
           <h3 className="mt-2 text-h3 font-semibold text-white">{current.label}</h3>
@@ -103,7 +103,7 @@ export default function HotspotViewer({ hotspots, partnerName }) {
                 onPointerEnter={() => setHover(p.id)}
                 onPointerLeave={() => setHover(null)}
                 aria-pressed={selected === p.id}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-small transition-colors focus-visible:outline-2 ${
+                className={`flex w-full items-center gap-3 rounded-control px-3 py-2 text-left text-small transition-colors focus-visible:outline-2 ${
                   selected === p.id ? "bg-accent/10 text-white" : "text-paper/75 hover:bg-white/5 focus-visible:bg-white/5 hover:text-white focus-visible:text-white"
                 }`}
               >

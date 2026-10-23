@@ -58,11 +58,11 @@ export default function CompareTray({ ids, replaced, onClear }) {
       >
         <section
           aria-label="Compare"
-          className="mx-auto flex max-w-3xl items-center gap-3 rounded-2xl border border-white/10 bg-forest/95 p-2.5 text-white shadow-[0_20px_50px_-20px_rgba(0,0,0,0.6)] backdrop-blur sm:gap-4 sm:p-3"
+          className="mx-auto flex max-w-3xl items-center gap-3 rounded-card border border-white/10 bg-forest/95 p-2.5 text-white shadow-float backdrop-blur sm:gap-4 sm:p-3"
         >
           <ul className="flex min-w-0 flex-1 gap-2">
             {products.map((p) => (
-              <li key={p.id} className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-white sm:h-14 sm:w-14">
+              <li key={p.id} className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-control bg-white sm:h-14 sm:w-14">
                 <img src={p.image} alt={fullName(p)} className={p.imageFallback ? "h-auto w-[70%] opacity-80" : "h-[88%] w-[88%] object-contain"} />
               </li>
             ))}
@@ -151,7 +151,7 @@ function CompareDialog({ products, open, onClose }) {
       onKeyDown={trap}
       onClick={(e) => e.target === ref.current && onClose()}
       aria-labelledby="sol-compare-title"
-      className="m-auto max-h-[88svh] w-[min(60rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl bg-white p-0 text-ink shadow-2xl backdrop:bg-deep-grid/70 backdrop:backdrop-blur-sm"
+      className="m-auto max-h-[88svh] w-[min(60rem,calc(100vw-1.5rem))] overflow-hidden rounded-card bg-white p-0 text-ink shadow-float backdrop:bg-deep-grid/70 backdrop:backdrop-blur-sm"
     >
       <div className="flex max-h-[88svh] flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
@@ -174,7 +174,7 @@ function CompareDialog({ products, open, onClose }) {
                 <td className="w-32 px-5 py-4 sm:w-40 sm:px-6" />
                 {products.map((p) => (
                   <th key={p.id} scope="col" className="px-4 py-4 align-bottom font-normal">
-                    <div className="relative mb-3 aspect-[4/3] w-full max-w-[10rem] overflow-hidden rounded-xl bg-ice">
+                    <div className="relative mb-3 aspect-[4/3] w-full max-w-[10rem] overflow-hidden rounded-control bg-ice">
                       <img
                         src={p.image}
                         alt=""
