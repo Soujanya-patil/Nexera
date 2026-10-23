@@ -41,7 +41,7 @@ export default function SafetyCabinet({ active, motion, mode, step }) {
     stroke: state(i) === "on" ? GREEN : LINE,
     strokeOpacity: state(i) === "off" ? 0.35 : 0.9,
     className: "transition-[stroke,stroke-opacity] duration-500 motion-reduce:transition-none",
-    style: { filter: state(i) === "on" ? "drop-shadow(0 0 6px color-mix(in_srgb,var(--accent)_60%,transparent))" : "none" },
+    style: { filter: state(i) === "on" ? "drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 60%, transparent))" : "none" },
   });
 
   return (

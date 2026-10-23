@@ -76,7 +76,7 @@ export default function ScaleMorph({ active, motion, mode, step }) {
   return (
     <div ref={root} className="flex h-full flex-col items-center justify-center gap-2 px-6">
       <svg role="img" aria-label={`Battery storage by scale: ${SHAPES[at].label}`} viewBox="0 0 400 220" className="h-auto max-h-[74%] w-full">
-        <path data-shape d={SHAPES[0].d} fill="color-mix(in_srgb,var(--accent)_10%,transparent)" stroke="var(--color-signal)" strokeWidth="2.6" strokeLinejoin="round" />
+        <path data-shape d={SHAPES[0].d} fill="color-mix(in srgb, var(--accent) 10%, transparent)" stroke="var(--color-signal)" strokeWidth="2.6" strokeLinejoin="round" />
         <path data-detail d={SHAPES[at].detail} fill="none" stroke="var(--color-paper)" strokeOpacity="0.55" strokeWidth="2" strokeLinecap="round" />
         <line x1="20" y1="200" x2="380" y2="200" stroke="var(--color-paper)" strokeOpacity="0.3" strokeWidth="1.5" />
       </svg>

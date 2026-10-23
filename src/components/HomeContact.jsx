@@ -185,7 +185,7 @@ export default function HomeContact() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        style={{ background: "radial-gradient(60% 60% at 85% 20%, color-mix(in_srgb,var(--accent)_10%,transparent), transparent 70%), radial-gradient(50% 60% at 0% 100%, color-mix(in_srgb,var(--accent)_7%,transparent), transparent 70%)" }}
+        style={{ background: "radial-gradient(60% 60% at 85% 20%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%), radial-gradient(50% 60% at 0% 100%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%)" }}
       />
       <div className="relative container-site grid gap-12 py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
         {/* Left: the pitch */}

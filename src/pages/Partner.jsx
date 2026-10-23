@@ -107,7 +107,7 @@ function PartnerHero({ id, name, contact }) {
   return (
     <section ref={root} className="relative overflow-hidden bg-deep-grid text-white">
       <Spotlight />
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in_srgb,var(--accent)_10%,transparent), transparent 70%)" }} />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%)" }} />
       <div data-intro={intro} className="relative container-site py-14 lg:py-20">
         <nav aria-label="Breadcrumb" className="text-micro text-paper/75">
           <ol className="flex flex-wrap items-center gap-1.5">

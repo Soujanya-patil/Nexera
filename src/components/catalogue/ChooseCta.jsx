@@ -19,7 +19,7 @@ export default function ChooseCta({ productId }) {
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[10%]"
-        style={{ background: "radial-gradient(45% 70% at 78% 105%, color-mix(in_srgb,var(--accent)_15%,transparent), transparent 70%)" }}
+        style={{ background: "radial-gradient(45% 70% at 78% 105%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 70%)" }}
       />
       <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-2xl">

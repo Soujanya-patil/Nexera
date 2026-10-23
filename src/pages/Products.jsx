@@ -106,7 +106,7 @@ function HeroProduct() {
         <div aria-hidden="true" className="pointer-events-none absolute -inset-x-[55%] -inset-y-[18%]" style={depth(-2, -1.5)}>
           <div
             className="ambient-drift absolute inset-0"
-            style={{ background: "radial-gradient(40% 44% at 50% 52%, color-mix(in_srgb,var(--accent)_13%,transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 45%, transparent 72%)" }}
+            style={{ background: "radial-gradient(40% 44% at 50% 52%, color-mix(in srgb, var(--accent) 13%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 45%, transparent 72%)" }}
           />
           <div
             className="absolute inset-0 opacity-70"

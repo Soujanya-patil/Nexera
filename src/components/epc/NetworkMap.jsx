@@ -99,7 +99,7 @@ export default function NetworkMap() {
                     x2={b.x}
                     y2={b.y}
                     vectorEffect="non-scaling-stroke"
-                    stroke={o.status === "active" ? "color-mix(in_srgb,var(--accent)_75%,transparent)" : "color-mix(in_srgb,var(--accent)_35%,transparent)"}
+                    stroke={o.status === "active" ? "color-mix(in srgb, var(--accent) 75%, transparent)" : "color-mix(in srgb, var(--accent) 35%, transparent)"}
                     strokeWidth="1.25"
                     strokeDasharray={o.status === "active" ? undefined : "4 5"}
                   />

@@ -912,7 +912,7 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
   const to = segment && selected.length ? `${button.to}&topics=${selected.map(topicSlug).join(",")}` : button.to;
   return (
     <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-deep-grid py-14 text-white lg:py-20">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, color-mix(in_srgb,var(--accent)_8%,transparent), transparent 70%)" }} />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%)" }} />
       <Spotlight />
       <div className="relative container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
         <div>

@@ -73,7 +73,7 @@ export default function ProjectStory() {
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              "radial-gradient(45% 55% at 30% 55%, color-mix(in_srgb,var(--accent)_9%,transparent), transparent 70%), linear-gradient(color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px)",
+              "radial-gradient(45% 55% at 30% 55%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%), linear-gradient(color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 3.5%, transparent) 1px, transparent 1px)",
             backgroundSize: "100% 100%, 56px 56px, 56px 56px",
             maskImage: "radial-gradient(70% 80% at 35% 50%, #000, transparent 80%)",
             WebkitMaskImage: "radial-gradient(70% 80% at 35% 50%, #000, transparent 80%)",

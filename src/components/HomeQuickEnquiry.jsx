@@ -158,12 +158,12 @@ export default function HomeQuickEnquiry() {
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, color-mix(in_srgb,var(--accent)_60%,transparent) 25%, color-mix(in_srgb,var(--accent)_60%,transparent) 75%, transparent)" }}
+        style={{ background: "linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 60%, transparent) 25%, color-mix(in srgb, var(--accent) 60%, transparent) 75%, transparent)" }}
       />
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-10"
-        style={{ background: "radial-gradient(50% 100% at 50% 0%, color-mix(in_srgb,var(--accent)_12%,transparent), transparent 75%)" }}
+        style={{ background: "radial-gradient(50% 100% at 50% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 75%)" }}
       />
       <div ref={content} className="qe-reveal relative container-site grid py-6 lg:py-3" style={first ? undefined : { "--qe-delay": "1.75s" }}>
         <form

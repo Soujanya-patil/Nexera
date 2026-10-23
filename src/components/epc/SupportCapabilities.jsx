@@ -154,7 +154,7 @@ export default function SupportCapabilities() {
                       className="pointer-events-none absolute inset-0 translate-x-6 opacity-0 transition-[opacity,translate] duration-slow ease-standard group-hover:translate-x-0 group-focus-within:translate-x-0 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
                       style={{
                         backgroundImage:
-                          "radial-gradient(60% 70% at 100% 0%, color-mix(in_srgb,var(--accent)_16%,transparent), transparent 70%), linear-gradient(color-mix(in srgb, var(--color-forest) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-forest) 5%, transparent) 1px, transparent 1px)",
+                          "radial-gradient(60% 70% at 100% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%), linear-gradient(color-mix(in srgb, var(--color-forest) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-forest) 5%, transparent) 1px, transparent 1px)",
                         backgroundSize: "100% 100%, 28px 28px, 28px 28px",
                         maskImage: "linear-gradient(to left, #000, transparent 85%)",
                         WebkitMaskImage: "linear-gradient(to left, #000, transparent 85%)",

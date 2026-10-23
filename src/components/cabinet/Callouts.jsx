@@ -215,7 +215,7 @@ export default function Callouts({ show, count, animate, onActive, compact = fal
             left: `${ax}%`,
             top: `${ay}%`,
             opacity: vis(i) && active === i ? 1 : 0,
-            background: "radial-gradient(closest-side, color-mix(in_srgb,var(--accent)_22%,transparent), color-mix(in_srgb,var(--accent)_7%,transparent) 55%, transparent)",
+            background: "radial-gradient(closest-side, color-mix(in srgb, var(--accent) 22%, transparent), color-mix(in srgb, var(--accent) 7%, transparent) 55%, transparent)",
           }}
         />
       ))}
@@ -232,7 +232,7 @@ export default function Callouts({ show, count, animate, onActive, compact = fal
                 key={CALLOUTS[i].label}
                 points={pts.map((pt) => pt.join(",")).join(" ")}
                 fill="none"
-                stroke={hot ? "color-mix(in_srgb,var(--accent)_90%,transparent)" : "color-mix(in srgb, var(--color-paper) 50%, transparent)"}
+                stroke={hot ? "color-mix(in srgb, var(--accent) 90%, transparent)" : "color-mix(in srgb, var(--color-paper) 50%, transparent)"}
                 strokeWidth={hot ? 1.5 : 1}
                 strokeDasharray={len}
                 style={{

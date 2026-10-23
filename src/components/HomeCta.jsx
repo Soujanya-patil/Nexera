@@ -42,7 +42,7 @@ export default function HomeCta({ contactTo = "/contact" }) {
         className="ambient-drift pointer-events-none absolute -inset-[8%]"
         style={{
           background:
-            "radial-gradient(55% 70% at 78% 120%, color-mix(in_srgb,var(--accent)_16%,transparent), transparent 70%), radial-gradient(40% 60% at 15% 130%, color-mix(in_srgb,var(--accent)_8%,transparent), transparent 70%)",
+            "radial-gradient(55% 70% at 78% 120%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%), radial-gradient(40% 60% at 15% 130%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%)",
         }}
       />
       <svg
@@ -52,9 +52,9 @@ export default function HomeCta({ contactTo = "/contact" }) {
         preserveAspectRatio="none"
         fill="none"
       >
-        <path data-line pathLength="1" strokeDasharray="1" d="M0 210 C 360 150, 720 250, 1440 120" stroke="color-mix(in_srgb,var(--accent)_35%,transparent)" strokeWidth="1.2" />
-        <path data-line pathLength="1" strokeDasharray="1" d="M0 230 C 420 170, 820 240, 1440 150" stroke="color-mix(in_srgb,var(--accent)_20%,transparent)" strokeWidth="1" />
-        <path data-line pathLength="1" strokeDasharray="1" d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in_srgb,var(--accent)_12%,transparent)" strokeWidth="1" />
+        <path data-line pathLength="1" strokeDasharray="1" d="M0 210 C 360 150, 720 250, 1440 120" stroke="color-mix(in srgb, var(--accent) 35%, transparent)" strokeWidth="1.2" />
+        <path data-line pathLength="1" strokeDasharray="1" d="M0 230 C 420 170, 820 240, 1440 150" stroke="color-mix(in srgb, var(--accent) 20%, transparent)" strokeWidth="1" />
+        <path data-line pathLength="1" strokeDasharray="1" d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in srgb, var(--accent) 12%, transparent)" strokeWidth="1" />
       </svg>
 
       <div className="relative flex container-site flex-col gap-8 py-16 md:py-20 lg:flex-row lg:items-center lg:justify-between">

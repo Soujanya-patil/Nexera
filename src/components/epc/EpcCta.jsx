@@ -19,12 +19,12 @@ export default function EpcCta() {
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[10%]"
-        style={{ background: "radial-gradient(45% 70% at 70% 110%, color-mix(in_srgb,var(--accent)_17%,transparent), transparent 70%)" }}
+        style={{ background: "radial-gradient(45% 70% at 70% 110%, color-mix(in srgb, var(--accent) 17%, transparent), transparent 70%)" }}
       />
       <svg aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 w-full" viewBox="0 0 1440 240" preserveAspectRatio="none" fill="none">
-        <path d="M0 210 C 360 150, 720 250, 1440 120" stroke="color-mix(in_srgb,var(--accent)_30%,transparent)" strokeWidth="1.2" />
-        <path d="M0 230 C 420 170, 820 240, 1440 150" stroke="color-mix(in_srgb,var(--accent)_18%,transparent)" strokeWidth="1" />
-        <path d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in_srgb,var(--accent)_10%,transparent)" strokeWidth="1" />
+        <path d="M0 210 C 360 150, 720 250, 1440 120" stroke="color-mix(in srgb, var(--accent) 30%, transparent)" strokeWidth="1.2" />
+        <path d="M0 230 C 420 170, 820 240, 1440 150" stroke="color-mix(in srgb, var(--accent) 18%, transparent)" strokeWidth="1" />
+        <path d="M0 240 C 500 200, 900 230, 1440 185" stroke="color-mix(in srgb, var(--accent) 10%, transparent)" strokeWidth="1" />
       </svg>
       <div className="relative mx-auto max-w-4xl px-6 py-20 text-center md:py-28">
         <p data-sr className="eyebrow text-accent">

@@ -106,7 +106,7 @@ export function Spotlight() {
       ref={ref}
       aria-hidden="true"
       className="pointer-events-none absolute left-0 top-0 h-[840px] w-[840px] rounded-full opacity-0 transition-opacity duration-base"
-      style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-paper) 7.5%, transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 55%, transparent)" }}
+      style={{ background: "radial-gradient(closest-side, color-mix(in srgb, var(--color-paper) 7.5%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 55%, transparent)" }}
     />
   );
 }

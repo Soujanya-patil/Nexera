@@ -206,7 +206,7 @@ export default function PartnerJourney() {
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
-          style={{ background: "radial-gradient(50% 60% at 80% 30%, color-mix(in_srgb,var(--accent)_6%,transparent), transparent 70%)" }}
+          style={{ background: "radial-gradient(50% 60% at 80% 30%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 70%)" }}
         />
 
         <div className="relative container-site">

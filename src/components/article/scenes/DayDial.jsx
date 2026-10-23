@@ -64,7 +64,7 @@ export default function DayDial({ active, motion, mode, step }) {
         className="h-auto max-h-[86%] w-full"
       >
         {/* Day (top) and night (bottom) halves */}
-        <path d={`M${CX - R} ${CY} A${R} ${R} 0 0 1 ${CX + R} ${CY} Z`} fill="color-mix(in_srgb,var(--accent)_10%,transparent)" />
+        <path d={`M${CX - R} ${CY} A${R} ${R} 0 0 1 ${CX + R} ${CY} Z`} fill="color-mix(in srgb, var(--accent) 10%, transparent)" />
         <path data-night d={`M${CX - R} ${CY} A${R} ${R} 0 0 0 ${CX + R} ${CY} Z`} fill="#020b09" opacity="0.6" />
         <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-paper)" strokeOpacity="0.4" strokeWidth="2" />
         <line x1={CX - R - 10} y1={CY} x2={CX + R + 10} y2={CY} stroke="var(--color-paper)" strokeOpacity="0.3" strokeWidth="1.5" strokeDasharray="4 5" />
@@ -87,7 +87,7 @@ export default function DayDial({ active, motion, mode, step }) {
           const on = lit === i;
           return (
             <g key={u} transform={`translate(${x} ${y})`} className="transition-opacity duration-300" opacity={lit < 0 || on ? 1 : 0.4}>
-              <circle r="17" fill={on ? "color-mix(in_srgb,var(--accent)_22%,transparent)" : "rgba(255,255,255,0.06)"} stroke={on ? "var(--color-signal)" : "var(--color-paper)"} strokeOpacity={on ? 1 : 0.4} strokeWidth="1.6" />
+              <circle r="17" fill={on ? "color-mix(in srgb, var(--accent) 22%, transparent)" : "rgba(255,255,255,0.06)"} stroke={on ? "var(--color-signal)" : "var(--color-paper)"} strokeOpacity={on ? 1 : 0.4} strokeWidth="1.6" />
               <UseIcon i={i} on={on} />
             </g>
           );

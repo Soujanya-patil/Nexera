@@ -123,7 +123,7 @@ function Part({ state, children }) {
       stroke={state === "on" ? "var(--color-signal)" : "var(--color-paper)"}
       strokeOpacity={state === "off" ? 0.35 : 0.9}
       className="article-part transition-[transform,stroke,stroke-opacity] duration-500 ease-out motion-reduce:transition-none"
-      style={{ transform: state === "on" ? "translateX(10px)" : "none", filter: state === "on" ? "drop-shadow(0 0 6px color-mix(in_srgb,var(--accent)_60%,transparent))" : "none" }}
+      style={{ transform: state === "on" ? "translateX(10px)" : "none", filter: state === "on" ? "drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 60%, transparent))" : "none" }}
     >
       {children}
     </g>

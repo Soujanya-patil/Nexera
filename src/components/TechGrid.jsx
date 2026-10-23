@@ -59,7 +59,7 @@ export default function TechGrid({ size = 56, tone = 0.05, glow = true, drift = 
       {glow && (
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(55% 45% at 50% 45%, color-mix(in_srgb,var(--accent)_10%,transparent) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(55% 45% at 50% 45%, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 70%)" }}
         />
       )}
     </div>

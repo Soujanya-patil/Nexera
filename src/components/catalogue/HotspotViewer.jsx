@@ -34,7 +34,7 @@ export default function HotspotViewer({ hotspots, partnerName }) {
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute left-0 top-0 aspect-square w-[5.5rem] -translate-x-1/2 -translate-y-1/2 rounded-full transition-opacity duration-fast"
-                  style={{ opacity: shown ? 1 : 0, background: "radial-gradient(closest-side, color-mix(in_srgb,var(--accent)_22%,transparent), color-mix(in_srgb,var(--accent)_6%,transparent) 55%, transparent)" }}
+                  style={{ opacity: shown ? 1 : 0, background: "radial-gradient(closest-side, color-mix(in srgb, var(--accent) 22%, transparent), color-mix(in srgb, var(--accent) 6%, transparent) 55%, transparent)" }}
                 />
                 {/* Leader: draws upward from the anchor */}
                 <span

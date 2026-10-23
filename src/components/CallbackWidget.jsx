@@ -527,7 +527,7 @@ export default function CallbackWidget() {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerEnd}
           onPointerCancel={onPointerEnd}
-          style={dragging ? { scale: "1.05", boxShadow: "0 24px 44px -14px color-mix(in_srgb,var(--color-ink)_65%,transparent)", cursor: "grabbing" } : undefined}
+          style={dragging ? { scale: "1.05", boxShadow: "0 24px 44px -14px color-mix(in srgb, var(--color-ink) 65%, transparent)", cursor: "grabbing" } : undefined}
           aria-expanded={open}
           aria-controls={`${uid}-card`}
           aria-haspopup="dialog"

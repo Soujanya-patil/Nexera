@@ -245,7 +245,7 @@ function ProductView({ product }) {
                 <div aria-hidden="true" className="pointer-events-none absolute -inset-[10%]" style={depth(-2, -1.5)}>
                   <div
                     className="ambient-drift absolute inset-0"
-                    style={{ background: "radial-gradient(48% 48% at 50% 55%, color-mix(in_srgb,var(--accent)_13%,transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 45%, transparent 72%)" }}
+                    style={{ background: "radial-gradient(48% 48% at 50% 55%, color-mix(in srgb, var(--accent) 13%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 45%, transparent 72%)" }}
                   />
                 </div>
                 <span aria-hidden="true" className="absolute inset-x-[18%] bottom-[5%] h-[6%] rounded-[100%] bg-black/60 blur-lg" />
@@ -355,7 +355,7 @@ function ProductView({ product }) {
       {/* SAFETY — interactive view, only where a partner reference confirms the components */}
       {product.hotspots && (
         <section className="relative overflow-hidden bg-deep-grid py-16 text-white md:py-20">
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 35% 50%, color-mix(in_srgb,var(--accent)_7%,transparent), transparent 70%)" }} />
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 35% 50%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%)" }} />
           <div className="relative container-site">
             <p className="eyebrow text-paper/80">Interactive product view</p>
             <AnimatedText className="mt-3 text-h2 font-semibold">Explore the protection architecture</AnimatedText>

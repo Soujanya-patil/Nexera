@@ -612,7 +612,7 @@ export default function HomeHero() {
               style={{
                 ...(story ? { opacity: "calc(1 - var(--settle, 0) * 0.55)", scale: "calc(1 + var(--recede, 0) * 0.12)" } : null),
                 background:
-                  "radial-gradient(34% 36% at 50% 52%, color-mix(in_srgb,var(--accent)_7%,transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 40%, color-mix(in_srgb,var(--accent)_1%,transparent) 65%, transparent 85%)",
+                  "radial-gradient(34% 36% at 50% 52%, color-mix(in srgb, var(--accent) 7%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 40%, color-mix(in srgb, var(--accent) 1%, transparent) 65%, transparent 85%)",
               }}
             />
             {/* Ground plate (nexera-hero-ground.webp): the footage's own first frame, heavily blurred,
@@ -697,7 +697,7 @@ export default function HomeHero() {
                 <div
                   aria-hidden="true"
                   className={`pointer-events-none absolute inset-0 mix-blend-screen transition-opacity duration-base ${inspect ? "opacity-100" : "opacity-0"}`}
-                  style={{ background: "radial-gradient(22% 26% at var(--ix, 50%) var(--iy, 50%), color-mix(in srgb, var(--color-paper) 7%, transparent), color-mix(in_srgb,var(--accent)_4%,transparent) 45%, transparent 75%)" }}
+                  style={{ background: "radial-gradient(22% 26% at var(--ix, 50%) var(--iy, 50%), color-mix(in srgb, var(--color-paper) 7%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 45%, transparent 75%)" }}
                 />
               )}
               {/* One soft light sweep across the cabinet (its bounding box) as it settles open. */}
@@ -711,7 +711,7 @@ export default function HomeHero() {
                     className="animate-scan-sweep absolute inset-y-0 left-0 w-[22%] mix-blend-screen"
                     style={{
                       background:
-                        "linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-paper) 5%, transparent) 40%, color-mix(in_srgb,var(--accent)_14%,transparent) 50%, color-mix(in srgb, var(--color-paper) 5%, transparent) 60%, transparent)",
+                        "linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-paper) 5%, transparent) 40%, color-mix(in srgb, var(--accent) 14%, transparent) 50%, color-mix(in srgb, var(--color-paper) 5%, transparent) 60%, transparent)",
                     }}
                   />
                 </div>

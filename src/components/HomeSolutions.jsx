@@ -81,7 +81,7 @@ export default function HomeSolutions() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-slow group-hover/sol:opacity-100 group-focus-visible/sol:opacity-100 group-focus-within/sol:opacity-100"
-        style={{ background: "radial-gradient(520px circle at var(--cx, -999px) var(--cy, -999px), color-mix(in_srgb,var(--accent)_9%,transparent), transparent 65%)" }}
+        style={{ background: "radial-gradient(520px circle at var(--cx, -999px) var(--cy, -999px), color-mix(in srgb, var(--accent) 9%, transparent), transparent 65%)" }}
       />
       <div className="relative container-site">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
