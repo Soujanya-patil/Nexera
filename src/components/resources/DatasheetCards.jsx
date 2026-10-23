@@ -1,19 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { PRODUCTS, partnerOf } from "../../data/products";
-
-/**
- * The homepage contact form asking for a product's document: its segment preselects the interest, and
- * `doc` (+ `kind` for a brochure) pre-fills the message (HomeContact) — "Please send me the datasheet
- * for TCL BlueArk W10." — which the visitor can still edit.
- */
-export const docHref = (product, kind) => {
-  const interest = product.applications.includes("utility") && !product.applications.includes("ci") ? "utility" : "ci";
-  const name = `${partnerOf(product.partner).name} ${product.name}`;
-  const q = new URLSearchParams({ interest, doc: name });
-  if (kind === "Brochure") q.set("kind", "brochure");
-  return `/#contact?${q}`;
-};
+import { docHref } from "../../lib/contactLinks";
 
 /**
  * Datasheets & Brochures as product cards (data/products.js, nothing invented): the product image with

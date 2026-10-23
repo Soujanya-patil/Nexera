@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Cpu,
   Download,
+  FileText,
   Expand,
   Flame,
   Gauge,
@@ -24,6 +25,7 @@ import {
 import { PRODUCTS, SPEC_GROUPS, applicationLabel, getProduct, partnerOf } from "../data/products";
 import { SOLUTION_PAGES } from "../data/solutions";
 import { PARTNER_LINE } from "../data/partners";
+import { docHref } from "../lib/contactLinks";
 import PillLink from "../components/PillLink";
 import AnimatedTabs from "@/components/smoothui/animated-tabs";
 import MagneticButton from "../components/ui/MagneticButton";
@@ -141,7 +143,7 @@ function ProductView({ product }) {
   }, []);
 
   const partner = partnerOf(product.partner);
-  const related = PRODUCTS.filter((p) => p.partner === product.partner && p.id !== product.id).slice(0, 3);
+  const related = PRODUCTS.filter((p) => p.partner === product.partner && p.id !== product.id && p.listed !== false).slice(0, 3);
   const hasTech = SPEC_GROUPS.some((g) => product.specs[g.id]?.length);
 
   return (
@@ -223,17 +225,17 @@ function ProductView({ product }) {
                     Enquire About This System
                   </MagneticButton>
                 </span>
-                {product.datasheet && (
-                  <a
-                    data-a="cta"
-                    href={product.datasheet}
-                    download
-                    className="btn-motion inline-flex items-center gap-2 rounded-full border border-white/60 px-6 py-3 text-button font-semibold text-white hover:border-white focus-visible:border-white hover:bg-white/10 focus-visible:bg-white/10"
-                  >
-                    <Download aria-hidden="true" className="h-4 w-4" />
-                    Download Datasheet
-                  </a>
-                )}
+                {/* The datasheet: a download where the file exists, otherwise a request (the homepage form,
+                    pre-filled) — the same "Request Datasheet" as the catalogue cards. */}
+                <a
+                  data-a="cta"
+                  href={product.datasheet ?? docHref(product)}
+                  download={product.datasheet ? "" : undefined}
+                  className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full border border-white/60 px-6 py-3 text-button font-semibold text-white hover:border-white focus-visible:border-white hover:bg-white/10 focus-visible:bg-white/10"
+                >
+                  {product.datasheet ? <Download aria-hidden="true" className="h-4 w-4" /> : <FileText aria-hidden="true" className="h-4 w-4" />}
+                  {product.datasheet ? "Download Datasheet" : "Request Datasheet"}
+                </a>
               </div>
               <Link data-a="cta" to="/products" className="group/back mt-6 inline-flex items-center gap-1.5 text-small text-paper/60 hover:text-white focus-visible:text-white">
                 <ArrowLeft aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/back:-translate-x-1 group-focus-visible/back:-translate-x-1 group-focus-within/back:-translate-x-1" /> All products

@@ -64,7 +64,7 @@ export default function HotspotViewer({ hotspots, partnerName }) {
                   onClick={() => setSelected(p.id)}
                   aria-label={`${i + 1}. ${p.label}`}
                   aria-pressed={selected === p.id}
-                  className="absolute left-0 top-0 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="absolute left-0 top-0 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full outline-none pointer-coarse:h-11 pointer-coarse:w-11 focus-visible:ring-2 focus-visible:ring-accent"
                 >
                   <span className="relative block h-2 w-2">
                     <span className="animate-hotspot-pulse absolute inset-0 rounded-full bg-accent" style={{ animationDelay: `${i * 180}ms` }} />
@@ -103,7 +103,7 @@ export default function HotspotViewer({ hotspots, partnerName }) {
                 onPointerEnter={() => setHover(p.id)}
                 onPointerLeave={() => setHover(null)}
                 aria-pressed={selected === p.id}
-                className={`flex w-full items-center gap-3 rounded-control px-3 py-2 text-left text-small transition-colors focus-visible:outline-2 ${
+                className={`flex min-h-11 w-full items-center gap-3 rounded-control px-3 py-2 text-left text-small transition-colors focus-visible:outline-2 ${
                   selected === p.id ? "bg-accent/10 text-white" : "text-paper/75 hover:bg-white/5 focus-visible:bg-white/5 hover:text-white focus-visible:text-white"
                 }`}
               >

@@ -38,7 +38,7 @@ const status = async (path) => (await fetch(BASE + path, { redirect: "manual" })
 
 // ---- each page: sections, links, hero buttons -----------------------------------------------------------
 for (const [id, interest, nProducts] of [
-  ["hithium", "ci", 4],
+  ["hithium", "ci", 3], // the ∞Power 5.016 MWh is `listed: false`: no card (its page and FAQ mention remain)
   ["tcl", "ci", 3],
   ["clou", "ci", 2],
   ["midea", "home", 0],

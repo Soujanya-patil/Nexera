@@ -37,7 +37,8 @@ export default function Partner() {
 
 function PartnerPage({ page }) {
   const { id, name, interest, about } = page;
-  const products = partnerProducts(id);
+  // The cards: the catalogue's listed systems (a `listed: false` system keeps its own page and its FAQ mention).
+  const products = partnerProducts(id).filter((p) => p.listed !== false);
   const contact = `/#contact?interest=${interest}`;
   const list = useRef(null);
   const reveal = useScrollReveal(list);
