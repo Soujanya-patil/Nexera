@@ -56,3 +56,6 @@ desktop.ini
 # build WILL publish it to the live site. Ignoring it keeps it out of git, but not out of the
 # bundle. It should be moved outside the repo entirely.
 webplan2.mp4
+
+# Local test suites: working copies, logs, reports (tests/README.md).
+tests/.work/

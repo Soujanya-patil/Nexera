@@ -1,0 +1,8 @@
+{
+  "name": "nexera-website-tests",
+  "private": true,
+  "description": "Local browser suites for the built site. Not run in CI, not deployed. See README.md.",
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}
