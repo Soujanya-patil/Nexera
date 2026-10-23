@@ -198,14 +198,12 @@
   --accent-hover: color-mix(in srgb, var(--color-link) 82%, black);
   --on-accent: var(--color-white);
   --label: var(--color-muted);
-  --blend-sky: transparent; /* .photo-blend: no sky tint on a light ground */
 }
 :where(.bg-deep-grid, .bg-forest, .bg-black, [data-ground="dark"], [class*="bg-deep-grid/"], [class*="bg-forest/"]):not([class*=":bg-deep-grid"], [class*=":bg-forest"]) {
   --accent: var(--color-signal);
   --accent-hover: color-mix(in srgb, var(--color-signal) 80%, white);
   --on-accent: var(--color-ink);
   --label: rgb(245 247 244 / 0.7);
-  --blend-sky: var(--color-deep-grid);
 }
 
 /* Section spacing: one vertical padding for every content section — 64 px on phones, 80 px from 768 px
@@ -598,73 +596,6 @@
 .seg-panels[data-panels]:has(> li:nth-child(2):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x1)); }
 .seg-panels[data-panels]:has(> li:nth-child(3):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x2)); }
 
-/* Photo blend: one treatment for the photos on the Solutions pages and the home solutions cards. No
-   box: one mask on the photo's WRAPPER (so a cross-fade or Ken Burns push inside it is blended too)
-   fades it to transparent, and the ground it sits on shows through — deep-grid, paper or white alike.
-   Three layers, intersected:
-     - a wide ellipse touching the wrapper's four edge midpoints: fully solid over its middle
-       --blend-solid of the radius, then an eased fall-off to nothing at every edge and corner (no
-       straight edge anywhere, even on a bright photo);
-     - an extra linear fade from the side facing the text (--blend-l, from the left), and
-     - one from the bottom (--blend-b).
-   --blend-at moves the ellipse's centre. The wrapper and its layers carry no background, border,
-   radius, outline, shadow or solid overlay of their own. On a dark ground a light, soft tint of that
-   ground (--blend-sky, set with the accent) sits over the top of the photo, inside the mask; on light
-   grounds there is none. In the components layer, so a utility on the same element ([--blend-l:…])
-   overrides the defaults. */
-@layer components {
-  .photo-blend {
-    --blend-at: 50% 48%;
-    --blend-solid: 50%;
-    --blend-l: 0%;
-    --blend-b: 22%;
-    --blend-fall: calc(100% - var(--blend-solid));
-    /* The fall-off starts gently, does most of its work early and ends in a long, faint tail: on a dark
-       ground even 10% of a near-white photo would read as a rim, so the photo is nearly gone well before
-       the ellipse's edge — no rim where the solid middle ends, none where the photo meets the ground. */
-    --blend-ellipse: radial-gradient(
-      closest-side ellipse at var(--blend-at),
-      #000 var(--blend-solid),
-      rgb(0 0 0 / 0.93) calc(var(--blend-solid) + var(--blend-fall) * 0.08),
-      rgb(0 0 0 / 0.78) calc(var(--blend-solid) + var(--blend-fall) * 0.18),
-      rgb(0 0 0 / 0.55) calc(var(--blend-solid) + var(--blend-fall) * 0.3),
-      rgb(0 0 0 / 0.34) calc(var(--blend-solid) + var(--blend-fall) * 0.44),
-      rgb(0 0 0 / 0.18) calc(var(--blend-solid) + var(--blend-fall) * 0.58),
-      rgb(0 0 0 / 0.08) calc(var(--blend-solid) + var(--blend-fall) * 0.72),
-      rgb(0 0 0 / 0.025) calc(var(--blend-solid) + var(--blend-fall) * 0.86),
-      transparent 100%
-    );
-    --blend-side: linear-gradient(
-      to right,
-      transparent 0%,
-      rgb(0 0 0 / 0.35) calc(var(--blend-l) * 0.4),
-      rgb(0 0 0 / 0.8) calc(var(--blend-l) * 0.75),
-      #000 var(--blend-l)
-    );
-    --blend-foot: linear-gradient(
-      to top,
-      transparent 0%,
-      rgb(0 0 0 / 0.35) calc(var(--blend-b) * 0.4),
-      rgb(0 0 0 / 0.8) calc(var(--blend-b) * 0.75),
-      #000 var(--blend-b)
-    );
-    -webkit-mask-image: var(--blend-ellipse), var(--blend-side), var(--blend-foot);
-    -webkit-mask-composite: source-in, source-in;
-    mask-image: var(--blend-ellipse), var(--blend-side), var(--blend-foot);
-    mask-composite: intersect, intersect;
-  }
-  .photo-blend::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 3;
-    pointer-events: none;
-    /* At most 30% of the ground at the very top, eased away by 45% of the height: a soft gradient,
-       never a strip (no color-mix: its build fallback would paint the full colour). */
-    background: linear-gradient(to bottom, var(--blend-sky), 16%, transparent 45%);
-    opacity: 0.3;
-  }
-}
 /* Hub ribbon label: rolls up from its mask as its photo comes in. */
 @keyframes ribbon-label {
   from { transform: translateY(100%); }

@@ -33,14 +33,13 @@ import { toggleDetails } from "../../lib/accordion";
 
 const TONES = { paper: "bg-white", ice: "bg-paper", night: "bg-deep-grid text-white" };
 
-// Hero scrims, for the copy's contrast only (the photo itself melts into the ground through its mask).
-// They cover the whole section, not the photo's wrapper, and are the ground's own colour, so they can
-// never outline the photo: on phones a flat dim (the photo is behind the copy); on desktop a fade from
-// the left, "strong" for photos with bright detail behind the text, "light" where the photo should stay
-// clearly visible (utility; lighter only from 1280 px, where the copy overlaps less of it).
+// Hero overlays. The photo itself fades out toward the copy (a mask on its wrapper — see below), so
+// the gradient only has to keep the copy's contrast: "strong" for photos with bright detail behind
+// the text, "light" where the photo should stay clearly visible (utility).
 const HERO_OVERLAY = {
-  strong: "lg:bg-gradient-to-r lg:from-deep-grid lg:from-40% lg:via-deep-grid/55 lg:via-55% lg:to-transparent lg:to-80%",
-  light: "lg:bg-gradient-to-r lg:from-deep-grid lg:from-40% lg:via-deep-grid/55 lg:via-55% lg:to-transparent lg:to-80% xl:via-deep-grid/35 xl:to-70%",
+  strong: "lg:bg-gradient-to-r lg:from-deep-grid lg:via-deep-grid/60 lg:to-deep-grid/10",
+  // Lighter only from 1280 px: between 1024 and 1279 the copy overlaps more of the photo.
+  light: "lg:bg-gradient-to-r lg:from-deep-grid lg:via-deep-grid/60 lg:to-deep-grid/10 xl:from-deep-grid/90 xl:via-deep-grid/25 xl:to-transparent",
 };
 
 /**
@@ -110,14 +109,12 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
     <section ref={root} data-vt-hero={segment} className="relative overflow-hidden bg-deep-grid text-white">
       <Spotlight />
       <div data-intro={intro}>
-        {/* Photo: full-bleed behind the copy on phones (dimmed by the scrim below); on desktop the right 54%
-            (62% from 1280 px, where the copy has more room). One mask on this wrapper melts it into the
-            ground (.photo-blend); on desktop an extra fade on the left, toward the copy. The wrapper and
-            its layers paint nothing of their own. */}
+        {/* Photo: full-bleed behind the copy on phones (dimmed); on desktop the right 54% (62% from 1280 px,
+            where the copy has more room), its left edge masked to transparent so it melts into the ground. */}
         <div
           data-a={morphed ? undefined : "image"}
           data-vt-img
-          className="photo-blend absolute inset-0 overflow-hidden lg:left-[46%] lg:[--blend-at:56%_50%] lg:[--blend-l:34%] xl:left-[38%]"
+          className="absolute inset-0 overflow-hidden lg:left-[46%] xl:left-[38%] lg:[mask-image:linear-gradient(to_right,transparent,#000_42%)] xl:[mask-image:linear-gradient(to_right,transparent,#000_26%)]"
         >
           {/* parallax (scroll scrub, transform only) → zoom (load) → pointer drift → photo */}
           <div ref={parallax} className="absolute inset-0 will-change-transform">
@@ -134,8 +131,9 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
               </div>
             </div>
           </div>
+          <div aria-hidden="true" className={`absolute inset-0 bg-deep-grid/75 lg:bg-transparent ${HERO_OVERLAY[overlay]}`} />
+          <div aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t ${overlay === "light" ? "from-deep-grid/70" : "from-deep-grid/90"} to-transparent`} />
         </div>
-        <div aria-hidden="true" className={`absolute inset-0 bg-deep-grid/75 lg:bg-transparent ${HERO_OVERLAY[overlay]}`} />
 
         <div className="relative container-site py-14 lg:py-20">
           <nav aria-label="Breadcrumb" className="text-micro text-paper/75">

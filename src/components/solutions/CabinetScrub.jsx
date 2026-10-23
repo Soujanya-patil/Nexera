@@ -86,20 +86,15 @@ export default function CabinetScrub() {
             </div>
           ) : (
             <figure>
-              {/* No box: one mask on this wrapper melts the still into the section (.photo-blend). The ellipse
-                  is centred on the cabinet (left of the frame's middle) and solid over more of it, so the
-                  open door and the rack stay clear. */}
-              <div className="photo-blend relative [--blend-at:40%_54%] [--blend-solid:62%] [--blend-b:10%]">
-                <img
-                  src={openStill}
-                  width={1040}
-                  height={864}
-                  loading="lazy"
-                  decoding="async"
-                  alt="Open battery energy storage cabinet: door with fans and fire suppression unit, five battery packs and the lower electrical rack"
-                  className="w-full"
-                />
-              </div>
+              <img
+                src={openStill}
+                width={1040}
+                height={864}
+                loading="lazy"
+                decoding="async"
+                alt="Open battery energy storage cabinet: door with fans and fire suppression unit, five battery packs and the lower electrical rack"
+                className="w-full rounded-card ring-1 ring-white/10"
+              />
               <figcaption className="sr-only">Protection components</figcaption>
               <ul aria-label="Protection components" className="mt-5 grid gap-2 sm:grid-cols-2">
                 {CALLOUTS.map((c) => (

@@ -138,13 +138,12 @@ export default function SegmentRibbon() {
 
   return (
     <div ref={root} aria-hidden="true" className="relative">
-      {/* No box: one mask on this wrapper (.photo-blend, index.css) melts every photo, and the cross-fade
-          between them, into the ground; the wrapper and the canvases paint nothing of their own. The
-          text is to the left and the label below, so the extra fades are on those sides. */}
-      <div className="photo-blend relative aspect-[4/3] overflow-hidden [--blend-at:54%_46%] [--blend-l:30%] [--blend-b:26%]">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-deep-grid ring-1 ring-white/10">
         {SLIDES.map((s) => (
           <canvas key={s.img} data-slide="" style={{ opacity: 0 }} className="absolute inset-0 h-full w-full will-change-transform" />
         ))}
+        {/* Above the photos, which the cross-fade stacks at z-index 0–2. */}
+        <span className="pointer-events-none absolute inset-0 z-[3] bg-gradient-to-t from-deep-grid/70 via-transparent to-transparent" />
       </div>
       {/* The label rolls up from a mask as its photo comes in. */}
       <p className="mt-4 flex items-center gap-3 eyebrow text-paper/80">
