@@ -12,8 +12,8 @@ deployed. They never touch the live site.
 | `checks/` | Measuring tools you run when a change calls for them: contrast, touch targets, layout shift, paint, and Lighthouse. |
 | `server/` | `httpd.conf` (Apache, which applies the site's own `.htaccess`), `router.php` (PHP's built-in server, for the enquiry API) and `smtpsink.py` (catches every mail PHP sends). |
 | `prepare.sh` | Copies `dist/` into `.work/`. The PHP copy's enquiry address becomes `leads-test@example.com`, so no suite can mail a real inbox. |
-| `start-servers.sh` / `stop-servers.sh` | Starts or stops the local servers on ports 8800, 8810 and 8811, plus the SMTP sink on 2525. |
-| `make-reference.sh [commit]` | Builds an earlier commit into `.work/before`, served on 8811. The hub suite compares against it, and `checks/lhab.sh` uses it as "before". |
+| `start-servers.sh` / `stop-servers.sh` | Starts or stops the local servers on ports 8800 and 8810–8812, plus the SMTP sink on 2525. |
+| `make-reference.sh [commit] [folder]` | Builds an earlier commit into `.work/before` (8811; the hub suite compares against it) or, with `head`, into `.work/head` (8812), e.g. the live commit for an A/B check: `BEFORE_PORT=8812 checks/lhab.sh …`. |
 | `run-all.sh` | Every suite, once. |
 | `run-related.sh` | The shorter set for visual changes. |
 

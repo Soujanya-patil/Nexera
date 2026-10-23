@@ -1,5 +1,5 @@
 // The app's start after the first paint (scripts/seo-pages.mjs boot): it starts on every page, after the
-// first contentful paint; the site works (homepage hero video, menu, client-side navigation); both
+// first contentful paint; the site works (homepage hero showcase, menu, client-side navigation); both
 // fallbacks start it (no paint timing → after the first frame; no paint entry → the 1.5 s timer).
 // Usage: node bootcheck.mjs http://127.0.0.1:8810
 import { chromium } from "playwright-core";
@@ -58,7 +58,7 @@ for (const path of ["/", "/resources", "/resources/what-is-bess", "/solutions/co
   }
 }
 
-// ---- Homepage: hero video plays; the menu opens and closes (phone) -----------------------------------
+// ---- Homepage: hero showcase (first product shown, the others added after load, no video); the menu ----
 for (const [W, H] of [
   [1440, 900],
   [390, 844],
@@ -66,11 +66,16 @@ for (const [W, H] of [
   const p = await page(W, H);
   await p.goto(BASE + "/", { waitUntil: "load" });
   await p.waitForTimeout(4500);
-  const v = await p.evaluate(() =>
-    [...document.querySelectorAll("main video, video")].map((v) => ({ src: (v.currentSrc || v.getAttribute("src") || "").split("/").pop(), t: +v.currentTime.toFixed(2), paused: v.paused, ready: v.readyState }))
-  );
-  const playing = v.filter((x) => x.src && x.t > 0.3 && !x.paused);
-  check(`/ @${W}: the hero video plays (${W > 500 ? "desktop" : "mobile"} footage)`, playing.length >= 1 && (W > 500 ? !/mobile/.test(playing[0].src) : /mobile/.test(playing[0].src)), v);
+  const hero = await p.evaluate(() => {
+    const imgs = [...document.querySelectorAll("[data-home-hero] figure img")];
+    return {
+      products: imgs.length,
+      loaded: imgs.filter((i) => i.complete && i.naturalWidth > 0).length,
+      shown: imgs.findIndex((i) => +getComputedStyle(i).opacity > 0.99),
+      videos: document.querySelectorAll("[data-home-hero] video").length,
+    };
+  });
+  check(`/ @${W}: the hero showcase is ready (first product shown, all ${hero.products} loaded after load, no video)`, hero.products >= 2 && hero.loaded === hero.products && hero.shown === 0 && hero.videos === 0, hero);
   if (W < 500) {
     const btn = p.getByRole("button", { name: "Open menu" });
     await btn.click();
@@ -84,7 +89,7 @@ for (const [W, H] of [
     const nav = await spaNav(p, () => p.locator('nav a[href="/products"]').first().click());
     check("/ @1440: menu links navigate client-side", nav.path === "/products" && nav.sameDoc, nav);
   }
-  check(`/ @${W}: no console errors (video / menu)`, p.errors.length === 0, p.errors);
+  check(`/ @${W}: no console errors (hero / menu)`, p.errors.length === 0, p.errors);
   await p.context().close();
 }
 
