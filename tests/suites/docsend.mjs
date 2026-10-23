@@ -1,4 +1,4 @@
-// /resources "Download Datasheet" → homepage form → a real enquiry (php -S + SMTP sink) carrying the
+// /resources "Request Datasheet" → homepage form → a real enquiry (php -S + SMTP sink) carrying the
 // pre-filled request. Usage: MAILS=<mails.log> node docsend.mjs http://127.0.0.1:8800
 import { chromium } from "playwright-core";
 import fs from "node:fs";

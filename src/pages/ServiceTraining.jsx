@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Check, CircleHelp, DraftingCompass, GraduationCap, ShieldCheck } from "lucide-react";
 import PageHeader from "../components/PageHeader";
+import HomeCta from "../components/HomeCta";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 
@@ -89,6 +90,9 @@ export default function ServiceTraining() {
           </dl>
         </div>
       </section>
+
+      {/* The shared closing band (as on the partner pages, the blog and resources). */}
+      <HomeCta contactTo="/#contact" />
     </div>
   );
 }

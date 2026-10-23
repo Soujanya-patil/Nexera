@@ -1,4 +1,6 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
 import SceneImg from "../SceneImg";
 import { depth, usePointerDepth } from "../../lib/pointerDepth";
@@ -85,10 +87,15 @@ export default function EpcHero() {
                 Talk to NEXERA
               </MagneticButton>
             </span>
+            {/* One filled button per section: the third action is a text link. */}
             <span data-a="cta" className="inline-block">
-              <MagneticButton to="/how-it-works" variant="outline" arrow>
+              <Link
+                to="/how-it-works"
+                className="group/how hit-area inline-flex min-h-11 items-center gap-1.5 text-button font-semibold text-accent hover:text-white focus-visible:text-white"
+              >
                 See how the partnership works
-              </MagneticButton>
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/how:translate-x-1 group-focus-visible/how:translate-x-1" />
+              </Link>
             </span>
           </div>
         </div>

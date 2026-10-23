@@ -36,7 +36,7 @@ export default function HomeCta({ contactTo = "/contact" }) {
   });
 
   return (
-    <section ref={root} data-enter={enter} className="relative overflow-hidden bg-deep-grid text-white">
+    <section ref={root} data-enter={enter} className="relative overflow-hidden bg-forest text-white">
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[8%]"

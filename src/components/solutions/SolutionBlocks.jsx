@@ -909,7 +909,7 @@ export function CtaBand({ id, eyebrow, title, subheading, body, checklist, segme
   const toggle = (t) => setSelected((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : checklist.filter((x) => x === t || cur.includes(x))));
   const to = segment && selected.length ? `${button.to}&topics=${selected.map(topicSlug).join(",")}` : button.to;
   return (
-    <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-deep-grid py-section text-white">
+    <section id={id} data-cta-band aria-labelledby={`${id}-title`} className="relative overflow-hidden bg-forest py-section text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(45% 60% at 80% 40%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 70%)" }} />
       <Spotlight />
       <div className="relative container-site grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">

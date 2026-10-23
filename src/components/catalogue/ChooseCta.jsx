@@ -15,7 +15,7 @@ export default function ChooseCta({ productId }) {
   const reveal = useScrollReveal(root);
   const quote = `/contact?intent=quote${productId ? `&product=${productId}` : ""}`;
   return (
-    <section ref={root} data-sr-state={reveal} className="relative overflow-hidden bg-deep-grid text-white">
+    <section ref={root} data-sr-state={reveal} className="relative overflow-hidden bg-forest text-white">
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[10%]"

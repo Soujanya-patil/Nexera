@@ -6,7 +6,7 @@ import { docHref } from "../../lib/contactLinks";
 /**
  * Datasheets & Brochures as product cards (data/products.js, nothing invented): the product image with
  * its alt text, the partner and product name, a DATASHEET / BROCHURE badge, the power / energy line and
- * the one-line summary, and one link — "Download Datasheet" / "Download Brochure" — to the homepage
+ * the one-line summary, and one link — "Request Datasheet" / "Request Brochure" — to the homepage
  * contact form with that request filled in (docHref). The link covers the whole card; it is a real
  * <a href>, so it works without JavaScript. Hover: the card lifts, its border firms, the product rises a
  * little over a soft light, the arrow slides. The cards arrive in turn (data-rv, the page's reveal).
@@ -68,9 +68,9 @@ function SheetCard({ product, kind }) {
 
         <Link
           to={docHref(product, kind)}
-          className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full bg-accent px-6 text-button font-semibold text-white transition-colors duration-fast after:absolute after:inset-0 after:content-[''] group-hover/sheet:bg-forest group-focus-visible/sheet:bg-forest group-focus-within/sheet:bg-forest focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:ring-2 focus-visible:after:ring-link"
+          className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full border border-accent bg-white px-6 text-button font-semibold text-accent transition-colors duration-fast after:absolute after:inset-0 after:content-[''] group-hover/sheet:bg-accent group-focus-visible/sheet:bg-accent group-focus-within/sheet:bg-accent group-hover/sheet:text-on-accent group-focus-visible/sheet:text-on-accent group-focus-within/sheet:text-on-accent focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:ring-2 focus-visible:after:ring-link"
         >
-          Download {kind}
+          Request {kind}
           <span className="sr-only">: {name}</span>
           <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/sheet:translate-x-1 group-focus-visible/sheet:translate-x-1 group-focus-within/sheet:translate-x-1 motion-reduce:transition-none" />
         </Link>

@@ -15,7 +15,7 @@ export default function EpcCta() {
   const root = useRef(null);
   const reveal = useScrollReveal(root);
   return (
-    <section ref={root} data-sr-state={reveal} aria-labelledby="epc-cta-title" className="relative overflow-hidden bg-deep-grid text-white">
+    <section ref={root} data-sr-state={reveal} aria-labelledby="epc-cta-title" className="relative overflow-hidden bg-forest text-white">
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[10%]"

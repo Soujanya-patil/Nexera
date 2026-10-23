@@ -181,7 +181,7 @@ export default function HomeContact() {
   );
 
   return (
-    <section ref={root} id="contact" data-sr-state={reveal} aria-labelledby={`${uid}-title`} className="relative scroll-mt-16 overflow-hidden bg-deep-grid text-white">
+    <section ref={root} id="contact" data-sr-state={reveal} aria-labelledby={`${uid}-title`} className="relative scroll-mt-16 overflow-hidden bg-forest text-white">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"

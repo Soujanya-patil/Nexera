@@ -11,7 +11,7 @@ const STEPS = ["Partner", "Deploy", "Accelerate"];
  */
 export default function ArticleClosingBand() {
   return (
-    <section className="article-band relative overflow-hidden bg-deep-grid text-white">
+    <section className="article-band relative overflow-hidden bg-forest text-white">
       <div
         aria-hidden="true"
         className="ambient-drift pointer-events-none absolute -inset-[8%]"

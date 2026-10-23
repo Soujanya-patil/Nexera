@@ -97,7 +97,7 @@ export default function HowItWorks() {
           </h2>
           <p data-sr className="mt-heading max-w-measure text-body text-copy">
             In development — a preview of what every distributor will get: territory
-            map, pipeline, training status, warranty tickets, and price sheets.
+            map, pipeline, training status, and warranty tickets.
           </p>
           <div data-sr className="mt-8 aspect-video max-w-2xl rounded-card border border-line bg-white flex items-center justify-center">
             <p className="text-small text-copy">Partner Portal preview — coming soon</p>

@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import PageHeader from "../components/PageHeader";
+import HomeCta from "../components/HomeCta";
 import { useScrollReveal } from "../lib/scrollReveal";
 
 const leaders = [
@@ -66,6 +67,9 @@ export default function About() {
           </ul>
         </div>
       </section>
+
+      {/* The shared closing band (as on the partner pages, the blog and resources). */}
+      <HomeCta contactTo="/#contact" />
     </div>
   );
 }

@@ -244,7 +244,7 @@ export default function SolutionsResidential() {
           href="https://pmsuryaghar.gov.in"
           target="_blank"
           rel="noopener"
-          className="group/pill btn-motion mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover hover:shadow-glow focus-visible:shadow-glow active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
+          className="group/pill btn-motion mt-8 inline-flex min-h-11 items-center gap-2 rounded-full border border-accent px-6 py-3 text-button font-semibold text-accent hover:bg-accent hover:text-on-accent focus-visible:bg-accent focus-visible:text-on-accent active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           PM Surya Ghar National Portal
           <ExternalLink aria-hidden="true" className="h-4 w-4" strokeWidth={2} />

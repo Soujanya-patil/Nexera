@@ -50,8 +50,8 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
     "BlueArk W10",
     "∞BLOCK C&I All-in-One ESS",
     "∞Power 6.25 MWh",
-    "Download Datasheet",
-    "Download Brochure",
+    "Request Datasheet",
+    "Request Brochure",
     "Datasheets & Brochures",
     "FAQs",
     "News & Insights",
@@ -172,13 +172,13 @@ for (const [W, H] of [
       };
     })
   );
-  const exp = SHEETS.map((s) => ({ ...s, label: `Download ${s.kind}: ${s.partner} ${s.name}` }));
+  const exp = SHEETS.map((s) => ({ ...s, label: `Request ${s.kind}: ${s.partner} ${s.name}` }));
   const okCards =
     cards.length === 3 &&
     cards.every(
       (c, i) => c.alt === exp[i].alt && c.loaded && c.partner === exp[i].partner && c.name === exp[i].name && c.specs === exp[i].specs && c.summary === exp[i].summary && c.label === exp[i].label && c.forms === 0 && c.href.startsWith(`/#contact?interest=${exp[i].interest}&doc=`)
     );
-  check(`${tag} three product cards (products.js image + alt, partner, name, power/energy line, summary; one "Download …" link; no form)`, okCards, cards);
+  check(`${tag} three product cards (products.js image + alt, partner, name, power/energy line, summary; one "Request …" link; no form)`, okCards, cards);
   const hrefs = cards.map((c) => new URLSearchParams(c.href.slice("/#contact?".length)));
   check(`${tag} links: interest ci / ci / utility, doc = product name, kind=brochure on the brochure only`, hrefs.map((q) => `${q.get("interest")}|${q.get("doc")}|${q.get("kind")}`).join(";") === "ci|TCL BlueArk W10|null;ci|Hithium ∞BLOCK C&I All-in-One ESS|null;utility|Hithium ∞Power 6.25 MWh|brochure", hrefs.map((q) => q.toString()));
   if (W > 500) {
@@ -200,7 +200,7 @@ for (const [W, H] of [
         .map((el) => ({ h: Math.round(el.getBoundingClientRect().height), t: el.textContent.trim().slice(0, 18) }))
         .filter((x) => x.h > 0 && x.h < 44)
     );
-    check(`${tag} touch targets ≥ 44px (bar, Download links, Start here, FAQ)`, small.length === 0, small);
+    check(`${tag} touch targets ≥ 44px (bar, Request links, Start here, FAQ)`, small.length === 0, small);
   }
   // Click (the button at 1440, the card's image at 390 — the whole card is the link) → the form.
   const i = W > 500 ? 0 : 2;
@@ -216,7 +216,7 @@ for (const [W, H] of [
   }
   await p.waitForTimeout(2600);
   const f = await formState(p);
-  check(`${tag} "${SHEETS[i].kind === "Brochure" ? "Download Brochure" : "Download Datasheet"}" → the homepage form, in view, interest "${SHEETS[i].interest}", message pre-filled`, f.path === "/" && f.sameDoc && f.top !== null && f.top >= 0 && f.top < 200 && f.interest === SHEETS[i].interest && f.message === SHEETS[i].message, f);
+  check(`${tag} "${SHEETS[i].kind === "Brochure" ? "Request Brochure" : "Request Datasheet"}" → the homepage form, in view, interest "${SHEETS[i].interest}", message pre-filled`, f.path === "/" && f.sameDoc && f.top !== null && f.top >= 0 && f.top < 200 && f.interest === SHEETS[i].interest && f.message === SHEETS[i].message, f);
   // The message stays editable.
   const ta = p.locator("#contact textarea");
   await ta.click();
