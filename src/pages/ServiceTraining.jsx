@@ -1,7 +1,17 @@
 import { useRef, useState } from "react";
+import { Check, CircleHelp, DraftingCompass, GraduationCap, ShieldCheck } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
+
+/** The section's icon: the site's icon style (ink glyph in an ice circle, as in the feature grids). */
+function SectionIcon({ icon: Icon }) {
+  return (
+    <span data-sr aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-full bg-ice text-ink">
+      <Icon className="h-5 w-5" strokeWidth={1.7} />
+    </span>
+  );
+}
 
 export default function ServiceTraining() {
   // The site's scroll reveal: headings rise from their masks, copy and lists fade up (lib/scrollReveal).
@@ -16,7 +26,8 @@ export default function ServiceTraining() {
 
       <section className="bg-white border-b border-line">
         <div className="container-site py-section">
-          <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
+          <SectionIcon icon={DraftingCompass} />
+          <h2 data-sr="heading" className="mt-5 text-h2 font-semibold text-ink">
             Design & Commissioning Support
           </h2>
           <p data-sr className="mt-heading max-w-measure text-body text-copy">
@@ -28,7 +39,8 @@ export default function ServiceTraining() {
 
       <section className="bg-paper border-b border-line">
         <div className="container-site py-section">
-          <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
+          <SectionIcon icon={ShieldCheck} />
+          <h2 data-sr="heading" className="mt-5 text-h2 font-semibold text-ink">
             After-Sales & Warranty
           </h2>
           <p data-sr className="mt-heading max-w-measure text-body text-copy">
@@ -41,7 +53,8 @@ export default function ServiceTraining() {
 
       <section className="bg-white">
         <div className="container-site py-section">
-          <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
+          <SectionIcon icon={GraduationCap} />
+          <h2 data-sr="heading" className="mt-5 text-h2 font-semibold text-ink">
             Kalaburagi Technician Training Center
           </h2>
           <p data-sr className="mt-2 text-small text-copy">
@@ -52,9 +65,9 @@ export default function ServiceTraining() {
             hardware — not manuals and PDFs.
           </p>
           <ul data-sr className="mt-6 space-y-2 text-body text-copy">
-            <li className="flex gap-3"><span className="text-label">✓</span> Hands-on installation and commissioning practice</li>
-            <li className="flex gap-3"><span className="text-label">✓</span> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
-            <li className="flex gap-3"><span className="text-label">✓</span> Certification path for field-ready technicians</li>
+            <li className="flex gap-3"><Check aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-label" strokeWidth={2.4} /> Hands-on installation and commissioning practice</li>
+            <li className="flex gap-3"><Check aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-label" strokeWidth={2.4} /> Electrical safety, fault diagnosis, troubleshooting on live systems</li>
+            <li className="flex gap-3"><Check aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-label" strokeWidth={2.4} /> Certification path for field-ready technicians</li>
           </ul>
         </div>
       </section>
@@ -62,7 +75,8 @@ export default function ServiceTraining() {
       {/* FAQ: the same list is the page's FAQPage structured data (src/seo/routes.js), word for word. */}
       <section className="bg-paper border-t border-line">
         <div className="container-site py-section">
-          <h2 data-sr="heading" className="text-h2 font-semibold text-ink">
+          <SectionIcon icon={CircleHelp} />
+          <h2 data-sr="heading" className="mt-5 text-h2 font-semibold text-ink">
             Frequently Asked Questions
           </h2>
           <dl className="mt-8 max-w-measure space-y-6">
