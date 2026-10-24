@@ -331,7 +331,7 @@ export function AppRail({ items, label }) {
 
 /**
  * Partner logo strip ("gallery"): the logos alone (each logo already says the name; the name is its
- * alt text). Midea has no logo file, so its name is set as a wordmark at the logos' height — type, not
+ * alt text). A partner without a logo file has its name set as a wordmark at the logos' height — type, not
  * an invented logo. Logos sit in greyscale at 70% and turn full colour on hover or keyboard focus.
  * Each is a link to that partner's page (/partners/:id).
  */

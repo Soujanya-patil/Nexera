@@ -21,6 +21,10 @@ ErrorDocument 404 /404.html
   RewriteRule ^brands/?$ /products [R=301,L]
   # /partners has no page of its own (only /partners/hithium, /partners/tcl …): to the catalogue.
   RewriteRule ^partners/?$ /products [R=301,L]
+  # A removed partner page (not a NEXERA partner): its old URL (also .html or a trailing
+  # slash) -> the catalogue. Above the rules that serve files, so it redirects even while an old
+  # partners/midea.html is still on the server.
+  RewriteRule ^partners/midea(?:\.html)?/?$ /products [R=301,NC,L]
   # The Home v2 preview was retired: /home-v2 (also .html or a trailing slash) -> Home. Above the rules
   # that serve files, so it redirects even while an old home-v2.html is still on the server.
   RewriteRule ^home-v2(?:\.html)?/?$ / [R=301,L]

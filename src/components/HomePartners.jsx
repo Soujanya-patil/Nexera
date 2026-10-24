@@ -28,7 +28,6 @@ const NAMED = [
   ["tcl", "TCL"],
   ["hithium", "Hithium"],
   ["clou", "CLOU"],
-  ["midea", "Midea"],
 ];
 
 // Each logo rests slightly muted; on hover it comes to full presence (colour + opacity) with a short

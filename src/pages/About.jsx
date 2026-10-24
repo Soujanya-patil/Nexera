@@ -11,7 +11,7 @@ const leaders = [
 ];
 
 const why = [
-  "Authorized TCL, Hithium, CLOU and Midea partner",
+  "Authorized TCL, Hithium and CLOU partner",
   "India-based design and commissioning support",
   "Hands-on technician training center in Kalaburagi",
   "Built by EPCs who understand the site-level problem",
@@ -34,7 +34,7 @@ export default function About() {
           <p data-sr className="mt-heading max-w-measure text-body text-copy">
             Nexera Powertech was founded to solve a problem we lived ourselves as a
             solar EPC: getting reliable battery storage into Indian projects, backed
-            by service that actually shows up. We're an authorized TCL, Hithium, CLOU and Midea
+            by service that actually shows up. We're an authorized TCL, Hithium and CLOU
             partner, built to give Indian EPCs a trusted route into the BESS market.
           </p>
         </div>

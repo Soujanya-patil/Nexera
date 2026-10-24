@@ -24,7 +24,6 @@ const partners = [
   { label: "Hithium", href: "/partners/hithium" },
   { label: "TCL", href: "/partners/tcl" },
   { label: "CLOU", href: "/partners/clou" },
-  { label: "Midea", href: "/partners/midea" },
 ];
 
 export default function Footer() {

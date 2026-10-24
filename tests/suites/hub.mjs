@@ -29,7 +29,12 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
 
 // ---- SEO: head and JSON-LD unchanged; every text in the pre-rendered page ---------------------------
 {
-  const before = fs.readFileSync(`${BEFORE_DIST}/resources.html`, "utf8");
+  // The reference build predates one approved edit to the Organization description (JSON-LD): the
+  // partner list lost a name that is not a NEXERA partner. Applied to the reference, so everything
+  // else in the head must still match exactly.
+  const before = fs
+    .readFileSync(`${BEFORE_DIST}/resources.html`, "utf8")
+    .replace("for TCL, Hithium, CLOU and Midea battery energy storage systems", "for TCL, Hithium and CLOU battery energy storage systems");
   const after = fs.readFileSync(`${AFTER_DIST}/resources.html`, "utf8");
   const pick = (h) => ({
     title: h.match(/<title>[^<]*<\/title>/)[0],

@@ -191,8 +191,7 @@ const LFP_VS_NMC = {
         {
           ul: [
             [{ b: "TCL BlueArk W10" }, " (314 Ah LFP cells);"],
-            [{ b: "Hithium ∞BLOCK C&I" }, " (314 Ah LFP cells);"],
-            [{ b: "Midea home batteries" }, " (LiFePO₄ cells)."],
+            [{ b: "Hithium ∞BLOCK C&I" }, " (314 Ah LFP cells)."],
           ],
         },
         { p: "Check each product page for its exact specification." },
@@ -527,7 +526,7 @@ const SAFETY = {
             "Who handles commissioning, safety checks and after-sales support?",
           ],
         },
-        { p: "NEXERA supplies systems from TCL, Hithium, CLOU and Midea, and supports sizing, commissioning and technician training." },
+        { p: "NEXERA supplies systems from TCL, Hithium and CLOU, and supports sizing, commissioning and technician training." },
         {
           actions: [
             { label: "Talk to an expert", to: "/#contact?interest=ci", primary: true },
@@ -635,7 +634,7 @@ const ALL = [
               {
                 lead: "Battery modules:",
                 text: [
-                  "battery cells grouped into modules and racks that store the energy. Many of the systems NEXERA offers, including TCL BlueArk W10, Hithium 261 and Midea home batteries, use ",
+                  "battery cells grouped into modules and racks that store the energy. Many of the systems NEXERA offers, including TCL BlueArk W10 and Hithium 261, use ",
                   { a: "LFP (lithium iron phosphate)", to: "/blog/lfp-vs-nmc" },
                   " cells.",
                 ],
@@ -744,7 +743,7 @@ const ALL = [
               "Where will it be installed: indoors, outdoors, on a rooftop or in a yard?",
             ],
           },
-          { p: "NEXERA's engineers help with sizing, system design and commissioning, with systems from TCL, Hithium, CLOU and Midea." },
+          { p: "NEXERA's engineers help with sizing, system design and commissioning, with systems from TCL, Hithium and CLOU." },
           {
             actions: [
               { label: "Talk to an expert", to: "/#contact", primary: true },
@@ -773,7 +772,7 @@ const ALL = [
       },
       {
         q: "What battery chemistry do NEXERA's systems use?",
-        a: "Many of the systems NEXERA offers, including TCL BlueArk W10, Hithium 261 and Midea home batteries, use LFP (lithium iron phosphate) cells. Check each product page for its exact specification.",
+        a: "Many of the systems NEXERA offers, including TCL BlueArk W10 and Hithium 261, use LFP (lithium iron phosphate) cells. Check each product page for its exact specification.",
       },
     ],
     related: [

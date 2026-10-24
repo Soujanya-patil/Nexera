@@ -91,7 +91,7 @@ const PARTNERS = [
   {
     id: "clou",
     title: "CLOU — Intelligent Energy Storage. Engineered for the Grid.",
-    copy: "CLOU, an energy technology company under the Midea Group, brings 30+ years of power-electronics experience together with dedicated battery energy-storage technology. Its utility portfolio includes 5 MWh-class and 6.25 MWh-class systems, alongside PCS and medium-voltage solutions.",
+    copy: "CLOU, an energy technology company, brings 30+ years of power-electronics experience together with dedicated battery energy-storage technology. Its utility portfolio includes 5 MWh-class and 6.25 MWh-class systems, alongside PCS and medium-voltage solutions.",
     stats: [
       ["16 GWh", "contracted and delivered energy-storage systems"],
       ["8.6 GWh", "contracted and installed outside China"],

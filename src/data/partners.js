@@ -65,7 +65,7 @@ export const PARTNER_PAGES = [
     about: {
       copy: [
         // C&I page, CLOU card
-        "Founded in 1996, CLOU entered the energy-storage sector in 2009. Part of the Midea Group, it has developed its own BMS, PCS, EMS and battery-system technologies.",
+        "Founded in 1996, CLOU entered the energy-storage sector in 2009. It has developed its own BMS, PCS, EMS and battery-system technologies.",
       ],
       stats: [
         // C&I page, CLOU card
@@ -74,26 +74,6 @@ export const PARTNER_PAGES = [
         ["100+", "countries active"],
         // Utility-Scale page, CLOU card
         ["30+ years", "in power electronics"],
-      ],
-    },
-  },
-  {
-    id: "midea",
-    name: "Midea",
-    interest: "home",
-    about: {
-      copy: [
-        // Residential page, Midea card: its heading, then its text
-        "Midea — A global technology group founded in 1968.",
-        "Midea operates across Smart Home, Industrial Technology, Building Technology, Robotics & Automation, Healthcare, Logistics and New Energy. Its New Energy business includes residential energy storage, inverters, distributed PV and utility/C&I energy storage.",
-      ],
-      // Residential page, Midea card
-      stats: [
-        ["US$64.3 billion", "revenue (2025)"],
-        ["~190,000", "employees"],
-        ["65", "production centres"],
-        ["41", "R&D centres"],
-        ["#231", "in the 2026 Fortune Global 500"],
       ],
     },
   },
@@ -110,7 +90,7 @@ const listOf = (items) => (items.length > 1 ? `${items.slice(0, -1).join(", ")} 
  * Nexera"), Become a Partner ("Design & Technical Support") and Service & Training (After-Sales).
  */
 export const PARTNER_WHY = [
-  { title: "Authorized access", text: "Authorized TCL, Hithium, CLOU and Midea partner" },
+  { title: "Authorized access", text: "Authorized TCL, Hithium and CLOU partner" },
   { title: "Design and sizing support", text: "Not just sales — our engineers work your first sizing and commissioning with you." },
   { title: "Technician training", text: "Hands-on technician training center in Kalaburagi" },
   { title: "After-sales and warranty", text: "Local-first warranty handling — we manage the OEM relationship so your customer relationship stays intact." },
@@ -119,23 +99,20 @@ export const PARTNER_WHY = [
 /**
  * The page's FAQ, also its FAQPage data. Answers only restate the hero line, the Organization
  * description ("…with design, commissioning, training and after-sales support") and the catalogue's
- * product names; Midea's systems are "residential energy storage, by enquiry", as the site says.
+ * product names.
  */
 export function partnerFaq(id) {
   const page = getPartnerPage(id);
   const products = partnerProducts(id);
   const brand = partnerOf(id)?.name ?? page.name;
-  const what = products.length ? `${brand} systems are` : `${brand} residential energy storage is`;
   return [
     {
       q: `Is ${page.name} available in India, and who supports it?`,
-      a: `Yes. ${what} available in India through NEXERA Powertech, an authorized distributor and solutions partner, with design, commissioning, training and after-sales support.`,
+      a: `Yes. ${brand} systems are available in India through NEXERA Powertech, an authorized distributor and solutions partner, with design, commissioning, training and after-sales support.`,
     },
     {
       q: `Which ${page.name} systems does NEXERA offer?`,
-      a: products.length
-        ? `NEXERA offers these ${brand} systems: ${listOf(products.map((p) => p.name))}.`
-        : `NEXERA offers ${brand} residential energy storage, by enquiry.`,
+      a: `NEXERA offers these ${brand} systems: ${listOf(products.map((p) => p.name))}.`,
     },
   ];
 }

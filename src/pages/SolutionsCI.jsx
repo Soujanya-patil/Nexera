@@ -85,7 +85,7 @@ const PARTNERS = [
   {
     id: "clou",
     title: "CLOU — 30+ years of power-electronics experience.",
-    copy: "Founded in 1996, CLOU entered the energy-storage sector in 2009. Part of the Midea Group, it has developed its own BMS, PCS, EMS and battery-system technologies.",
+    copy: "Founded in 1996, CLOU entered the energy-storage sector in 2009. It has developed its own BMS, PCS, EMS and battery-system technologies.",
     stats: [
       ["16 GWh", "contracted and delivered systems"],
       ["100+", "countries active"],

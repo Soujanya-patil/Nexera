@@ -22,7 +22,7 @@ const SEGMENTS = [
     id: "residential",
     page: SOLUTION_PAGES.residential.path,
     title: "Residential Energy Storage",
-    copy: "Solar power shouldn't stop when the sun goes down. Home battery systems from Midea and TCL.",
+    copy: "Solar power shouldn't stop when the sun goes down. Home battery systems from TCL.",
     cta: "Explore Residential Solutions",
     img: "res-house",
     alt: "Rendering of a home at night with rooftop solar and a wall-mounted TCL battery beside the garage",
@@ -213,7 +213,7 @@ export default function Solutions() {
             </li>
           ))}
         </ul>
-        <PartnerStrip partners={["tcl", "hithium", "clou", "midea"]} className="container-site mt-14" />
+        <PartnerStrip partners={["tcl", "hithium", "clou"]} className="container-site mt-14" />
       </section>
     </div>
   );

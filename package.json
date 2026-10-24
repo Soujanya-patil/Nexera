@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check-css-values.mjs && vite build && node scripts/seo-pages.mjs",
+    "build": "node scripts/check-css-values.mjs && vite build && node scripts/seo-pages.mjs && node scripts/check-dist-terms.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },

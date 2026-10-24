@@ -51,7 +51,7 @@ export const LOCAL_BUSINESS = { name: BUSINESS_NAME, hours: HOURS };
 export const ORGANIZATION = {
   name: "NEXERA Powertech",
   description:
-    "Authorized distributor and solution provider for TCL, Hithium, CLOU and Midea battery energy storage systems in India, with design, commissioning, training and after-sales support.",
+    "Authorized distributor and solution provider for TCL, Hithium and CLOU battery energy storage systems in India, with design, commissioning, training and after-sales support.",
   address: ADDRESS_PARTS,
   telephone: PHONE,
   logo: "/apple-touch-icon.png",
@@ -69,7 +69,7 @@ const PAGES = [
     h1: "Battery Energy Storage Systems Powering India’s Transition to Smart Energy Storage",
     title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
     description:
-      "Authorized distributor of TCL, Hithium, CLOU and Midea battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
+      "Authorized distributor of TCL, Hithium and CLOU battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
   },
   {
     path: "/solutions",
@@ -77,7 +77,7 @@ const PAGES = [
     label: "Solutions",
     title: "Energy Storage Solutions: Home, C&I & Utility | NEXERA",
     description:
-      "Energy storage solutions for Indian homes, C&I sites and utility-scale projects: TCL, Hithium, CLOU and Midea battery storage systems supplied by NEXERA.",
+      "Energy storage solutions for Indian homes, C&I sites and utility-scale projects: TCL, Hithium and CLOU battery storage systems supplied by NEXERA.",
   },
   // The three Solutions pages: breadcrumb Home > Solutions > page (`crumbs`, after Home), and an FAQ
   // whose text the page renders from the same data (data/solutions.js) — written as FAQPage data.
@@ -104,7 +104,7 @@ const PAGES = [
     h1: "Residential Energy Solutions Power Your Home. Smarter.",
     title: "Home Energy Storage & Solar Battery Backup | NEXERA",
     description:
-      "Solar battery for home from Midea and TCL: store rooftop solar, keep essential loads running in power cuts and cut grid dependence. Supplied by NEXERA.",
+      "Solar battery for home from TCL: store rooftop solar, keep essential loads running in power cuts and cut grid dependence. Supplied by NEXERA.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.residential.label, SOLUTION_PAGES.residential.path]],
     faq: RESIDENTIAL_FAQ,
   },
@@ -137,12 +137,6 @@ const PAGES = [
       "CLOU Energy Storage Systems in India | NEXERA",
       "CLOU Aqua battery energy storage in India through NEXERA: C&I and containerised utility-scale systems, with engineering and commissioning support.",
     ],
-    [
-      "midea",
-      "Midea",
-      "Midea Home Battery Storage in India | NEXERA",
-      "Midea residential energy storage in India through NEXERA. Tell us about your home and solar setup and we'll help you choose the right system.",
-    ],
   ].map(([id, name, title, description]) => ({
     path: `/partners/${id}`,
     h1: `${name} energy storage in India`,
@@ -165,7 +159,7 @@ const PAGES = [
     h1: "Built by an EPC, for EPCs",
     title: "About Us — Built by an EPC, for EPCs | NEXERA",
     description:
-      "NEXERA is an authorized TCL, Hithium, CLOU and Midea partner built by EPCs, with design and commissioning support and a Kalaburagi training center.",
+      "NEXERA is an authorized TCL, Hithium and CLOU partner built by EPCs, with design and commissioning support and a Kalaburagi training center.",
   },
   {
     path: "/how-it-works",

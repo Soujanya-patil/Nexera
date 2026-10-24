@@ -612,7 +612,7 @@ export function Stats({ items, className = "mt-6" }) {
 
 /**
  * A technology partner's name: its logo where the site has one (alt "{Partner} logo"), otherwise the
- * name in type (Midea: the site has no Midea logo). `decorative` when a heading next to it already
+ * name in type (for a partner without a logo file). `decorative` when a heading next to it already
  * names the partner: hidden from screen readers then (the logo keeps its alt).
  */
 export function PartnerMark({ partner, name, decorative = false }) {

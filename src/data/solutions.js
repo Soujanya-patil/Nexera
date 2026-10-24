@@ -11,7 +11,7 @@ import { BatteryCharging, Expand, Moon, Smartphone, Sun, Unplug } from "lucide-r
 
 /**
  * The benefits under "Why Add Solar Battery Storage to Your Home?" — shown on the Residential page
- * and on the Midea partner page (which has no catalogue products to list), so both say exactly the same.
+ * (its single source).
  */
 export const RESIDENTIAL_BENEFITS = [
   { icon: Sun, title: "Store the Solar You Generate", text: "Use excess solar energy generated during the day instead of sending it back to the grid." },
@@ -94,6 +94,6 @@ export const RESIDENTIAL_FAQ = [
   },
   {
     q: "Which home battery brands does NEXERA offer?",
-    a: "NEXERA offers residential energy storage from Midea and TCL (BlueArk X1).",
+    a: "NEXERA offers residential energy storage from TCL (BlueArk X1).",
   },
 ];

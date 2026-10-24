@@ -32,8 +32,15 @@ const status = async (path) => (await fetch(BASE + path, { redirect: "manual" })
   const r2 = await fetch(BASE + "/partners/", { redirect: "manual" });
   check("/partners and /partners/ → 301 to /products", r.status === 301 && /^(https?:\/\/[^/]+)?\/products$/.test(r.headers.get("location") || "") && r2.status === 301, { s: r.status, loc: r.headers.get("location"), s2: r2.status });
   const codes = {};
-  for (const id of ["hithium", "tcl", "clou", "midea", "nope"]) codes[id] = await status(`/partners/${id}`);
-  check("partner pages 200; an unknown partner 404", codes.hithium === 200 && codes.tcl === 200 && codes.clou === 200 && codes.midea === 200 && codes.nope === 404, codes);
+  for (const id of ["hithium", "tcl", "clou", "nope"]) codes[id] = await status(`/partners/${id}`);
+  check("partner pages 200; an unknown partner 404", codes.hithium === 200 && codes.tcl === 200 && codes.clou === 200 && codes.nope === 404, codes);
+  // The removed partner page (not a NEXERA partner): its old URL, .html and trailing slash → 301 /products.
+  const gone = [];
+  for (const u of ["/partners/midea", "/partners/midea.html", "/partners/midea/"]) {
+    const g = await fetch(BASE + u, { redirect: "manual" });
+    gone.push([u, g.status, g.headers.get("location")]);
+  }
+  check("the removed partner page's old URL (also .html, trailing slash) → 301 /products", gone.every(([, st, loc]) => st === 301 && /^(https?:\/\/[^/]+)?\/products$/.test(loc || "")), gone);
 }
 
 // ---- each page: sections, links, hero buttons -----------------------------------------------------------
@@ -41,7 +48,6 @@ for (const [id, interest, nProducts] of [
   ["hithium", "ci", 3], // the ∞Power 5.016 MWh is `listed: false`: no card (its page and FAQ mention remain)
   ["tcl", "ci", 3],
   ["clou", "ci", 2],
-  ["midea", "home", 0],
 ]) {
   const p = await newPage();
   await p.goto(`${BASE}/partners/${id}`, { waitUntil: "networkidle" });
@@ -67,11 +73,6 @@ for (const [id, interest, nProducts] of [
   await p.waitForTimeout(1800);
   const top = await p.evaluate(() => Math.round(document.getElementById("systems").getBoundingClientRect().top));
   check(`/partners/${id}: "See … systems" scrolls to the systems section`, Math.abs(top - 64) <= 3, top);
-  if (id === "midea") {
-    const talk = await p.evaluate(() => [...document.querySelectorAll("#systems a")].map((a) => [a.textContent.trim(), a.getAttribute("href")]));
-    const benefits = await p.evaluate(() => document.querySelectorAll("#systems li h3").length);
-    check("/partners/midea: residential benefits (6) + Talk to us about Midea home storage → /#contact?interest=home", benefits === 6 && talk.some(([t, h]) => t === "Talk to us about Midea home storage" && h === "/#contact?interest=home"), { benefits, talk });
-  }
   // Contact Us lands on the homepage form with the interest preselected.
   await p.evaluate(() => scrollTo(0, 0));
   await p.waitForTimeout(400);
@@ -146,7 +147,7 @@ async function linksOn(path, selector, setup) {
 }
 {
   const l = await linksOn("/solutions", "main a[href^='/partners/']");
-  check("Solutions partner strip: all four logos → /partners/{id}", ["tcl", "hithium", "clou", "midea"].every((id) => l.some(([, h]) => h === `/partners/${id}`)), l);
+  check("Solutions partner strip: all three logos → /partners/{id}", l.length === 3 && ["tcl", "hithium", "clou"].every((id) => l.some(([, h]) => h === `/partners/${id}`)), l);
 }
 {
   const l = await linksOn("/solutions/commercial-industrial", "main a[href^='/partners/']");
@@ -162,11 +163,11 @@ async function linksOn(path, selector, setup) {
 }
 {
   const l = await linksOn("/", "main a[href^='/partners/']");
-  check("homepage partners section: TCL, Hithium, CLOU, Midea → /partners/{id}", ["tcl", "hithium", "clou", "midea"].every((id) => l.some(([, h]) => h === `/partners/${id}`)), l);
+  check("homepage partners section: TCL, Hithium, CLOU → /partners/{id} (and no other partner)", ["tcl", "hithium", "clou"].every((id) => l.some(([, h]) => h === `/partners/${id}`)) && l.every(([, h]) => /^\/partners\/(tcl|hithium|clou)$/.test(h)), l);
 }
 {
   const l = await linksOn("/about", "footer a[href^='/partners/']");
-  check("footer Partners column: Hithium · TCL · CLOU · Midea", l.map(([t]) => t).join(" · ") === "Hithium · TCL · CLOU · Midea", l);
+  check("footer Partners column: Hithium · TCL · CLOU", l.map(([t]) => t).join(" · ") === "Hithium · TCL · CLOU", l);
 }
 // Every /partners link on these pages resolves to a 200 page.
 {
@@ -191,7 +192,7 @@ async function linksOn(path, selector, setup) {
 
 // ---- screenshots -------------------------------------------------------------------------------------------
 if (SHOTS) {
-  for (const id of ["hithium", "midea"]) {
+  for (const id of ["hithium"]) {
     for (const [w, h] of [
       [1440, 900],
       [390, 844],

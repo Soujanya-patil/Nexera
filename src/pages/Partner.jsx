@@ -8,7 +8,6 @@ import ProductCard from "../components/catalogue/ProductCard";
 import HomeCta from "../components/HomeCta";
 import NotFound from "./NotFound";
 import { partnerOf } from "../data/products";
-import { RESIDENTIAL_BENEFITS } from "../data/solutions";
 import { PARTNER_LINE, PARTNER_WHY, getPartnerPage, partnerFaq, partnerProducts } from "../data/partners";
 import { useIntro } from "../lib/intro";
 import { useScrollReveal } from "../lib/scrollReveal";
@@ -18,10 +17,10 @@ import { DUR, EASE, STAGGER } from "../lib/tokens";
 const WHY_ICONS = [BadgeCheck, Ruler, GraduationCap, Wrench];
 
 /**
- * /partners/:partnerId — one page per technology partner (Hithium, TCL, CLOU, Midea), so each brand
+ * /partners/:partnerId — one page per technology partner (Hithium, TCL, CLOU), so each brand
  * has a real page to be found by: the hero (logo, "{Partner} energy storage in India"), about the
- * partner with the figures the site already shows, its systems from the catalogue (Midea has none
- * yet: the residential benefits and an enquiry), why buy it through NEXERA, the FAQ (also the page's
+ * partner with the figures the site already shows, its systems from the catalogue, why buy it
+ * through NEXERA, the FAQ (also the page's
  * FAQPage data) and the homepage's closing band.
  *
  * Built only from existing components (the Solutions pages' sections, the catalogue's product cards,
@@ -54,28 +53,16 @@ function PartnerPage({ page }) {
       <Section
         id="systems"
         tone="ice"
-        eyebrow={products.length ? undefined : "Residential energy storage, by enquiry"}
         title={`${name} systems available through NEXERA`}
         className="scroll-mt-16"
       >
-        {products.length ? (
-          <ul ref={list} data-sr-state={reveal} className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((p) => (
-              <li data-sr key={p.id}>
-                <ProductCard product={p} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <>
-            <FeatureGrid items={RESIDENTIAL_BENEFITS} />
-            <div className="mt-12">
-              <MagneticButton to={contact} arrow spotlight>
-                Talk to us about {name} home storage
-              </MagneticButton>
-            </div>
-          </>
-        )}
+        <ul ref={list} data-sr-state={reveal} className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((p) => (
+            <li data-sr key={p.id}>
+              <ProductCard product={p} />
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <Section id="why" title={`Why buy ${name} through NEXERA`}>
@@ -126,7 +113,7 @@ function PartnerHero({ id, name, contact }) {
           </ol>
         </nav>
         <div className="mt-10 max-w-2xl">
-          {/* The logo on a light panel (as on the product pages); Midea has no logo file: its name in type. */}
+          {/* The logo on a light panel (as on the product pages). */}
           <div data-a="logo" className="inline-flex h-14 items-center rounded-control bg-white px-5">
             {logo ? (
               <img src={logo.logo} alt={name} decoding="async" className={`${id === "clou" ? "h-8" : "h-6"} w-auto`} />

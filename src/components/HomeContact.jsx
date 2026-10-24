@@ -10,7 +10,7 @@ import { ADDRESS } from "../data/business";
 import { STAGGER } from "../lib/tokens";
 
 const TRUST = [
-  { icon: BadgeCheck, text: "Authorized partner for TCL, Hithium, CLOU and Midea" },
+  { icon: BadgeCheck, text: "Authorized partner for TCL, Hithium and CLOU" },
   { icon: Ruler, text: "Design, sizing and commissioning support" },
   { icon: GraduationCap, text: "Hands-on technician training in Kalaburagi" },
 ];

@@ -42,26 +42,12 @@ import {
 } from "../components/solutions/SolutionBlocks";
 
 /*
- * /solutions/residential — copy from the director-approved Solutions content. Midea has no logo in
- * src/assets, so its name is set in type. The FAQ text comes from data/solutions.js and is also this
+ * /solutions/residential — copy from the director-approved Solutions content. The FAQ text comes from
+ * data/solutions.js and is also this
  * page's FAQPage data. PM Surya Ghar: only the scheme wording supplied (no claim about a 2.0 subsidy).
  */
 
 const PARTNERS = [
-  {
-    key: "midea",
-    name: "Midea",
-    title: "Midea — A global technology group founded in 1968.",
-    stats: [
-      ["US$64.3 billion", "revenue (2025)"],
-      ["~190,000", "employees"],
-      ["65", "production centres"],
-      ["41", "R&D centres"],
-      ["#231", "in the 2026 Fortune Global 500"],
-    ],
-    copy: "Midea operates across Smart Home, Industrial Technology, Building Technology, Robotics & Automation, Healthcare, Logistics and New Energy. Its New Energy business includes residential energy storage, inverters, distributed PV and utility/C&I energy storage.",
-    cta: { label: "Explore Midea Residential Solutions", to: "/contact?intent=residential&brand=midea" },
-  },
   {
     key: "tcl",
     partner: "tcl",
@@ -109,7 +95,7 @@ export default function SolutionsResidential() {
         line2="Smarter."
         subheading="Solar power shouldn't stop when the sun goes down."
         body={[
-          "NEXERA brings next-generation residential energy storage solutions from Midea and TCL, combining solar, battery storage and intelligent energy management to help Indian homes use more of the energy they generate.",
+          "NEXERA brings next-generation residential energy storage solutions from TCL, combining solar, battery storage and intelligent energy management to help Indian homes use more of the energy they generate.",
           "Whether you want to reduce your electricity bill, keep essential appliances running during outages, or build a more energy-independent home, our residential systems give you a solar battery for home, designed to grow with your needs.",
         ]}
         tagline="Solar + Storage + Intelligence: one complete energy solution for your home."
@@ -148,10 +134,10 @@ export default function SolutionsResidential() {
         id="partners"
         mark="Trusted Platform"
         tone="ice"
-        eyebrow="Our global technology partners"
-        title="Two Global Technology Brands. One Trusted Platform."
+        eyebrow="Our global technology partner"
+        title="A Global Technology Brand. One Trusted Platform."
         intro={[
-          "NEXERA is bringing residential energy solutions from Midea and TCL to the Indian market. These are not start-up battery brands entering the market overnight. They are backed by large global technology and manufacturing groups with decades of experience in engineering, electronics, manufacturing and energy technologies.",
+          "NEXERA is bringing residential energy solutions from TCL to the Indian market. TCL is not a start-up battery brand entering the market overnight. It is backed by a large global technology and manufacturing group with decades of experience in engineering, electronics, manufacturing and energy technologies.",
         ]}
       >
         <CardGrid columns={2}>
@@ -187,19 +173,18 @@ export default function SolutionsResidential() {
               title: "LFP Battery Technology",
               text: (
                 <>
-                  Designed around Lithium Iron Phosphate chemistry for safety and long service life. Midea&rsquo;s residential battery systems
-                  specify LiFePO<sub>4</sub> cells.
+                  Designed around Lithium Iron Phosphate chemistry for safety and long service life.
                 </>
               ),
             },
             {
               icon: ShieldCheck,
               title: "Multi-Level Safety",
-              text: "Midea's residential systems include cell-level monitoring, dual overcurrent protection and aerosol fire suppression, with multiple safety mechanisms and rapid risk isolation.",
+              text: "TCL BlueArk X1 has a 1+1 redundancy design, five layers of protection and a fire suppression module.",
             },
-            { icon: CloudSun, title: "Weather-Ready Design", text: "Selected Midea systems are rated IP65 and specified for operating temperatures from –20°C to 55°C." },
+            { icon: CloudSun, title: "Weather-Ready Design", text: "TCL BlueArk X1 has IP66 battery protection and a −20 °C to 50 °C operating range." },
             { icon: MonitorCheck, title: "Smart Energy Management", text: "Monitor generation, consumption and battery operation through connected energy-management platforms." },
-            { icon: Expand, title: "Modular & Scalable", text: "Midea's residential systems offer modular battery configurations, with some systems expandable up to 20.4 kWh." },
+            { icon: Expand, title: "Modular & Scalable", text: "TCL BlueArk X1's modular stacked battery scales from 8 kWh to 128 kWh." },
             { icon: Home, title: "Designed for Modern Homes", text: "Integrates with solar PV, backup loads, EV charging, heat pumps and other home energy loads." },
           ]}
         />

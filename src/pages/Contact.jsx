@@ -22,9 +22,6 @@ const ENQUIRY_TYPES = [
   { id: "ci", label: "Commercial & Industrial" },
   { id: "utility", label: "Utility-Scale" },
 ];
-// ?brand=<id>: a partner the visitor asked about that has no catalogue product to link (Midea's
-// residential range). It is carried in the submission and implies its segment.
-const BRANDS = { midea: { name: "Midea", type: "residential" } };
 
 export default function Contact() {
   const [path, setPath] = useState("general");
@@ -37,8 +34,7 @@ export default function Contact() {
   const product = getProduct(params.get("product"));
   const intent = params.get("intent");
   const quote = intent === "quote";
-  const brand = BRANDS[params.get("brand")] ?? null;
-  const type = ENQUIRY_TYPES.find((t) => t.id === (ENQUIRY_TYPES.some((x) => x.id === intent) ? intent : brand?.type)) ?? null;
+  const type = ENQUIRY_TYPES.find((t) => t.id === (ENQUIRY_TYPES.some((x) => x.id === intent) ? intent : null)) ?? null;
   const name = product ? productLabel(product) : null;
   // ?topics=<slugs>: the items chosen in a Solutions page's final CTA.
   const topics = topicLabels(intent, params.get("topics"));
@@ -205,13 +201,13 @@ export default function Contact() {
 
               {path === "general" && (
                 <>
-                  {(product || quote || type || brand) && (
+                  {(product || quote || type) && (
                     <p className="rounded-control bg-ice px-4 py-3 text-small text-ink">
                       <span className="font-semibold">
                         {quote ? "Quote request" : product ? "Product enquiry" : `${type.label} enquiry`}
                       </span>
                       {name && <> &middot; {name}</>}
-                      {brand && <> &middot; {brand.name}</>}
+                      
                     </p>
                   )}
                   <div>
@@ -236,7 +232,7 @@ export default function Contact() {
                     </select>
                     <FieldError name="enquiry_type" error={errors.enquiry_type} />
                   </div>
-                  {brand && <input type="hidden" name="brand" value={brand.name} />}
+                  
                   {product && (
                     <div className="grid sm:grid-cols-2 gap-5">
                       <Field label="Product" name="product" defaultValue={name} />
