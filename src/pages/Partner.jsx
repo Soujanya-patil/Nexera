@@ -116,7 +116,7 @@ function PartnerHero({ id, name, contact }) {
           {/* The logo on a light panel (as on the product pages). */}
           <div data-a="logo" className="inline-flex h-14 items-center rounded-control bg-white px-5">
             {logo ? (
-              <img src={logo.logo} alt={name} decoding="async" className={`${id === "clou" ? "h-8" : "h-6"} w-auto`} />
+              <img src={logo.logo} alt={name} width={logo.logoSize?.[0]} height={logo.logoSize?.[1]} decoding="async" className={`${id === "clou" ? "h-8" : "h-6"} w-auto`} />
             ) : (
               // The site's typeset wordmark for a partner without a logo file (as PartnerMark sets it).
               <span className="text-2xl font-semibold uppercase leading-6 tracking-tight text-ink">{name}</span>

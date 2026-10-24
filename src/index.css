@@ -83,14 +83,14 @@
                                                          copy because text-body is the body font size)
        muted      captions, small text           ice     soft tinted panels, badges
        line       borders, dividers */
-  --color-deep-grid: #06110E;
-  --color-forest: #0B2A22;
-  --color-signal: #86E08A;
+  --color-deep-grid: #071B14;
+  --color-forest: #103D2B;
+  --color-signal: #8EF29A;
   --color-link: #1F7A4D;
   --color-amber: #F5B841;
-  --color-paper: #F5F7F4;
+  --color-paper: #F5F7F2;
   --color-white: #FFFFFF;
-  --color-ink: #0E1A16;
+  --color-ink: #202D26;
   --color-copy: #3A4A44;
   --color-muted: #5C6B65;
   --color-ice: #E8F1EC;
@@ -203,7 +203,7 @@
   --accent: var(--color-signal);
   --accent-hover: color-mix(in srgb, var(--color-signal) 80%, white);
   --on-accent: var(--color-ink);
-  --label: rgb(245 247 244 / 0.7);
+  --label: #B3C4B8; /* muted text on dark grounds */
 }
 
 /* Section spacing: one vertical padding for every content section — 64 px on phones, 80 px from 768 px

@@ -414,6 +414,8 @@ export default function Products() {
                       loading="lazy"
                       decoding="async"
                       alt={`${p.name} logo`}
+                      width={p.logoSize?.[0]}
+                      height={p.logoSize?.[1]}
                       className={`${p.logoClass} w-auto max-w-[70%] object-contain transition-opacity duration-fast ${
                         on || partner === "all" ? "opacity-90 group-hover/partner:opacity-100 group-focus-visible/partner:opacity-100 group-focus-within/partner:opacity-100" : "opacity-50 group-hover/partner:opacity-100"
                       }`}

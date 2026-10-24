@@ -74,6 +74,8 @@ export default function TechPartners() {
                     loading="lazy"
                     decoding="async"
                     alt={p.name}
+                    width={p.logoSize?.[0]}
+                    height={p.logoSize?.[1]}
                     className={`${p.id === "clou" ? "h-7" : "h-5"} w-auto max-w-full object-contain transition-[opacity,filter] duration-fast ${
                       on ? "opacity-100 grayscale-0" : "opacity-50 grayscale group-hover:opacity-80 group-focus-visible:opacity-80 group-focus-within:opacity-80"
                     }`}
@@ -118,6 +120,8 @@ export default function TechPartners() {
                         alt={x.imageAlt}
                         loading="lazy"
                         decoding="async"
+                        width={x.imageFallback ? 40 : 44}
+                        height={x.imageFallback ? 16 : 44}
                         className={`object-contain transition-[scale] duration-fast group-hover/row:scale-110 group-focus-visible/row:scale-110 group-focus-within/row:scale-110 ${x.imageFallback ? "h-4 w-10 opacity-80" : "h-11 w-11"}`}
                       />
                     </span>

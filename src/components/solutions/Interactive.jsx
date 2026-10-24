@@ -350,7 +350,7 @@ export function PartnerStrip({ partners, label = "Technology partners", classNam
               className="grid h-11 place-items-center rounded-control px-2 opacity-70 grayscale transition-[opacity,filter] duration-fast hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
             >
               {p ? (
-                <img src={p.logo} alt={name} loading="lazy" decoding="async" className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto`} />
+                <img src={p.logo} alt={name} width={p.logoSize?.[0]} height={p.logoSize?.[1]} loading="lazy" decoding="async" className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto`} />
               ) : (
                 <span className="text-[1.6rem] font-semibold uppercase leading-6 tracking-[0.02em] text-ink">
                   {name}

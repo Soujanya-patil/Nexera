@@ -14,9 +14,9 @@ import { DUR, EASE } from "../lib/tokens";
 // Heights are set per logo so the three read at a similar optical size (the source PNGs differ).
 // Where each partner's systems fit is read from the product catalogue — never written separately.
 const logos = [
-  { id: "tcl", name: "TCL", src: tclLogo, className: "h-8" },
-  { id: "hithium", name: "Hithium", src: hithiumLogo, className: "h-9" },
-  { id: "clou", name: "CLOU", src: clouLogo, className: "h-10" },
+  { id: "tcl", name: "TCL", src: tclLogo, size: [86, 31], className: "h-8" },
+  { id: "hithium", name: "Hithium", src: hithiumLogo, size: [355, 89], className: "h-9" },
+  { id: "clou", name: "CLOU", src: clouLogo, size: [94, 44], className: "h-10" },
 ].map((l) => {
   const products = PRODUCTS.filter((p) => p.partner === l.id);
   const apps = APPLICATIONS.filter((a) => products.some((p) => p.applications.includes(a.id))).map((a) => applicationLabel(a.id));
@@ -44,6 +44,8 @@ const Logo = ({ l, index, hidden, onHover }) => (
     <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-fast group-hover/logo:bg-accent/60 group-focus-visible/logo:bg-accent/60 group-focus-within/logo:bg-accent/60" />
     <img
       src={l.src}
+      width={l.size[0]}
+      height={l.size[1]}
       loading="lazy"
       decoding="async"
       // The same alt in the marquee's looping copies (they sit in aria-hidden, so screen readers skip

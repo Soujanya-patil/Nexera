@@ -47,9 +47,9 @@ export const APPLICATIONS = [
 export const applicationLabel = (id) => APPLICATIONS.find((a) => a.id === id)?.label ?? id;
 
 export const PARTNERS = [
-  { id: "tcl", name: "TCL", logo: tclLogo, logoClass: "h-5" },
-  { id: "hithium", name: "Hithium", logo: hithiumLogo, logoClass: "h-5" },
-  { id: "clou", name: "CLOU", logo: clouLogo, logoClass: "h-7" },
+  { id: "tcl", name: "TCL", logo: tclLogo, logoSize: [86, 31], logoClass: "h-5" },
+  { id: "hithium", name: "Hithium", logo: hithiumLogo, logoSize: [355, 89], logoClass: "h-5" },
+  { id: "clou", name: "CLOU", logo: clouLogo, logoSize: [94, 44], logoClass: "h-7" },
 ];
 export const partnerOf = (id) => PARTNERS.find((p) => p.id === id);
 

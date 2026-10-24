@@ -628,6 +628,8 @@ export function PartnerMark({ partner, name, decorative = false }) {
           loading="lazy"
           decoding="async"
           alt={`${p.name} logo`}
+          width={p.logoSize?.[0]}
+          height={p.logoSize?.[1]}
           className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-base ease-standard group-hover/card:scale-110 group-focus-visible/card:scale-110 group-focus-within/card:scale-110`}
         />
       </span>
