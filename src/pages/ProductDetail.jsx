@@ -42,6 +42,8 @@ import { ProductsRoute } from "./lazy";
 import { DUR, STAGGER } from "../lib/tokens";
 
 const TAB_ID = "spec-tabs";
+// "At a glance" grid columns by the number of key figures.
+const GLANCE_COLS = { 2: "sm:grid-cols-2 lg:max-w-wide", 3: "md:grid-cols-3", 4: "sm:grid-cols-2 lg:grid-cols-4" };
 const ICONS = { Boxes, Cpu, Expand, Flame, Gauge, LandPlot, Layers, Minimize2, Monitor, Network, ShieldCheck, Snowflake, Sun, Thermometer, Zap };
 
 /**
@@ -75,7 +77,7 @@ function TechnicalTabs({ specs }) {
               style={{ animationDelay: `${i * 40}ms` }}
             >
               <dt className="text-small text-copy">{row.label}</dt>
-              <dd className="text-small font-medium text-ink">{row.value}</dd>
+              <dd className="text-small font-medium tabular-nums text-ink">{row.value}</dd>
             </div>
           ))}
         </dl>
@@ -295,7 +297,8 @@ function ProductView({ product }) {
         <div className="container-site">
           <p className="eyebrow text-muted">Key specifications</p>
           <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">At a glance</AnimatedText>
-          <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Columns follow the number of figures (2–4), so a row never ends in an empty slot. */}
+          <dl className={`mt-8 grid gap-4 ${GLANCE_COLS[product.keySpecs.length] ?? GLANCE_COLS[4]}`}>
             {product.keySpecs.map((s) => (
               <div
                 data-sr

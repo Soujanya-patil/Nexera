@@ -1,8 +1,17 @@
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
+import { GraduationCap, Map, Ticket, Workflow } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { useMediaQuery, useScrollSteps } from "../lib/scrollSteps";
+
+// Partner Portal areas, as named in the section's copy.
+const PORTAL = [
+  { icon: Map, label: "Territory map" },
+  { icon: Workflow, label: "Pipeline" },
+  { icon: GraduationCap, label: "Training status" },
+  { icon: Ticket, label: "Warranty tickets" },
+];
 
 const journey = [
   { step: "01", title: "Application & Fit Assessment", copy: "Region, business, and segment reviewed before anything else." },
@@ -99,9 +108,18 @@ export default function HowItWorks() {
             In development — a preview of what every distributor will get: territory
             map, pipeline, training status, and warranty tickets.
           </p>
-          <div data-sr className="mt-8 aspect-video max-w-2xl rounded-card border border-line bg-white flex items-center justify-center">
-            <p className="text-small text-copy">Partner Portal preview — coming soon</p>
-          </div>
+          {/* The four portal areas the copy names, each marked as in development (no mock screenshot). */}
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {PORTAL.map(({ icon: Icon, label }) => (
+              <li key={label} data-sr className="flex flex-col rounded-card border border-line bg-white p-5">
+                <span aria-hidden="true" className="grid h-11 w-11 place-items-center rounded-full bg-ice text-ink">
+                  <Icon className="h-5 w-5" strokeWidth={1.7} />
+                </span>
+                <p className="mt-4 text-body font-semibold text-ink">{label}</p>
+                <span className="mt-3 self-start rounded-full border border-line bg-ice px-2.5 py-1 eyebrow text-label">In development</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

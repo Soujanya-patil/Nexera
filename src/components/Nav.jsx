@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import Wordmark from "./Wordmark";
 import { useMagnetic } from "../lib/magnetic";
 
@@ -69,6 +69,18 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // The phone menu closes on any route change (the logo, a link in the page) and on a tap outside the
+  // header, as well as from its own links.
+  const { pathname } = useLocation();
+  const header = useRef(null);
+  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e) => !header.current?.contains(e.target) && setOpen(false);
+    document.addEventListener("pointerdown", onDown);
+    return () => document.removeEventListener("pointerdown", onDown);
+  }, [open]);
+
   // The phone menu closes with Escape (focus back on its button).
   const toggle = useRef(null);
   useEffect(() => {
@@ -93,6 +105,7 @@ export default function Nav() {
     // nothing below moves), its ground turns translucent over a blur, and a hairline and shadow fade in.
     // Transform and opacity only.
     <header
+      ref={header}
       data-scrolled={scrolled || undefined}
       data-ground="dark"
       className={`sticky top-0 z-50 isolate transition-[translate] duration-base ease-emphasized ${scrolled ? "-translate-y-2" : ""}`}

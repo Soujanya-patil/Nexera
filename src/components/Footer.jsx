@@ -1,83 +1,85 @@
 import { Link } from "react-router-dom";
 import Wordmark from "./Wordmark";
 import { ADDRESS, PHONE, phoneHref } from "../data/business";
+import { SOLUTION_PAGES } from "../data/solutions";
 
-const links = [
-  { label: "About", href: "/about" },
-  { label: "Products", href: "/products" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "Become a Partner", href: "/become-a-partner" },
-  { label: "How It Works", href: "/how-it-works" },
-  { label: "Service & Training", href: "/service-training" },
-  { label: "Resources", href: "/resources" },
-  { label: "Contact", href: "/contact" },
+// Every group lists existing routes only, each page once. Partner pages keep their order (Hithium, TCL,
+// CLOU); the Blog and its published articles come from data/articles.js (drafts are never listed).
+const groups = [
+  {
+    title: "Solutions",
+    links: [
+      { label: "All solutions", href: "/solutions" },
+      ...Object.values(SOLUTION_PAGES).map((s) => ({ label: s.label, href: s.path })),
+    ],
+  },
+  {
+    title: "Products",
+    links: [
+      { label: "All products", href: "/products" },
+      { label: "Hithium", href: "/partners/hithium" },
+      { label: "TCL", href: "/partners/tcl" },
+      { label: "CLOU", href: "/partners/clou" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "How It Works", href: "/how-it-works" },
+      { label: "Where We Operate", href: "/where-we-operate" },
+      { label: "Service & Training", href: "/service-training" },
+      { label: "Become a Partner", href: "/become-a-partner" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Resources",
+    links: [
+      { label: "Resources", href: "/resources" },
+      { label: "Blog", href: "/blog" },
+      { label: "What is a BESS?", href: "/blog/what-is-bess" },
+    ],
+  },
 ];
 
-// The Blog and its published articles (data/articles.js; drafts are never listed).
-const guides = [
-  { label: "Blog", href: "/blog" },
-  { label: "What is a BESS?", href: "/blog/what-is-bess" },
-];
-
-// The technology partners' pages.
-const partners = [
-  { label: "Hithium", href: "/partners/hithium" },
-  { label: "TCL", href: "/partners/tcl" },
-  { label: "CLOU", href: "/partners/clou" },
-];
+const linkClass =
+  "link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11";
 
 export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-deep-grid text-paper/70">
-      <div className="container-site py-14 grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto_auto]">
-        <div>
+      {/* Brand and contact first (full width on phones and tablets), then four link groups: two
+          columns on phones, four from 768 px, beside the brand column from 1024 px. */}
+      <div className="container-site grid gap-x-10 gap-y-12 py-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)] lg:py-16">
+        <div className="max-w-sm">
           <Wordmark className="text-lg text-white" />
-          <address className="mt-3 text-small not-italic">{ADDRESS}</address>
+          <address className="mt-5 text-small not-italic leading-relaxed">{ADDRESS}</address>
           {PHONE && (
-            <p className="mt-1 text-small">
-              <a href={phoneHref(PHONE)} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
+            <p className="mt-3 text-small">
+              <a href={phoneHref(PHONE)} className={`${linkClass} font-medium text-white/90`}>
                 {PHONE}
               </a>
             </p>
           )}
-          <p className="mt-1 text-small">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
+          <p className="mt-3 text-small">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
         </div>
-        <div>
-          <p className="text-small font-medium text-white/90">Quick links</p>
-          <ul className="mt-3 grid grid-cols-2 gap-2 text-small pointer-coarse:gap-0">
-            {links.map((l) => (
-              <li key={l.label}>
-                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-small font-medium text-white/90">Resources</p>
-          <ul className="mt-3 grid gap-2 text-small pointer-coarse:gap-0">
-            {guides.map((l) => (
-              <li key={l.label}>
-                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-small font-medium text-white/90">Partners</p>
-          <ul className="mt-3 grid gap-2 text-small pointer-coarse:gap-0">
-            {partners.map((l) => (
-              <li key={l.label}>
-                <Link to={l.href} className="link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11">
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
+          {groups.map((g) => (
+            <div key={g.title}>
+              <p className="eyebrow text-label">{g.title}</p>
+              <ul className="mt-4 grid gap-2.5 text-small pointer-coarse:gap-0">
+                {g.links.map((l) => (
+                  <li key={l.href}>
+                    <Link to={l.href} className={linkClass}>
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
       </div>
       <div className="border-t border-white/10">
         <p className="container-site py-5 text-micro text-paper/50">
