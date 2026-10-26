@@ -16,8 +16,8 @@ import { DUR, EASE, STAGGER } from "../lib/tokens";
  *
  * Entrance ("precision"): a hairline draws out from the centre, the bar widens in from its centre, each
  * figure settles in (a little scale), its green rule draws, then its label.
- * Hover: the figure deepens, a tiny green dot appears above it, the rule lengthens and the label
- * comes up to full contrast. No cards.
+ * Hover: the rule lengthens and the label comes up to full contrast; the figures stay green (no colour
+ * change, no dot — a resting pointer must not make one figure look different). No cards.
  */
 // Phone hairlines per cell: [starts a row ? none : left][first row ? none : top].
 const CELL_LINES = [
@@ -46,12 +46,8 @@ export default function HomeStats() {
         <div data-e="bar" className="grid grid-cols-2 lg:grid-cols-4">
           {HOME_STATS.map((s, i) => (
             <div key={s.label} className={`group/stat relative border-line px-4 py-6 text-center sm:px-6 lg:px-4 xl:px-6 ${CELL_LINES[i % 2 ? 1 : 0][i >= 2 ? 1 : 0]} ${i ? "lg:border-l lg:border-t-0" : ""}`}>
-              <span
-                aria-hidden="true"
-                className="absolute left-1/2 top-6 h-1.5 w-1.5 -translate-x-1/2 -translate-y-3 scale-0 rounded-full bg-accent opacity-0 transition-[opacity,scale] duration-fast group-hover/stat:scale-100 group-focus-visible/stat:scale-100 group-focus-within/stat:scale-100 group-hover/stat:opacity-100 group-focus-visible/stat:opacity-100 group-focus-within/stat:opacity-100"
-              />
               <p
-                className={`font-semibold text-accent transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink ${
+                className={`font-semibold text-accent ${
                   s.statement ? "mx-auto max-w-[14rem] text-h3" : "whitespace-nowrap text-h2 tabular-nums lg:text-[clamp(2rem,3.3vw,3rem)]"
                 }`}
               >
