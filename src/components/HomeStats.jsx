@@ -12,7 +12,11 @@ import { DUR, EASE, STAGGER } from "../lib/tokens";
  * Grid: two cells per row on phones (a left hairline unless a cell starts its row, a top one on the second
  * row), all four in one row from 1024 px with a hairline between each, across the page container. In
  * that row the figures scale with the cells (3.3vw, 2rem–3rem: 48 px from ~1455 px), since text-h2 alone
- * would overflow a cell around 1024 px.
+ * would overflow a cell around 1024 px. The closing statement there is as large as fits "A Cleaner, More"
+ * on one line: each cell is a size container and --stmt is its content width / 7.1 (that line is ~6.98 em
+ * wide), capped at 3rem. Every cell's figure line is two statement lines tall with the figure at its
+ * foot, so the rules and labels of all four cells sit at the same height (the first cell carries a
+ * transparent divider, so every content box, and with it --stmt, is the same width).
  *
  * Entrance ("precision"): a hairline draws out from the centre, the bar widens in from its centre, each
  * figure settles in (a little scale), its green rule draws, then its label.
@@ -45,10 +49,12 @@ export default function HomeStats() {
         <span data-e="hairline" aria-hidden="true" className="mx-auto mb-6 block h-px w-24 bg-line" />
         <div data-e="bar" className="grid grid-cols-2 lg:grid-cols-4">
           {HOME_STATS.map((s, i) => (
-            <div key={s.label} className={`group/stat relative border-line px-4 py-6 text-center sm:px-6 lg:px-4 xl:px-6 ${CELL_LINES[i % 2 ? 1 : 0][i >= 2 ? 1 : 0]} ${i ? "lg:border-l lg:border-t-0" : ""}`}>
+            <div key={s.label} className={`group/stat @container relative border-line px-4 py-6 text-center [--stmt:min(3rem,100cqi/7.1)] sm:px-6 lg:px-4 xl:px-6 ${CELL_LINES[i % 2 ? 1 : 0][i >= 2 ? 1 : 0]} ${i ? "lg:border-l lg:border-t-0" : "lg:border-l lg:border-l-transparent"}`}>
               <p
-                className={`font-semibold text-accent ${
-                  s.statement ? "mx-auto max-w-[14rem] text-h3" : "whitespace-nowrap text-h2 tabular-nums lg:text-[clamp(2rem,3.3vw,3rem)]"
+                className={`font-semibold text-accent lg:flex lg:min-h-[calc(2.24*var(--stmt))] lg:items-end lg:justify-center ${
+                  s.statement
+                    ? "mx-auto max-w-[14rem] text-h3 lg:max-w-none lg:text-[length:var(--stmt)] lg:leading-[1.12] lg:tracking-[var(--text-h2--letter-spacing)]"
+                    : "whitespace-nowrap text-h2 tabular-nums lg:text-[clamp(2rem,3.3vw,3rem)]"
                 }`}
               >
                 <span data-num className="inline-block">
