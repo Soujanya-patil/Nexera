@@ -28,7 +28,8 @@ export default function EpcHero() {
         0.26
       )
       .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, ...done }, 0.5)
-      .fromTo(q('[data-a="image"]'), { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.5, ease: EASE.standard, ...done }, 0.58)
+      .fromTo(q('[data-a="image"]'), { opacity: 0 }, { opacity: 1, duration: 1.5, ease: EASE.standard, ...done }, 0.58)
+      .fromTo(q('[data-a="zoom"]'), { opacity: 1, scale: 1.05 }, { scale: 1, duration: 1.5, ease: EASE.standard, ...done }, 0.58)
       .fromTo(q('[data-a="cta"]'), { opacity: 0, y: 12, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: DUR.base, stagger: STAGGER, ...done }, 0.95);
   });
 
@@ -37,18 +38,22 @@ export default function EpcHero() {
       <div data-intro={intro}>
         {/* Image: full-bleed behind the copy on phones (dimmed), the right ~60% of the frame on desktop */}
         <div data-a="image" className="absolute inset-0 overflow-hidden lg:left-[34%]">
-          <div className="absolute -inset-3" style={depth(-6, -4)}>
-            <SceneImg
-              name="cta-desert"
-              eager
-              fetchPriority="high"
-              sizes="(min-width: 1024px) 66vw, 100vw"
-              alt="Row of Hithium battery storage cabinets on a concrete pad under a low sun"
-              className="h-full w-full object-cover object-[62%_50%]"
-            />
+          {/* The entrance zoom scales this inner layer, not the clipping box above: a scaled box moves its
+              own clip edge across fractional pixels, which Chrome paints as a thin light seam. */}
+          <div data-a="zoom" className="absolute inset-0">
+            <div className="absolute -inset-3" style={depth(-6, -4)}>
+              <SceneImg
+                name="cta-desert"
+                eager
+                fetchPriority="high"
+                sizes="(min-width: 1024px) 66vw, 100vw"
+                alt="Row of Hithium battery storage cabinets on a concrete pad under a low sun"
+                className="h-full w-full object-cover object-[62%_50%]"
+              />
+            </div>
+            <div aria-hidden="true" className="absolute inset-0 bg-deep-grid/70 lg:bg-transparent lg:bg-gradient-to-r lg:from-deep-grid lg:via-deep-grid/55 lg:to-deep-grid/5" />
+            <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-deep-grid/90 to-transparent" />
           </div>
-          <div aria-hidden="true" className="absolute inset-0 bg-deep-grid/70 lg:bg-transparent lg:bg-gradient-to-r lg:from-deep-grid lg:via-deep-grid/55 lg:to-deep-grid/5" />
-          <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-deep-grid/90 to-transparent" />
         </div>
 
         <div className="relative flex min-h-[min(46rem,calc(100svh-4rem))] container-site flex-col justify-center py-20 lg:py-24">
