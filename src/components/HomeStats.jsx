@@ -5,14 +5,28 @@ import CountUp from "./CountUp";
 import { DUR, EASE, STAGGER } from "../lib/tokens";
 
 /**
- * Home stat bar — the business impact that follows the product story. The two approved figures
- * (HOME_STATS, unchanged) count up to their real values once (CountUp, the site's figure animation).
+ * Home stat bar — the business impact that follows the product story. The confirmed figures
+ * (HOME_STATS) count up to their real values once (CountUp, the site's figure animation); the last
+ * cell is a statement in the figure's style, a size smaller, with no count.
+ *
+ * Grid: two cells per row on phones, three from 768 px. Each cell draws its own hairlines — a left one
+ * unless it starts a row, a top one unless it is in the first row — so rows and columns meet cleanly.
  *
  * Entrance ("precision"): a hairline draws out from the centre, the bar widens in from its centre, each
  * figure settles in (a little scale), its green rule draws, then its label.
  * Hover: the figure deepens, a tiny green dot appears above it, the rule lengthens and the label
  * comes up to full contrast. No cards.
  */
+// Hairlines per cell: [starts a row ? none : left][first row ? none : top], for 2 columns and from md for 3.
+const CELL_LINES = [
+  ["", "border-t"],
+  ["border-l", "border-l border-t"],
+];
+const CELL_LINES_MD = [
+  ["md:border-l-0 md:border-t-0", "md:border-l-0 md:border-t"],
+  ["md:border-l md:border-t-0", "md:border-l md:border-t"],
+];
+
 export default function HomeStats() {
   const root = useRef(null);
   const enter = useEntrance(
@@ -29,18 +43,22 @@ export default function HomeStats() {
 
   return (
     <section ref={root} data-enter={enter} aria-label="Market outlook" className="bg-white">
-      <div className="mx-auto max-w-4xl px-6 py-10">
+      <div className="mx-auto max-w-5xl px-6 py-10">
         <span data-e="hairline" aria-hidden="true" className="mx-auto mb-6 block h-px w-24 bg-line" />
-        <div data-e="bar" className="grid grid-cols-2 divide-x divide-line py-2">
-          {HOME_STATS.map((s) => (
-            <div key={s.label} className="group/stat relative px-4 text-center sm:px-6">
+        <div data-e="bar" className="grid grid-cols-2 md:grid-cols-3">
+          {HOME_STATS.map((s, i) => (
+            <div key={s.label} className={`group/stat relative border-line px-4 py-6 text-center sm:px-6 ${CELL_LINES[i % 2 ? 1 : 0][i >= 2 ? 1 : 0]} ${CELL_LINES_MD[i % 3 ? 1 : 0][i >= 3 ? 1 : 0]}`}>
               <span
                 aria-hidden="true"
-                className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-3 scale-0 rounded-full bg-accent opacity-0 transition-[opacity,scale] duration-fast group-hover/stat:scale-100 group-focus-visible/stat:scale-100 group-focus-within/stat:scale-100 group-hover/stat:opacity-100 group-focus-visible/stat:opacity-100 group-focus-within/stat:opacity-100"
+                className="absolute left-1/2 top-6 h-1.5 w-1.5 -translate-x-1/2 -translate-y-3 scale-0 rounded-full bg-accent opacity-0 transition-[opacity,scale] duration-fast group-hover/stat:scale-100 group-focus-visible/stat:scale-100 group-focus-within/stat:scale-100 group-hover/stat:opacity-100 group-focus-visible/stat:opacity-100 group-focus-within/stat:opacity-100"
               />
-              <p className="whitespace-nowrap text-h2 tabular-nums font-semibold text-accent transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink">
+              <p
+                className={`font-semibold text-accent transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink ${
+                  s.statement ? "mx-auto max-w-[14rem] text-h3" : "whitespace-nowrap text-h2 tabular-nums"
+                }`}
+              >
                 <span data-num className="inline-block">
-                  <CountUp value={s.text} />
+                  {s.statement ? s.text : <CountUp value={s.text} />}
                 </span>
               </p>
               <span
