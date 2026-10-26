@@ -24,8 +24,6 @@ export const HOME_STATS = [
   { type: "range", prefix: "~", lo: 30, hi: 33, suffix: "%", label: "Projected CAGR, India BESS market (2026–2031)", text: "~30–33%" },
   { type: "count", value: 400, suffix: "+ GWh", label: "Storage capacity India needs by 2031⁠–⁠32 (CEA estimate)", text: "400+ GWh" },
   { type: "count", value: 30, suffix: " GWh", label: "New standalone storage backed by the Government’s VGF scheme (2025)", text: "30 GWh" },
-  { type: "count", value: 500, suffix: " GW", label: "India’s non-fossil power capacity target by 2030", text: "500 GW" },
-  { type: "count", value: 4, suffix: "%", label: "Energy Storage Obligation for distribution companies by 2029⁠–⁠30 (Ministry of Power)", text: "4%" },
   { type: "static", statement: true, label: "Powered by Storage", text: "A Cleaner, More Resilient India" },
 ];
 
