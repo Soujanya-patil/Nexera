@@ -62,3 +62,6 @@ tests/.work/
 
 # Upcoming logo and cover artwork: kept locally until the new logo is approved, never committed.
 src/assets/NEXERA_*
+
+# Local MCP server config for editor/agent tools (e.g. the shadcn MCP server): per-machine, never committed.
+.mcp.json
