@@ -95,6 +95,7 @@
   --color-muted: #5C6B65;
   --color-ice: #E8F1EC;
   --color-line: #E1E7E3;
+  --color-navy: #182F58; /* the logo's navy: header links and footer headings/links */
 
   /* Type — IBM Plex: an engineering-documentation typeface family,
      a deliberate fit for a technical hardware brand, not a generic pairing */

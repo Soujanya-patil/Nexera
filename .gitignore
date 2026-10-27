@@ -60,7 +60,8 @@ webplan2.mp4
 # Local test suites: working copies, logs, reports (tests/README.md).
 tests/.work/
 
-# Upcoming logo and cover artwork: kept locally until the new logo is approved, never committed.
+# Local-only artwork (cover drafts, old logo files, working copies): never committed. The approved logo
+# is tracked in src/assets/brand/, which this rule doesn't match.
 src/assets/NEXERA_*
 
 # Local MCP server config for editor/agent tools (e.g. the shadcn MCP server): per-machine, never committed.

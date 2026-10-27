@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import Wordmark from "./Wordmark";
+import Logo from "./Logo";
 import { useMagnetic } from "../lib/magnetic";
 
 /** Desktop nav item with a very small magnetic pull (3 px; off for touch and reduced motion). */
@@ -96,34 +96,34 @@ export default function Nav() {
 
   // The underline draws by transform (scaleX), on hover and keyboard focus alike.
   const desktopLink = ({ isActive }) =>
-    `relative py-1 text-small transition-colors duration-fast after:absolute after:-bottom-[0.9rem] after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-accent after:transition-transform after:duration-base after:ease-emphasized ${
-      isActive ? "text-accent after:scale-x-100" : "text-paper/85 after:scale-x-0 hover:text-white hover:after:scale-x-100 focus-visible:text-white focus-visible:after:scale-x-100"
+    `relative py-1 text-small transition-colors duration-fast after:absolute after:-bottom-[0.9rem] after:left-0 after:h-0.5 after:w-full after:origin-left after:bg-navy after:transition-transform after:duration-base after:ease-emphasized ${
+      isActive ? "text-navy after:scale-x-100" : "text-navy/80 after:scale-x-0 hover:text-navy hover:after:scale-x-100 focus-visible:text-navy focus-visible:after:scale-x-100"
     }`;
 
   return (
-    // Scrolled: the bar slides up 8 px (it reads 56 px tall instead of 64 — its box keeps its height, so
-    // nothing below moves), its ground turns translucent over a blur, and a hairline and shadow fade in.
-    // Transform and opacity only.
+    // White bar with a hairline along its bottom edge and the official (navy) logo. Scrolled: the bar
+    // slides up 8 px (it reads 56 px tall instead of 64 — its box keeps its height, so nothing below
+    // moves), its ground turns slightly translucent over a blur, and a shadow fades in. Transform and
+    // opacity only.
     <header
       ref={header}
       data-scrolled={scrolled || undefined}
-      data-ground="dark"
       className={`sticky top-0 z-50 isolate transition-[translate] duration-base ease-emphasized ${scrolled ? "-translate-y-2" : ""}`}
     >
-      <span aria-hidden="true" className={`absolute inset-0 -z-10 bg-forest transition-opacity duration-base ease-emphasized ${scrolled ? "opacity-90" : ""}`} />
+      <span aria-hidden="true" className={`absolute inset-0 -z-10 bg-white transition-opacity duration-base ease-emphasized ${scrolled ? "opacity-95" : ""}`} />
       <span aria-hidden="true" className="absolute inset-0 -z-20 backdrop-blur-md" />
       <span
         aria-hidden="true"
-        className={`absolute inset-0 -z-10 border-b border-white/10 shadow-float transition-opacity duration-base ease-emphasized ${scrolled ? "" : "opacity-0"}`}
+        className={`absolute inset-0 -z-10 border-b border-line shadow-float transition-opacity duration-base ease-emphasized ${scrolled ? "" : "opacity-0"}`}
       />
-      <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 -z-10 h-px bg-white/5 ${scrolled ? "opacity-0" : ""}`} />
+      <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 -z-10 h-px bg-line ${scrolled ? "opacity-0" : ""}`} />
       <nav className={`flex h-16 container-site items-center justify-between transition-[translate] duration-base ease-emphasized ${scrolled ? "translate-y-1" : ""}`}>
         <div className="flex items-center gap-5">
           {/* The logo is the way home on every page (there is no separate Home link). */}
-          <Link to="/" aria-label="NEXERA Powertech home" className="inline-flex min-h-11 items-center text-white">
-            <Wordmark className="text-lg" />
+          <Link to="/" aria-label="NEXERA Powertech home" className="inline-flex min-h-11 items-center">
+            <Logo alt="" className="h-9" />
           </Link>
-          <p className="hidden border-l border-white/20 pl-5 eyebrow text-paper/80 xl:block">
+          <p className="hidden border-l border-line pl-5 eyebrow text-label xl:block">
             Store today
             <br />
             Power tomorrow
@@ -164,9 +164,9 @@ export default function Nav() {
           aria-label={open ? "Close menu" : "Open menu"}
           className="-mr-2 inline-flex h-11 w-11 flex-col items-center justify-center gap-1.5 lg:hidden"
         >
-          <span className={`block h-0.5 w-6 bg-white transition-transform duration-base ease-emphasized ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-white transition-opacity duration-fast ${open ? "opacity-0" : ""}`} />
-          <span className={`block h-0.5 w-6 bg-white transition-transform duration-base ease-emphasized ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-navy transition-transform duration-base ease-emphasized ${open ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-navy transition-opacity duration-fast ${open ? "opacity-0" : ""}`} />
+          <span className={`block h-0.5 w-6 bg-navy transition-transform duration-base ease-emphasized ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </nav>
       <ScrollProgress />
@@ -178,7 +178,7 @@ export default function Nav() {
         id="mobile-menu"
         data-open={open || undefined}
         inert={!open}
-        className="mobile-menu absolute inset-x-0 top-full border-t border-white/10 bg-forest px-6 pb-6 pt-2 shadow-float lg:hidden"
+        className="mobile-menu absolute inset-x-0 top-full border-t border-line bg-white px-6 pb-6 pt-2 shadow-float lg:hidden"
       >
           <ul className="flex flex-col">
             {links.map((link) => (
@@ -188,7 +188,7 @@ export default function Nav() {
                   end={link.end}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `flex min-h-11 items-center text-body transition-colors duration-fast ${isActive ? "text-accent" : "text-paper/85 hover:text-white"}`
+                    `flex min-h-11 items-center text-body transition-colors duration-fast ${isActive ? "font-semibold text-navy" : "text-navy/80 hover:text-navy"}`
                   }
                 >
                   {link.label}

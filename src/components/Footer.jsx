@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Wordmark from "./Wordmark";
+import Logo from "./Logo";
 import { ADDRESS, PHONE, phoneHref } from "../data/business";
 import { SOLUTION_PAGES } from "../data/solutions";
 
@@ -43,21 +43,21 @@ const groups = [
   },
 ];
 
-const linkClass =
-  "link inline-flex items-center transition-colors duration-fast hover:text-accent focus-visible:text-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11";
+// Navy links on the light footer; hover and focus draw the underline (.link), the colour stays.
+const linkClass = "link inline-flex items-center text-navy pointer-coarse:min-h-11 pointer-coarse:min-w-11";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-deep-grid text-paper/70">
+    <footer className="border-t border-line bg-paper text-copy">
       {/* Brand and contact first (full width on phones and tablets), then four link groups: two
           columns on phones, four from 768 px, beside the brand column from 1024 px. */}
       <div className="container-site grid gap-x-10 gap-y-12 py-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)] lg:py-16">
         <div className="max-w-sm">
-          <Wordmark className="text-lg text-white" />
+          <Logo className="h-10" />
           <address className="mt-5 text-small not-italic leading-relaxed">{ADDRESS}</address>
           {PHONE && (
             <p className="mt-3 text-small">
-              <a href={phoneHref(PHONE)} className={`${linkClass} font-medium text-white/90`}>
+              <a href={phoneHref(PHONE)} className={`${linkClass} font-medium`}>
                 {PHONE}
               </a>
             </p>
@@ -67,7 +67,7 @@ export default function Footer() {
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
           {groups.map((g) => (
             <div key={g.title}>
-              <p className="eyebrow text-label">{g.title}</p>
+              <p className="eyebrow text-navy">{g.title}</p>
               <ul className="mt-4 grid gap-2.5 text-small pointer-coarse:gap-0">
                 {g.links.map((l) => (
                   <li key={l.href}>
@@ -81,8 +81,8 @@ export default function Footer() {
           ))}
         </nav>
       </div>
-      <div className="border-t border-white/10">
-        <p className="container-site py-5 text-micro text-paper/50">
+      <div className="border-t border-line">
+        <p className="container-site py-5 text-micro text-muted">
           © {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.
         </p>
       </div>
