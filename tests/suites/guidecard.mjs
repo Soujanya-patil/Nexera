@@ -37,12 +37,12 @@ for (const [W, H] of [[1440, 900], [390, 844]]) {
     }, CARD);
     check(`${tag} one real <a href> is the whole card, arrow inside it, accessible name = title`, s.links === 1 && s.arrowInside && s.href && s.covers && s.name === H1, s);
     // Hover state.
-    const before = await p.locator(CARD).evaluate((a) => ({ t: getComputedStyle(a).translate, b: getComputedStyle(a).borderColor, c: getComputedStyle(a.querySelector("h3")).color }));
+    const before = await p.locator(CARD).evaluate((a) => ({ t: getComputedStyle(a).translate, b: getComputedStyle(a).borderColor, c: getComputedStyle(a.querySelector("h3")).textDecorationColor }));
     if (W > 500) {
       await p.locator(CARD).hover();
       await p.waitForTimeout(450);
-      const after = await p.locator(CARD).evaluate((a) => ({ t: getComputedStyle(a).translate, b: getComputedStyle(a).borderColor, c: getComputedStyle(a.querySelector("h3")).color, sh: getComputedStyle(a).boxShadow !== "none" }));
-      check(`${tag} hover: card lifts, border firms, title turns green, shadow`, after.t !== before.t && after.b !== before.b && after.c !== before.c && after.sh, { before, after });
+      const after = await p.locator(CARD).evaluate((a) => ({ t: getComputedStyle(a).translate, b: getComputedStyle(a).borderColor, c: getComputedStyle(a.querySelector("h3")).textDecorationColor, sh: getComputedStyle(a).boxShadow !== "none" }));
+      check(`${tag} hover: card lifts, border firms, title gets its navy underline, shadow`, after.t !== before.t && after.b !== before.b && before.c === "rgba(0, 0, 0, 0)" && after.c !== before.c && after.sh, { before, after });
     }
     await p.context().close();
   }

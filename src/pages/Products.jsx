@@ -160,7 +160,7 @@ function HeroProduct() {
           </div>
         </div>
       </div>
-      <figcaption className="mt-5 text-micro tracking-[0.16em] text-paper/50">
+      <figcaption className="mt-5 text-micro tracking-[0.16em] text-label">
         <span className="uppercase">{partner.name}</span> {product.name}
       </figcaption>
     </figure>

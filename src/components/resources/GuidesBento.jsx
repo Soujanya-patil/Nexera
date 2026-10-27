@@ -79,7 +79,7 @@ export default function GuidesBento({ articles, motion }) {
         </div>
         <span className="flex flex-1 flex-col p-6 sm:p-8">
           <span className="eyebrow text-muted">{featured.eyebrow}</span>
-          <h3 id={`guide-${featured.slug}-title`} className="mt-3 text-h3 font-semibold text-ink transition-colors duration-fast group-hover/guide:text-accent group-focus-visible/guide:text-accent group-focus-within/guide:text-accent">
+          <h3 id={`guide-${featured.slug}-title`} className="mt-3 text-h3 font-semibold text-ink underline decoration-transparent decoration-2 underline-offset-4 transition-[text-decoration-color] duration-fast group-hover/guide:decoration-ink group-focus-visible/guide:decoration-ink group-focus-within/guide:decoration-ink">
             {featured.h1}
           </h3>
           <span id={`guide-${featured.slug}-desc`} className="mt-3 max-w-measure text-body text-copy">
@@ -127,7 +127,7 @@ export default function GuidesBento({ articles, motion }) {
           className="guide-card group/guide relative flex flex-col overflow-hidden rounded-card border border-line bg-white p-6 card-hover focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
         >
           <span className="eyebrow text-muted">{a.eyebrow}</span>
-          <h3 id={`guide-${a.slug}-title`} className="mt-3 text-h4 font-semibold text-ink transition-colors duration-fast group-hover/guide:text-accent group-focus-visible/guide:text-accent group-focus-within/guide:text-accent">
+          <h3 id={`guide-${a.slug}-title`} className="mt-3 text-h4 font-semibold text-ink underline decoration-transparent decoration-2 underline-offset-4 transition-[text-decoration-color] duration-fast group-hover/guide:decoration-ink group-focus-visible/guide:decoration-ink group-focus-within/guide:decoration-ink">
             {a.h1}
           </h3>
           <span id={`guide-${a.slug}-desc`} className="mt-2 flex-1 text-small text-copy">

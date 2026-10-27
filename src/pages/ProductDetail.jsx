@@ -286,7 +286,7 @@ function ProductView({ product }) {
                   </div>
                 </div>
               </div>
-              {product.imageNote && <figcaption className="mt-3 text-center text-micro text-paper/50">{product.imageNote}</figcaption>}
+              {product.imageNote && <figcaption className="mt-3 text-center text-micro text-label">{product.imageNote}</figcaption>}
             </figure>
           </div>
         </div>

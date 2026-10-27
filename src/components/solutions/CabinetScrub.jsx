@@ -57,7 +57,7 @@ export default function CabinetScrub() {
             <p className="mt-4 max-w-md text-body text-paper/75">
               Scroll to open the cabinet: battery modules, power electronics and protection, engineered as one system.
             </p>
-            <p className="mt-8 max-w-md text-micro text-paper/50">
+            <p className="mt-8 max-w-md text-micro text-label">
               Representative cabinet shown. See each product page for exact specifications.
             </p>
           </div>

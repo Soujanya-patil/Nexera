@@ -89,7 +89,7 @@ export default function HotspotViewer({ hotspots, partnerName }) {
           </p>
           <h3 className="mt-2 text-h3 font-semibold text-white">{current.label}</h3>
           <p className="mt-2 text-small text-paper/75">{current.text}</p>
-          <p className="mt-3 flex items-start gap-1.5 text-micro text-paper/50">
+          <p className="mt-3 flex items-start gap-1.5 text-micro text-label">
             <Info aria-hidden="true" className="mt-px h-3.5 w-3.5 shrink-0" />
             Name and location from {partnerName}&rsquo;s protection-architecture documentation.
           </p>

@@ -84,7 +84,7 @@
        muted      captions, small text           ice     soft tinted panels, badges
        line       borders, dividers */
   --color-deep-grid: #1C2C5C; /* navy: heroes, closing bands, dark sections */
-  --color-forest: #263B7B; /* second dark surface: navy, HSL lightness +8 */
+  --color-forest: #101827; /* second dark surface: midnight (contact section, closing bands, cards on dark) */
   --color-signal: #ABCA34; /* lime: accent on dark grounds only */
   --color-link: #1C2C5C; /* primary buttons and links on light (white text) */
   --color-amber: #F5B841;
@@ -93,7 +93,7 @@
   --color-ink: #1C2C5C;
   --color-copy: #1C2C5C; /* body text on light is navy too */
   --color-sage: #647B5C; /* icons, dividers, badges, small captions — on white only (text-muted) */
-  --color-ice: #F3F4F8; /* the same light navy tint: chips, soft panels */
+  --color-ice: #E6E9F1; /* chips and soft panels: a slightly deeper navy tint */
   --color-line: rgb(28 44 92 / 0.12); /* navy at 12%: visible on white and on the tint */
   --color-navy: #182F58; /* the logo's navy: header links and footer headings/links */
 

@@ -5,7 +5,7 @@
  */
 export const PALETTE = {
   deepGrid: "#1C2C5C",
-  forest: "#263B7B",
+  forest: "#101827",
   signal: "#ABCA34",
   link: "#1C2C5C",
   amber: "#F5B841",
@@ -14,6 +14,6 @@ export const PALETTE = {
   ink: "#1C2C5C",
   copy: "#1C2C5C",
   muted: "#647B5C",
-  ice: "#F3F4F8",
+  ice: "#E6E9F1",
   line: "#E4E6EB",
 };

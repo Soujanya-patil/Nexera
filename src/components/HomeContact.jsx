@@ -159,7 +159,7 @@ export default function HomeContact() {
     <div>
       <label htmlFor={`${uid}-${k}`} className={label}>
         {text}
-        {required ? <span className="text-accent"> *</span> : <span className="text-paper/60"> (optional)</span>}
+        {required ? <span className="text-accent"> *</span> : <span className="text-label"> (optional)</span>}
       </label>
       <input
         id={`${uid}-${k}`}
@@ -299,9 +299,9 @@ export default function HomeContact() {
                 <div>
                   <div className="flex items-baseline justify-between gap-3">
                     <label htmlFor={`${uid}-message`} className={label}>
-                      Message<span className="text-paper/60"> (optional)</span>
+                      Message<span className="text-label"> (optional)</span>
                     </label>
-                    <span id={`${uid}-count`} className="text-micro tabular-nums text-paper/60">
+                    <span id={`${uid}-count`} className="text-micro tabular-nums text-label">
                       {values.message.length} / {LIMITS.message}
                     </span>
                   </div>
