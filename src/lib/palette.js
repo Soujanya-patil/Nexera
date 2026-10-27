@@ -6,7 +6,7 @@
 export const PALETTE = {
   deepGrid: "#1C2C5C",
   forest: "#101827",
-  signal: "#ABCA34",
+  signal: "#86E08A",
   link: "#1C2C5C",
   amber: "#F5B841",
   paper: "#F3F4F8",

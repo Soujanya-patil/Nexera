@@ -85,7 +85,7 @@
        line       borders, dividers */
   --color-deep-grid: #1C2C5C; /* navy: heroes, closing bands, dark sections */
   --color-forest: #101827; /* second dark surface: midnight (contact section, closing bands, cards on dark) */
-  --color-signal: #ABCA34; /* lime: accent on dark grounds only */
+  --color-signal: #86E08A; /* green: accent on dark grounds only */
   --color-link: #1C2C5C; /* primary buttons and links on light (white text) */
   --color-amber: #F5B841;
   --color-paper: #F3F4F8; /* light navy tint: alternate light sections */
@@ -213,6 +213,16 @@
   --on-accent: var(--color-ink);
   --muted: #BBC0CE; /* muted text on dark grounds (navy-grey, 7.4:1 on navy) */
   --label: var(--muted);
+}
+/* Focus-ring colour by the surrounding ground (see `outline-color` in the base layer): the children of
+   a light ground get the light accent, the children of a dark ground the dark one; deeper descendants
+   inherit it. An element's own background never changes its own ring. */
+:root,
+:where(.bg-white, .bg-paper, .bg-ice, .bg-white\/90, .bg-white\/95, .bg-paper\/90, .bg-paper\/95, .bg-ice\/60, .bg-ice\/70) > * {
+  --ring: var(--color-link);
+}
+:where(.bg-deep-grid, .bg-forest, .bg-black, [data-ground="dark"], [class*="bg-deep-grid/"], [class*="bg-forest/"]):not([class*=":bg-deep-grid"], [class*=":bg-forest"]) > * {
+  --ring: var(--color-signal);
 }
 /* The home hero keeps its previous palette: its scrim, bottom fade and the ambient light around the
    footage are drawn from these tokens, and the hero (video, scrim, overlays) stays exactly as it is. */
@@ -448,9 +458,11 @@
      Components may refine it, never remove it. */
   /* The ring's colour is set on every element up front, so focusing only switches the ring on (a colour
      transition — transition-colors includes outline-color — would otherwise fade it in from the text
-     colour). It is the ground's accent: link green on light, signal green on dark. */
+     colour). It is the accent of the ground the element sits ON (--ring, set for a ground's children
+     below), not of its own background: a dark chip or card on a light page gets the navy ring, a white
+     card on a dark section the green one, so the ring always reads against what is around it. */
   * {
-    outline-color: var(--accent);
+    outline-color: var(--ring);
   }
   :focus-visible {
     outline-width: 2px;
