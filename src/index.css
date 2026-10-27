@@ -71,6 +71,27 @@
   line-gap-override: 0%;
 }
 
+/* Montserrat (Latin subset, one variable file for 500–800) — only for the text set on the home
+   solution cards' photos. Not preloaded: the cards sit below the first screen. */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500 800;
+  font-display: swap;
+  src: url("/fonts/montserrat-latin-variable.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Its metric-matched fallback (Arial scaled to Montserrat's width and line metrics), so the swap
+   moves nothing. */
+@font-face {
+  font-family: "Montserrat Fallback";
+  src: local("Arial"), local("ArialMT"), local("Arimo"), local("Liberation Sans");
+  size-adjust: 112.83%;
+  ascent-override: 85.79%;
+  descent-override: 22.25%;
+  line-gap-override: 0%;
+}
+
 @theme {
   /* Colour — the NEXERA palette (one definition; utilities bg-*, text-*, border-* …). Contrast rules:
      signal and amber are never text on white or paper; text on amber is ink; links and primary buttons
@@ -102,6 +123,7 @@
      a deliberate fit for a technical hardware brand, not a generic pairing */
   --font-serif: "Georgia", serif; /* only in components no page mounts (IBM Plex Serif removed) */
   --font-sans: "IBM Plex Sans", "IBM Plex Sans Fallback", "Segoe UI", sans-serif;
+  --font-montserrat: "Montserrat", "Montserrat Fallback", ui-sans-serif, system-ui, sans-serif;
 
   /* Type scale — one fluid scale for every page (utilities text-display … text-micro). Each step sets
      its size, line-height and letter-spacing: tighter for large headings, normal for reading text.

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SceneImg from "./SceneImg";
@@ -24,33 +24,63 @@ import { DUR, EASE, STAGGER } from "../lib/tokens";
 
 // Imagery and alt text reused from ScaleStory (same three segments); copy from the approved mockup.
 // Each card links to its segment's section on the Solutions page.
+// On the photo (approved card mockup): an eyebrow, the title (the card's h3) and the benefits, the latter
+// taken from each card's previous description. `shape` is the card's transparent accent shape (a
+// clip-path); the white copy of the title is clipped to it, so the title turns white where it crosses
+// into the colour. Positions and sizes are in % of the photo and cqi (its width), so they hold at every
+// card width; C&I's eyebrow and benefits are placed relative to its circle.
 const cards = [
   {
     id: "residential",
-    title: "Residential",
+    title: ["Residential"],
+    eyebrow: "For homes",
+    benefits: "Backup · Lower bills · Independence",
+    shape: "polygon(0 0, 52% 0, 40% 100%, 0 100%)",
+    shade: "from-black/75 via-black/62 to-black/82",
+    at: {
+      eyebrow: { left: "6%", top: "12%" },
+      title: { left: "6%", top: "42%", fontSize: "11.2cqi" },
+      benefits: { left: "6%", bottom: "9%", maxWidth: "36%" },
+    },
     page: SOLUTION_PAGES.residential.path,
     cta: "Explore Residential Storage",
-    copy: "Store your solar power. Use it when you need it. Greater independence, lower bills, reliable backup.",
     // TODO(india-imagery): see ScaleStory — res-house is a CGI render of a generic non-Indian house.
     img: "res-house",
     alt: "Rendering of a home at night with rooftop solar and a wall-mounted TCL battery beside the garage",
   },
   {
     id: "ci",
-    title: "Commercial & Industrial (C&I)",
+    title: ["C&I"],
+    eyebrow: "For businesses",
+    benefits: "Peak shaving · Reliability · Solar ROI",
+    // The brightest photo (white cabinets): a deeper shade keeps its text AA.
+    shape: "circle(28cqi at 66% 50%)",
+    shade: "from-black/82 via-black/72 to-black/84",
+    at: {
+      eyebrow: { left: "calc(66% - 15cqi)", top: "calc(50% - 20cqi)" },
+      title: { left: "17%", top: "50%", fontSize: "23cqi", translate: "0 -50%" },
+      benefits: { left: "calc(66% - 15cqi)", top: "calc(50% + 13cqi)", maxWidth: "38cqi" },
+    },
     page: SOLUTION_PAGES.ci.path,
     cta: "Explore C&I Storage",
-    copy: "Cut peak demand charges. Improve reliability. Maximise solar ROI.",
     // TODO(india-imagery): see ScaleStory — ci-industrial is not identifiably Indian.
     img: "ci-industrial",
     alt: "TCL floor-standing battery cabinets and inverter beside an industrial building",
   },
   {
     id: "utility",
-    title: "Utility-Scale",
+    title: ["Utility-", "Scale"],
+    eyebrow: "For the grid",
+    benefits: "Grid stability · Large-scale storage",
+    shape: "polygon(0 62%, 100% 30%, 100% 100%, 0 100%)",
+    shade: "from-black/75 via-black/62 to-black/82",
+    at: {
+      eyebrow: { right: "6%", top: "12%" },
+      title: { left: "5.5%", top: "41%", fontSize: "9.6cqi" },
+      benefits: { right: "6%", bottom: "8%", textAlign: "right" },
+    },
     page: SOLUTION_PAGES.utility.path,
     cta: "Explore Utility-Scale Storage",
-    copy: "Enable a cleaner, more stable grid with large-scale storage.",
     // TODO(india-imagery): see ScaleStory — utility-yard shows Chinese-language signage.
     img: "utility-yard",
     alt: "Aerial view of rows of Hithium battery storage containers at a large site",
@@ -61,14 +91,34 @@ const cards = [
  * Solutions — a product-discovery moment: the three segment cards act as a BESS selector.
  * Entrance: Residential → C&I → Utility rise out of their own frames in turn (same direction, short
  * stagger).
- * Hover / focus: the card rises 6 px with a deeper shadow, a green accent draws along its top edge,
- * the photo zooms slowly and brightens (a soft shade over it lifts), an "Explore" tag slides in on
- * the photo, the title shifts 3 px, the arrow moves, and the technology partners with systems for
- * that application (from the catalogue) and the number of systems come up at the foot of the card.
- * The section carries a very soft light that follows the mouse.
+ * Each card's photo is black & white under a dark shade, with one transparent accent shape; the
+ * title (Montserrat) crosses the shape's edge — accent outside, white inside. Below the photo only the
+ * partners with systems for that application (from the catalogue), the system count and the link.
+ * Hover (a fine pointer) and keyboard focus: the photo returns to full colour (0.4 s; at once under
+ * reduced motion), the card rises with a deeper shadow, the photo zooms slowly, the arrow moves. Phones
+ * keep the black & white photo. The section carries a very soft light that follows the mouse.
  */
 export default function HomeSolutions() {
   const grid = useRef(null);
+  // Montserrat (the photo text) is only applied once the cards come within 400 px of the screen, so the
+  // browser doesn't fetch it during the first load: the cards sit below the first screen, and fetching it
+  // early delayed the hero's largest paint. Until then the text is set in the site font (off-screen).
+  const [face, setFace] = useState(false);
+  useEffect(() => {
+    const el = grid.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        setFace(true);
+        io.disconnect();
+      },
+      { rootMargin: "400px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const font = face ? "font-montserrat" : "font-sans";
   const enter = useEntrance(grid, ({ tl, q }) => {
     tl.fromTo(
       q("[data-e]"),
@@ -108,9 +158,12 @@ export default function HomeSolutions() {
               data-e
               className="group relative flex flex-col overflow-hidden rounded-card border border-line bg-white card-hover"
             >
-              <span aria-hidden="true" className="absolute left-6 top-0 z-10 h-0.5 w-14 origin-left scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover:scale-x-100 group-focus-visible:scale-x-100 group-focus-within:scale-x-100 " />
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <ParallaxMedia amount={5}>
+              {/* The photo and the text set on it; a dark ground for the accent and the white text. */}
+              <div data-ground="dark" className="@container relative h-[300px] overflow-hidden">
+                <ParallaxMedia
+                  amount={5}
+                  className="grayscale contrast-110 transition-[filter] duration-[400ms] ease-standard motion-reduce:transition-none pointer-fine:group-hover:grayscale-0 pointer-fine:group-hover:contrast-100 group-has-[a:focus-visible]:grayscale-0 group-has-[a:focus-visible]:contrast-100"
+                >
                   <SceneImg
                     name={c.img}
                     alt={c.alt}
@@ -118,21 +171,37 @@ export default function HomeSolutions() {
                     className="card-media h-full w-full object-cover"
                   />
                 </ParallaxMedia>
-                {/* A soft shade that lifts on hover, so the photo seems to brighten */}
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-deep-grid/30 via-deep-grid/5 to-transparent transition-opacity duration-slow group-hover:opacity-0 group-focus-visible:opacity-0 group-focus-within:opacity-0" />
-                <span
-                  aria-hidden="true"
-                  className="absolute right-4 top-4 inline-flex translate-x-2 items-center gap-1.5 rounded-full bg-deep-grid/75 px-3 py-1 eyebrow text-white opacity-0 backdrop-blur-sm transition-[opacity,translate] duration-base ease-standard group-hover:translate-x-0 group-focus-visible:translate-x-0 group-focus-within:translate-x-0 group-hover:opacity-100 group-focus-visible:opacity-100 group-focus-within:opacity-100  "
-                >
-                  Explore
-                  <ArrowRight className="h-3 w-3" />
-                </span>
+                {/* A dark soft shade (deepest at the top and foot, where the small white text sits), then the
+                    transparent accent shape over it — dark enough beneath that all text keeps AA contrast */}
+                <span aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-gradient-to-b ${c.shade}`} />
+                <span data-shape aria-hidden="true" className="pointer-events-none absolute inset-0 bg-accent/40" style={{ clipPath: c.shape }} />
+                <p className={`absolute ${font} text-[0.6875rem] font-bold uppercase tracking-[0.24em] text-white`} style={c.at.eyebrow}>
+                  {c.eyebrow}
+                </p>
+                <h3 className={`absolute ${font} font-extrabold uppercase leading-[0.95] text-accent`} style={c.at.title}>
+                  {c.title.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </h3>
+                {/* The same title in white, clipped to the shape (decorative: the h3 above is the heading) */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ clipPath: c.shape }}>
+                  <p className={`absolute ${font} font-extrabold uppercase leading-[0.95] text-white`} style={c.at.title}>
+                    {c.title.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </p>
+                </div>
+                <p className={`absolute ${font} text-[0.8125rem] font-medium leading-snug text-white`} style={c.at.benefits}>
+                  {c.benefits}
+                </p>
               </div>
               <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-h4 font-semibold text-ink transition-[translate] duration-base ease-standard group-hover:translate-x-[3px] group-focus-visible:translate-x-[3px] group-focus-within:translate-x-[3px]">{c.title}</h3>
-                <p className="mt-2 flex-1 text-small text-copy">{c.copy}</p>
                 {/* Product preview (space always reserved, so hovering never shifts the layout) */}
-                <p className="mt-4 flex translate-y-1 items-center gap-2 text-micro text-copy transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
+                <p className="flex translate-y-1 items-center gap-2 text-micro text-copy transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
                   <span className="h-1.5 w-1.5 rounded-full bg-label" aria-hidden="true" />
                   <span className="font-semibold text-copy">{partnersFor(c.id).map((p) => p.name).join(" · ")}</span>
                   <span aria-hidden="true">·</span>
