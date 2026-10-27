@@ -11,7 +11,7 @@ import EnergyGrid from "../article/EnergyGrid";
 export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], reveal }) {
   const words = title.split(" ");
   return (
-    <section id={id} data-play="now" data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid text-white">
+    <section id={id} data-play="now" data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid hero-ground text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%)" }} />
       <EnergyGrid />
       <div className="relative container-site pb-14 pt-14 lg:pb-20 lg:pt-20">

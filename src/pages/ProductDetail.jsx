@@ -151,7 +151,7 @@ function ProductView({ product }) {
   return (
     <div ref={page} data-sr-state={reveal}>
       {/* PRODUCT */}
-      <section ref={hero} className="relative overflow-hidden bg-deep-grid text-white">
+      <section ref={hero} className="relative overflow-hidden bg-deep-grid hero-ground text-white">
         <div aria-hidden="true" className="pointer-events-none absolute -inset-3" style={depth(-2, -1.5)}>
           <div
             className="absolute inset-0"

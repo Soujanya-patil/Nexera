@@ -93,7 +93,7 @@ function PartnerHero({ id, name, contact }) {
   });
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-deep-grid text-white">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid hero-ground text-white">
       <Spotlight />
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%)" }} />
       <div data-intro={intro} className="relative container-site py-14 lg:py-20">

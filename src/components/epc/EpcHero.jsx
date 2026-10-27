@@ -34,7 +34,7 @@ export default function EpcHero() {
   });
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-deep-grid text-white">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid hero-ground text-white">
       <div data-intro={intro}>
         {/* Image: full-bleed behind the copy on phones (dimmed), the right ~60% of the frame on desktop */}
         <div data-a="image" className="absolute inset-0 overflow-hidden lg:left-[34%]">

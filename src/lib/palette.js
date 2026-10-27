@@ -4,8 +4,8 @@
  * (index.css @theme: bg-*, text-*, or var(--color-*)). Keep these in step with index.css.
  */
 export const PALETTE = {
-  deepGrid: "#1C2C5C",
-  forest: "#101827",
+  deepGrid: "#091C16",
+  forest: "#132D24",
   signal: "#86E08A",
   link: "#1C2C5C",
   amber: "#F5B841",

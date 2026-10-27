@@ -83,8 +83,9 @@
                                                          copy because text-body is the body font size)
        muted      captions, small text           ice     soft tinted panels, badges
        line       borders, dividers */
-  --color-deep-grid: #1C2C5C; /* navy: heroes, closing bands, dark sections */
-  --color-forest: #101827; /* second dark surface: midnight (contact section, closing bands, cards on dark) */
+  --color-deep-grid: #091C16; /* green-black (the home hero's ground): heroes and dark sections */
+  --color-forest: #132D24; /* second dark surface, a step lighter (contact section, closing bands, cards on dark) */
+  --color-graphite: #17191A; /* the right-hand end of a page hero's ground (hero-ground) */
   --color-signal: #86E08A; /* green: accent on dark grounds only */
   --color-link: #1C2C5C; /* primary buttons and links on light (white text) */
   --color-amber: #F5B841;
@@ -211,7 +212,7 @@
   --accent: var(--color-signal);
   --accent-hover: color-mix(in srgb, var(--color-signal) 80%, white);
   --on-accent: var(--color-ink);
-  --muted: #BBC0CE; /* muted text on dark grounds (navy-grey, 7.4:1 on navy) */
+  --muted: #B3C4B8; /* muted text on dark grounds (green-grey: 9.7:1 on deep-grid, 8.1:1 on forest) */
   --label: var(--muted);
 }
 /* Focus-ring colour by the surrounding ground (see `outline-color` in the base layer): the children of
@@ -283,6 +284,10 @@
   letter-spacing: var(--text-eyebrow--letter-spacing);
   font-weight: 600;
   text-transform: uppercase;
+}
+/* Page heroes: the home hero's ground — deep-grid on the left, easing to graphite on the right. */
+@utility hero-ground {
+  background-image: linear-gradient(to right, var(--color-deep-grid) 30%, var(--color-graphite));
 }
 /* The one text-link style for standalone links ("View all …", footer, cards): an underline that
    draws from the left on hover and keyboard focus (a transform, so nothing re-lays out). Inline links

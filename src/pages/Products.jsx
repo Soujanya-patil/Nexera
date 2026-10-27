@@ -331,7 +331,7 @@ export default function Products() {
   return (
     <div className={compare.length ? "pb-24" : undefined}>
       {/* Hero */}
-      <section ref={hero} className="relative overflow-hidden bg-deep-grid text-white">
+      <section ref={hero} className="relative overflow-hidden bg-deep-grid hero-ground text-white">
         {/* Ground layers drift a touch against the product for depth (smaller than the product). */}
         <div aria-hidden="true" className="pointer-events-none absolute -inset-3" style={depth(-2, -1.5)}>
           <div

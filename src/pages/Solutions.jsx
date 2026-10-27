@@ -112,7 +112,7 @@ function HubHeader({ eyebrow, title, subtitle }) {
   }, []);
 
   return (
-    <section ref={root} className="relative overflow-hidden bg-deep-grid text-white">
+    <section ref={root} className="relative overflow-hidden bg-deep-grid hero-ground text-white">
       <Spotlight />
       <div data-intro={state} className="relative container-site grid items-center gap-12 py-16 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
         <div>

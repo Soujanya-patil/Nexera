@@ -29,7 +29,7 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
   const words = a.h1.split(" ");
 
   return (
-    <section data-play={play} data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid text-white">
+    <section data-play={play} data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid hero-ground text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%)" }} />
       <EnergyGrid />
 

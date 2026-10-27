@@ -106,7 +106,7 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
   });
 
   return (
-    <section ref={root} data-vt-hero={segment} className="relative overflow-hidden bg-deep-grid text-white">
+    <section ref={root} data-vt-hero={segment} className="relative overflow-hidden bg-deep-grid hero-ground text-white">
       <Spotlight />
       <div data-intro={intro}>
         {/* Photo: full-bleed behind the copy on phones (dimmed); on desktop the right 54% (62% from 1280 px,
