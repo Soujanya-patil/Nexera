@@ -83,18 +83,18 @@
                                                          copy because text-body is the body font size)
        muted      captions, small text           ice     soft tinted panels, badges
        line       borders, dividers */
-  --color-deep-grid: #071B14;
-  --color-forest: #103D2B;
-  --color-signal: #8EF29A;
-  --color-link: #1F7A4D;
+  --color-deep-grid: #1C2C5C; /* navy: heroes, closing bands, dark sections */
+  --color-forest: #263B7B; /* second dark surface: navy, HSL lightness +8 */
+  --color-signal: #ABCA34; /* lime: accent on dark grounds only */
+  --color-link: #1C2C5C; /* primary buttons and links on light (white text) */
   --color-amber: #F5B841;
-  --color-paper: #F5F7F2;
+  --color-paper: #F3F4F8; /* light navy tint: alternate light sections */
   --color-white: #FFFFFF;
-  --color-ink: #202D26;
-  --color-copy: #3A4A44;
-  --color-muted: #5C6B65;
-  --color-ice: #E8F1EC;
-  --color-line: #E1E7E3;
+  --color-ink: #1C2C5C;
+  --color-copy: #1C2C5C; /* body text on light is navy too */
+  --color-sage: #647B5C; /* icons, dividers, badges, small captions — on white only (text-muted) */
+  --color-ice: #F3F4F8; /* the same light navy tint: chips, soft panels */
+  --color-line: rgb(28 44 92 / 0.12); /* navy at 12%: visible on white and on the tint */
   --color-navy: #182F58; /* the logo's navy: header links and footer headings/links */
 
   /* Type — IBM Plex: an engineering-documentation typeface family,
@@ -191,6 +191,8 @@
   /* Labels (eyebrows, small badges, list markers): quiet on either ground — muted on light, paper at
      70% on dark. Green is kept for actions, active states, key figures and focus. */
   --color-label: var(--label);
+  /* Muted text (captions, small labels): sage on white, navy on the tint, light navy-grey on dark. */
+  --color-muted: var(--muted);
   --shadow-glow: 0 0 24px 2px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 :root,
@@ -198,13 +200,34 @@
   --accent: var(--color-link);
   --accent-hover: color-mix(in srgb, var(--color-link) 82%, black);
   --on-accent: var(--color-white);
-  --label: var(--color-muted);
+  --muted: var(--color-sage);
+  --label: var(--muted);
+}
+/* Sage fails AA on the tint (4.2:1), so muted text there is navy (the tint cards at 60–70% too). */
+:where(.bg-paper, .bg-ice, .bg-paper\/90, .bg-paper\/95, .bg-ice\/60, .bg-ice\/70) {
+  --muted: var(--color-ink);
 }
 :where(.bg-deep-grid, .bg-forest, .bg-black, [data-ground="dark"], [class*="bg-deep-grid/"], [class*="bg-forest/"]):not([class*=":bg-deep-grid"], [class*=":bg-forest"]) {
   --accent: var(--color-signal);
   --accent-hover: color-mix(in srgb, var(--color-signal) 80%, white);
   --on-accent: var(--color-ink);
-  --label: #B3C4B8; /* muted text on dark grounds */
+  --muted: #BBC0CE; /* muted text on dark grounds (navy-grey, 7.4:1 on navy) */
+  --label: var(--muted);
+}
+/* The home hero keeps its previous palette: its scrim, bottom fade and the ambient light around the
+   footage are drawn from these tokens, and the hero (video, scrim, overlays) stays exactly as it is. */
+[data-home-hero] {
+  --color-deep-grid: #071B14;
+  --color-forest: #103D2B;
+  --color-signal: #8EF29A;
+  --color-link: #1F7A4D;
+  --color-paper: #F5F7F2;
+  --color-ink: #202D26;
+  --color-copy: #3A4A44;
+  --color-sage: #5C6B65;
+  --color-ice: #E8F1EC;
+  --color-line: #E1E7E3;
+  --muted: #B3C4B8;
 }
 
 /* Section spacing: one vertical padding for every content section — 64 px on phones, 80 px from 768 px
@@ -519,7 +542,7 @@
   --color-foreground: var(--color-ink);
   /* (shadcn's `muted` surface is written bg-paper in the components; `muted` here is the palette's
      caption colour.) */
-  --color-muted-foreground: var(--color-muted);
+  --color-muted-foreground: var(--muted);
   --color-border: var(--color-line);
   --color-ring: var(--accent);
   --color-brand: var(--accent);
@@ -1561,7 +1584,7 @@ html[data-vt-from="pill"]::view-transition-old(*) {
     font-size: var(--text-micro);
     font-weight: 600;
     letter-spacing: 0.04em;
-    color: var(--color-muted);
+    color: var(--muted);
   }
 }
 @media (prefers-reduced-motion: reduce) {

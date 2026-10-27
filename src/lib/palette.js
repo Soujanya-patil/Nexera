@@ -4,16 +4,16 @@
  * (index.css @theme: bg-*, text-*, or var(--color-*)). Keep these in step with index.css.
  */
 export const PALETTE = {
-  deepGrid: "#071B14",
-  forest: "#103D2B",
-  signal: "#8EF29A",
-  link: "#1F7A4D",
+  deepGrid: "#1C2C5C",
+  forest: "#263B7B",
+  signal: "#ABCA34",
+  link: "#1C2C5C",
   amber: "#F5B841",
-  paper: "#F5F7F2",
+  paper: "#F3F4F8",
   white: "#FFFFFF",
-  ink: "#202D26",
-  copy: "#3A4A44",
-  muted: "#5C6B65",
-  ice: "#E8F1EC",
-  line: "#E1E7E3",
+  ink: "#1C2C5C",
+  copy: "#1C2C5C",
+  muted: "#647B5C",
+  ice: "#F3F4F8",
+  line: "#E4E6EB",
 };
