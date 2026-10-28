@@ -88,6 +88,72 @@ for (const [W, H] of [
   await p.context().close();
 }
 
+// ---- Homepage hero playback rules (desktop hover, phone tap) -------------------------------------------
+// A hover (desktop) or tap (phone) plays the cycle from the start when it is at rest; hovering, clicking
+// or tapping again while it plays never restarts it; leaving lets it play to the end; it then rests on
+// the closed frame (no loop), and the next hover / tap plays it again from the start. "At rest": both
+// clips paused, the opening rewound, the closing clip hidden.
+for (const [W, H, touch] of [
+  [1440, 900, false],
+  [390, 844, true],
+]) {
+  const p = await page(W, H);
+  await p.goto(BASE + "/", { waitUntil: "load" });
+  const st = () => p.evaluate(() => { const [o, c] = document.querySelectorAll("[data-home-hero] video"); return { o: +o.currentTime.toFixed(2), op: o.paused, cp: c.paused, cv: c.style.opacity }; });
+  const atRest = async (ms = 30000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { const s = await st(); if (s.op && s.cp && s.o === 0 && s.cv !== "1") return true; await p.waitForTimeout(100); } return false; };
+  const box = await p.locator('[data-home-hero] [tabindex="0"][aria-label]').boundingBox();
+  const cx = box.x + box.width / 2, cy = box.y + box.height / 2;
+  const leave = () => p.mouse.move(5, 5, { steps: 3 });
+  const enter = async () => { await leave(); await p.mouse.move(cx, cy, { steps: 3 }); };
+  const trigger = touch ? () => p.touchscreen.tap(cx, cy) : enter;
+  const how = touch ? "a tap" : "hovering";
+  const rest0 = await atRest();
+  // The very first moment of rest, with no extra wait: the trigger must not be lost.
+  await trigger();
+  await p.waitForTimeout(700);
+  const s1 = await st();
+  const b2 = (await st()).o;
+  if (touch) await trigger(); else await enter();
+  await p.waitForTimeout(500);
+  const s2 = await st();
+  const b3 = s2.o;
+  if (touch) await p.touchscreen.tap(cx, cy); else await p.mouse.click(cx, cy);
+  await p.waitForTimeout(500);
+  const s3 = await st();
+  if (!touch) await leave();
+  const rest1 = await atRest();
+  await p.waitForTimeout(1200);
+  const s4 = await st();
+  await trigger();
+  await p.waitForTimeout(700);
+  const s5 = await st();
+  check(`/ @${W}: hero — at rest, ${how} plays the video from the start (also at the first moment of rest)`, rest0 && !s1.op && s1.o > 0 && s1.o < 1.5, { rest0, s1 });
+  check(`/ @${W}: hero — ${how} again while it plays does not restart it`, !s2.op && s2.o > b2, { b2, s2 });
+  check(`/ @${W}: hero — ${touch ? "a second tap" : "a click"} while it plays does not restart it`, !s3.op && s3.o > b3, { b3, s3 });
+  check(`/ @${W}: hero — ${touch ? "left alone" : "after the mouse leaves"} it plays to the end and rests on the closed frame (no loop)`, rest1 && s4.op && s4.cp && s4.o === 0, { rest1, s4 });
+  check(`/ @${W}: hero — after the end, the next ${touch ? "tap" : "hover"} plays it again from the start`, !s5.op && s5.o > 0 && s5.o < 1.5, s5);
+  check(`/ @${W}: no console errors (hero playback)`, p.errors.length === 0, p.errors);
+  await p.context().close();
+}
+
+// The end of a cycle, exactly: a tap 20 ms after the closing clip ends (while the cycle is still settling
+// back to rest) is not dropped — it plays the cycle again from the start.
+{
+  const p = await page(390, 844);
+  await p.goto(BASE + "/", { waitUntil: "load" });
+  await p.evaluate(() => {
+    const c = document.querySelectorAll("[data-home-hero] video")[1];
+    const stage = document.querySelector('[data-home-hero] [tabindex="0"][aria-label]');
+    c.addEventListener("ended", () => setTimeout(() => { stage.dispatchEvent(new PointerEvent("pointerup", { pointerType: "touch", bubbles: true })); window.__tapped = 1; }, 20), { once: true });
+  });
+  const t0 = Date.now();
+  while (Date.now() - t0 < 30000 && !(await p.evaluate(() => window.__tapped === 1))) await p.waitForTimeout(100);
+  await p.waitForTimeout(1200);
+  const s = await p.evaluate(() => { const o = document.querySelector("[data-home-hero] video"); return { o: +o.currentTime.toFixed(2), playing: !o.paused }; });
+  check("/ @390: hero — a tap just as the video ends replays it from the start (not dropped)", s.playing && s.o > 0 && s.o < 2, s);
+  await p.context().close();
+}
+
 // ---- Fallbacks ----------------------------------------------------------------------------------------
 {
   // A browser without paint timing: starts after the first frame.

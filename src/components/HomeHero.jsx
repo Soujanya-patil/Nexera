@@ -222,6 +222,11 @@ export default function HomeHero() {
   // Synchronous "a cycle is running" flag: several pointer events can land in the same tick,
   // before React re-renders `phase`; this makes every one after the first a no-op.
   const busy = useRef(false);
+  // The footage has ended and the cycle is only settling back to rest (a few ms of bookkeeping): a
+  // hover / tap / key landing now is remembered (`replay`) and plays the cycle again from the start
+  // once it is free, instead of being dropped. Earlier in the cycle a trigger never restarts it.
+  const settling = useRef(false);
+  const replay = useRef(false);
   const alive = useRef(true);
   const reading = useRef(false); // a hotspot is hovered
   // Read synchronously on first render (useMediaQuery initialises from matchMedia), so the video
@@ -267,7 +272,11 @@ export default function HomeHero() {
   const runCycle = async () => {
     const o = opening.current;
     const c = closing.current;
-    if (story || !videoReady || !o || !c || busy.current) return;
+    if (story || !videoReady || !o || !c) return;
+    if (busy.current) {
+      if (settling.current) replay.current = true;
+      return;
+    }
     busy.current = true;
     try {
       if (reduced) {
@@ -278,6 +287,7 @@ export default function HomeHero() {
         await hold();
         if (!alive.current) return;
         setPhase("closing");
+        settling.current = true;
         await seek(o, 0);
         return;
       }
@@ -313,6 +323,7 @@ export default function HomeHero() {
         await seek(o, 0); // hidden underneath: rewind the opening to the closed frame
         await closed;
         if (!alive.current) return;
+        settling.current = true;
         c.style.opacity = "0"; // its last frame is that same closed frame
         await sleep(50);
         c.currentTime = 0;
@@ -322,6 +333,7 @@ export default function HomeHero() {
         await sleep(300);
         await seek(o, 0);
         o.style.opacity = "1";
+        settling.current = true;
         await sleep(300);
       }
     } catch {
@@ -333,7 +345,12 @@ export default function HomeHero() {
       if (o.currentTime !== 0) o.currentTime = 0;
     } finally {
       busy.current = false;
+      settling.current = false;
       if (alive.current) setPhase("closed");
+      if (replay.current && alive.current) {
+        replay.current = false;
+        runCycle();
+      }
     }
   };
 

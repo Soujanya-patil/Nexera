@@ -10,9 +10,10 @@ const MAX_OFFSET = 8; // px — "a few px max," reads as premium, not bouncy
  * Desktop + motion-enabled only:
  * bails out under `prefers-reduced-motion` and on coarse-pointer (touch) devices, where the
  * effect means nothing without a real cursor. Uses `gsap.quickTo` (not a tween built and killed
- * per mousemove) so repeated updates are cheap.
+ * per mousemove) so repeated updates are cheap. `axis: "x"` pulls sideways only (the header, whose items
+ * must stay vertically centred in the bar).
  */
-export function useMagnetic({ max = MAX_OFFSET, radius = RADIUS } = {}) {
+export function useMagnetic({ max = MAX_OFFSET, radius = RADIUS, axis = "both" } = {}) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export function useMagnetic({ max = MAX_OFFSET, radius = RADIUS } = {}) {
         }
         const fade = 1 - edge / radius;
         xTo((dx / (hw + radius)) * max * fade);
-        yTo((dy / (hh + radius)) * max * fade);
+        yTo(axis === "x" ? 0 : (dy / (hh + radius)) * max * fade);
       };
       const onLeave = () => {
         xTo(0);

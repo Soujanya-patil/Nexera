@@ -3,9 +3,10 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import Logo from "./Logo";
 import { useMagnetic } from "../lib/magnetic";
 
-/** Desktop nav item with a very small magnetic pull (3 px; off for touch and reduced motion). */
+/** Desktop nav item with a very small sideways magnetic pull (3 px; never vertical, so everything stays
+ * centred in the bar; off for touch and reduced motion). */
 function Magnetic({ max = 3, children }) {
-  const ref = useMagnetic({ max, radius: 28 });
+  const ref = useMagnetic({ max, radius: 28, axis: "x" });
   return (
     <span ref={ref} className="inline-block">
       {children}
