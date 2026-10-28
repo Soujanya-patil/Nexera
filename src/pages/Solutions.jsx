@@ -1,19 +1,13 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import SceneImg from "../components/SceneImg";
-import { ArrowUnderline, PartnerStrip, Spotlight } from "../components/solutions/Interactive";
+import { ArrowUnderline, PartnerStrip } from "../components/solutions/Interactive";
+import ScaleHeader from "../components/solutions/ScaleHeader";
 import { SOLUTION_PAGES } from "../data/solutions";
-import { loadGsap } from "../lib/motion";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { useRouteTransition } from "../lib/viewTransition";
-import { useMediaQuery } from "../lib/scrollSteps";
 import { usePanels } from "../lib/panels";
-import { isFirstLoad } from "../lib/firstLoad";
-import { DUR, EASE, STAGGER } from "../lib/tokens";
-
-// The hero's crossfading segment ribbon: desktop only, its own chunk.
-const SegmentRibbon = lazy(() => import("../components/solutions/SegmentRibbon"));
 
 // The Solutions hub: one card per segment, each opening its own page. The card ids are the old
 // section ids, so links such as /solutions#ci (Home's Solutions cards) still land on the right card.
@@ -47,107 +41,6 @@ const SEGMENTS = [
     alt: "Utility-scale battery energy storage containers beside a solar plant",
   },
 ];
-
-const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-/** The ribbon's footprint (its 4:3 photo box and the label line under it). */
-const RibbonSpace = () => (
-  <div aria-hidden="true">
-    <div className="aspect-[4/3] rounded-card bg-deep-grid ring-1 ring-white/10" />
-    <div className="mt-4 h-5" />
-  </div>
-);
-
-/**
- * The hub header (PageHeader's look) with the Solutions entrance: the eyebrow's letter-spacing settles
- * while its rule draws, the h1 is split into its rendered lines (GSAP SplitText, no ARIA changes) and
- * each slides up from behind its mask, then the subtitle fades up. The parts wait (hidden) only until
- * the entrance is ready, at most 2.5 s; reduced motion and arrival by View Transition show them at once.
- */
-function HubHeader({ eyebrow, title, subtitle }) {
-  const root = useRef(null);
-  const wide = useMediaQuery("(min-width: 1024px)");
-  // A first load shows the header as pre-rendered (no entrance); client-side navigations get it.
-  const [state, setState] = useState(() =>
-    typeof window === "undefined" || isFirstLoad() || reduced() || document.documentElement.dataset.vt === "true" ? "done" : "pending"
-  );
-  useEffect(() => {
-    if (state === "done") return;
-    const el = root.current;
-    let cancelled = false;
-    let split;
-    let tl;
-    const safety = setTimeout(() => !cancelled && setState("done"), 2500);
-    Promise.all([loadGsap(), import("gsap/SplitText")])
-      .then(([{ gsap }, { SplitText }]) => {
-        if (cancelled) return;
-        clearTimeout(safety);
-        gsap.registerPlugin(SplitText);
-        const h1 = el.querySelector("h1");
-        split = new SplitText(h1, { type: "lines", mask: "lines", aria: "none", linesClass: "block" });
-        const q = gsap.utils.selector(el);
-        tl = gsap.timeline({
-          onComplete: () => {
-            split?.revert();
-            split = null;
-            if (!cancelled) setState("done");
-          },
-        });
-        tl.fromTo(q('[data-a="eyebrow"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, clearProps: "all" }, 0)
-          .fromTo(q('[data-a="rule"]'), { opacity: 1, scaleX: 0 }, { scaleX: 1, duration: DUR.base, ease: EASE.standard, clearProps: "all" }, 0)
-          .set(h1, { opacity: 1 }, 0)
-          .fromTo(split.lines, { yPercent: 100 }, { yPercent: 0, duration: DUR.slow, stagger: STAGGER, ease: EASE.emphasized }, 0.1)
-          .fromTo(q('[data-a="desc"]'), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: DUR.base, ease: EASE.standard, clearProps: "all" }, 0.27);
-        setState("running");
-      })
-      .catch(() => !cancelled && setState("done"));
-    return () => {
-      cancelled = true;
-      clearTimeout(safety);
-      tl?.kill();
-      split?.revert();
-    };
-    // Runs once, at mount.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <section ref={root} className="relative overflow-hidden bg-deep-grid hero-ground text-white">
-      <Spotlight />
-      <div data-intro={state} className="relative container-site grid items-center gap-12 py-16 md:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
-        <div>
-          <p data-a="eyebrow" className="mb-3 flex items-center gap-3 text-small font-medium text-label">
-            <span data-a="rule" aria-hidden="true" className="h-px w-8 origin-left bg-accent/70" />
-            {eyebrow}
-          </p>
-          <h1 data-a="title" className="max-w-2xl text-h1 font-semibold">
-            {title}
-          </h1>
-          <p data-a="desc" className="mt-4 max-w-2xl text-body text-paper/75">
-            {subtitle}
-          </p>
-          <p data-a="desc" className="mt-4 text-small">
-            <Link to="/blog/what-is-bess" className="group/new hit-area inline-flex items-center gap-1.5 font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
-              New to battery storage? Read: What Is a BESS?
-              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/new:translate-x-0.5 group-focus-visible/new:translate-x-0.5 group-focus-within/new:translate-x-0.5" />
-            </Link>
-          </p>
-        </div>
-        {/* The ribbon's space is always in the markup (desktop only, CSS), so the hero never changes size
-            when the ribbon arrives — it is mounted into it on wide screens. */}
-        <div className="hidden lg:block">
-          {wide ? (
-            <Suspense fallback={<RibbonSpace />}>
-              <SegmentRibbon />
-            </Suspense>
-          ) : (
-            <RibbonSpace />
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /**
  * A hub card: opening it morphs its photo into the segment hero's photo (the photo only: text never
@@ -198,10 +91,15 @@ export default function Solutions() {
   usePanels(grid);
   return (
     <div className="solutions-page">
-      <HubHeader
-        eyebrow="Solutions"
+      {/* The scale slider header: the page's h1 in its top line, with the BESS primer link beside it. */}
+      <ScaleHeader
         title="Storage built for how you'll actually use it"
-        subtitle="Three segments, one supply chain — residential, commercial & industrial, and utility-scale."
+        aside={
+          <Link to="/blog/what-is-bess" className="group/new hit-area inline-flex items-center gap-1.5 text-small font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
+            New to battery storage? Read: What Is a BESS?
+            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/new:translate-x-0.5 group-focus-visible/new:translate-x-0.5" />
+          </Link>
+        }
       />
 
       {/* Same card treatment as For EPCs' application cards: partner imagery under a dark gradient. */}

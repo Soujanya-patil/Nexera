@@ -49,6 +49,15 @@
   src: url("/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+/* Light (300): only the Solutions hub header's segment headline uses it, so it is not preloaded. */
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin-300-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* Metric-matched fallback: while a Plex face loads, text is set in the local Arial scaled to Plex's
    average glyph width and given Plex's ascent/descent (measured from the shipped woff2 files and
    Windows' Arial / Arial Bold with fontTools), so the swap to Plex moves no line and no box. */
@@ -659,15 +668,96 @@
 .seg-panels[data-panels]:has(> li:nth-child(2):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x1)); }
 .seg-panels[data-panels]:has(> li:nth-child(3):is(:hover, :focus-within)) [data-panel-text] { transform: translateX(var(--x2)); }
 
-/* Hub ribbon label: rolls up from its mask as its photo comes in. */
-@keyframes ribbon-label {
-  from { transform: translateY(100%); }
+/* Solutions hub header (ScaleHeader). Shade: on phones a fade from the scene into the text below; on
+   desktop a solid deep-grid column on the left (the text) easing into the scene, plus top and bottom
+   fades for the top and bottom lines. */
+.sh-img {
+  object-position: 78% 50%;
 }
-.ribbon-label {
-  animation: ribbon-label 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+.sh-shade {
+  pointer-events: none;
+  background: linear-gradient(to top, var(--color-deep-grid), rgb(9 28 22 / 0) 35%),
+    linear-gradient(to bottom, rgb(9 28 22 / 0.55), rgb(9 28 22 / 0) 25%);
+}
+@media (width >= 64rem) {
+  .sh-img {
+    object-position: 75% 50%;
+  }
+  .sh-shade {
+    background: linear-gradient(to bottom, rgb(9 28 22 / 0.8), rgb(9 28 22 / 0) 16%),
+      linear-gradient(to top, var(--color-deep-grid), rgb(9 28 22 / 0.6) 12%, rgb(9 28 22 / 0) 30%),
+      linear-gradient(to right, var(--color-deep-grid) 0, var(--color-deep-grid) 40%, rgb(9 28 22 / 0.92) 50%, rgb(9 28 22 / 0.6) 60%, rgb(9 28 22 / 0) 76%);
+  }
+}
+/* From 1280 px the text column is a smaller share of the width: the scene comes in sooner. */
+@media (width >= 80rem) {
+  .sh-shade {
+    background: linear-gradient(to bottom, rgb(9 28 22 / 0.8), rgb(9 28 22 / 0) 16%),
+      linear-gradient(to top, var(--color-deep-grid), rgb(9 28 22 / 0.6) 12%, rgb(9 28 22 / 0) 30%),
+      linear-gradient(to right, var(--color-deep-grid) 0, var(--color-deep-grid) 28%, rgb(9 28 22 / 0.9) 38%, rgb(9 28 22 / 0.55) 50%, rgb(9 28 22 / 0) 66%);
+  }
+}
+/* The ring along the wipe's edge (sized and faded by ScaleHeader; never seen at rest). */
+.sh-ring {
+  translate: -50% -50%;
+  border: 1.5px solid rgb(134 224 138 / 0.75);
+  box-shadow: 0 0 14px rgb(134 224 138 / 0.35), inset 0 0 14px rgb(134 224 138 / 0.2);
+}
+/* Text of the current stop: the others are stacked in the same cell, hidden; the new one fades and
+   rises in after the old one has faded. */
+.sh-panel {
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 14px;
+  transition: opacity 250ms var(--ease-standard), translate 0s 250ms, visibility 0s 250ms;
+}
+.sh-panel[data-on] {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition: opacity 500ms var(--ease-standard) 200ms, translate 700ms var(--ease-emphasized) 200ms, visibility 0s;
+}
+/* The figure's digits wait hidden for their count-up; shown anyway after 2.5 s (script late or
+   failed), at once under reduced motion and without JavaScript (a <noscript> style). */
+@keyframes sh-reveal {
+  to { opacity: 1; }
+}
+.sh-n[data-pending] {
+  opacity: 0;
+  animation: sh-reveal 0s 2.5s forwards;
+}
+/* Slider: ticks along the track, a glowing knob, labels at the stops. Horizontal drags belong to the
+   slider; vertical swipes still scroll the page. */
+.sh-zone {
+  touch-action: pan-y;
+}
+.sh-ticks {
+  background: repeating-linear-gradient(to right, rgb(255 255 255 / 0.3) 0 1px, transparent 1px calc(100% / 12));
+  background-size: calc(100% + 1px) 100%;
+}
+.sh-knob {
+  background: var(--color-deep-grid);
+  border: 3px solid var(--color-signal);
+  box-shadow: 0 0 0 4px rgb(134 224 138 / 0.18), 0 0 18px 2px rgb(134 224 138 / 0.55);
+  cursor: grab;
+  touch-action: none;
+}
+.sh-zone:active .sh-knob {
+  cursor: grabbing;
+}
+.sh-label {
+  transition: color var(--dur-fast) var(--ease-standard);
 }
 @media (prefers-reduced-motion: reduce) {
-  .ribbon-label { animation: none; }
+  .sh-panel,
+  .sh-panel[data-on] {
+    transition: none;
+    translate: 0 0;
+  }
+  .sh-n[data-pending] {
+    opacity: 1;
+    animation: none;
+  }
 }
 
 /* Residential "A day with home storage" slider: the track runs night → day → night (no numbers); the

@@ -21,9 +21,9 @@ for (const w of [1440, 390]) {
     }
     await p.close();
   }
-  // Hub: header (the ribbon on desktop) and the segment cards.
+  // Hub: header (the scale slider, once its script is running) and the segment cards.
   const hub = await go("/solutions");
-  if (!mobile) await hub.waitForFunction(() => document.querySelector(".ribbon-label")?.textContent.trim().length > 0, null, { timeout: 15000 }).catch(() => {});
+  await hub.waitForSelector("[data-scale-header][data-ready]", { timeout: 15000 }).catch(() => {});
   await hub.waitForTimeout(1200);
   await hub.screenshot({ path: shot(`hub-top-${w}`) });
   const cards = hub.locator('section[aria-label="Solutions by segment"]');
