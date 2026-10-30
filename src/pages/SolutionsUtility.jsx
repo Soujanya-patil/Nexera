@@ -165,10 +165,10 @@ export default function SolutionsUtility() {
         ]}
         cta={{ label: "Explore Utility Solutions", target: "utility-solutions" }}
         image={{
-          name: "utility-solar",
-          alt: "Utility-scale battery energy storage containers beside a solar plant",
-          position: "object-[50%_62%]",
-          credit: "CLOU utility-scale storage · technology partner imagery",
+          scene: "utility",
+          alt: "Render of Hithium battery storage containers beside a solar plant at sunset",
+          position: "object-[85%_50%]",
+          credit: "Illustrative image",
         }}
       />
       {/* Sticky segment switcher (own chunk, mounted once the page is idle): shown once the hero has scrolled away. */}

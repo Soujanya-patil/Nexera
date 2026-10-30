@@ -201,9 +201,10 @@ export default function SolutionsCI() {
         tagline="Solar + Storage + Energy Management. Built for performance. Designed for scale."
         cta={{ label: "Explore C&I Solutions", target: "ci-products" }}
         image={{
-          name: "ci-industrial",
-          alt: "TCL floor-standing battery cabinets and inverter beside an industrial building",
-          credit: "TCL commercial & industrial storage · technology partner imagery",
+          scene: "ci",
+          alt: "Render of three TCL battery cabinets beside a commercial building at dusk",
+          position: "object-[55%_50%] md:object-[35%_50%] lg:object-[85%_50%]",
+          credit: "Illustrative image",
         }}
       />
       {/* Sticky segment switcher (own chunk, mounted once the page is idle): shown once the hero has scrolled away. */}

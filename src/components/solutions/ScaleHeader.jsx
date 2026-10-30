@@ -1,13 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import PillLink from "../PillLink";
 import { SOLUTION_PAGES } from "../../data/solutions";
+import ScenePicture from "../ScenePicture";
 import { afterFirstPaint } from "../../lib/motion";
-
-// The scenes, each exported at 800 (phones) / 1200 / 1600 / 2400 px as AVIF, WebP and JPG
-// (src/assets/solutions-header).
-const files = import.meta.glob("../../assets/solutions-header/*.{avif,webp,jpg}", { eager: true, query: "?url", import: "default" });
-const srcSet = (name, ext) =>
-  [800, 1200, 1600, 2400].map((w) => `${files[`../../assets/solutions-header/${name}-${w}.${ext}`]} ${w}w`).join(", ");
 
 /*
  * The three stops of the scale slider. Every figure is the product data's own (products.js): the
@@ -28,7 +23,6 @@ const STOPS = [
     to: SOLUTION_PAGES.residential.path,
     short: "Residential",
     img: "residential",
-    size: [2400, 1351],
     alt: "Render of a home at dusk with a wall-mounted home battery and a green energy line along the path",
   },
   {
@@ -44,7 +38,6 @@ const STOPS = [
     to: SOLUTION_PAGES.ci.path,
     short: "Commercial & Industrial",
     img: "ci",
-    size: [2400, 1349],
     alt: "Render of three TCL battery cabinets beside a commercial building at dusk",
   },
   {
@@ -60,7 +53,6 @@ const STOPS = [
     to: SOLUTION_PAGES.utility.path,
     short: "Utility-scale",
     img: "utility",
-    size: [2400, 1351],
     alt: "Render of Hithium battery storage containers beside a solar plant at sunset",
   },
 ];
@@ -91,28 +83,20 @@ const GLIDE_MS = 1400; // auto-play: knob from one stop to the next
 const HOLD_MS = 2600; // auto-play: time at a stop (≈ 4 s per stop with the glide)
 const COUNT_MS = 1200; // the first figure counting up to 128
 
-/** One scene: a <picture> (AVIF → WebP → JPG) filling its layer. */
+/** One scene (ScenePicture: AVIF → WebP → JPG) filling its layer. */
 function Scene({ s, first, active, imgRef }) {
-  const sizes = "(min-width: 1024px) 100vw, 140vw";
   return (
-    <picture>
-      <source type="image/avif" srcSet={srcSet(s.img, "avif")} sizes={sizes} />
-      <source type="image/webp" srcSet={srcSet(s.img, "webp")} sizes={sizes} />
-      <img
-        ref={imgRef}
-        src={files[`../../assets/solutions-header/${s.img}-1600.jpg`]}
-        srcSet={srcSet(s.img, "jpg")}
-        sizes={sizes}
-        width={s.size[0]}
-        height={s.size[1]}
-        alt={active ? s.alt : ""}
-        aria-hidden={active ? undefined : true}
-        loading="eager"
-        fetchPriority={first ? "high" : "low"}
-        decoding={first ? "sync" : "async"}
-        className="sh-img absolute inset-0 h-full w-full object-cover"
-      />
-    </picture>
+    <ScenePicture
+      name={s.img}
+      sizes="(min-width: 1024px) 100vw, 140vw"
+      imgRef={imgRef}
+      alt={active ? s.alt : ""}
+      aria-hidden={active ? undefined : true}
+      loading="eager"
+      fetchPriority={first ? "high" : "low"}
+      decoding={first ? "sync" : "async"}
+      className="sh-img absolute inset-0 h-full w-full object-cover"
+    />
   );
 }
 

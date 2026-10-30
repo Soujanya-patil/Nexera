@@ -5,7 +5,7 @@ import { KineticEyebrow, KineticHeading } from "./Kinetic";
 import { ArrowLink, SEGMENT_OFFSET, Spotlight, useTilt } from "./Interactive";
 import MagneticButton from "../ui/MagneticButton";
 import PillLink from "../PillLink";
-import SceneImg from "../SceneImg";
+import ScenePicture from "../ScenePicture";
 import CountUp from "../CountUp";
 import { depth, usePointerDepth } from "../../lib/pointerDepth";
 import { useIntro } from "../../lib/intro";
@@ -120,10 +120,12 @@ export function SolutionHero({ segment, crumb, eyebrow, line1, line2, subheading
           <div ref={parallax} className="absolute inset-0 will-change-transform">
             <div data-a={morphed ? undefined : "zoom"} className={`absolute inset-0 ${firstLoad && !morphed ? "hero-settle" : ""}`}>
               <div className="absolute -inset-3" style={depth(-6, -4)}>
-                <SceneImg
-                  name={image.name}
-                  eager
+                {/* The segment's dusk scene (the same files as the /solutions header): the page's LCP. */}
+                <ScenePicture
+                  name={image.scene}
+                  loading="eager"
                   fetchPriority="high"
+                  decoding="async"
                   sizes="(min-width: 1024px) 62vw, 100vw"
                   alt={image.alt}
                   className={`h-full w-full object-cover ${image.position ?? ""}`}

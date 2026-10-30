@@ -63,11 +63,22 @@
    Windows' Arial / Arial Bold with fontTools), so the swap to Plex moves no line and no box. */
 @font-face {
   font-family: "IBM Plex Sans Fallback";
-  font-weight: 100 549;
+  font-weight: 100 449;
   src: local("Arial"), local("ArialMT"), local("Arimo"), local("Liberation Sans");
   size-adjust: 99.05%;
   ascent-override: 103.48%;
   descent-override: 27.76%;
+  line-gap-override: 0%;
+}
+/* Medium (500) is about 2.1% wider than regular: its own stand-in, so a medium line that fits in the
+   fallback still fits once Plex 500 arrives (ascent / descent kept at Plex's 1.025 / 0.275). */
+@font-face {
+  font-family: "IBM Plex Sans Fallback";
+  font-weight: 450 549;
+  src: local("Arial"), local("ArialMT"), local("Arimo"), local("Liberation Sans");
+  size-adjust: 101.13%;
+  ascent-override: 101.35%;
+  descent-override: 27.19%;
   line-gap-override: 0%;
 }
 @font-face {

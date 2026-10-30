@@ -101,9 +101,10 @@ export default function SolutionsResidential() {
         tagline="Solar + Storage + Intelligence: one complete energy solution for your home."
         cta={{ label: "Explore Our Residential Solutions", target: "home-solutions" }}
         image={{
-          name: "res-house",
-          alt: "Rendering of a home at night with rooftop solar and a wall-mounted TCL battery beside the garage",
-          credit: "TCL residential storage · technology partner imagery",
+          scene: "residential",
+          alt: "Render of a home at dusk with a wall-mounted home battery and a green energy line along the path",
+          position: "object-[100%_50%]",
+          credit: "Illustrative image",
         }}
       />
       {/* Sticky segment switcher (own chunk, mounted once the page is idle): shown once the hero has scrolled away. */}
