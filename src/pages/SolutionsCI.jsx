@@ -28,7 +28,7 @@ import {
 import { getProduct } from "../data/products";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import { CI_FAQ } from "../data/solutions";
-import CabinetScrub from "../components/solutions/CabinetScrub";
+import PeakShaving from "../components/solutions/PeakShaving";
 import { AfterIdle, AppRail, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
 const LoadShiftChart = lazy(() => import("../components/solutions/LoadShiftChart"));
@@ -301,7 +301,8 @@ export default function SolutionsCI() {
         </CompareProvider>
       </Section>
 
-      <CabinetScrub />
+      {/* Peak shaving: an illustrative day, the battery keeping the evening peak under the contract limit. */}
+      <PeakShaving />
 
       <Section
         id="quality"

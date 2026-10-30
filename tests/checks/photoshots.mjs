@@ -15,9 +15,9 @@ for (const w of [1440, 390]) {
     const p = await go(route);
     await p.locator("section[data-vt-hero]").screenshot({ path: shot(`${n}-hero-${w}`) });
     if (n === "ci") {
-      const s = p.locator("#inside-cabinet");
+      const s = p.locator("#peak-shaving > div"); // the (sticky) panel, not the tall pinned section
       await s.scrollIntoViewIfNeeded(); await p.waitForTimeout(1500);
-      await s.screenshot({ path: shot(`ci-cabinet-${w}`) });
+      await s.screenshot({ path: shot(`ci-peak-shaving-${w}`) });
     }
     await p.close();
   }
