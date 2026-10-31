@@ -154,6 +154,9 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             style={depth(3)}
             className="mt-5 block text-h1 font-semibold [--depth:0.5] xl:[--depth:1]"
           >
+            {/* From 1024 px each line stays one line (lg:whitespace-nowrap): in IBM Plex it always fits,
+                but at 1024 the stand-in shown while the font loads is a few px wider and used to wrap,
+                moving the whole hero once the font arrived. */}
             {LINES.map((line, i) => {
               // The space sits between the word spans, not inside them: trailing whitespace inside an
               // inline-block collapses, which would run the words together while they animate.
@@ -172,7 +175,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
                 // the heading's text (what crawlers and screen readers read); at the end of a block
                 // line it renders nothing.
                 return (
-                  <span key={i} data-line={i} className="block">
+                  <span key={i} data-line={i} className="block lg:whitespace-nowrap">
                     {words}{" "}
                   </span>
                 );
@@ -180,7 +183,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
               return (
                 // Extra depth on the focal line (its transform), hover lift on `translate` — separate
                 // properties, so the two never override each other.
-                <span key={i} data-line={i} className="block" style={depth(2)}>
+                <span key={i} data-line={i} className="block lg:whitespace-nowrap" style={depth(2)}>
                   <span
                     className={`inline-block text-accent transition-[filter,translate] duration-base ease-standard hover:-translate-y-0.5 focus-visible:-translate-y-0.5 hover:brightness-110 focus-visible:brightness-110 ${
                       intro === "done" ? "hero-accent-sheen" : ""

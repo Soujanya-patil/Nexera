@@ -457,6 +457,12 @@ export default function HomeHero() {
     const col = productCol.current;
     if (!fit || !el || !copy || !col) return;
     const measure = () => {
+      // Only with the real fonts: until they arrive the CSS fallback (index.css) already holds the gap
+      // they will give, so measuring the stand-in text would move the product twice.
+      if (document.fonts && document.fonts.status !== "loaded") {
+        document.fonts.ready.then(measure);
+        return;
+      }
       const range = document.createRange();
       const walker = document.createTreeWalker(copy, NodeFilter.SHOW_TEXT);
       let right = 0;
