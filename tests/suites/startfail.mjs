@@ -25,7 +25,10 @@ const breakIO = (afterNav) => {
 const state = (p) =>
   p.evaluate(() => {
     const root = document.getElementById("root");
+    // Inert carousel slides (the /solutions header's other stops, the /products hero's other products)
+    // are hidden by design, not held back for the script.
     const hidden = [...root.querySelectorAll("h1, h2, h3, p, a, li")].filter((el) => {
+      if (el.closest("[inert]")) return false;
       const r = el.getBoundingClientRect();
       return r.height > 0 && (getComputedStyle(el).opacity === "0" || getComputedStyle(el).visibility === "hidden");
     }).length;

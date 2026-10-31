@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ArrowDown, ArrowRight } from "lucide-react";
-import { APPLICATIONS, PARTNERS, PRODUCTS, applicationLabel, getProduct, partnerOf } from "../data/products";
+import { APPLICATIONS, PARTNERS, PRODUCTS, partnerOf } from "../data/products";
 import ProductCard from "../components/catalogue/ProductCard";
 import LiveCount from "../components/catalogue/LiveCount";
 import { CompareDialog, CompareTray, MAX_COMPARE } from "../components/catalogue/Compare";
 import ChooseCta from "../components/catalogue/ChooseCta";
+import ProductsHeroStage from "../components/catalogue/ProductsHeroStage";
 import TiltSurface from "../components/ui/TiltSurface";
 import { depth, usePointerDepth } from "../lib/pointerDepth";
 import { useIntro } from "../lib/intro";
@@ -81,92 +82,6 @@ function Segmented({ options, value, onChange, label }) {
   );
 }
 
-const HERO_PRODUCT_ID = "hithium-power-cabinet-1022";
-
-/**
- * The hero's single real product (Hithium ∞Power 1022 kWh cabinet, the catalogue cutout), whole at
- * its native proportions. Behind it: a slow ambient light and a faint engineering grid, both
- * restrained. Pointer depth moves it up to 6 px (desktop); hovering scales it to 1.015 and reveals a
- * small technical tag — partner, the catalogue's headline figure and its applications, all taken
- * from the product data. On touch the tag toggles with a tap.
- */
-function HeroProduct() {
-  const product = getProduct(HERO_PRODUCT_ID);
-  const partner = partnerOf(product.partner);
-  const [tag, setTag] = useState(false);
-  return (
-    <figure data-a="product" className="relative flex flex-col items-center lg:items-end">
-      <div
-        className="group/product relative"
-        onPointerEnter={(e) => e.pointerType === "mouse" && setTag(true)}
-        onPointerLeave={(e) => e.pointerType === "mouse" && setTag(false)}
-        onPointerUp={(e) => e.pointerType !== "mouse" && setTag((v) => !v)}
-      >
-        {/* Ambient light (slow drift) + faint grid behind the product */}
-        <div aria-hidden="true" className="pointer-events-none absolute -inset-x-[55%] -inset-y-[18%]" style={depth(-2, -1.5)}>
-          <div
-            className="ambient-drift absolute inset-0"
-            style={{ background: "radial-gradient(40% 44% at 50% 52%, color-mix(in srgb, var(--accent) 13%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 45%, transparent 72%)" }}
-          />
-          <div
-            className="absolute inset-0 opacity-70"
-            style={{
-              backgroundImage:
-                "linear-gradient(color-mix(in srgb, var(--color-paper) 5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 5%, transparent) 1px, transparent 1px)",
-              backgroundSize: "40px 40px",
-              maskImage: "radial-gradient(38% 40% at 50% 55%, #000, transparent 75%)",
-              WebkitMaskImage: "radial-gradient(38% 40% at 50% 55%, #000, transparent 75%)",
-            }}
-          />
-        </div>
-
-        <div style={depth(6, 5)}>
-          <div className="relative aspect-[640/900] h-[22rem] transition-[scale] duration-slow ease-standard group-hover/product:scale-[1.015] group-focus-visible/product:scale-[1.015] group-focus-within/product:scale-[1.015] sm:h-[26rem] lg:h-[min(30rem,62vh)]">
-            <span aria-hidden="true" className="absolute inset-x-[4%] -bottom-[1%] h-[5%] rounded-[100%] bg-black/60 blur-lg" />
-            <img
-              src={product.image}
-              alt={product.imageAlt}
-              width="640"
-              height="900"
-              fetchPriority="high"
-              loading="eager"
-              decoding="async"
-              className="relative h-full w-full object-contain"
-            />
-
-            {/* Technical tag: a dot on the cabinet's front-top corner, a thin leader, then the tag —
-                opening into the free space left of the product on desktop, over it on phones. */}
-            <div
-              aria-hidden="true"
-              className={`pointer-events-none absolute left-[20%] top-[14%] transition-opacity duration-fast ${tag ? "opacity-100" : "opacity-0"}`}
-            >
-              <span className="absolute -left-1 -top-1 h-2 w-2 rounded-full bg-accent ring-2 ring-deep-grid/70" />
-              <span
-                className="absolute left-0 top-0 h-px w-10 origin-left bg-accent/70 transition-[scale] duration-base ease-standard lg:left-auto lg:right-0 lg:origin-right"
-                style={{ scale: tag ? "1 1" : "0 1" }}
-              />
-              <div
-                className={`absolute -top-[1.85rem] left-11 w-max rounded-[3px] border border-accent/35 bg-deep-grid/85 px-3 py-2 leading-tight backdrop-blur-sm transition-[opacity,scale] duration-base ease-standard lg:left-auto lg:right-11 ${
-                  tag ? "scale-100 opacity-100 delay-150" : "scale-95 opacity-0"
-                }`}
-              >
-                <p className="eyebrow text-label">{partner.name}</p>
-                <p className="mt-0.5 text-small font-semibold text-white">{product.cardSpecs[0]}</p>
-                <p className="mt-0.5 eyebrow text-paper/70">
-                  {product.applications.map(applicationLabel).join(" · ")}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <figcaption className="mt-5 text-micro tracking-[0.16em] text-label">
-        <span className="uppercase">{partner.name}</span> {product.name}
-      </figcaption>
-    </figure>
-  );
-}
-
 /**
  * Heading + intro for the current category/partner. When the filters change, the old heading leaves
  * (fade, 6 px up) and only then does the new one arrive (fade, from 8 px below), 0.28 s each (CSS
@@ -207,7 +122,8 @@ function CategoryHeading({ app, partner }) {
  * /products — the BESS product explorer. Discover -> filter -> see -> compare -> explore -> enquire.
  *
  * HERO: one GSAP entrance (eyebrow, headline lines with the green line emphasised, description, then
- *   the product, then the CTA), pointer depth on desktop, and the product's hover tag.
+ *   the product stage, then the CTA) and pointer depth on the ground (desktop). The stage rotates the
+ *   partners' products, small to large (components/catalogue/ProductsHeroStage).
  * FILTERS: application and partner filters combine and live in the URL (?app=ci&partner=tcl); changing
  *   them replaces the history entry and never scrolls. Every card stays mounted and non-matching ones
  *   are hidden, which lets GSAP Flip animate the reflow (leaving cards fade, staying cards glide,
@@ -377,7 +293,7 @@ export default function Products() {
               </button>
             </div>
           </div>
-          <HeroProduct />
+          <ProductsHeroStage />
         </div>
       </section>
 

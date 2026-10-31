@@ -771,6 +771,125 @@
   }
 }
 
+/* /products hero stage (ProductsHeroStage.jsx). Slides change on data-state: "on" rises in (0.9 s,
+   ease-out), "out" slides left and fades, "idle" waits hidden and resets out of sight. Only opacity
+   and translate move. The rotation clock is the active partner's bar (.ph-fill): 4.4 s = 3.5 s hold +
+   0.9 s change; its animationend moves on, and pausing pauses it. */
+.ph-slide {
+  visibility: hidden;
+  transition: visibility 0s 0.35s;
+}
+.ph-slide[data-state="on"] {
+  visibility: visible;
+  transition: none;
+}
+.ph-slide[data-state="out"] {
+  transition: visibility 0s 0.6s;
+}
+.ph-prod,
+.ph-info {
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-standard), translate 0s 0.3s;
+}
+.ph-prod {
+  translate: 0 28px;
+}
+.ph-info {
+  translate: 0 12px;
+}
+.ph-slide[data-state="on"] :is(.ph-prod, .ph-info) {
+  opacity: 1;
+  translate: 0 0;
+  transition: opacity 0.9s var(--ease-standard) 0.15s, translate 0.9s var(--ease-emphasized) 0.15s;
+}
+.ph-slide[data-state="out"] .ph-prod {
+  translate: -40px 0;
+}
+.ph-slide[data-state="out"] .ph-info {
+  translate: -16px 0;
+}
+.ph-slide[data-state="out"] :is(.ph-prod, .ph-info) {
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-in-out), translate 0.6s var(--ease-in-out);
+}
+/* Warm dusk glow behind the product, breathing slowly. */
+.ph-glow {
+  background:
+    radial-gradient(52% 66% at 50% 100%, rgb(245 184 65 / 0.3), rgb(226 120 84 / 0.14) 46%, transparent 74%),
+    radial-gradient(28% 34% at 50% 100%, rgb(134 224 138 / 0.1), transparent 72%);
+  animation: ph-breathe 7s ease-in-out infinite alternate;
+}
+@keyframes ph-breathe {
+  from { opacity: 0.72; }
+  to { opacity: 1; }
+}
+/* Floor line (#86E08A) with its glow; a light sweeps along it at each change. */
+.ph-floor {
+  background: linear-gradient(to right, transparent, rgb(134 224 138 / 0.85) 18%, var(--color-signal) 50%, rgb(134 224 138 / 0.85) 82%, transparent);
+}
+.ph-floor-glow {
+  background: radial-gradient(50% 50% at 50% 50%, rgb(134 224 138 / 0.45), transparent 72%);
+  filter: blur(4px);
+}
+.ph-sweep {
+  left: 0;
+  background: linear-gradient(to right, transparent, rgb(226 255 226 / 0.95), transparent);
+  animation: ph-sweep 1.3s var(--ease-standard) 0.15s both;
+}
+@keyframes ph-sweep {
+  from { transform: translateX(-100%); opacity: 0; }
+  15% { opacity: 1; }
+  to { transform: translateX(400%); opacity: 0; }
+}
+/* Faint reflection under the line, gone within a fifth of the product's height. */
+.ph-reflect {
+  opacity: 0.4;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.42), transparent 18%);
+  mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.42), transparent 18%);
+}
+/* Partner bars: full on the selected partner; while rotating it fills as the clock. */
+.ph-fill {
+  transform-origin: left center;
+}
+.ph[data-rotating] .ph-tab[aria-selected="true"] .ph-fill {
+  animation: ph-fill-x 4.4s linear both;
+}
+.ph[data-rotating][data-paused] .ph-tab[aria-selected="true"] .ph-fill {
+  animation-play-state: paused;
+}
+@media (width >= 64rem) {
+  .ph-fill {
+    transform-origin: center top;
+  }
+  .ph[data-rotating] .ph-tab[aria-selected="true"] .ph-fill {
+    animation-name: ph-fill-y;
+  }
+}
+@keyframes ph-fill-x {
+  from { transform: scaleX(0); }
+}
+@keyframes ph-fill-y {
+  from { transform: scaleY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ph-glow {
+    animation: none;
+  }
+  .ph-sweep {
+    display: none;
+  }
+  .ph-slide,
+  .ph-slide[data-state],
+  .ph-slide :is(.ph-prod, .ph-info),
+  .ph-slide[data-state] :is(.ph-prod, .ph-info) {
+    transition: none;
+  }
+  .ph-slide[data-state] :is(.ph-prod, .ph-info) {
+    translate: 0 0;
+  }
+}
+
 /* Residential "A day with home storage" slider: the track runs night → day → night (no numbers); the
    thumb is a sun by day and a moon by night. */
 .day-range {
