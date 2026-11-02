@@ -28,6 +28,7 @@ import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 import { partnerFaq } from "../data/partners";
 import { ARTICLES, DRAFT_ARTICLES } from "../data/articles";
 import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
+import { productPage as productContent } from "../data/productPages";
 import { ADDRESS_PARTS, BUSINESS_NAME, HOURS, PHONE } from "../data/business";
 
 export const SITE_URL = "https://nexerapower.com";
@@ -262,6 +263,9 @@ function productPage(p) {
   const shortType = p.type.replace(/energy storage system/i, "ESS");
   const apps = p.applications.map(applicationLabel).join(" & ");
   const supplied = ` Supplied in India by NEXERA, authorized ${brand} distributor.`;
+  // A listed product's own title, description and FAQ (data/productPages.js); the generated ones below
+  // are the fallback (a product kept off the catalogue).
+  const content = productContent(p.id);
   const available = " Available in India through NEXERA.";
   return {
     path: `/products/${p.id}`,
@@ -269,12 +273,16 @@ function productPage(p) {
     // is not indexed: noindex, no canonical or structured data, and not in the sitemap.
     noindex: p.listed === false || undefined,
     h1: p.name,
-    title: firstFitting(
+    // Breadcrumb Home > Products > partner > product (named as on the page).
+    label: p.name,
+    crumbs: [["Products", "/products"], [brand, `/partners/${p.partner}`], [p.name, `/products/${p.id}`]],
+    faq: content?.faq,
+    title: content?.title ?? firstFitting(
       [`${label} — ${shortType}${TITLE_SUFFIX}`, `${label} — ${apps} Energy Storage${TITLE_SUFFIX}`, `${label}${TITLE_SUFFIX}`],
       TITLE_MAX
     ),
     // The product's own summary sentence where it fits, otherwise its type.
-    description: firstFitting(
+    description: content?.description ?? firstFitting(
       [
         `${label}: ${p.summary}${supplied}`,
         `${label}: ${p.summary}${available}`,
@@ -289,7 +297,8 @@ function productPage(p) {
     ogImage: p.shareImage ?? (p.imageFallback ? DEFAULT_OG_IMAGE : p.image),
     // Structured data (Product): only what the catalogue states. The brand is the partner that makes
     // it — never NEXERA — and there are no offers, prices, ratings or specs; no image without a photo.
-    product: { name: label, description: p.summary, image: p.imageFallback ? null : p.image, brand },
+    // `model` (where the catalogue has one) is also the sku; `category` is the catalogue's type.
+    product: { name: label, description: p.summary, image: p.imageFallback ? null : p.image, brand, model: p.model, category: p.type },
   };
 }
 

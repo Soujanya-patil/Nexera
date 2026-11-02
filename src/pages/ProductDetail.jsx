@@ -4,13 +4,16 @@ import {
   ArrowLeft,
   ArrowRight,
   Boxes,
+  Check,
   ChevronRight,
   Cpu,
+  DraftingCompass,
   Download,
   FileText,
   Expand,
   Flame,
   Gauge,
+  GraduationCap,
   LandPlot,
   Layers,
   Minimize2,
@@ -20,11 +23,15 @@ import {
   Snowflake,
   Sun,
   Thermometer,
+  Wrench,
   Zap,
 } from "lucide-react";
 import { PRODUCTS, SPEC_GROUPS, applicationLabel, getProduct, partnerOf } from "../data/products";
 import { SOLUTION_PAGES } from "../data/solutions";
 import { PARTNER_LINE } from "../data/partners";
+import { introLine, productPage } from "../data/productPages";
+import { SUPPORT_POINTS } from "../data/serviceTraining";
+import { ARTICLES } from "../data/articles";
 import { docHref } from "../lib/contactLinks";
 import PillLink from "../components/PillLink";
 import AnimatedTabs from "@/components/smoothui/animated-tabs";
@@ -35,6 +42,8 @@ import { useParallax } from "../lib/parallax";
 import ProductCard from "../components/catalogue/ProductCard";
 import HotspotViewer from "../components/catalogue/HotspotViewer";
 import ChooseCta from "../components/catalogue/ChooseCta";
+import { FaqList, FeatureGrid } from "../components/solutions/SolutionBlocks";
+import { ArrowLink, ArrowUnderline } from "../components/solutions/Interactive";
 import { depth, usePointerDepth } from "../lib/pointerDepth";
 import { useIntro } from "../lib/intro";
 import { useScrollReveal } from "../lib/scrollReveal";
@@ -44,6 +53,9 @@ import { DUR, STAGGER } from "../lib/tokens";
 const TAB_ID = "spec-tabs";
 // "At a glance" grid columns by the number of key figures.
 const GLANCE_COLS = { 2: "sm:grid-cols-2 lg:max-w-wide", 3: "md:grid-cols-3", 4: "sm:grid-cols-2 lg:grid-cols-4" };
+const SUPPORT_ICONS = { sizing: DraftingCompass, commissioning: Wrench, training: GraduationCap, "after-sales": ShieldCheck };
+// The published article every product page links to (never a draft).
+const GUIDE = ARTICLES.find((a) => a.slug === "what-is-bess");
 const ICONS = { Boxes, Cpu, Expand, Flame, Gauge, LandPlot, Layers, Minimize2, Monitor, Network, ShieldCheck, Snowflake, Sun, Thermometer, Zap };
 
 /**
@@ -147,6 +159,8 @@ function ProductView({ product }) {
   const partner = partnerOf(product.partner);
   const related = PRODUCTS.filter((p) => p.partner === product.partner && p.id !== product.id && p.listed !== false).slice(0, 3);
   const hasTech = SPEC_GROUPS.some((g) => product.specs[g.id]?.length);
+  // Who it's for, applications, FAQ (data/productPages.js): every listed product; none for one kept off the catalogue.
+  const pg = productPage(product.id);
 
   return (
     <div ref={page} data-sr-state={reveal}>
@@ -194,6 +208,11 @@ function ProductView({ product }) {
               <h1 data-a="title" className="mt-eyebrow text-h1 font-semibold">
                 {product.name}
               </h1>
+              {pg && (
+                <p data-a="meta" className="mt-3 max-w-lg text-body font-medium text-white">
+                  {introLine(product)}
+                </p>
+              )}
               <div data-a="meta">
                 {product.model && <p className="mt-2 font-medium text-accent">{product.model}</p>}
                 <p className="mt-2 text-paper/70">{product.type}</p>
@@ -217,9 +236,11 @@ function ProductView({ product }) {
                   </Fragment>
                 ))}
               </p>
-              {/* The summary, then where to get it: the partner pages' own line (data/partners.js). */}
+              {/* The summary; where to get it is the intro line under the h1, or (a product kept off the
+                  catalogue) the partner pages' own line (data/partners.js). */}
               <p data-a="desc" className="mt-6 max-w-lg text-body text-paper/80">
-                {product.summary} {PARTNER_LINE}
+                {product.summary}
+                {!pg && ` ${PARTNER_LINE}`}
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <span data-a="cta" className="inline-block">
@@ -376,6 +397,64 @@ function ProductView({ product }) {
         </section>
       )}
 
+      {pg && (
+        <>
+          {/* FIT — who it's for and its typical applications (data/productPages.js), each use linking to
+              its section on the Solutions page. */}
+          <section className="bg-white py-section">
+            <div className="grid container-site gap-12 lg:grid-cols-2 lg:gap-16">
+              <div>
+                <p className="eyebrow text-muted">Is it right for you?</p>
+                <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Who it&rsquo;s for</AnimatedText>
+                <ul className="mt-8 space-y-4 text-body text-copy">
+                  {pg.audience.map((a) => (
+                    <li data-sr key={a} className="flex gap-3">
+                      <Check aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-label" strokeWidth={2.4} />
+                      {a}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p className="eyebrow text-muted">Where it fits</p>
+                <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Typical applications</AnimatedText>
+                <ul className="mt-8 grid gap-4">
+                  {pg.uses.map((u) => (
+                    <li data-sr key={u.id}>
+                      <Link
+                        to={u.to}
+                        className="card-hover group flex flex-col rounded-card border border-line bg-paper p-5 focus-visible:outline-2 focus-visible:outline-offset-2"
+                      >
+                        <h3 className="font-semibold text-ink">{u.title}</h3>
+                        <p className="mt-1 text-small text-copy">{u.text}</p>
+                        <span className="mt-3 inline-flex items-center gap-1.5 text-small font-semibold text-accent">
+                          <ArrowUnderline group="card">See how it works</ArrowUnderline>
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* NEXERA SUPPORT — the shared support points (Service & Training, How It Works). */}
+          <section className="bg-paper py-section">
+            <div className="container-site">
+              <p className="eyebrow text-muted">Service &amp; Training</p>
+              <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">NEXERA support in India</AnimatedText>
+              <FeatureGrid columns={4} className="mt-10" items={SUPPORT_POINTS.map((s) => ({ ...s, icon: SUPPORT_ICONS[s.key] }))} />
+              <ArrowLink to="/service-training" className="mt-10 min-h-11">
+                More on Service &amp; Training
+              </ArrowLink>
+            </div>
+          </section>
+
+          {/* FAQ — also the page's FAQPage data, word for word. */}
+          <FaqList id="faq" tone="paper" title={`${partner.name} ${product.name} — Frequently Asked Questions`} items={pg.faq} />
+        </>
+      )}
+
       {/* Sources */}
       <section className="border-t border-line bg-white">
         <div className="container-site py-6">
@@ -407,6 +486,24 @@ function ProductView({ product }) {
                 </li>
               ))}
             </ul>
+            {/* Related reading: the partner page, the Solutions page(s) and the published BESS guide. */}
+            {pg && (
+              <div className="mt-10 flex flex-wrap gap-x-8 gap-y-2">
+                <ArrowLink to={`/partners/${partner.id}`} className="min-h-11">
+                  {partner.name} energy storage in India
+                </ArrowLink>
+                {product.applications.map((a) => (
+                  <ArrowLink key={a} to={SOLUTION_PAGES[a].path} className="min-h-11">
+                    {SOLUTION_PAGES[a].label} solutions
+                  </ArrowLink>
+                ))}
+                {GUIDE && (
+                  <ArrowLink to={`/blog/${GUIDE.slug}`} className="min-h-11">
+                    {GUIDE.shortTitle}
+                  </ArrowLink>
+                )}
+              </div>
+            )}
           </div>
         </section>
       )}

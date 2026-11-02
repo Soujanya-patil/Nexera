@@ -39,34 +39,8 @@ export const OFFERS = [
   },
 ].map((o) => ({ ...o, ...SOLUTION_PAGES[o.id] }));
 
-/** "How we support local projects": Service & Training and How It Works, in their own words. */
-export const SUPPORT = [
-  {
-    key: "sizing",
-    title: "Sizing",
-    // Service & Training: "Every partner gets our engineering team for sizing, single-line diagrams, …"
-    text: "Every partner gets our engineering team for sizing and single-line diagrams.",
-  },
-  {
-    key: "commissioning",
-    title: "Commissioning support",
-    // Service & Training: "…on-site support with BESS installation and BESS commissioning."
-    // How It Works, stage 04: "Our engineers work your first sizing and commissioning with you."
-    text: "On-site support with BESS installation and BESS commissioning. Our engineers work your first sizing and commissioning with you.",
-  },
-  {
-    key: "training",
-    title: "Technician training",
-    // Service & Training: Kalaburagi Technician Training Center.
-    text: "In Kalaburagi, BESS technician training happens on live TCL and Hithium hardware — not manuals and PDFs.",
-  },
-  {
-    key: "after-sales",
-    title: "After-sales & warranty",
-    // Service & Training: After-Sales & Warranty.
-    text: "Local-first warranty handling — we manage the OEM relationship so your customer relationship stays intact.",
-  },
-];
+/** "How we support local projects": the shared support points (data/serviceTraining.js). */
+export { SUPPORT_POINTS as SUPPORT } from "./serviceTraining";
 
 export const BENGALURU_FAQ = [
   {

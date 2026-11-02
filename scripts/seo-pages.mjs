@@ -122,9 +122,10 @@ const resolved = ROUTES.map((r) => ({ ...r, ogImage: ogFor(r) }));
 
 // --- Structured data: one JSON-LD @graph per page, only here (never rendered at runtime) --------
 // Organization on every page; WebSite on the homepage; BreadcrumbList on every other route
-// (Home > Page, Home > Products > Product, named like the page titles; or the route's own `crumbs`,
-// e.g. Home > Solutions > Utility-Scale); Product on product pages, from the catalogue only — brand
-// is the partner, never NEXERA; no offers, prices or ratings; FAQPage where a route has an FAQ.
+// (Home > Page, named like the page titles; or the route's own `crumbs`, e.g. Home > Solutions >
+// Utility-Scale, Home > Products > partner > product); Product on product pages, from the catalogue
+// only — brand is the partner, never NEXERA; model as sku where the catalogue has one; no offers,
+// prices or ratings; FAQPage where a route has an FAQ.
 const ORG_ID = `${SITE_URL}/#organization`;
 const organization = {
   "@type": "Organization",
@@ -189,6 +190,8 @@ function graphFor(r) {
       description: r.product.description,
       ...(r.product.image ? { image: SITE_URL + r.product.image } : {}), // none for a product without a photo
       url: r.canonical,
+      ...(r.product.model ? { sku: r.product.model, model: r.product.model } : {}),
+      category: r.product.category,
       brand: { "@type": "Brand", name: r.product.brand },
     });
   }
