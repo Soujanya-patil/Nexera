@@ -30,7 +30,7 @@ async function page(W, { touch = false, reduce = false, js = true } = {}) {
     // Every figure text shown on the active slide, frame by frame.
     window.__figs = [];
     const tick = () => {
-      const f = document.querySelector('[data-products-hero] .ph-slide[data-state="on"] .ph-info p[class*="text-accent"] [aria-hidden] .inline-grid > :last-child');
+      const f = document.querySelector('[data-products-hero] .ph-slide[data-state="on"] .ph-info p.text-accent .inline-grid > span');
       if (f && window.__figs.at(-1) !== f.textContent) window.__figs.push(f.textContent);
       requestAnimationFrame(tick);
     };
@@ -53,7 +53,10 @@ const state = (p) =>
       visible,
       selected: tabs.findIndex((t) => t.getAttribute("aria-selected") === "true"),
       counter: h.querySelector("p.tabular-nums")?.textContent.trim(),
-      live: h.querySelector("[aria-live]")?.textContent,
+      // The live region is the slides container (one, the only one): what it announces is the slide
+      // that comes into view — its product name and figure, each once.
+      liveRegions: [...h.querySelectorAll("[aria-live]")].map((e) => (e.hasAttribute("data-slides") ? "slides" : e.tagName)).join(),
+      live: (() => { const s = h.querySelector('.ph-slide[data-state="on"] .ph-info'); return s ? [s.querySelector("a").textContent.trim(), s.querySelector("p.text-accent").textContent.replace(/\s+/g, " ").trim()].join(", ") : null; })(),
       liveMode: h.querySelector("[aria-live]")?.getAttribute("aria-live"),
       rotating: h.hasAttribute("data-rotating"),
       paused: h.hasAttribute("data-paused"),
@@ -75,10 +78,14 @@ const state = (p) =>
     links && imgs.length === 2 && imgs.every((s) => s.includes("tcl-blueark-x5")) && /<img [^>]*fetchpriority="high"[^>]*tcl-blueark-x5|<img [^>]*tcl-blueark-x5[^>]*fetchpriority="high"/i.test(hero),
     { links, imgs }
   );
+  // The hero's text as a crawler reads it (tags removed): each product's figure exactly once.
+  // (Product names are taken out first: "∞Power 1022 kWh Cabinet" contains its own figure.)
+  const heroText = NAMES.reduce((t, n) => t.split(n).join(" "), hero.replace(/<[^>]+>/g, " ").replace(/\s+/g, " "));
+  const figCounts = FIGS.map((f) => heroText.split(f).length - 1);
   check(
-    "pre-rendered: slide 1 on, slides 2 and 3 inert; name + figure of product 1 in the markup",
-    /data-state="on"/.test(hero) && (hero.match(/inert=""/g) || []).length === 2 && hero.includes(">BlueArk X5<") && hero.includes(">100 kWh<"),
-    { on: /data-state="on"/.test(hero), inert: (hero.match(/inert=""/g) || []).length }
+    "pre-rendered: slide 1 on, slides 2 and 3 inert; name + figure of product 1 in the markup; each figure once in the text",
+    /data-state="on"/.test(hero) && (hero.match(/inert=""/g) || []).length === 2 && hero.includes(">BlueArk X5<") && figCounts.every((n) => n === 1),
+    { on: /data-state="on"/.test(hero), inert: (hero.match(/inert=""/g) || []).length, figCounts }
   );
   check(
     "page head unchanged: title, description, canonical, JSON-LD, h1",
@@ -98,7 +105,7 @@ const state = (p) =>
     const img = s.querySelector(".ph-prod img:not(.-scale-y-100)");
     return {
       name: name && vis(name) ? name.getAttribute("href") : null,
-      fig: s.querySelector(".sr-only")?.textContent,
+      fig: s.querySelector(".ph-info p.text-accent").textContent.replace(/\s+/g, " ").trim(),
       img: img ? img.complete && img.naturalWidth > 0 && vis(img) : false,
       prodOpacity: getComputedStyle(s.querySelector(".ph-prod")).opacity,
       links: [...h.querySelectorAll('a[href^="/products/"]')].map((a) => a.getAttribute("href")),
@@ -113,7 +120,7 @@ const state = (p) =>
 {
   const p = await page(1440);
   const s0 = await state(p);
-  check("@1440: starts on product 1, rotating, live region off while rotating", s0.on === 0 && s0.selected === 0 && s0.rotating && !s0.paused && s0.liveMode === "off" && s0.counter === "01 / 03" && s0.pause === "Pause product rotation", s0);
+  check("@1440: starts on product 1, rotating; the live region is the slides, off while rotating", s0.liveRegions === "slides" && s0.on === 0 && s0.selected === 0 && s0.rotating && !s0.paused && s0.liveMode === "off" && s0.counter === "01 / 03" && s0.pause === "Pause product rotation", s0);
   await p.waitForTimeout(4900);
   const s1 = await state(p);
   check("@1440: after ~4.4 s → product 2 (tab, counter, slide)", s1.on === 1 && s1.selected === 1 && s1.counter === "02 / 03" && s1.visible[1] && s1.inert[0] && !s1.inert[1], s1);
@@ -160,12 +167,12 @@ const state = (p) =>
   await p.mouse.move(2, 600);
   await p.waitForTimeout(1200);
   const s = await state(p);
-  check("click CLOU: product 3 shown, tab selected, counter 03, live text", s.on === 2 && s.selected === 2 && s.counter === "03 / 03" && s.visible[2] && !s.visible[0] && s.live === "CLOU Aqua C2.5S, 2.089 MWh", s);
+  check("click CLOU: product 3 shown, tab selected, counter 03, live text", s.on === 2 && s.selected === 2 && s.counter === "03 / 03" && s.visible[2] && !s.visible[0] && s.live === "Aqua C2.5S, 2.089 MWh", s);
   await p.locator(`${HERO} [role=tab]`, { hasText: "Hithium" }).hover();
   await p.locator(`${HERO} [role=tab]`, { hasText: "Hithium" }).click();
   await p.waitForTimeout(1200);
   const h = await state(p);
-  check("click Hithium (pointer over the carousel): product 2, live region polite and announcing it", h.on === 1 && h.liveMode === "polite" && h.live === "Hithium ∞Power 1022 kWh Cabinet, 1022 kWh", h);
+  check("click Hithium (pointer over the carousel): product 2, live region polite and announcing it", h.on === 1 && h.liveMode === "polite" && h.live === "∞Power 1022 kWh Cabinet, 1022 kWh", h);
   await p.locator(`${HERO} .ph-slide[data-state="on"] .ph-prod a`).click();
   await p.waitForURL((u) => u.pathname === "/products/hithium-power-cabinet-1022", { timeout: 8000 }).catch(() => {});
   check("click the product image → its product page", new URL(p.url()).pathname === "/products/hithium-power-cabinet-1022", p.url());

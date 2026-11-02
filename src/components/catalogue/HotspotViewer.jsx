@@ -13,7 +13,7 @@ import { Info } from "lucide-react";
  * Points are percentages of the image (the stage keeps the image's own aspect, object-contain).
  */
 export default function HotspotViewer({ hotspots, partnerName }) {
-  const { image, imageAlt, caption, points } = hotspots;
+  const { image, imageSize, imageAlt, caption, points } = hotspots;
   const [hover, setHover] = useState(null);
   const [selected, setSelected] = useState(points[0].id);
   const current = points.find((p) => p.id === selected);
@@ -22,7 +22,7 @@ export default function HotspotViewer({ hotspots, partnerName }) {
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-start">
       <figure>
         <div className="relative aspect-[65/54] overflow-hidden rounded-card bg-deep-grid ring-1 ring-white/10">
-          <img src={image} alt={imageAlt} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+          <img src={image} alt={imageAlt} width={imageSize[0]} height={imageSize[1]} loading="lazy" decoding="async" className="h-full w-full object-contain" />
           <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(75% 70% at 50% 52%, transparent 60%, color-mix(in srgb, var(--color-deep-grid) 35%, transparent) 100%)" }} />
           {points.map((p, i) => {
             const shown = hover === p.id || selected === p.id;

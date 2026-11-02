@@ -71,6 +71,8 @@ export default function NexeraLfp({ active, motion, mode, step }) {
                   <img
                     src={p.image}
                     alt={p.imageAlt}
+                    width={p.imageSize[0]}
+                    height={p.imageSize[1]}
                     loading="lazy"
                     decoding="async"
                     className={`absolute inset-0 h-full w-full object-contain object-center ${compact ? "p-2" : "p-3"}`}

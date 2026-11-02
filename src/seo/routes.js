@@ -1,13 +1,14 @@
 /*
- * Per-route SEO metadata — the single source of truth for every URL in public/sitemap.xml.
+ * Per-route SEO metadata — the single source of truth for every URL (the build writes dist/sitemap.xml
+ * from it: every route except a `noindex` one).
  *
  * Read in two places:
  *   - at runtime by <Seo> (components/Seo.jsx), which renders the route's <title>, description and
  *     canonical so they follow client-side navigation;
  *   - at build time by scripts/seo-pages.mjs, which writes one HTML file per route with these tags
  *     (plus Open Graph / Twitter) already in <head>, for crawlers that don't run JavaScript. That
- *     script also checks every entry against sitemap.xml and the limits below, and fails the build
- *     if anything is off.
+ *     script also checks every entry against the limits below (and that every path is lowercase),
+ *     and fails the build if anything is off.
  *
  * Positioning: NEXERA is the authorized distributor / solution provider; TCL, Hithium and CLOU design
  * and manufacture the systems. Descriptions only restate what the page itself says.
@@ -43,13 +44,16 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
  * The Organization for structured data (scripts/seo-pages.mjs puts it on every page). Only facts the
  * site itself states: the address and phone are the Footer's (data/business, as on the Google
  * Business Profile); the site shows no email or social profiles, so none are given. On the homepage
- * and the contact page (`localBusiness` routes) the same node is also the LocalBusiness: the Business
- * Profile's name and opening hours. The logo is the NEXERA mark (the wordmark's green X on the ink
+ * and the contact page (`localBusiness` routes) the same node is also the LocalBusiness, with the
+ * opening hours. Every page names the business the same way: name "NEXERA Powertech", legalName (the
+ * footer's legal line) and, as alternateName, the Business Profile's spelling. The logo is the NEXERA mark (the wordmark's green X on the ink
  * ground) as the 180x180 public/apple-touch-icon.png, the same mark as public/favicon.svg.
  */
-export const LOCAL_BUSINESS = { name: BUSINESS_NAME, hours: HOURS };
+export const LOCAL_BUSINESS = { hours: HOURS };
 export const ORGANIZATION = {
   name: "NEXERA Powertech",
+  legalName: "Nexera Powertech Private Limited",
+  alternateName: BUSINESS_NAME,
   description:
     "Authorized distributor and solution provider for TCL, Hithium and CLOU battery energy storage systems in India, with design, commissioning, training and after-sales support.",
   address: ADDRESS_PARTS,
@@ -213,6 +217,7 @@ const PAGES = [
     title: a.title,
     description: a.description,
     crumbs: [["Blog", "/blog"], [a.shortTitle, `/blog/${a.slug}`]],
+    ogImage: a.shareImage ?? DEFAULT_OG_IMAGE,
     article: { headline: a.h1, datePublished: a.datePublished, dateModified: a.dateModified },
     faq: a.faqs,
   })),
@@ -242,6 +247,9 @@ function productPage(p) {
   const available = " Available in India through NEXERA.";
   return {
     path: `/products/${p.id}`,
+    // A product kept off the catalogue (`listed: false`, e.g. no product photo yet) keeps its page but
+    // is not indexed: noindex, no canonical or structured data, and not in the sitemap.
+    noindex: p.listed === false || undefined,
     h1: p.name,
     title: firstFitting(
       [`${label} — ${shortType}${TITLE_SUFFIX}`, `${label} — ${apps} Energy Storage${TITLE_SUFFIX}`, `${label}${TITLE_SUFFIX}`],
@@ -257,9 +265,10 @@ function productPage(p) {
       ],
       DESCRIPTION_MAX
     ),
-    // Candidate only: the build keeps it if the image is at least OG_IMAGE_MIN_WIDTH wide. A product
+    // Its own 1200x630 share image (data/products.js `shareImage`) where it has one. Otherwise a
+    // candidate only: the build keeps it if it is a JPG/PNG at least OG_IMAGE_MIN_WIDTH wide. A product
     // without a photo (`imageFallback`: its `image` is the partner's logo) shares the default image.
-    ogImage: p.imageFallback ? DEFAULT_OG_IMAGE : p.image,
+    ogImage: p.shareImage ?? (p.imageFallback ? DEFAULT_OG_IMAGE : p.image),
     // Structured data (Product): only what the catalogue states. The brand is the partner that makes
     // it — never NEXERA — and there are no offers, prices, ratings or specs; no image without a photo.
     product: { name: label, description: p.summary, image: p.imageFallback ? null : p.image, brand },

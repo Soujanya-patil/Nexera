@@ -63,7 +63,7 @@ export default function CompareTray({ ids, replaced, onClear }) {
           <ul className="flex min-w-0 flex-1 gap-2">
             {products.map((p) => (
               <li key={p.id} className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-control bg-white sm:h-14 sm:w-14">
-                <img src={p.image} alt={fullName(p)} className={p.imageFallback ? "h-auto w-[70%] opacity-80" : "h-[88%] w-[88%] object-contain"} />
+                <img src={p.image} alt={fullName(p)} width={p.imageSize[0]} height={p.imageSize[1]} className={p.imageFallback ? "h-auto w-[70%] opacity-80" : "h-[88%] w-[88%] object-contain"} />
               </li>
             ))}
             <li className="hidden self-center pl-1 text-micro text-paper/60 sm:block">Up to 3 systems</li>
@@ -177,6 +177,8 @@ function CompareDialog({ products, open, onClose }) {
                     <div className="relative mb-3 aspect-[4/3] w-full max-w-[10rem] overflow-hidden rounded-control bg-ice">
                       <img
                         src={p.image}
+                        width={p.imageSize[0]}
+                        height={p.imageSize[1]}
                         alt=""
                         className={`absolute inset-0 m-auto object-contain ${p.imageFallback ? "h-[18%] w-[50%] opacity-80" : "h-[80%] w-[80%]"}`}
                       />

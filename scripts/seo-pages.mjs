@@ -13,9 +13,12 @@
  *
  * routes.js imports the product catalogue, which imports images, so it is loaded through a small Vite
  * SSR build (same config, same content hashes): product images resolve to the very /assets/ URLs the
- * client build emitted. The build fails if routes.js and sitemap.xml disagree, a limit is broken, a
- * title or description is duplicated, or an image is missing.
+ * client build emitted. It writes dist/sitemap.xml from routes.js (every route except a `noindex` one,
+ * each with the built commit's date as lastmod) and the article-URL redirects into dist/.htaccess. The
+ * build fails if a limit is broken, a title or description is duplicated, a route or an internal link
+ * isn't spelled in lowercase, or an image is missing.
  */
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -57,10 +60,17 @@ const {
 
 // --- Checks -----------------------------------------------------------------------------------
 const problems = [];
-const sitemap = [...fs.readFileSync(path.join(root, "public", "sitemap.xml"), "utf8").matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-const canonicals = ROUTES.map((r) => r.canonical);
-for (const url of sitemap) if (!canonicals.includes(url)) problems.push(`in sitemap.xml but not routes.js: ${url}`);
-for (const url of canonicals) if (!sitemap.includes(url)) problems.push(`in routes.js but not sitemap.xml: ${url}`);
+// The sitemap: every route search engines should index — not a `noindex` one (e.g. a product kept off
+// the catalogue). Written to dist/sitemap.xml once the checks pass.
+const sitemap = ROUTES.filter((r) => !r.noindex).map((r) => r.canonical);
+// lastmod: the date of the commit being built (the build date where there is no git history).
+let lastmod = "";
+try {
+  lastmod = execFileSync("git", ["log", "-1", "--format=%cs"], { cwd: root, encoding: "utf8" }).trim();
+} catch {}
+if (!/^\d{4}-\d{2}-\d{2}$/.test(lastmod)) lastmod = new Date().toISOString().slice(0, 10);
+// One spelling per URL: every route is lowercase (an article's other spellings 301 to it, below).
+for (const r of ROUTES) if (r.path !== r.path.toLowerCase()) problems.push(`${r.path}: route paths must be lowercase`);
 const seen = { title: new Map(), description: new Map() };
 for (const r of ROUTES) {
   if (r.title.length >= TITLE_MAX) problems.push(`${r.path}: title is ${r.title.length} characters (limit < ${TITLE_MAX})`);
@@ -97,8 +107,10 @@ function imageWidth(file) {
 }
 const distFile = (url) => path.join(dist, decodeURIComponent(url));
 if (!fs.existsSync(distFile(DEFAULT_OG_IMAGE))) problems.push(`default share image missing: dist${DEFAULT_OG_IMAGE}`);
+// Only JPG or PNG: some link previews (LinkedIn, several messaging apps) don't show WebP or AVIF.
 const ogFor = (r) => {
   if (r.ogImage === DEFAULT_OG_IMAGE || !r.ogImage.startsWith("/")) return DEFAULT_OG_IMAGE;
+  if (!/\.(jpe?g|png)$/i.test(r.ogImage)) return DEFAULT_OG_IMAGE;
   if (!fs.existsSync(distFile(r.ogImage))) {
     problems.push(`${r.path}: image ${r.ogImage} is not in dist`);
     return DEFAULT_OG_IMAGE;
@@ -117,6 +129,8 @@ const organization = {
   "@type": "Organization",
   "@id": ORG_ID,
   name: ORGANIZATION.name,
+  legalName: ORGANIZATION.legalName,
+  alternateName: ORGANIZATION.alternateName,
   url: `${SITE_URL}/`,
   logo: { "@type": "ImageObject", url: SITE_URL + ORGANIZATION.logo },
   description: ORGANIZATION.description,
@@ -130,13 +144,11 @@ const organization = {
   },
   ...(ORGANIZATION.telephone ? { telephone: ORGANIZATION.telephone } : {}),
 };
-// The homepage and the contact page: the same node is also the LocalBusiness (the Google Business
-// Profile's name, the address and phone, the opening hours).
+// The homepage and the contact page: the same node is also the LocalBusiness (same names, address and
+// phone as on every page, plus the opening hours).
 const localBusiness = {
   ...organization,
   "@type": ["Organization", "LocalBusiness"],
-  name: LOCAL_BUSINESS.name,
-  alternateName: ORGANIZATION.name,
   image: SITE_URL + DEFAULT_OG_IMAGE,
   openingHoursSpecification: {
     "@type": "OpeningHoursSpecification",
@@ -236,10 +248,38 @@ function jsonLd(r) {
 const scripts = new Map(resolved.map((r) => [r.path, jsonLd(r)]));
 const notFoundScript = jsonLd(null);
 
+// --- Article URLs: one spelling ----------------------------------------------------------------------
+// Any other spelling of an article's URL — other letter case, .html, a trailing slash, or the old
+// /resources/<slug> — answers with a 301 to the lowercase /blog/<slug>, before the server would look
+// for a file (on Linux a mixed-case URL is otherwise a 404). Written into dist/.htaccess where
+// public/.htaccess has its marker. Matched on the request line (THE_REQUEST), which internal
+// rewrites never change, so the page's own URL (rewritten to its .html file) can't loop.
+const HTACCESS_MARKER = /^[ \t]*# @article-urls\b.*$/m;
+const htaccessPath = path.join(dist, ".htaccess");
+const htaccess = fs.readFileSync(htaccessPath, "utf8");
+if (!HTACCESS_MARKER.test(htaccess)) problems.push("public/.htaccess: the # @article-urls marker is missing");
+const reEsc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const articleRules = ROUTES.filter((r) => r.article).map((r) => {
+  const slug = r.path.slice("/blog/".length);
+  return [
+    `  # ${r.path}: any other spelling -> 301`,
+    `  RewriteCond %{THE_REQUEST} !\\s${reEsc(r.path)}[?\\s]`,
+    `  RewriteRule ^(?:blog|resources)/${reEsc(slug)}(?:\\.html)?/?$ ${r.path} [NC,R=301,L]`,
+  ].join("\n");
+});
+
 if (problems.length) {
   console.error(`\nseo-pages: ${problems.length} problem(s):\n  ${problems.join("\n  ")}\n`);
   process.exit(1);
 }
+
+fs.writeFileSync(htaccessPath, htaccess.replace(HTACCESS_MARKER, articleRules.join("\n") || "  # (no articles)"));
+fs.writeFileSync(
+  path.join(dist, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap
+    .map((u) => `  <url><loc>${u}</loc><lastmod>${lastmod}</lastmod></url>`)
+    .join("\n")}\n</urlset>\n`
+);
 
 // --- Pre-rendered page markup ---------------------------------------------------------------------
 /** The route's markup from the pre-renderer; fails the build if it is empty or has no <h1>. */
@@ -281,18 +321,22 @@ shell = shell.replace(APP_SCRIPT, (_, src) => appStart(src));
 
 for (const r of resolved) {
   const image = SITE_URL + r.ogImage;
+  // A `noindex` route (not in the sitemap): a robots noindex instead of the canonical, and no
+  // structured data; title, description and link-preview tags as usual.
   const head = [
     `<title>${esc(r.title)}</title>`,
     `<meta name="description" content="${esc(r.description)}" />`,
-    `<link rel="canonical" href="${esc(r.canonical)}" />`,
+    r.noindex ? `<meta name="robots" content="noindex" />` : `<link rel="canonical" href="${esc(r.canonical)}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:title" content="${esc(r.title)}" />`,
     `<meta property="og:description" content="${esc(r.description)}" />`,
     `<meta property="og:url" content="${esc(r.canonical)}" />`,
     `<meta property="og:image" content="${esc(image)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
-    scripts.get(r.path),
-  ].join("\n    ");
+    r.noindex ? null : scripts.get(r.path),
+  ]
+    .filter(Boolean)
+    .join("\n    ");
   let html = shell.replace(/\s*<\/head>/, `\n    ${head}\n  </head>`);
   // The page itself, pre-rendered (the browser hydrates it): visible before any JavaScript runs.
   html = withMarkup(html, await renderPage(r.path));
@@ -368,7 +412,7 @@ if (imgProblems.length) {
 }
 console.log(`seo-pages: every <img> in ${htmlFiles.length} HTML files has an alt`);
 
-// --- Page content: every sitemap route's file has its page in #root, exactly its one <h1>, and exactly
+// --- Page content: every route's file has its page in #root, exactly its one <h1>, and exactly
 // one non-empty <title> and meta description in its <head> -----------------------------------------
 // Read back from the files as written (what gets deployed). A crawler that doesn't run JavaScript sees
 // only this, so an empty root, a missing or second <h1>, or a heading other than the route's `h1`
@@ -399,11 +443,20 @@ for (const r of resolved) {
   else if (!r.h1) pageProblems.push(`${r.path}: no expected h1 in routes.js (renders "${h1s[0]}")`);
   else if (h1s[0] !== r.h1) pageProblems.push(`${r.path} (${file}): <h1> is "${h1s[0]}", expected "${r.h1}"`);
 }
+// Internal links use each route's own (lowercase) spelling, never one that only matches it ignoring case.
+const routeByLower = new Map(ROUTES.map((r) => [r.path.toLowerCase(), r.path]));
+for (const f of htmlFiles) {
+  for (const [, href] of fs.readFileSync(f, "utf8").matchAll(/<a\s[^>]*?href="(\/[^"#?]*)/g)) {
+    const p = href.length > 1 ? href.replace(/\/+$/, "") : href;
+    const own = routeByLower.get(p.toLowerCase());
+    if (own && own !== p) pageProblems.push(`${path.relative(dist, f).split(path.sep).join("/")}: link to ${href} (the URL is ${own})`);
+  }
+}
 if (pageProblems.length) {
   console.error(`\nseo-pages: ${pageProblems.length} page(s) without their content or heading:\n  ${pageProblems.join("\n  ")}\n`);
   process.exit(1);
 }
-console.log(`seo-pages: every sitemap page (${resolved.length}) has its content in #root, exactly its one <h1>, and one non-empty <title> and description`);
+console.log(`seo-pages: every route page (${resolved.length}; ${sitemap.length} in the sitemap) has its content in #root, exactly its one <h1>, and one non-empty <title> and description`);
 
 console.log(`\nseo-pages: ${resolved.length} route pages + 404.html + ${PREVIEW_ROUTES.length} noindex preview page(s) written\n`);
 for (const r of resolved) console.log(`  ${r.path.padEnd(38)} ${String(r.title.length).padStart(2)}  ${String(r.description.length).padStart(3)}  ${r.ogImage}`);

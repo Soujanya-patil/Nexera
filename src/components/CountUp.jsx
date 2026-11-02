@@ -60,16 +60,22 @@ export default function CountUp({ value, className = "" }) {
     // Runs once: the count only ever goes up to the real value.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // The value is in the page once: the visible figure is the text itself whenever it shows the value
+  // (the pre-rendered page, after the count, reduced motion). Only while it shows another number
+  // (waiting below the fold, counting) is it hidden from screen readers, with the value given once
+  // beside it instead.
+  const counting = shown !== value;
   return (
-    <span ref={ref} className={`inline-grid tabular-nums ${className}`}>
-      <span className="sr-only">{value}</span>
-      {/* The final value, invisible, holds the width; the counting value sits over it, left-aligned, so
-          its first digit never moves (a centred count would shift as it grows). The box itself still
-          follows its parent's alignment. */}
-      <span aria-hidden="true" className="invisible col-start-1 row-start-1 text-left">
-        {value}
-      </span>
-      <span aria-hidden="true" className="col-start-1 row-start-1 text-left">
+    // The final value holds the width as a hidden ::before (CSS generated text: not page text, not read
+    // out); the shown value sits over it, left-aligned, so its first digit never moves (a centred count
+    // would shift as it grows). The box itself still follows its parent's alignment.
+    <span
+      ref={ref}
+      data-final={value}
+      className={`inline-grid tabular-nums before:invisible before:col-start-1 before:row-start-1 before:text-left before:content-[attr(data-final)] ${className}`}
+    >
+      {counting && <span className="sr-only">{value}</span>}
+      <span aria-hidden={counting || undefined} className="col-start-1 row-start-1 text-left">
         {shown}
       </span>
     </span>

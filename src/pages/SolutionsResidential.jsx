@@ -12,6 +12,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { RESIDENTIAL_BENEFITS, RESIDENTIAL_FAQ } from "../data/solutions";
+import { guideFor } from "../data/articles";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
@@ -260,7 +261,7 @@ export default function SolutionsResidential() {
         </p>
       </Section>
 
-      <FaqList id="faq" tone="paper" title="Home Battery Storage — Frequently Asked Questions" items={RESIDENTIAL_FAQ} />
+      <FaqList id="faq" tone="paper" title="Home Battery Storage — Frequently Asked Questions" items={RESIDENTIAL_FAQ} guide={guideFor("residential")} />
 
       <CtaBand
         id="contact-home"

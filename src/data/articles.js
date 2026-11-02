@@ -585,6 +585,10 @@ const ALL = [
       "BESS full form: Battery Energy Storage System. Learn how a BESS works, its key components, kW vs kWh, and where homes, businesses and the grid use it.",
     shortTitle: "What Is a BESS?",
     eyebrow: "Guide",
+    // The Solutions pages that link to it as their guide (FaqList `guide`).
+    segments: ["residential", "ci", "utility"],
+    // Link-preview image (1200x630 JPG, scripts/share-images.py).
+    shareImage: "/og/blog-what-is-bess.jpg",
     h1: "What Is a BESS? A Plain Guide to Battery Energy Storage",
     intro: "A simple explanation of battery energy storage systems: what they are, how they work and where they're used in India.",
     datePublished: "2026-10-08T17:39:00+05:30",
@@ -789,6 +793,9 @@ const ALL = [
 export const ARTICLES = ALL.filter((a) => !a.draft);
 /** The drafts (development only; none in a production build). */
 export const DRAFT_ARTICLES = ALL.filter((a) => a.draft);
+
+/** The published article a Solutions segment page links to as its guide (`segments`), if any. */
+export const guideFor = (segment) => ARTICLES.find((a) => a.segments?.includes(segment));
 
 /** Plain text of a Rich value (string, or strings and { b } / { a } pieces). */
 export function richText(r) {

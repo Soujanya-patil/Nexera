@@ -26,6 +26,7 @@ import { getProduct } from "../data/products";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.webp";
 import { UTILITY_FAQ } from "../data/solutions";
+import { guideFor } from "../data/articles";
 import UseCaseMap from "../components/solutions/UseCaseMap";
 import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
@@ -382,7 +383,7 @@ export default function SolutionsUtility() {
         </ArrowLink>
       </Section>
 
-      <FaqList id="faq" title="Utility-Scale BESS — Frequently Asked Questions" items={UTILITY_FAQ} />
+      <FaqList id="faq" title="Utility-Scale BESS — Frequently Asked Questions" items={UTILITY_FAQ} guide={guideFor("utility")} />
 
       <CtaBand
         id="contact-utility"

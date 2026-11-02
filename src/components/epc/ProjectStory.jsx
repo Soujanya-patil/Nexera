@@ -51,7 +51,7 @@ export default function ProjectStory() {
       />
       <span aria-hidden="true" className="absolute inset-x-[8%] bottom-[0.5%] h-[3%] rounded-[100%] bg-black/50 blur-lg" />
       <div className="relative h-full w-full" style={staged ? { transform: "translate3d(0, calc((0.5 - var(--progress, 0)) * 36px), 0) scale(calc(0.94 + var(--progress, 0) * 0.08))" } : undefined}>
-        <img src={product.image} alt={product.imageAlt} loading="lazy" decoding="async" className="h-full w-full object-contain" />
+        <img src={product.image} alt={product.imageAlt} width={product.imageSize[0]} height={product.imageSize[1]} loading="lazy" decoding="async" className="h-full w-full object-contain" />
       </div>
       {/* Stage 2: the product's confirmed headline figures */}
       <div

@@ -113,6 +113,8 @@ export function CompareDialog({ ids, open, onClose }) {
                     <div className="relative mb-3 aspect-[4/3] w-full max-w-[11rem] overflow-hidden rounded-control bg-ice">
                       <img
                         src={p.image}
+                        width={p.imageSize[0]}
+                        height={p.imageSize[1]}
                         loading="lazy"
                         decoding="async"
                         alt=""

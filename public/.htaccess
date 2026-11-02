@@ -28,6 +28,10 @@ ErrorDocument 404 /404.html
   # The Home v2 preview was retired: /home-v2 (also .html or a trailing slash) -> Home. Above the rules
   # that serve files, so it redirects even while an old home-v2.html is still on the server.
   RewriteRule ^home-v2(?:\.html)?/?$ / [R=301,L]
+  # An article's other spellings (letter case, .html, trailing slash, /resources/<slug>) -> its lowercase
+  # /blog/<slug> URL. scripts/seo-pages.mjs writes one rule pair per published article in place of
+  # the marker line below (dist/.htaccess).
+  # @article-urls
   # The articles moved from Resources to the Blog: /resources/<slug> (also .html or a trailing slash)
   # -> /blog/<slug>; /resources itself stays. Keep this above the rules that serve files: it redirects
   # even where an old resources/<slug>.html is still on the server.

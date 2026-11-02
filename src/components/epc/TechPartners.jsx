@@ -73,7 +73,7 @@ export default function TechPartners() {
                     src={p.logo}
                     loading="lazy"
                     decoding="async"
-                    alt={p.name}
+                    alt={`${p.name} logo`}
                     width={p.logoSize?.[0]}
                     height={p.logoSize?.[1]}
                     className={`${p.id === "clou" ? "h-7" : "h-5"} w-auto max-w-full object-contain transition-[opacity,filter] duration-fast ${

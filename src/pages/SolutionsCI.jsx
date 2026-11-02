@@ -28,6 +28,7 @@ import {
 import { getProduct } from "../data/products";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import { CI_FAQ } from "../data/solutions";
+import { guideFor } from "../data/articles";
 import PeakShaving from "../components/solutions/PeakShaving";
 import { AfterIdle, AppRail, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
@@ -415,7 +416,7 @@ export default function SolutionsCI() {
         </ArrowLink>
       </Section>
 
-      <FaqList id="faq" tone="paper" title="C&I Energy Storage — Frequently Asked Questions" items={CI_FAQ} />
+      <FaqList id="faq" tone="paper" title="C&I Energy Storage — Frequently Asked Questions" items={CI_FAQ} guide={guideFor("ci")} />
 
       <CtaBand
         id="contact-ci"

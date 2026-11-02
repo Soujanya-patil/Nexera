@@ -21,6 +21,10 @@
  * Their data comes from the director-approved Solutions content (checked against the CLOU BESS deck
  * and the Hithium brochure), and is limited to what that content states.
  *
+ * `imageSize` is the image file's own width and height (set on every <img> so nothing moves while it loads).
+ * `shareImage` (optional) is the page's 1200x630 JPG for link previews, made by scripts/share-images.py
+ * (public/og/); without one the page shares the default image.
+ *
  * Adding a product: append an entry with the same shape. `specs` groups render as the Technical
  * Information tabs (only non-empty groups show), `keySpecs` are the headline figures, `compare` holds
  * the comparison-table values, and `hotspots` enables the interactive view — only add hotspots whose
@@ -89,6 +93,7 @@ export const PRODUCTS = [
     type: "Residential Hybrid Energy Storage System",
     applications: ["residential"],
     image: imgX1,
+    imageSize: [389, 774],
     imageAlt: "TCL BlueArk X1 residential energy storage system: a stacked battery unit with an integrated hybrid inverter",
     summary: "A hybrid inverter paired with a modular, stacked LFP battery — from 8 kWh up to 128 kWh for the home.",
     cardSpecs: ["8–128 kWh", "Up to 15 kW"],
@@ -154,6 +159,7 @@ export const PRODUCTS = [
     type: "Industrial Hybrid Energy Storage Solution",
     applications: ["ci"],
     image: imgX5,
+    imageSize: [480, 900],
     imageAlt: "TCL BlueArk X5 all-in-one industrial energy storage cabinet",
     summary: "An all-in-one, DC-coupled system for small and medium C&I sites — suited to new PV + storage projects.",
     cardSpecs: ["50 kW", "100 kWh"],
@@ -219,6 +225,7 @@ export const PRODUCTS = [
     type: "Energy Storage Cabinet",
     applications: ["ci"],
     image: imgW10,
+    imageSize: [380, 900],
     imageAlt: "TCL BlueArk W10 energy storage cabinet",
     summary: "A 125 kW / 261 kWh cabinet, expandable to 6.3 MWh, with a layered protection architecture.",
     cardSpecs: ["125 kW", "261 kWh"],
@@ -269,6 +276,7 @@ export const PRODUCTS = [
     // Protection Architecture slide. Only parts visible in this frame are marked.
     hotspots: {
       image: imgW10Open,
+      imageSize: [1040, 864],
       imageAlt: "Open-cabinet view: door with fans and fire suppression unit, five battery packs, and the lower electrical rack",
       caption: "Open-cabinet view of this cabinet design. Component names and locations follow TCL's protection-architecture documentation.",
       points: [
@@ -290,6 +298,7 @@ export const PRODUCTS = [
     type: "Liquid-cooled C&I energy storage cabinet",
     applications: ["ci"],
     image: imgBlock261,
+    imageSize: [506, 900],
     imageAlt: "Hithium ∞BLOCK 261 kWh energy storage cabinet",
     imageNote: "Pictured: Hithium ∞BLOCK 261 kWh cabinet. Exterior may vary by configuration.",
     summary: "A liquid-cooled 261 kWh cabinet with an integrated, adjustable 125 kW PCS for commercial and industrial sites.",
@@ -347,6 +356,8 @@ export const PRODUCTS = [
     type: "Liquid-cooled cabinet system",
     applications: ["ci", "utility"],
     image: imgCabinet1022,
+    imageSize: [640, 900],
+    shareImage: "/og/hithium-power-cabinet-1022.jpg",
     imageAlt: "Hithium ∞Power 1022 kWh liquid-cooled energy storage cabinet",
     summary: "A 1022 kWh liquid-cooled cabinet that integrates battery, thermal management and control in a compact footprint.",
     cardSpecs: ["1022 kWh", "Liquid-cooled"],
@@ -394,6 +405,7 @@ export const PRODUCTS = [
     type: "Liquid-cooled energy storage platform",
     applications: ["utility"],
     image: hithiumLogo,
+    imageSize: [355, 89],
     imageFallback: true,
     listed: false,
     imageAlt: "Hithium logo (product photo not available)",
@@ -423,6 +435,8 @@ export const PRODUCTS = [
     type: "Liquid-cooled energy storage system",
     applications: ["utility"],
     image: imgPower625,
+    imageSize: [1404, 800],
+    shareImage: "/og/hithium-power-625.jpg",
     imageAlt: "Hithium ∞Power 6.25 MWh liquid-cooled containerised energy storage system",
     summary: "A 6.25 MWh liquid-cooled system for utility-scale projects, available in 2-hour and 4-hour configurations.",
     cardSpecs: ["6.25 MWh", "2 h | 4 h"],
@@ -471,6 +485,7 @@ export const PRODUCTS = [
     type: "All-in-one C&I energy storage system",
     applications: ["ci"],
     image: imgClouE261,
+    imageSize: [427, 616],
     imageAlt: "CLOU Aqua-E261 all-in-one liquid-cooled C&I battery energy storage cabinet",
     summary:
       "An all-in-one C&I storage system, pre-installed and pre-commissioned, with intelligent temperature control, cloud-based monitoring and remote O&M.",
@@ -527,6 +542,8 @@ export const PRODUCTS = [
     type: "Containerised energy storage system",
     applications: ["utility"],
     image: imgClouC25s,
+    imageSize: [765, 640],
+    shareImage: "/og/clou-aqua-c25s.jpg",
     imageAlt: "CLOU Aqua C2.5S containerised energy storage system",
     summary: "A containerised energy storage system from CLOU for utility-scale applications.",
     cardSpecs: ["2.089 MWh", "500 kVA"],

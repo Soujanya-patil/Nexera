@@ -396,19 +396,18 @@ export default function ScaleHeader({ title, aside = null }) {
             ))}
           </div>
 
-          {/* The live figure and its line. */}
+          {/* The live figure and its line. Screen readers get the figure from the slider (aria-valuetext),
+              so it is in the page once: hidden from them here, and its width holders ("0.00", "MWh")
+              are hidden ::before boxes (CSS generated text, not page text). */}
           <div className="mt-6 flex items-center gap-4">
             <p className="flex shrink-0 items-baseline gap-1.5 tabular-nums">
-              <span className="sr-only">{figure(s.kwh)}</span>
-              <span aria-hidden="true" className="inline-grid">
-                <span className="invisible col-start-1 row-start-1 text-[clamp(2.5rem,2rem+1.6vw,3.25rem)] font-semibold leading-none">0.00</span>
+              <span aria-hidden="true" className="inline-grid before:invisible before:col-start-1 before:row-start-1 before:text-[clamp(2.5rem,2rem+1.6vw,3.25rem)] before:font-semibold before:leading-none before:content-['0.00']">
                 <span ref={num} data-pending="" className="sh-n col-start-1 row-start-1 text-[clamp(2.5rem,2rem+1.6vw,3.25rem)] font-semibold leading-none text-white">
                   {n0}
                 </span>
               </span>
-              {/* "MWh" (the wider unit), invisible, holds the width: the line beside never moves. */}
-              <span aria-hidden="true" className="inline-grid text-h4 font-medium text-accent">
-                <span className="invisible col-start-1 row-start-1">MWh</span>
+              {/* "MWh" (the wider unit), as a hidden ::before, holds the width: the line beside never moves. */}
+              <span aria-hidden="true" className="inline-grid text-h4 font-medium text-accent before:invisible before:col-start-1 before:row-start-1 before:content-['MWh']">
                 <span ref={unit} className="sh-u col-start-1 row-start-1">
                   {u0}
                 </span>

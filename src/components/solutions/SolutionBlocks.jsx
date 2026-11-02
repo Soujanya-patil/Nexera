@@ -1,6 +1,6 @@
 import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, ChevronDown, ChevronRight } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, ChevronRight } from "lucide-react";
 import { KineticEyebrow, KineticHeading } from "./Kinetic";
 import { ArrowLink, SEGMENT_OFFSET, Spotlight, useTilt } from "./Interactive";
 import MagneticButton from "../ui/MagneticButton";
@@ -815,9 +815,10 @@ export function CardGrid({ children, columns = 3, className = "mt-12" }) {
  * FAQ as an accordion of native <details>: every question is an h3 inside its <summary>, every answer
  * stays in the DOM (word for word the FAQPage data). The first item starts open. Opening animates
  * smoothly where supported (index.css), the chevron turns, and with the question focused + opens and
- * − closes (Enter / Space toggle as usual).
+ * − closes (Enter / Space toggle as usual). With `guide` (a published article, data/articles.js
+ * guideFor), a line under the questions links to it.
  */
-export function FaqList({ id, title, items, tone = "ice" }) {
+export function FaqList({ id, title, items, tone = "ice", guide }) {
   const onKey = (e) => {
     const d = e.currentTarget.parentElement;
     if (e.key === "+" || e.key === "=") {
@@ -854,6 +855,20 @@ export function FaqList({ id, title, items, tone = "ice" }) {
             </details>
           ))}
         </div>
+        {guide && (
+          <p className="mt-6 max-w-3xl text-small text-copy">
+            New to battery storage? Read our guide:{" "}
+            {/* An inline link (not ArrowLink's inline-flex), so on phones the title wraps as text and
+                the arrow stays at its end. */}
+            <Link
+              to={`/blog/${guide.slug}`}
+              className="group/guide font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-4"
+            >
+              {guide.h1}
+              <ArrowRight aria-hidden="true" className="ml-1 inline h-4 w-4 align-[-0.2em] transition-transform duration-fast group-hover/guide:translate-x-0.5 group-focus-visible/guide:translate-x-0.5" />
+            </Link>
+          </p>
+        )}
       </div>
     </section>
   );

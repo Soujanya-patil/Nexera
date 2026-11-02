@@ -18,9 +18,10 @@ import { COUNT_DUR } from "../../lib/tokens";
  *   or the hero is off screen. The pause button stops it until pressed again (WCAG 2.2.2).
  * PARTNER LIST — tabs (vertical on the right from 1024 px, three horizontal tabs below that):
  *   click, arrow keys, Home/End, Enter/Space. Clicking the product or its name opens its page.
- * LIVE REGION — polite while the rotation is paused or stopped, so changes you make are announced;
- *   off while it runs on its own, so a screen reader isn't interrupted every few seconds (the ARIA
- *   carousel pattern).
+ * LIVE REGION — the slides themselves (the ARIA carousel pattern), so the product that comes into
+ *   view is announced from its own labels and nothing is in the page twice: polite while the rotation
+ *   is paused or stopped, so changes you make are announced; off while it runs on its own, so a screen
+ *   reader isn't interrupted every few seconds.
  * REDUCED MOTION — no rotation, slide, count or glow animation; product 1 with all its labels, and
  *   the partner list switches instantly.
  * NO JS / PRE-RENDERED — product 1 with its name, figure and link; all three product links are in the
@@ -108,16 +109,20 @@ function Figure({ value, run }) {
       setShown(num);
     };
   }, [run, num]);
+  // The value is in the page once (as in CountUp): the visible figure is the text whenever it shows
+  // the value; only while it counts is it hidden from screen readers, with the value given once instead.
+  const counting = shown !== num;
   return (
     <p className="mt-2 font-semibold text-accent">
-      <span className="sr-only">{value}</span>
-      <span aria-hidden="true">
-        {/* The final value, invisible, holds the width; the count sits over it, left-aligned, so its
-            first digit never moves (as in CountUp). */}
-        <span className="inline-grid text-h2 tabular-nums">
-          <span className="invisible col-start-1 row-start-1">{num}</span>
+      {counting && <span className="sr-only">{value}</span>}
+      <span aria-hidden={counting || undefined}>
+        {/* The final value holds the width as a hidden ::before (not page text); the count sits over
+            it, left-aligned, so its first digit never moves. */}
+        <span data-final={num} className="inline-grid text-h2 tabular-nums before:invisible before:col-start-1 before:row-start-1 before:content-[attr(data-final)]">
           <span className="col-start-1 row-start-1 text-left">{shown}</span>
         </span>
+        {/* A zero-width space keeps "100 kWh" one phrase in the text; the gap itself is the margin. */}
+        {unit && <span className="text-[0px]"> </span>}
         {unit && <span className="ml-1.5 text-h4">{unit}</span>}
       </span>
     </p>
@@ -194,8 +199,6 @@ export default function ProductsHeroStage() {
     tabs.current[next]?.focus();
   };
 
-  const current = ITEMS[at.index];
-
   return (
     <div
       ref={root}
@@ -215,7 +218,7 @@ export default function ProductsHeroStage() {
     >
       {/* Stage: shared glow and floor, then the slides stacked in one grid cell (so the tallest sets
           the height and nothing moves when they change). */}
-      <div className="relative grid">
+      <div data-slides aria-live={rotating && !paused ? "off" : "polite"} className="relative grid">
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-[var(--stage-h)]">
           <div className="ph-glow absolute -inset-x-[20%] -top-[12%] bottom-0" />
         </div>
@@ -347,9 +350,6 @@ export default function ProductsHeroStage() {
         </div>
       </div>
 
-      <p className="sr-only" aria-live={rotating && !paused ? "off" : "polite"} aria-atomic="true">
-        {`${current.partner.name} ${current.product.name}, ${current.figure}`}
-      </p>
     </div>
   );
 }

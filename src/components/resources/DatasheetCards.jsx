@@ -40,6 +40,8 @@ function SheetCard({ product, kind }) {
         <img
           src={product.image}
           alt={product.imageAlt}
+          width={product.imageSize[0]}
+          height={product.imageSize[1]}
           loading="lazy"
           decoding="async"
           className={`card-media absolute inset-0 m-auto object-contain motion-reduce:transition-none ${

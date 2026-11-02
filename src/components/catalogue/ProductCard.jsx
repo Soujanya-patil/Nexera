@@ -43,6 +43,8 @@ export default function ProductCard({ product, compared, compareFull, onToggleCo
         <img
           src={product.image}
           alt={product.imageAlt}
+          width={product.imageSize[0]}
+          height={product.imageSize[1]}
           loading="lazy"
           decoding="async"
           style={{ viewTransitionName: `product-${product.id}` }}

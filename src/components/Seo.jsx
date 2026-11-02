@@ -29,11 +29,13 @@ export default function Seo() {
   }, []);
   if (!meta) return null;
   const route = meta.getRoute(pathname);
-  // A preview page (routes.js PREVIEW_ROUTES): its title, and noindex.
+  // A preview page (routes.js PREVIEW_ROUTES) or a route kept out of the index (a product off the
+  // catalogue): its title (and description, where it has one), and noindex — no canonical.
   if (route?.noindex) {
     return (
       <>
         <title>{route.title}</title>
+        {route.description && <meta name="description" content={route.description} />}
         <meta name="robots" content="noindex" />
       </>
     );
