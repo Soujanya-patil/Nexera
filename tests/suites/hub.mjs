@@ -31,12 +31,13 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
 {
   // The reference build predates two approved edits to the Organization (JSON-LD): the description's
   // partner list lost a name that is not a NEXERA partner, and the node gained the legal name and the
-  // Business Profile spelling. Applied to the reference, so everything else in the head must still
+  // Business Profile spelling, and later took "NexEra PowerTech Pvt Ltd" as its name (the brand and the
+  // Profile spelling as alternate names). Applied to the reference, so everything else in the head must still
   // match exactly.
   const before = fs
     .readFileSync(`${BEFORE_DIST}/resources.html`, "utf8")
     .replace("for TCL, Hithium, CLOU and Midea battery energy storage systems", "for TCL, Hithium and CLOU battery energy storage systems")
-    .replace('"name":"NEXERA Powertech","url"', '"name":"NEXERA Powertech","legalName":"Nexera Powertech Private Limited","alternateName":"NEXERA Power Tech","url"');
+    .replace('"name":"NEXERA Powertech","url"', '"name":"NexEra PowerTech Pvt Ltd","legalName":"Nexera Powertech Private Limited","alternateName":["NEXERA Powertech","NEXERA Power Tech"],"url"');
   const after = fs.readFileSync(`${AFTER_DIST}/resources.html`, "utf8");
   const pick = (h) => ({
     title: h.match(/<title>[^<]*<\/title>/)[0],

@@ -54,6 +54,7 @@ const {
   OG_IMAGE_MIN_WIDTH,
   NOT_FOUND_TITLE,
   ORGANIZATION,
+  SITE_NAME,
   LOCAL_BUSINESS,
   PREVIEW_ROUTES,
 } = await import(pathToFileURL(path.join(tmp, entry)).href);
@@ -176,7 +177,7 @@ function graphFor(r) {
   const nodes = [r?.localBusiness ? localBusiness : organization];
   if (!r) return nodes; // 404.html
   if (r.path === "/") {
-    nodes.push({ "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: ORGANIZATION.name, url: `${SITE_URL}/`, publisher: { "@id": ORG_ID } });
+    nodes.push({ "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: SITE_NAME, url: `${SITE_URL}/`, publisher: { "@id": ORG_ID } });
   } else {
     nodes.push(breadcrumbs(r.crumbs ? [home, ...r.crumbs] : r.product ? [home, productsRoute, r] : [home, r]));
   }

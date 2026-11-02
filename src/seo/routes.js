@@ -46,16 +46,19 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
  * site itself states: the address and phone are the Footer's (data/business, as on the Google
  * Business Profile); the site shows no email or social profiles, so none are given. On the homepage,
  * the contact page and the Bengaluru page (`localBusiness` routes) the same node is also the
- * LocalBusiness, with the opening hours. Every page names the business the same way: name "NEXERA
- * Powertech", legalName (the footer's legal line) and, as alternateName, the Business Profile's
- * spelling. The logo is the NEXERA mark (the wordmark's green X on the ink ground) as the 180x180
+ * LocalBusiness, with the opening hours. Every page names the business the same way (structured data
+ * only; the visible brand is unchanged): name "NexEra PowerTech Pvt Ltd", legalName (the footer's
+ * legal line) and, as alternateName, the site's brand name and the Business Profile's spelling. The
+ * logo is the NEXERA mark (the wordmark's green X on the ink ground) as the 180x180
  * public/apple-touch-icon.png, the same mark as public/favicon.svg.
  */
 export const LOCAL_BUSINESS = { hours: HOURS };
+/** The site's own name (the homepage's WebSite node): the visible brand, not the business name. */
+export const SITE_NAME = "NEXERA Powertech";
 export const ORGANIZATION = {
-  name: "NEXERA Powertech",
+  name: "NexEra PowerTech Pvt Ltd",
   legalName: "Nexera Powertech Private Limited",
-  alternateName: BUSINESS_NAME,
+  alternateName: [SITE_NAME, BUSINESS_NAME],
   description:
     "Authorized distributor and solution provider for TCL, Hithium and CLOU battery energy storage systems in India, with design, commissioning, training and after-sales support.",
   address: ADDRESS_PARTS,
