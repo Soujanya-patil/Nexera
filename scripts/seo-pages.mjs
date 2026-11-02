@@ -144,7 +144,7 @@ const organization = {
   },
   ...(ORGANIZATION.telephone ? { telephone: ORGANIZATION.telephone } : {}),
 };
-// The homepage and the contact page: the same node is also the LocalBusiness (same names, address and
+// The homepage, the contact page and the Bengaluru page: the same node is also the LocalBusiness (same names, address and
 // phone as on every page, plus the opening hours).
 const localBusiness = {
   ...organization,

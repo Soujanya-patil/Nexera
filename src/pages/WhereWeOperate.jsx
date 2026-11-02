@@ -4,7 +4,8 @@ import PageHeader from "../components/PageHeader";
 import { useScrollReveal } from "../lib/scrollReveal";
 
 const offices = [
-  { city: "Bangalore", role: "Headquarters", detail: "Strategy, brand partnerships, sales support", status: "active" },
+  // The headquarters links to its local page (/locations/bengaluru).
+  { city: "Bangalore", role: "Headquarters", detail: "Strategy, brand partnerships, sales support", status: "active", link: { to: "/locations/bengaluru", label: "Battery storage in Bengaluru & Karnataka" } },
   { city: "Kalaburagi (Gulbarga)", role: "Regional office", detail: "Service Support, Technician Training Center", status: "active" },
   { city: "Nagpur", role: "Planned expansion", detail: "", status: "planned" },
   { city: "Delhi", role: "Planned expansion", detail: "", status: "planned" },
@@ -35,6 +36,12 @@ export default function WhereWeOperate() {
                   <h2 className="text-h4 font-semibold text-ink">{o.city}</h2>
                   <p className="text-small text-copy mt-1">{o.role}</p>
                   {o.detail && <p className="text-small text-copy">{o.detail}</p>}
+                  {o.link && (
+                    <Link to={o.link.to} className="link-inline mt-2 inline-flex min-h-11 items-center gap-1.5 text-small font-semibold text-accent">
+                      {o.link.label}
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  )}
                 </div>
                 <span
                   className={`shrink-0 rounded-full px-3 py-1 text-micro font-medium ${

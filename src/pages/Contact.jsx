@@ -148,6 +148,12 @@ export default function Contact() {
                 </a>
               </span>
             )}
+            <span className="mt-1 block">
+              Visiting us?{" "}
+              <Link to="/locations/bengaluru" className="link-inline font-semibold text-accent">
+                See our Bengaluru office<span aria-hidden="true"> →</span>
+              </Link>
+            </span>
           </address>
           {/* Path selector — distributor intent routes straight to the real application page;
               the two form paths below are genuinely different audiences with different fields. */}

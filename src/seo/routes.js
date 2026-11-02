@@ -27,6 +27,7 @@ import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/so
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 import { partnerFaq } from "../data/partners";
 import { ARTICLES, DRAFT_ARTICLES } from "../data/articles";
+import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
 import { ADDRESS_PARTS, BUSINESS_NAME, HOURS, PHONE } from "../data/business";
 
 export const SITE_URL = "https://nexerapower.com";
@@ -43,11 +44,12 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
 /**
  * The Organization for structured data (scripts/seo-pages.mjs puts it on every page). Only facts the
  * site itself states: the address and phone are the Footer's (data/business, as on the Google
- * Business Profile); the site shows no email or social profiles, so none are given. On the homepage
- * and the contact page (`localBusiness` routes) the same node is also the LocalBusiness, with the
- * opening hours. Every page names the business the same way: name "NEXERA Powertech", legalName (the
- * footer's legal line) and, as alternateName, the Business Profile's spelling. The logo is the NEXERA mark (the wordmark's green X on the ink
- * ground) as the 180x180 public/apple-touch-icon.png, the same mark as public/favicon.svg.
+ * Business Profile); the site shows no email or social profiles, so none are given. On the homepage,
+ * the contact page and the Bengaluru page (`localBusiness` routes) the same node is also the
+ * LocalBusiness, with the opening hours. Every page names the business the same way: name "NEXERA
+ * Powertech", legalName (the footer's legal line) and, as alternateName, the Business Profile's
+ * spelling. The logo is the NEXERA mark (the wordmark's green X on the ink ground) as the 180x180
+ * public/apple-touch-icon.png, the same mark as public/favicon.svg.
  */
 export const LOCAL_BUSINESS = { hours: HOURS };
 export const ORGANIZATION = {
@@ -188,6 +190,19 @@ const PAGES = [
     title: "Battery Energy Storage in Bangalore & India | NEXERA",
     description:
       "NEXERA is headquartered in Bangalore, with a regional office and technician training center in Kalaburagi, and planned expansion to Nagpur and Delhi.",
+  },
+  // The Bengaluru location page (pages/LocationBengaluru.jsx, content in data/locations.js): the same
+  // LocalBusiness node as Home and Contact, breadcrumb Home > Where We Operate > Bengaluru, and its FAQ.
+  {
+    path: BENGALURU_PATH,
+    localBusiness: true,
+    h1: "Battery Energy Storage in Bengaluru & Karnataka",
+    label: "Bengaluru",
+    title: "Battery Energy Storage in Bengaluru & Karnataka | NEXERA",
+    description:
+      "Authorized distributor of TCL, Hithium and CLOU battery energy storage in Bengaluru and Karnataka, with sizing, commissioning support and training.",
+    crumbs: [["Where We Operate", "/where-we-operate"], ["Bengaluru", BENGALURU_PATH]],
+    faq: BENGALURU_FAQ,
   },
   {
     path: "/resources",

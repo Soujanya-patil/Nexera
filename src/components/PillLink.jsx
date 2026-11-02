@@ -38,11 +38,13 @@ const addRipple = (e) => {
  *   `sweep`     — outline pill: a short green light travels around the border (static highlight under
  *                 reduced motion; see .pill-sweep in index.css).
  */
-export default function PillLink({ to, variant = "solid", arrow = false, spotlight = false, sweep = false, ripple = false, className = "", children, ...rest }) {
+export default function PillLink({ to, href, variant = "solid", arrow = false, spotlight = false, sweep = false, ripple = false, className = "", children, ...rest }) {
   const extra = spotlight || sweep || ripple;
+  // `href` (a tel: or other non-route link) renders a plain <a>; `to` is a site route.
+  const Tag = href ? "a" : Link;
   return (
-    <Link
-      to={to}
+    <Tag
+      {...(href ? { href } : { to })}
       onPointerMove={spotlight ? trackPointer : undefined}
       onPointerDown={ripple ? addRipple : undefined}
       className={`group/pill btn-motion inline-flex min-h-11 items-center gap-2 rounded-full px-6 py-3 text-button font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 ${
@@ -66,6 +68,6 @@ export default function PillLink({ to, variant = "solid", arrow = false, spotlig
           strokeWidth={2}
         />
       )}
-    </Link>
+    </Tag>
   );
 }

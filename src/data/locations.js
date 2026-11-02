@@ -1,0 +1,107 @@
+/*
+ * The Bengaluru location page (/locations/bengaluru, pages/LocationBengaluru.jsx). Every line restates a
+ * fact the site already states; the source is noted beside each one.
+ *
+ * The FAQ is rendered on the page and written as FAQPage structured data (src/seo/routes.js →
+ * scripts/seo-pages.mjs) from this one list, so the two are word for word the same. `links` only turn
+ * words of the answer into links (the first time each appears); they never add text.
+ */
+import { ADDRESS, HOURS, PHONE, phoneHref } from "./business";
+import { SOLUTION_PAGES } from "./solutions";
+
+export const BENGALURU_PATH = "/locations/bengaluru";
+
+/** "Monday to Saturday, 09:00–18:00" (data/business: as on the Business Profile). */
+export const HOURS_LINE = `${HOURS.days[0]} to ${HOURS.days[HOURS.days.length - 1]}, ${HOURS.opens}–${HOURS.closes}`;
+
+/** "Get directions": NEXERA's Google Business Profile (a plain link; no map embed). */
+export const DIRECTIONS_HREF =
+  "https://www.google.com/search?q=NexEra+PowerTech+Pvt+Ltd&stick=H4sIAAAAAAAA_-NgU1I1qDBOSkw1TkuxsDBKs7QwTzW1MqhIMzM3Sko1SDZNMU9JMjG0WMQq4Zda4VqUqBCQX55aFJKanKEQUFai4FOSAgAbIZ0RRAAAAA&hl=en-GB&mat=CcUY-hDgJ1znElcBzAmVZqf5qEi7jkTrwRchLrk9OAUe1Lix7bLhZebsNOFnq8mNqdzCyY0D26-3Wft8V5Vr6GBbYWQdnkz3480cfjhfXcqlkHvE3sRBMG6zCWwYxk6GLvs&authuser=0&ved=2ahUKEwi-0uC83OiXAxUQkOEIHb-pHi4Q-MgIegQIEBAb";
+
+/** "What we offer in Karnataka": one line from each Solutions page. */
+export const OFFERS = [
+  {
+    id: "residential",
+    // SolutionsResidential hero: "…our residential systems give you a solar battery for home, designed to grow with your needs."
+    line: "A solar battery for home, designed to grow with your needs.",
+    cta: "Explore Residential Solutions",
+  },
+  {
+    id: "ci",
+    // SolutionsCI hero: "Reduce peak demand. Store solar energy. Improve energy resilience. …"
+    line: "Reduce peak demand. Store solar energy. Improve energy resilience.",
+    cta: "Explore C&I Solutions",
+  },
+  {
+    id: "utility",
+    // SolutionsUtility hero subheading: "Grid-Scale Battery Energy Storage Systems Built for Renewable Integration"
+    line: "Grid-scale battery energy storage systems built for renewable integration.",
+    cta: "Explore Utility Solutions",
+  },
+].map((o) => ({ ...o, ...SOLUTION_PAGES[o.id] }));
+
+/** "How we support local projects": Service & Training and How It Works, in their own words. */
+export const SUPPORT = [
+  {
+    key: "sizing",
+    title: "Sizing",
+    // Service & Training: "Every partner gets our engineering team for sizing, single-line diagrams, …"
+    text: "Every partner gets our engineering team for sizing and single-line diagrams.",
+  },
+  {
+    key: "commissioning",
+    title: "Commissioning support",
+    // Service & Training: "…on-site support with BESS installation and BESS commissioning."
+    // How It Works, stage 04: "Our engineers work your first sizing and commissioning with you."
+    text: "On-site support with BESS installation and BESS commissioning. Our engineers work your first sizing and commissioning with you.",
+  },
+  {
+    key: "training",
+    title: "Technician training",
+    // Service & Training: Kalaburagi Technician Training Center.
+    text: "In Kalaburagi, BESS technician training happens on live TCL and Hithium hardware — not manuals and PDFs.",
+  },
+  {
+    key: "after-sales",
+    title: "After-sales & warranty",
+    // Service & Training: After-Sales & Warranty.
+    text: "Local-first warranty handling — we manage the OEM relationship so your customer relationship stays intact.",
+  },
+];
+
+export const BENGALURU_FAQ = [
+  {
+    q: "Where is NEXERA's office in Bengaluru?",
+    // The footer address (data/business) and its hours; Where We Operate: Bangalore, Headquarters.
+    a: `NEXERA's headquarters is at ${ADDRESS}. It is open ${HOURS_LINE}.`,
+  },
+  {
+    q: "Which battery brands does NEXERA supply in Karnataka?",
+    // Where We Operate: "an authorized distributor of TCL, Hithium and CLOU battery energy storage systems";
+    // the Solutions FAQs: "TCL, Hithium and CLOU design and manufacture the systems. NEXERA supplies them in India …".
+    a: "NEXERA is an authorized distributor of TCL, Hithium and CLOU battery energy storage systems. TCL, Hithium and CLOU design and manufacture the systems; NEXERA supplies them in India and provides design, commissioning, training and after-sales support.",
+    links: [
+      { text: "TCL", to: "/partners/tcl" },
+      { text: "Hithium", to: "/partners/hithium" },
+      { text: "CLOU", to: "/partners/clou" },
+    ],
+  },
+  {
+    q: "Do you support commercial and industrial sites in Karnataka?",
+    // SolutionsCI hero, word for word.
+    a: "Yes. NEXERA brings together advanced C&I Battery Energy Storage Systems from TCL, Hithium and CLOU, engineered for demanding commercial and industrial applications. See our Commercial & Industrial solutions.",
+    links: [{ text: "Commercial & Industrial solutions", to: SOLUTION_PAGES.ci.path }],
+  },
+  {
+    q: "Do you help with sizing and commissioning?",
+    // Service & Training (Design & Commissioning Support) and the C&I FAQ ("What information does NEXERA need to size a system?").
+    a: "Yes. Every partner gets our engineering team for sizing, single-line diagrams, and on-site support with BESS installation and BESS commissioning. To size a C&I system, we need your monthly electricity bill, sanctioned load, a 15-minute load profile and any existing or planned solar capacity. More on Service & Training.",
+    links: [{ text: "Service & Training", to: "/service-training" }],
+  },
+  {
+    q: "How do I get a quote?",
+    // Contact: "Tell us what you need — we'll route it to the right team."; the footer phone.
+    a: `Tell us what you need through the contact form${PHONE ? ` or call ${PHONE}` : ""}, and we'll route it to the right team.`,
+    links: [{ text: "contact form", to: "/contact" }, ...(PHONE ? [{ text: PHONE, href: phoneHref(PHONE) }] : [])],
+  },
+];

@@ -44,6 +44,8 @@ export const BecomePartnerRoute = preloadable(() => import("./BecomePartner"));
 export const HowItWorksRoute = preloadable(() => import("./HowItWorks"));
 export const ServiceTrainingRoute = preloadable(() => import("./ServiceTraining"));
 export const WhereWeOperateRoute = preloadable(() => import("./WhereWeOperate"));
+// Location pages (local SEO): Bengaluru & Karnataka.
+export const LocationBengaluruRoute = preloadable(() => import("./LocationBengaluru"));
 export const ResourcesRoute = preloadable(() => import("./Resources"));
 export const ContactRoute = preloadable(() => import("./Contact"));
 export const NotFoundRoute = preloadable(() => import("./NotFound"));

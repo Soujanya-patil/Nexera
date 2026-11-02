@@ -4,16 +4,17 @@ import fs from "node:fs";
 const dist = process.argv[2];
 const file = (p) => `${dist}/${p === "/" ? "index" : p.slice(1)}.html`;
 const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, " ");
-const visible = (html) => decode(html.replace(/<head>[\s\S]*?<\/head>/, "").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<!--[\s\S]*?-->/g, "").replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ");
+const visible = (html) => decode(html.replace(/<head>[\s\S]*?<\/head>/, "").replace(/<script[\s\S]*?<\/script>/g, "").replace(/<!--[\s\S]*?-->/g, "").replace(/<\/?a\b[^>]*>/g, "").replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ");
 const KW = {
   "/solutions/residential": ["solar battery for home", "Home battery backup"],
   "/solutions/commercial-industrial": ["commercial battery storage system", "Peak Shaving"],
   "/solutions/utility-scale": ["containerised battery storage", "BESS container"],
   "/become-a-partner": ["Become a BESS Distributor", "lithium battery distributorship", "Build More. Store Smarter."],
+  "/locations/bengaluru": ["battery energy storage systems", "authorized distributor", "commercial and industrial", "solar battery"],
   "/service-training": ["BESS installation", "BESS commissioning", "BESS technician training", "Where can EPC technicians get hands-on BESS training in South India?"],
 };
 let bad = 0;
-for (const p of ["/", "/solutions", "/solutions/commercial-industrial", "/solutions/residential", "/solutions/utility-scale", "/products", "/become-a-partner", "/service-training", "/where-we-operate", "/resources"]) {
+for (const p of ["/", "/solutions", "/solutions/commercial-industrial", "/solutions/residential", "/solutions/utility-scale", "/products", "/become-a-partner", "/service-training", "/where-we-operate", "/resources", "/locations/bengaluru", "/contact"]) {
   const h = fs.readFileSync(file(p), "utf8");
   const count = (re) => (h.match(re) || []).length;
   const title = decode(h.match(/<title>([^<]*)<\/title>/)[1]);

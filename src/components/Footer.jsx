@@ -28,6 +28,7 @@ const groups = [
       { label: "About", href: "/about" },
       { label: "How It Works", href: "/how-it-works" },
       { label: "Where We Operate", href: "/where-we-operate" },
+      { label: "Bengaluru", href: "/locations/bengaluru" },
       { label: "Service & Training", href: "/service-training" },
       { label: "Become a Partner", href: "/become-a-partner" },
       { label: "Contact", href: "/contact" },

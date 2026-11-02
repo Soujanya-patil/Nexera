@@ -816,7 +816,8 @@ export function CardGrid({ children, columns = 3, className = "mt-12" }) {
  * stays in the DOM (word for word the FAQPage data). The first item starts open. Opening animates
  * smoothly where supported (index.css), the chevron turns, and with the question focused + opens and
  * − closes (Enter / Space toggle as usual). With `guide` (a published article, data/articles.js
- * guideFor), a line under the questions links to it.
+ * guideFor), a line under the questions links to it. An item's `links` ([{ text, to | href }]) make
+ * words of its answer links, so the text stays word for word the FAQPage data.
  */
 export function FaqList({ id, title, items, tone = "ice", guide }) {
   const onKey = (e) => {
@@ -836,7 +837,7 @@ export function FaqList({ id, title, items, tone = "ice", guide }) {
           {title}
         </KineticHeading>
         <div className={`mt-10 max-w-3xl divide-y divide-line rounded-card border border-line ${tone === "paper" ? "bg-ice/60" : "bg-white"}`}>
-          {items.map(({ q, a }, i) => (
+          {items.map(({ q, a, links }, i) => (
             <details key={q} className="faq-item group/faq" open={i === 0 || undefined}>
               <summary
                 onClick={toggleDetails}
@@ -851,7 +852,9 @@ export function FaqList({ id, title, items, tone = "ice", guide }) {
                   <ChevronDown className="h-4 w-4" />
                 </span>
               </summary>
-              <p className="px-5 pb-5 text-small text-copy sm:px-6">{a}</p>
+              <p className="px-5 pb-5 text-small text-copy sm:px-6">
+                <AnswerText text={a} links={links} />
+              </p>
             </details>
           ))}
         </div>
@@ -872,6 +875,30 @@ export function FaqList({ id, title, items, tone = "ice", guide }) {
       </div>
     </section>
   );
+}
+
+const ANSWER_LINK = "font-semibold text-accent underline underline-offset-4 hover:text-link focus-visible:text-link focus-visible:outline-2 focus-visible:outline-offset-2";
+
+/** An answer with the first appearance of each link's words as that link (internal `to` or a plain `href`). */
+function AnswerText({ text, links = [] }) {
+  let parts = [text];
+  links.forEach((l, n) => {
+    const at = parts.findIndex((p) => typeof p === "string" && p.includes(l.text));
+    if (at < 0) return;
+    const p = parts[at];
+    const i = p.indexOf(l.text);
+    const link = l.to ? (
+      <Link key={n} to={l.to} className={ANSWER_LINK}>
+        {l.text}
+      </Link>
+    ) : (
+      <a key={n} href={l.href} className={ANSWER_LINK}>
+        {l.text}
+      </a>
+    );
+    parts = [...parts.slice(0, at), p.slice(0, i), link, p.slice(i + l.text.length), ...parts.slice(at + 1)];
+  });
+  return parts;
 }
 
 /**
