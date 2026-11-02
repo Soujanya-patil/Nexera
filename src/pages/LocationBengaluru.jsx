@@ -118,9 +118,11 @@ export default function LocationBengaluru() {
           {[
           <InfoCard key="office" icon={MapPin} title="Office">
             <address className="not-italic">{ADDRESS}</address>
-            {/* A plain link to the Google Business Profile: no map embed, so the page stays light. */}
-            <a href={DIRECTIONS_HREF} className={`${linkClass} mt-3`}>
-              <ArrowUnderline>Get directions</ArrowUnderline>
+            {/* A plain link to Google Maps directions (new tab): no map embed, so the page stays light. */}
+            <a href={DIRECTIONS_HREF} target="_blank" rel="noopener noreferrer" className={`${linkClass} mt-3`}>
+              <ArrowUnderline>
+                Get directions<span className="sr-only"> (opens in a new tab)</span>
+              </ArrowUnderline>
             </a>
           </InfoCard>,
           PHONE && (

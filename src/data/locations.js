@@ -14,9 +14,8 @@ export const BENGALURU_PATH = "/locations/bengaluru";
 /** "Monday to Saturday, 09:00–18:00" (data/business: as on the Business Profile). */
 export const HOURS_LINE = `${HOURS.days[0]} to ${HOURS.days[HOURS.days.length - 1]}, ${HOURS.opens}–${HOURS.closes}`;
 
-/** "Get directions": NEXERA's Google Business Profile (a plain link; no map embed). */
-export const DIRECTIONS_HREF =
-  "https://www.google.com/search?q=NexEra+PowerTech+Pvt+Ltd&stick=H4sIAAAAAAAA_-NgU1I1qDBOSkw1TkuxsDBKs7QwTzW1MqhIMzM3Sko1SDZNMU9JMjG0WMQq4Zda4VqUqBCQX55aFJKanKEQUFai4FOSAgAbIZ0RRAAAAA&hl=en-GB&mat=CcUY-hDgJ1znElcBzAmVZqf5qEi7jkTrwRchLrk9OAUe1Lix7bLhZebsNOFnq8mNqdzCyY0D26-3Wft8V5Vr6GBbYWQdnkz3480cfjhfXcqlkHvE3sRBMG6zCWwYxk6GLvs&authuser=0&ved=2ahUKEwi-0uC83OiXAxUQkOEIHb-pHi4Q-MgIegQIEBAb";
+/** "Get directions": Google Maps directions to the office's location (a plain link, new tab; no map embed). */
+export const DIRECTIONS_HREF = "https://www.google.com/maps/dir/?api=1&destination=12.959425,77.5364414";
 
 /** "What we offer in Karnataka": one line from each Solutions page. */
 export const OFFERS = [
