@@ -50,7 +50,7 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
  * LocalBusiness, with the opening hours. Every page names the business the same way (structured data
  * only; the visible brand is unchanged): name "NexEra PowerTech Pvt Ltd", legalName (the footer's
  * legal line) and, as alternateName, the site's brand name and the Business Profile's spelling. The
- * logo is the NEXERA mark (the wordmark's green X on the ink ground) as the 180x180
+ * logo is the NEXERA mark (the navy X with the lime bolt, on white) as the 180x180
  * public/apple-touch-icon.png, the same mark as public/favicon.svg.
  */
 export const LOCAL_BUSINESS = { hours: HOURS };

@@ -6,8 +6,8 @@
  * Font size is controlled by the caller via `className` (e.g. `text-lg`, `text-3xl`); "Power Tech"
  * scales proportionally off that via an em-relative size instead of a second fixed size.
  *
- * The X keeps the logo's own green (#90D988, as in the favicon), not the palette's signal token: the
- * logo and favicon are unchanged until the new logo replaces both.
+ * The X keeps the earlier logo's own green (#90D988), not the palette's signal token. (Not in use: the
+ * site shows the logo image, components/Logo.jsx.)
  */
 export default function Wordmark({ className = "" }) {
   return (

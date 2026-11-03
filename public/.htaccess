@@ -65,6 +65,8 @@ ErrorDocument 404 /404.html
 # Correct type, never compressed (compression breaks byte ranges), and byte ranges advertised so
 # browsers can seek.
 AddType video/mp4 .mp4
+# The web manifest (index.html <link rel="manifest">).
+AddType application/manifest+json .webmanifest
 <IfModule mod_deflate.c>
   SetEnvIfNoCase Request_URI \.mp4$ no-gzip dont-vary
 </IfModule>
@@ -93,10 +95,10 @@ AddType video/mp4 .mp4
   <FilesMatch "\.html$">
     Header set Cache-Control "no-cache, must-revalidate"
   </FilesMatch>
-  # Fonts (/fonts/*.woff2) and the favicons change rarely and aren't hashed: 30 days. Matched by name, so
-  # hashed images under /assets/ keep their one-year immutable cache (FilesMatch is applied after every
-  # directory's .htaccess, so a broad \.png rule here would override assets/.htaccess).
-  <FilesMatch "(\.woff2|^favicon[^/]*\.(png|svg|ico)|^apple-touch-icon\.png)$">
+  # Fonts (/fonts/*.woff2), the favicons and the web manifest change rarely and aren't hashed: 30 days.
+  # Matched by name, so hashed images under /assets/ keep their one-year immutable cache (FilesMatch is
+  # applied after every directory's .htaccess, so a broad \.png rule here would override assets/.htaccess).
+  <FilesMatch "(\.woff2|^favicon\.(svg|ico)|^icon-\d+\.png|^apple-touch-icon\.png|^site\.webmanifest)$">
     Header set Cache-Control "public, max-age=2592000"
   </FilesMatch>
 </IfModule>
