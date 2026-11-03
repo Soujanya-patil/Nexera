@@ -179,7 +179,8 @@ function CompareDialog({ products, open, onClose }) {
                         src={p.image}
                         width={p.imageSize[0]}
                         height={p.imageSize[1]}
-                        alt=""
+                        // The product's own description (its name is also printed below, so it is not read twice).
+                        alt={p.imageAlt}
                         aria-hidden="true"
                         className={`absolute inset-0 m-auto object-contain ${p.imageFallback ? "h-[18%] w-[50%] opacity-80" : "h-[80%] w-[80%]"}`}
                       />

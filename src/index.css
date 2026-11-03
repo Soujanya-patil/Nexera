@@ -848,6 +848,30 @@
   -webkit-mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.42), transparent 18%);
   mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.42), transparent 18%);
 }
+/* The mirrored product, drawn as a background (decorative: no <img>, so nothing without a description).
+   Its file is the one the product's own <picture> picks at each stage height (ProductsHeroStage). */
+.ph-reflect::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ph-webp-sm) center / 100% 100% no-repeat;
+  transform: scaleY(-1);
+}
+@media (min-width: 640px) {
+  .ph-reflect::before { background-image: var(--ph-webp-md); }
+}
+@media (min-width: 1024px) {
+  .ph-reflect::before { background-image: var(--ph-webp-lg); }
+}
+@supports (background-image: image-set(url("x.png") type("image/png") 1x)) {
+  .ph-reflect::before { background-image: var(--ph-set-sm); }
+  @media (min-width: 640px) {
+    .ph-reflect::before { background-image: var(--ph-set-md); }
+  }
+  @media (min-width: 1024px) {
+    .ph-reflect::before { background-image: var(--ph-set-lg); }
+  }
+}
 /* Partner bars: full on the selected partner; while rotating it fills as the clock. */
 .ph-fill {
   transform-origin: left center;

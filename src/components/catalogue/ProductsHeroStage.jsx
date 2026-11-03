@@ -43,6 +43,25 @@ const SEGMENT = { residential: "Residential", ci: "Commercial & Industrial", uti
 const files = import.meta.glob("../../assets/products-hero/*.{avif,webp}", { eager: true, query: "?url", import: "default" });
 const widths = ([w]) => [Math.round(w / 2), Math.round((w * 3) / 4), w];
 
+/**
+ * The mirrored reflection is decorative, so it is a CSS background (.ph-reflect::before), not an <img>.
+ * It loads the very file the <picture> srcset would pick: per stage height (15rem / 18rem / 25rem), the
+ * smallest export at least as wide as the product is shown at 1x and at 2x — AVIF where supported
+ * (image-set), WebP otherwise.
+ */
+function reflection(ws, url, k) {
+  const pick = (px) => ws.find((w) => w >= px) ?? ws[ws.length - 1];
+  const vars = {};
+  for (const [bp, h] of [["sm", 240], ["md", 288], ["lg", 400]]) {
+    const [w1, w2] = [pick(Math.ceil(h * k)), pick(Math.ceil(2 * h * k))];
+    vars[`--ph-webp-${bp}`] = `url("${url(w1, "webp")}")`;
+    vars[`--ph-set-${bp}`] =
+      `image-set(url("${url(w1, "avif")}") type("image/avif") 1x, url("${url(w2, "avif")}") type("image/avif") 2x, ` +
+      `url("${url(w1, "webp")}") type("image/webp") 1x, url("${url(w2, "webp")}") type("image/webp") 2x)`;
+  }
+  return vars;
+}
+
 const ITEMS = ROTATION.map(({ id, scale, size }) => {
   const product = getProduct(id);
   if (!product || product.listed === false) return null;
@@ -61,6 +80,7 @@ const ITEMS = ROTATION.map(({ id, scale, size }) => {
     sizes: `(min-width: 1024px) ${Math.ceil(400 * k)}px, (min-width: 640px) ${Math.ceil(288 * k)}px, ${Math.ceil(240 * k)}px`,
     srcSet: (ext) => ws.map((w) => `${url(w, ext)} ${w}w`).join(", "),
     src: product.image,
+    reflect: reflection(ws, url, k),
   };
 }).filter(Boolean);
 const N = ITEMS.length;
@@ -74,9 +94,7 @@ function ProductPicture({ item, eager, className }) {
       <source type="image/webp" srcSet={item.srcSet("webp")} sizes={item.sizes} />
       <img
         src={item.src}
-        // The mirrored reflection is decorative: empty alt, hidden from assistive tech.
-        alt={eager === "reflection" ? "" : item.product.imageAlt}
-        aria-hidden={eager === "reflection" || undefined}
+        alt={item.product.imageAlt}
         width={item.size[0]}
         height={item.size[1]}
         loading="eager"
@@ -253,9 +271,8 @@ export default function ProductsHeroStage() {
                       <span className="relative block h-full w-full transition-transform duration-slow ease-standard group-hover/ph:scale-[1.02]">
                         <ProductPicture item={item} eager={i === 0} className="h-full w-full" />
                       </span>
-                      <span className="ph-reflect absolute inset-x-0 top-full block h-full">
-                        <ProductPicture item={item} eager="reflection" className="h-full w-full -scale-y-100" />
-                      </span>
+                      {/* The reflection: a CSS background (index.css .ph-reflect), the same file as the product's. */}
+                      <span className="ph-reflect absolute inset-x-0 top-full block h-full" style={item.reflect} />
                     </>
                   )}
                 </Link>

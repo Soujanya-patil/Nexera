@@ -90,7 +90,7 @@ function Scene({ s, first, active, imgRef }) {
       name={s.img}
       sizes="(min-width: 1024px) 100vw, 140vw"
       imgRef={imgRef}
-      alt={active ? s.alt : ""}
+      alt={s.alt}
       aria-hidden={active ? undefined : true}
       loading="eager"
       fetchPriority={first ? "high" : "low"}

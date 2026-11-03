@@ -73,10 +73,13 @@ const state = (p) =>
   const hero = html.slice(html.indexOf("data-products-hero"), html.indexOf('id="catalogue"'));
   const links = IDS.every((id) => hero.includes(`href="/products/${id}"`));
   const imgs = (hero.match(/<img [^>]*>/g) || []).map((t) => t.match(/src="([^"]+)"/)?.[1] ?? "");
+  // The reflection is a CSS background on .ph-reflect (no <img>): its style names product 1's files.
+  const reflect = hero.match(/<span[^>]*class="ph-reflect[^"]*"[^>]*>/g) || [];
   check(
-    "pre-rendered: all three product links in the hero; only product 1's image (×2 with its reflection), eager + fetchpriority=high",
-    links && imgs.length === 2 && imgs.every((s) => s.includes("tcl-blueark-x5")) && /<img [^>]*fetchpriority="high"[^>]*tcl-blueark-x5|<img [^>]*tcl-blueark-x5[^>]*fetchpriority="high"/i.test(hero),
-    { links, imgs }
+    "pre-rendered: all three product links in the hero; only product 1's image, eager + fetchpriority=high, its reflection a background of the same product",
+    links && imgs.length === 1 && imgs.every((s) => s.includes("tcl-blueark-x5")) && /<img [^>]*fetchpriority="high"[^>]*tcl-blueark-x5|<img [^>]*tcl-blueark-x5[^>]*fetchpriority="high"/i.test(hero) &&
+      reflect.length === 1 && reflect[0].includes("tcl-blueark-x5") && !reflect[0].includes("undefined"),
+    { links, imgs, reflect: reflect.map((r) => r.slice(0, 160)) }
   );
   // The hero's text as a crawler reads it (tags removed): each product's figure exactly once.
   // (Product names are taken out first: "∞Power 1022 kWh Cabinet" contains its own figure.)

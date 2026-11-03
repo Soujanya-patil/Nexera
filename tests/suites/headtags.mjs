@@ -5,8 +5,8 @@
 // every route in one session. Fails on more than one title, description or canonical (or a missing
 // title) — after hydration, after navigation, or at ANY moment in between (a watcher installed before
 // the page loads records the most of each that ever existed at once) — on a title that doesn't follow
-// the page, on any <img> without an alt attribute, and on an empty-alt image that isn't hidden from
-// assistive tech or sits in a link or button (a crawler reports it as an image without alt).
+// the page, and on any <img> whose alt is missing or empty (Bing counts alt="" as missing; decorative
+// images are CSS backgrounds instead).
 // Usage: node headtags.mjs <base> [--report]
 import { chromium } from "playwright-core";
 const BASE = process.argv[2];
@@ -57,16 +57,8 @@ const liveCounts = (p) =>
     out.titleOutsideHead = [...document.querySelectorAll("title")].filter((t) => t.parentElement !== document.head).length;
     const name = (i) => (i.currentSrc || i.src || i.outerHTML).split("/").pop().slice(0, 60);
     out.noAlt = [...document.querySelectorAll("img:not([alt])")].map(name);
-    out.emptyAlt = [...document.querySelectorAll('img[alt=""]')]
-      // Decorative means hidden from assistive tech — and not the only thing in a link or button (with no
-      // text and no other described image there, the link's name rests on aria-label alone).
-      .filter((i) => {
-        const hidden = i.getAttribute("aria-hidden") === "true" || /^(presentation|none)$/.test(i.getAttribute("role") || "");
-        const control = i.closest("a, button");
-        const named = control && (control.textContent.trim() !== "" || [...control.querySelectorAll("img")].some((x) => x.alt.trim()));
-        return !hidden || (control && !named);
-      })
-      .map(name);
+    // Bing reports alt="" as missing: every <img> needs a real description (decorative art is CSS).
+    out.emptyAlt = [...document.querySelectorAll("img[alt]")].filter((i) => !i.getAttribute("alt").trim()).map(name);
     out.max = { ...window.__headMax };
     return out;
   }, SEL);
@@ -123,7 +115,7 @@ for (const path of ROUTES) {
   check(`${path} served: one title${e.description ? ", description" : ""}${e.canonical ? ", canonical" : ""}`, headOk(s, e), s);
   check(`${path} after hydration: exactly one of each, title as served`, headOk(c, e) && c.titleText === s.titleText && !c.titleOutsideHead, { ...c, noAlt: undefined, served: s.titleText });
   check(`${path} never two titles, descriptions or canonicals at once (load → hydration)`, neverTwo(c.max), c.max);
-  check(`${path} after hydration: every <img> has an alt; empty alts are decorative`, !c.noAlt.length && !c.emptyAlt.length, { noAlt: c.noAlt, emptyAlt: c.emptyAlt });
+  check(`${path} after hydration: every <img> has a non-empty alt`, !c.noAlt.length && !c.emptyAlt.length, { noAlt: c.noAlt, emptyAlt: c.emptyAlt });
   await p.close();
 }
 
@@ -147,7 +139,7 @@ const nav = [];
     nav.push({ path, c });
     check(`navigate → ${path}: exactly one of each, title follows`, headOk(c, e) && c.titleText === served[path].titleText && !c.titleOutsideHead, { ...c, noAlt: undefined, want: served[path].titleText });
     check(`navigate → ${path}: never two of any so far`, neverTwo(c.max), c.max);
-    check(`navigate → ${path}: every <img> has an alt; empty alts are decorative`, !c.noAlt.length && !c.emptyAlt.length, { noAlt: c.noAlt, emptyAlt: c.emptyAlt });
+    check(`navigate → ${path}: every <img> has a non-empty alt`, !c.noAlt.length && !c.emptyAlt.length, { noAlt: c.noAlt, emptyAlt: c.emptyAlt });
   }
   await p.close();
 }
@@ -155,7 +147,7 @@ const nav = [];
 if (REPORT) {
   const row = (x) => `t${x.title} d${x.description} c${x.canonical} r${x.robots} og${x.og} tw${x.twitter} ld${x.jsonld}`;
   console.log("\npath | served | after hydration | most at once | images");
-  for (const { path, s, c } of table) console.log(`${path} | ${row(s)} | ${row(c)} | most at once t${c.max.title} d${c.max.description} c${c.max.canonical} | no alt: ${c.noAlt.join(", ") || "-"} | empty alt (not decorative): ${c.emptyAlt.join(", ") || "-"}`);
+  for (const { path, s, c } of table) console.log(`${path} | ${row(s)} | ${row(c)} | most at once t${c.max.title} d${c.max.description} c${c.max.canonical} | no alt: ${c.noAlt.join(", ") || "-"} | empty alt: ${c.emptyAlt.join(", ") || "-"}`);
   console.log("\nclient-side navigation: path | live head | most at once | images");
   for (const { path, c } of nav) console.log(`${path} | ${row(c)} | most at once t${c.max.title} d${c.max.description} c${c.max.canonical} | no alt: ${c.noAlt.join(", ") || "-"} | empty alt: ${c.emptyAlt.join(", ") || "-"}`);
 }
