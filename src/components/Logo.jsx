@@ -4,8 +4,8 @@ import logo from "../assets/brand/nexera-logo.svg";
  * The official NEXERA logo: navy (#182F58) letters with the lime (#AAC837) bolt in the X, used as is on
  * light grounds only (there is no reversed version). An <img> with the artwork's own aspect (viewBox
  * 1984 × 596) as width/height, so its box is reserved before it loads (no layout shift); the caller
- * sets the height (e.g. h-9) and the width follows. `alt=""` (and hidden from assistive tech) where the
- * surrounding link already names it.
+ * sets the height (e.g. h-9) and the width follows. `alt` describes it (in the header, it names the
+ * home link); `alt=""` (and hidden from assistive tech) only where it is purely decorative.
  */
 export default function Logo({ alt = "NEXERA Powertech", className = "" }) {
   return (

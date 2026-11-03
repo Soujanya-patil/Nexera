@@ -180,6 +180,7 @@ function CompareDialog({ products, open, onClose }) {
                         width={p.imageSize[0]}
                         height={p.imageSize[1]}
                         alt=""
+                        aria-hidden="true"
                         className={`absolute inset-0 m-auto object-contain ${p.imageFallback ? "h-[18%] w-[50%] opacity-80" : "h-[80%] w-[80%]"}`}
                       />
                     </div>

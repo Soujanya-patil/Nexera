@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { CONTACT_EMAIL, CONTACT_PHONE, telHref } from "../lib/enquiry";
 
-/** The head tags the pre-rendered page carries and <Seo> takes over (main.jsx). */
+/** The head tags the pre-rendered page carries and <Seo> keeps up to date. */
 const HEAD_SELECTOR = 'title, meta[name="description"], link[rel="canonical"], meta[name="robots"]';
 const selectorFor = (el) =>
   el.tagName === "TITLE" ? "title" : el.tagName === "LINK" ? `link[rel="${el.getAttribute("rel")}"]` : `meta[name="${el.getAttribute("name")}"]`;
@@ -68,7 +68,8 @@ export default class StartupBoundary extends Component {
       window.location.reload();
       return;
     }
-    // <Seo>'s tags went with the app: the served ones come back (once now, once after this commit).
+    // <Seo> updates the served tags in place, so they are still there; any that is missing comes back
+    // (once now, once after this commit).
     const restore = () => {
       for (const el of this.props.head) if (!document.head.querySelector(selectorFor(el))) document.head.append(el.cloneNode(true));
     };

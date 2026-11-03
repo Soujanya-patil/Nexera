@@ -39,7 +39,7 @@ const fill = async (p, scope, v) => {
 {
   const p = await page(1440);
   await p.goto(BASE + "/", { waitUntil: "networkidle" });
-  const nav = await ev(p, () => ({ home: [...document.querySelectorAll("header a")].filter((a) => a.textContent.trim() === "Home").length, logo: document.querySelector('header a[href="/"]')?.getAttribute("aria-label") }));
+  const nav = await ev(p, () => ({ home: [...document.querySelectorAll("header a")].filter((a) => a.textContent.trim() === "Home").length, logo: ((a) => a && (a.getAttribute("aria-label") ?? [...a.querySelectorAll("img")].map((i) => i.alt).join(" ").trim()))(document.querySelector('header a[href="/"]')) }));
   ok("header: no Home link; the logo is labelled 'NEXERA Powertech home'", nav.home === 0 && nav.logo === "NEXERA Powertech home", JSON.stringify(nav));
   const explore = await ev(p, () => [...document.querySelectorAll("a")].find((a) => a.textContent.trim().startsWith("Explore Solutions"))?.getAttribute("href"));
   ok("hero: Explore Solutions -> /solutions", explore === "/solutions", explore);

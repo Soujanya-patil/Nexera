@@ -121,8 +121,9 @@ export default function Nav() {
       <nav className={`flex h-16 container-site items-center justify-between transition-[translate] duration-base ease-emphasized ${scrolled ? "translate-y-1" : ""}`}>
         <div className="flex items-center gap-5">
           {/* The logo is the way home on every page (there is no separate Home link). */}
-          <Link to="/" aria-label="NEXERA Powertech home" className="inline-flex min-h-11 items-center">
-            <Logo alt="" className="h-9" />
+          {/* The logo image names the link (its alt), so the image itself is never without a description. */}
+          <Link to="/" className="inline-flex min-h-11 items-center">
+            <Logo alt="NEXERA Powertech home" className="h-9" />
           </Link>
           <p className="hidden border-l border-line pl-5 eyebrow text-label xl:block">
             Store today

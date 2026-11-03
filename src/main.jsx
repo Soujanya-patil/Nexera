@@ -4,8 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 
 import { App, preloadRoute } from './AppRoutes'
-import StartupBoundary, { appFailed, captureHead } from './components/StartupBoundary'
-import { loadRouteMeta } from './seo/loadRouteMeta'
+import StartupBoundary, { captureHead } from './components/StartupBoundary'
 
 // Motion is allowed: from here on the reveal styles may hold content hidden until GSAP animates it
 // in (index.css gates them on this class, so without JavaScript — or under reduced motion —
@@ -19,16 +18,8 @@ const prerendered = root.innerHTML
 const servedHead = captureHead()
 
 // The served HTML carries this route's title, description and canonical for crawlers that don't run
-// JavaScript (scripts/seo-pages.mjs; 404.html carries a noindex instead). <Seo> takes them over once
-// its route table has loaded (after the first screen): at that moment drop the static copies, so
-// there is exactly one of each and they follow client-side navigation. (This runs first: it is
-// registered before <Seo> subscribes.) If the app has stopped by then, the served ones stay.
-loadRouteMeta().then(() => {
-  if (appFailed()) return
-  document.head
-    .querySelectorAll('title, meta[name="description"], link[rel="canonical"], meta[name="robots"]')
-    .forEach((el) => el.remove())
-})
+// JavaScript (scripts/seo-pages.mjs; 404.html carries a noindex instead). <Seo> updates those same
+// elements in place as the route changes, so there is always exactly one of each.
 
 // Every route's HTML is pre-rendered at build time (entry-server.jsx): hydrate it — after loading the
 // page's own chunk, so the first render is that page, exactly as pre-rendered. An empty root (no

@@ -74,7 +74,9 @@ function ProductPicture({ item, eager, className }) {
       <source type="image/webp" srcSet={item.srcSet("webp")} sizes={item.sizes} />
       <img
         src={item.src}
+        // The mirrored reflection is decorative: empty alt, hidden from assistive tech.
         alt={eager === "reflection" ? "" : item.product.imageAlt}
+        aria-hidden={eager === "reflection" || undefined}
         width={item.size[0]}
         height={item.size[1]}
         loading="eager"
