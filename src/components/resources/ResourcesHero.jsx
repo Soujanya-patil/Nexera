@@ -14,7 +14,8 @@ export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], r
     <section id={id} data-play="now" data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid hero-ground text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(50% 70% at 85% 30%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 70%)" }} />
       <EnergyGrid />
-      <div className="relative container-site pb-14 pt-14 lg:pb-20 lg:pt-20">
+      {/* Compact band, as the plain pages' header (PageHeader): 20 px phones, 32 px from 1024 px. */}
+      <div className="relative container-site pb-5 pt-5 lg:pb-8 lg:pt-8">
         <p className="article-eyebrow eyebrow text-label">{eyebrow}</p>
         <h1 className="article-h1 mt-eyebrow max-w-intro text-h1 font-semibold">
           {words.map((w, i) => (
