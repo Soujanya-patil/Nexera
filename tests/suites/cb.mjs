@@ -131,7 +131,10 @@ for (const [W, H] of [
     }],
     ["/products", async (p) => {
       const btns = p.locator("button[aria-pressed]").filter({ hasText: "Compare" });
-      await btns.nth(0).scrollIntoViewIfNeeded();
+      // Scroll past the pill's 300 px threshold (at least 400 px, the button still on screen) and wait
+      // for the pill to show before comparing: a plain scrollIntoView could stop above 300 px.
+      await btns.nth(0).evaluate((b) => window.scrollTo(0, Math.max(400, b.getBoundingClientRect().top + window.scrollY - 300)));
+      await p.waitForFunction(() => window.scrollY >= 400 && getComputedStyle(document.querySelector(".cb-dock")).opacity === "1", null, { timeout: 8000 });
       await btns.nth(0).click();
     }],
   ]) {

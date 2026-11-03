@@ -177,7 +177,8 @@ const settle = (p, ms = 900) => p.waitForTimeout(ms);
   await settle(p);
   check("touch: tap on Grid → 6.25 MWh", (await state(p)).value === "Grid, 6.25 MWh");
   const m = await p.evaluate(() => ({ zone: document.querySelector(".sh-zone").getBoundingClientRect().height, btn: Math.min(...[...document.querySelectorAll("[data-scale-header] .sh-panel a")].filter((a) => a.offsetParent && getComputedStyle(a.closest(".sh-panel") || a).visibility === "visible").map((a) => a.getBoundingClientRect().height)), hscroll: document.documentElement.scrollWidth > innerWidth }));
-  check("touch: slider zone and Explore button ≥ 44 px tall; no horizontal scroll", m.zone >= 44 && m.btn >= 44 && !m.hscroll, m);
+  // ≥ 43.99: sub-pixel layout can report a 44 px button as 43.99997 px.
+  check("touch: slider zone and Explore button ≥ 44 px tall; no horizontal scroll", m.zone >= 43.99 && m.btn >= 43.99 && !m.hscroll, m);
   check("no script errors (touch)", p.errors.length === 0, p.errors);
   await p.context().close();
 }
