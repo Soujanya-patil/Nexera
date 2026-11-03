@@ -6,7 +6,8 @@
 // title) — after hydration, after navigation, or at ANY moment in between (a watcher installed before
 // the page loads records the most of each that ever existed at once) — on a title that doesn't follow
 // the page, and on any <img> whose alt is missing or empty (Bing counts alt="" as missing; decorative
-// images are CSS backgrounds instead).
+// images are CSS backgrounds instead) — in the live DOM, in <template>/<noscript> content and in the
+// served HTML — and on an SVG <image> that is neither hidden (aria-hidden) nor named.
 // Usage: node headtags.mjs <base> [--report]
 import { chromium } from "playwright-core";
 const BASE = process.argv[2];
@@ -49,6 +50,22 @@ function servedCounts(html) {
     titleText: (head.match(/<title>([^<]*)<\/title>/) || [])[1]?.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"'),
   };
 }
+// Images in the served HTML, read as raw text, so <img> inside <noscript> and <template> count too:
+// every <img> needs a non-empty alt; an SVG <image> must sit in an <svg> that is hidden from assistive
+// tech (aria-hidden) or named (aria-label / <title>).
+function servedImages(html) {
+  const imgs = html.match(/<img\b[^>]*>/gi) || [];
+  const src = (t) => (t.match(/\ssrc="([^"]*)"/i)?.[1] || t).split("/").pop().slice(0, 60);
+  const badImg = imgs.filter((t) => !(t.match(/\salt="([^"]*)"/i)?.[1] ?? "").trim()).map(src);
+  const svgs = html.match(/<svg\b[\s\S]*?<\/svg>/gi) || [];
+  const badSvgImage = svgs
+    .filter((svg) => /<image\b/i.test(svg))
+    .filter((svg) => {
+      const open = svg.match(/<svg\b[^>]*>/i)[0];
+      return !/aria-hidden="true"/i.test(open) && !/aria-label="[^"]+"/i.test(open) && !/<title>[^<]+<\/title>/i.test(svg);
+    }).length;
+  return { imgs: imgs.length, badImg, svgImages: (html.match(/<image\b/gi) || []).length, badSvgImage };
+}
 const liveCounts = (p) =>
   p.evaluate((SEL) => {
     const out = {};
@@ -59,6 +76,17 @@ const liveCounts = (p) =>
     out.noAlt = [...document.querySelectorAll("img:not([alt])")].map(name);
     // Bing reports alt="" as missing: every <img> needs a real description (decorative art is CSS).
     out.emptyAlt = [...document.querySelectorAll("img[alt]")].filter((i) => !i.getAttribute("alt").trim()).map(name);
+    // Inside <template> content and <noscript> (its text, parsed): the same rule.
+    const inert = [
+      ...[...document.querySelectorAll("template")].flatMap((t) => [...t.content.querySelectorAll("img")]),
+      ...[...document.querySelectorAll("noscript")].flatMap((n) => [...new DOMParser().parseFromString(n.textContent, "text/html").querySelectorAll("img")]),
+    ];
+    out.emptyAlt.push(...inert.filter((i) => !(i.getAttribute("alt") || "").trim()).map(name));
+    // SVG <image>: hidden with its <svg>, or the <svg> is named.
+    out.svgImage = [...document.querySelectorAll("svg image")].filter((im) => {
+      const svg = im.closest("svg");
+      return !(svg.closest('[aria-hidden="true"]') || svg.getAttribute("aria-label")?.trim() || svg.querySelector(":scope > title")?.textContent.trim());
+    }).length;
     out.max = { ...window.__headMax };
     return out;
   }, SEL);
@@ -103,7 +131,8 @@ const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, reduced
 await ctx.addInitScript(WATCH);
 for (const path of ROUTES) {
   const res = await fetch(BASE + path);
-  const s = servedCounts(await res.text());
+  const html = await res.text();
+  const s = servedCounts(html);
   served[path] = s;
   const p = await ctx.newPage();
   await p.goto(BASE + path, { waitUntil: "load" });
@@ -112,10 +141,12 @@ for (const path of ROUTES) {
   const c = await liveCounts(p);
   const e = expect(s);
   table.push({ path, s, c });
+  const si = servedImages(html);
+  check(`${path} served HTML (incl. noscript/template): every <img> has a non-empty alt; SVG <image> hidden or named`, !si.badImg.length && !si.badSvgImage, si);
   check(`${path} served: one title${e.description ? ", description" : ""}${e.canonical ? ", canonical" : ""}`, headOk(s, e), s);
   check(`${path} after hydration: exactly one of each, title as served`, headOk(c, e) && c.titleText === s.titleText && !c.titleOutsideHead, { ...c, noAlt: undefined, served: s.titleText });
   check(`${path} never two titles, descriptions or canonicals at once (load → hydration)`, neverTwo(c.max), c.max);
-  check(`${path} after hydration: every <img> has a non-empty alt`, !c.noAlt.length && !c.emptyAlt.length, { noAlt: c.noAlt, emptyAlt: c.emptyAlt });
+  check(`${path} after hydration: every <img> has a non-empty alt`, !c.noAlt.length && !c.emptyAlt.length && !c.svgImage, { noAlt: c.noAlt, emptyAlt: c.emptyAlt, svgImage: c.svgImage });
   await p.close();
 }
 
