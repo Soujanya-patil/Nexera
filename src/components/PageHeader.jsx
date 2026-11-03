@@ -15,7 +15,8 @@ export default function PageHeader({ eyebrow, title, subtitle }) {
   });
   return (
     <section ref={root} data-intro={intro} className="bg-deep-grid hero-ground text-white">
-      <div className="container-site py-16 md:py-24">
+      {/* Compact band: padding sized to the copy (about 60% of the earlier height on desktop). */}
+      <div className="container-site py-5 md:py-8">
         {eyebrow && (
           <p data-a className="eyebrow text-label">
             {eyebrow}
