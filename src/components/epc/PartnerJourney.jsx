@@ -38,7 +38,7 @@ const Board = () => (
 
 /**
  * PARTNERSHIP JOURNEY — how an EPC project moves with NEXERA: the six existing stages (Select, Design,
- * Deploy, Commission, Support, Scale) and their real photographs, as one continuous journey.
+ * Deploy, Commission, Support, Scale) and their photos, as one continuous journey.
  *
  * Tablet / desktop (motion allowed): a horizontal gallery. The section pins; scrolling DOWN moves the
  * image track RIGHT → LEFT (GSAP ScrollTrigger progress via useScrollSteps, applied as a translate —
@@ -168,21 +168,22 @@ export default function PartnerJourney() {
                     {/* The whole image at its own proportions — never cropped */}
                     <div className="relative overflow-hidden rounded-card border border-white/10 bg-deep-grid">
                       {s.contain && <Board />}
-                      <img
-                        src={img.src}
-                        srcSet={img.srcSet}
-                        sizes="(min-width: 768px) 720px, 100vw"
-                        width={img.width}
-                        height={img.height}
-                        alt={s.alt}
-                        loading="lazy"
-                        decoding="async"
-                        className={`relative block h-auto w-full ${s.contain ? "p-[5%]" : ""}`}
-                      />
+                      <picture>
+                        <source type="image/avif" srcSet={img.avif} sizes="(min-width: 768px) 720px, 100vw" />
+                        <source type="image/webp" srcSet={img.webp} sizes="(min-width: 768px) 720px, 100vw" />
+                        <img
+                          src={img.src}
+                          srcSet={img.srcSet}
+                          sizes="(min-width: 768px) 720px, 100vw"
+                          width={img.width}
+                          height={img.height}
+                          alt={s.alt}
+                          loading="lazy"
+                          decoding="async"
+                          className={`relative block h-auto w-full ${s.contain ? "p-[5%]" : ""}`}
+                        />
+                      </picture>
                     </div>
-                    <figcaption className="mt-2 text-micro text-paper/60">
-                      {s.caption} · technology partner imagery
-                    </figcaption>
                   </figure>
                   <p className="mt-3 text-small text-paper/80">{s.detail}</p>
                 </li>
@@ -296,20 +297,24 @@ export default function PartnerJourney() {
                   }`}
                 >
                   {s.contain && <Board />}
-                  <img
-                    src={img.src}
-                    srcSet={img.srcSet}
-                    sizes="(min-width: 1024px) 34vw, 50vw"
-                    width={img.width}
-                    height={img.height}
-                    alt={s.alt}
-                    loading={i < 3 ? "eager" : "lazy"}
-                    decoding="async"
-                    style={{ objectPosition: s.focus }}
-                    className={`absolute inset-0 h-full w-full transition-[scale] duration-slow ease-standard group-hover/card:scale-[1.03] group-focus-visible/card:scale-[1.03] group-focus-within/card:scale-[1.03] ${
-                      s.contain ? "object-contain p-[7%]" : "object-cover"
-                    }`}
-                  />
+                  <picture>
+                    <source type="image/avif" srcSet={img.avif} sizes="(min-width: 1024px) 34vw, 50vw" />
+                    <source type="image/webp" srcSet={img.webp} sizes="(min-width: 1024px) 34vw, 50vw" />
+                    <img
+                      src={img.src}
+                      srcSet={img.srcSet}
+                      sizes="(min-width: 1024px) 34vw, 50vw"
+                      width={img.width}
+                      height={img.height}
+                      alt={s.alt}
+                      loading="lazy"
+                      decoding="async"
+                      style={{ objectPosition: s.focus }}
+                      className={`absolute inset-0 h-full w-full transition-[scale] duration-slow ease-standard group-hover/card:scale-[1.03] group-focus-visible/card:scale-[1.03] group-focus-within/card:scale-[1.03] ${
+                        s.contain ? "object-contain p-[7%]" : "object-cover"
+                      }`}
+                    />
+                  </picture>
                   {/* Hover overlay: soft dark gradient, green accent, number, title, short description */}
                   <div
                     aria-hidden="true"
@@ -348,7 +353,6 @@ export default function PartnerJourney() {
                     <span className="mr-3 text-micro font-semibold tracking-[0.2em] text-accent">{current.n}</span>
                     {current.title}
                   </h3>
-                  <p className="text-micro text-paper/60">{current.caption} · technology partner imagery</p>
                 </div>
                 <p className="mt-1 max-w-3xl text-small text-paper/80">{current.detail}</p>
               </div>

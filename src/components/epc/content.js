@@ -42,9 +42,9 @@ export const LIFECYCLE = [
 ];
 
 /**
- * Partnership journey. `photo` names the stage image (journeyImages.js); every image is technology-
- * partner imagery and its caption says whose and what it shows — never presented as a NEXERA project.
- * `focus` is the object-position that keeps the subject in frame when the image is cropped.
+ * Partnership journey. `photo` names the stage photo (journeyImages.js). `focus` is the object-position
+ * that keeps the people and equipment in frame when the photo is cropped to the desktop gallery's
+ * square cards (phones show each photo whole).
  */
 export const JOURNEY = [
   {
@@ -55,9 +55,8 @@ export const JOURNEY = [
     detail:
       "Direct, authorized access to our technology partners' storage — the right system sized to your load, with no separate brand negotiation on your side.",
     photo: "select",
-    focus: "50% 60%",
-    alt: "TCL BlueArk energy storage range: battery modules, floor-standing cabinets, wall-mounted units and inverters",
-    caption: "TCL BlueArk storage range",
+    focus: "60% 50%",
+    alt: "Consultant presenting battery storage options to a business owner",
   },
   {
     n: "02",
@@ -66,10 +65,8 @@ export const JOURNEY = [
     copy: "Sizing and single-line diagrams, worked with our engineers.",
     detail: "Every partner gets our engineering team for sizing and single-line diagrams — we work your first system design with you.",
     photo: "design",
-    focus: "50% 50%",
-    contain: true,
-    alt: "Engineering drawing of a row of five Hithium C&I storage cabinets, with overall dimensions marked",
-    caption: "Hithium C&I cabinet system · engineering drawing",
+    focus: "45% 50%",
+    alt: "Engineers reviewing an electrical design for a battery storage system",
   },
   {
     n: "03",
@@ -78,9 +75,8 @@ export const JOURNEY = [
     copy: "Add battery storage without building a supply chain from scratch.",
     detail: "Your systems come through NEXERA as an authorized TCL, Hithium and CLOU partner, so your team can focus on the project on site.",
     photo: "deploy",
-    focus: "55% 60%",
-    alt: "Hithium storage containers placed across a gravel site beside a solar field, with an excavator still working on site",
-    caption: "Hithium storage site during construction",
+    focus: "80% 50%",
+    alt: "Crane placing a battery storage container on site",
   },
   {
     n: "04",
@@ -89,9 +85,8 @@ export const JOURNEY = [
     copy: "On-site commissioning support from our engineers.",
     detail: "Our engineers work your first commissioning with you, on site — as part of onboarding, not as a one-off session.",
     photo: "commission",
-    focus: "35% 50%",
-    alt: "Row of TCL energy storage cabinets with their doors open on a test floor, battery modules and wiring visible",
-    caption: "TCL storage cabinets open for testing",
+    focus: "15% 50%",
+    alt: "Engineer commissioning a battery cabinet with a laptop",
   },
   {
     n: "05",
@@ -100,9 +95,8 @@ export const JOURNEY = [
     copy: "After-sales and warranty handling — we manage the OEM relationship.",
     detail: "After-sales support is included, so warranty issues don't become your problem. Local-first warranty handling keeps your customer relationship intact.",
     photo: "support",
-    focus: "50% 55%",
-    alt: "Rows of Hithium storage containers on a large site, with transmission masts behind",
-    caption: "Hithium utility storage site",
+    focus: "10% 50%",
+    alt: "Technician servicing a home battery with the homeowner",
   },
   {
     n: "06",
@@ -111,9 +105,8 @@ export const JOURNEY = [
     copy: "Grow into new projects with a protected territory.",
     detail: "Once you're onboarded, your region is formally mapped and protected — and technician training in Kalaburagi helps your team take on more storage work.",
     photo: "scale",
-    focus: "50% 50%",
-    alt: "Aerial view of a very large storage installation: long rows of white containers along service roads",
-    caption: "Large-scale Hithium installation",
+    focus: "50% 60%",
+    alt: "Aerial view of a solar farm with battery storage containers",
   },
 ];
 
