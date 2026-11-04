@@ -25,6 +25,22 @@ async function page(W) {
   return p;
 }
 const settle = (p, ms = 500) => p.waitForTimeout(ms);
+// After a client-side navigation: wait for the new page itself (its h1), not just the URL — React
+// Router commits the route as a transition, and its scroll-to-top would undo a scroll made while the
+// old page was still on screen (the pill then stays hidden, 12 px low). Then scroll past the pill's
+// 300 px start point and wait until it has fully appeared.
+async function arrive(p, path, h1) {
+  await p.waitForURL((u) => u.pathname === path);
+  await p.waitForFunction((t) => document.querySelector("h1")?.textContent.trim() === t, h1, { timeout: 10000 });
+  await p.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+  await p.evaluate(() => scrollTo(0, 600));
+  await p.waitForFunction(() => {
+    const d = document.querySelector(".cb-dock");
+    const cs = getComputedStyle(d);
+    return window.scrollY > 300 && cs.opacity === "1" && cs.translate === "0px";
+  }, null, { timeout: 8000 });
+  await settle(p, 300);
+}
 const dockRect = (p) => p.evaluate(() => {
   const r = document.querySelector(".cb-dock").getBoundingClientRect();
   return { x: r.left, y: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height };
@@ -171,16 +187,12 @@ for (const W of [1440, 390]) {
 
   // Route change: back in the corner; and coming back: in the corner again.
   await p.evaluate(() => document.querySelector('footer a[href="/about"]').click());
-  await p.waitForURL((u) => u.pathname === "/about");
-  await p.evaluate(() => scrollTo(0, 600));
-  await settle(p, 900);
+  await arrive(p, "/about", "Built by an EPC, for EPCs");
   const other = await dockRect(p);
   check(`${tag} another page: the pill is in its default corner`, near(other.x, home.x) && near(other.y, home.y), { other, home });
   await mouseDrag(p, -100, -100); // drag it on that page too
   await p.goBack();
-  await p.waitForURL((u) => u.pathname === "/products");
-  await p.evaluate(() => scrollTo(0, 600));
-  await settle(p, 900);
+  await arrive(p, "/products", "Energy Storage, Built to Scale.");
   const back = await dockRect(p);
   check(`${tag} back on the first page: default corner again (not the dragged place)`, near(back.x, home.x) && near(back.y, home.y), { back, home });
   check(`${tag} no console errors`, p.errs.length === 0, p.errs);
