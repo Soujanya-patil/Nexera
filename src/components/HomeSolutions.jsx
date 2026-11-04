@@ -1,10 +1,39 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import SceneImg from "./SceneImg";
 import { useEntrance } from "../lib/entrance";
 import { PARTNERS, PRODUCTS } from "../data/products";
 import { SOLUTION_PAGES } from "../data/solutions";
+
+// The card photos (src/assets/home-cards): each exported at 600 / 900 / 1200 px wide (4:3) as AVIF,
+// WebP and JPG, from the approved 1600 x 1200 originals (nexera-reference/NEXERA_home_cards_images).
+const cardFiles = import.meta.glob("../assets/home-cards/*.{avif,webp,jpg}", { eager: true, query: "?url", import: "default" });
+const CARD_WIDTHS = [600, 900, 1200];
+const cardUrl = (name, w, ext) => cardFiles[`../assets/home-cards/${name}-${w}.${ext}`];
+const cardSet = (name, ext) => CARD_WIDTHS.map((w) => `${cardUrl(name, w, ext)} ${w}w`).join(", ");
+
+/** A card photo as a <picture> (AVIF → WebP → JPG), its intrinsic size set, loaded lazily. */
+function CardPicture({ name, alt, position }) {
+  const sizes = "(min-width: 768px) 33vw, 100vw";
+  return (
+    <picture>
+      <source type="image/avif" srcSet={cardSet(name, "avif")} sizes={sizes} />
+      <source type="image/webp" srcSet={cardSet(name, "webp")} sizes={sizes} />
+      <img
+        src={cardUrl(name, 900, "jpg")}
+        srcSet={cardSet(name, "jpg")}
+        sizes={sizes}
+        width={1200}
+        height={900}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="card-media h-full w-full object-cover"
+        style={{ objectPosition: position }}
+      />
+    </picture>
+  );
+}
 
 // Which technology partners have systems for each application — read from the product catalogue,
 // so the preview can never claim a pairing the catalogue doesn't have.
@@ -22,7 +51,8 @@ import AnimatedText from "./ui/AnimatedText";
 import ParallaxMedia from "./ui/ParallaxMedia";
 import { DUR, EASE, STAGGER } from "../lib/tokens";
 
-// Imagery and alt text reused from ScaleStory (same three segments); copy from the approved mockup.
+// Copy from the approved mockup; the photos are the approved home-card images (`img`, with `position`:
+// the focal point that keeps the house / cabinets / containers in view, clear of the big title).
 // Each card links to its segment's section on the Solutions page.
 // On the photo (approved card mockup): an eyebrow, the title (the card's h3) and the benefits, the latter
 // taken from each card's previous description. `shape` is the card's transparent accent shape (a
@@ -44,9 +74,9 @@ const cards = [
     },
     page: SOLUTION_PAGES.residential.path,
     cta: "Explore Residential Storage",
-    // TODO(india-imagery): see ScaleStory — res-house is a CGI render of a generic non-Indian house.
-    img: "res-house",
-    alt: "Rendering of a home at night with rooftop solar and a wall-mounted TCL battery beside the garage",
+    img: "residential",
+    position: "70% 50%",
+    alt: "Indian home with rooftop solar and a wall-mounted home battery",
   },
   {
     id: "ci",
@@ -63,9 +93,9 @@ const cards = [
     },
     page: SOLUTION_PAGES.ci.path,
     cta: "Explore C&I Storage",
-    // TODO(india-imagery): see ScaleStory — ci-industrial is not identifiably Indian.
-    img: "ci-industrial",
-    alt: "TCL floor-standing battery cabinets and inverter beside an industrial building",
+    img: "ci",
+    position: "70% 50%",
+    alt: "Factory with rooftop solar and outdoor battery cabinets",
   },
   {
     id: "utility",
@@ -81,9 +111,9 @@ const cards = [
     },
     page: SOLUTION_PAGES.utility.path,
     cta: "Explore Utility-Scale Storage",
-    // TODO(india-imagery): see ScaleStory — utility-yard shows Chinese-language signage.
-    img: "utility-yard",
-    alt: "Aerial view of rows of Hithium battery storage containers at a large site",
+    img: "utility",
+    position: "100% 50%",
+    alt: "Solar farm with utility-scale battery storage containers",
   },
 ];
 
@@ -164,12 +194,7 @@ export default function HomeSolutions() {
                   amount={5}
                   className="grayscale contrast-110 transition-[filter] duration-[400ms] ease-standard motion-reduce:transition-none pointer-fine:group-hover:grayscale-0 pointer-fine:group-hover:contrast-100 group-has-[a:focus-visible]:grayscale-0 group-has-[a:focus-visible]:contrast-100"
                 >
-                  <SceneImg
-                    name={c.img}
-                    alt={c.alt}
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="card-media h-full w-full object-cover"
-                  />
+                  <CardPicture name={c.img} alt={c.alt} position={c.position} />
                 </ParallaxMedia>
                 {/* A dark soft shade (deepest at the top and foot, where the small white text sits), then the
                     transparent accent shape over it — dark enough beneath that all text keeps AA contrast */}
