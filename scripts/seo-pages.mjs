@@ -47,7 +47,6 @@ const { render } = await import(pathToFileURL(path.join(tmp, serverEntry)).href)
 const {
   ROUTES,
   SITE_URL,
-  TITLE_SUFFIX,
   TITLE_MAX,
   DESCRIPTION_MAX,
   DEFAULT_OG_IMAGE,
@@ -75,7 +74,6 @@ for (const r of ROUTES) if (r.path !== r.path.toLowerCase()) problems.push(`${r.
 const seen = { title: new Map(), description: new Map() };
 for (const r of ROUTES) {
   if (r.title.length >= TITLE_MAX) problems.push(`${r.path}: title is ${r.title.length} characters (limit < ${TITLE_MAX})`);
-  if (!r.title.endsWith(TITLE_SUFFIX)) problems.push(`${r.path}: title must end with "${TITLE_SUFFIX.trim()}"`);
   if (r.description.length >= DESCRIPTION_MAX)
     problems.push(`${r.path}: description is ${r.description.length} characters (limit < ${DESCRIPTION_MAX})`);
   if (r.canonical !== SITE_URL + r.path) problems.push(`${r.path}: canonical ${r.canonical} is not ${SITE_URL + r.path}`);
@@ -160,8 +158,9 @@ const localBusiness = {
   },
 };
 if (!fs.existsSync(distFile(ORGANIZATION.logo))) problems.push(`Organization logo missing: dist${ORGANIZATION.logo}`);
-// A route's short name for breadcrumbs: its `label` (routes.js) where it has one, else its title.
-const pageName = (r) => r.label ?? r.title.slice(0, -TITLE_SUFFIX.length);
+// A route's short name for breadcrumbs: its `label` (routes.js) where it has one, else its title up to
+// the first " | ".
+const pageName = (r) => r.label ?? r.title.split(" | ")[0];
 const productsRoute = ROUTES.find((r) => r.path === "/products");
 /** Trail items are routes (named like their titles) or [name, path] pairs from a route's `crumbs`. */
 const breadcrumbs = (trail) => ({

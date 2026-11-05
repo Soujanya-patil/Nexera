@@ -246,7 +246,7 @@ export function productPage(id) {
     {
       q: `Who installs and supports the ${label} in India?`,
       // Service & Training: Design & Commissioning Support, After-Sales & Warranty, the training centre.
-      a: "NEXERA supports it in India. Every partner gets our engineering team for sizing, single-line diagrams, and on-site support with BESS installation and BESS commissioning; technicians train on live hardware at our Kalaburagi Technician Training Centre; and warranty handling is local-first, with NEXERA managing the OEM relationship. More on Service & Training.",
+      a: "NEXERA supports it in India. Every partner gets our engineering team for sizing, single-line diagrams, and on-site support with BESS installation and BESS commissioning; from 2027, technicians will train on live hardware at our Kalaburagi Technician Training Centre; and warranty handling is local-first, with NEXERA managing the OEM relationship. More on Service & Training.",
       links: [{ text: "Service & Training", to: "/service-training" }],
     },
   ].filter(Boolean);

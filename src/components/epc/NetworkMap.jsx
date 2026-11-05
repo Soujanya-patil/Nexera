@@ -14,8 +14,8 @@ const HQ = OFFICES.find((o) => o.id === "bangalore");
 
 /**
  * PAN-INDIA NETWORK — the offices from Where We Operate as points on a minimal network schematic:
- * Bangalore (headquarters) and Kalaburagi (regional office, training centre) as solid green points
- * with a solid link, Nagpur and Delhi as outlined points on dashed links, labelled "Planned".
+ * Bengaluru (head office) as a solid green point, and Kalaburagi (technician training centre, opening
+ * 2027) as an outlined point on a dashed link, labelled "Opening 2027".
  * Pointing at, focusing or tapping a point — or its row in the list — pulses it and opens a small
  * card with what that location does. Nothing is implied beyond the listed locations.
  */
@@ -33,8 +33,7 @@ export default function NetworkMap() {
             Rooted in Karnataka. Growing Across India.
           </AnimatedText>
           <p className="mt-4 max-w-md text-body text-paper/75">
-            Headquartered in Bangalore, with a regional office and technician training centre in Kalaburagi. Nagpur and
-            Delhi are planned expansions.
+            Head office in Bengaluru, with a technician training centre opening in Kalaburagi in 2027.
           </p>
 
           <ul className="mt-8 divide-y divide-white/10 border-y border-white/10">
@@ -66,7 +65,7 @@ export default function NetworkMap() {
                         o.status === "active" ? "bg-accent/15 text-accent" : "bg-white/8 text-paper/60"
                       }`}
                     >
-                      {o.status === "active" ? "Active" : "Planned"}
+                      {o.status === "active" ? "Active" : "Opening 2027"}
                     </span>
                   </button>
                 </li>
@@ -167,10 +166,12 @@ function OfficeCard({ office }) {
   return (
     <>
       <p className="eyebrow text-label">
-        {office.status === "active" ? office.role : "Planned expansion"}
+        {office.status === "active" ? office.role : "Opening 2027"}
       </p>
       <p className="mt-1 text-small font-semibold text-white">{office.city}</p>
-      {office.detail && <p className="mt-1 text-micro text-paper/70">{office.detail}</p>}
+      {(office.status === "active" ? office.detail : office.role) && (
+        <p className="mt-1 text-micro text-paper/70">{office.status === "active" ? office.detail : office.role}</p>
+      )}
     </>
   );
 }

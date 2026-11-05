@@ -12,7 +12,7 @@
  * Tailwind arbitrary value, where underscores are right. A hit is either a colour space written with an
  * underscore (in_srgb, in_oklab …) or an underscore between CSS value tokens: after a number, a unit or
  * a closing parenthesis, and before a number, var(, a colour or a CSS function. JS comments are not
- * checked.
+ * checked, and neither is a string that is only an http(s) address.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -60,6 +60,8 @@ for (const file of files) {
       // JS: only string literals (the code around them, and comments, are not CSS).
       const parts = js ? (line.replace(/^\s*(\/\/|\*|\/\*).*$/, "").match(STRINGS) ?? []) : [line];
       for (const part of parts) {
+        // A string that is only a web address (a source link's PDF name) is not a CSS value.
+        if (js && /^["'`]https?:\/\/[^\s"'`]*["'`]$/.test(part)) continue;
         const text = dropBrackets(part);
         const m = text.match(SPACE) ?? text.match(GAP);
         if (m) {

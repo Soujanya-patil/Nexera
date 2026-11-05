@@ -4,11 +4,9 @@ import PageHeader from "../components/PageHeader";
 import { useScrollReveal } from "../lib/scrollReveal";
 
 const offices = [
-  // The headquarters links to its local page (/locations/bengaluru).
-  { city: "Bangalore", role: "Headquarters", detail: "Strategy, brand partnerships, sales support", status: "active", link: { to: "/locations/bengaluru", label: "Battery storage in Bengaluru & Karnataka" } },
-  { city: "Kalaburagi (Gulbarga)", role: "Regional office", detail: "Service Support, Technician Training Centre", status: "active" },
-  { city: "Nagpur", role: "Planned expansion", detail: "", status: "planned" },
-  { city: "Delhi", role: "Planned expansion", detail: "", status: "planned" },
+  // The head office links to its local page (/locations/bengaluru).
+  { city: "Bengaluru", role: "Head office", detail: "Strategy, brand partnerships, sales support", status: "active", link: { to: "/locations/bengaluru", label: "Battery storage in Bengaluru & Karnataka" } },
+  { city: "Kalaburagi (Gulbarga)", role: "Technician training centre", detail: "", status: "opening" },
 ];
 
 export default function WhereWeOperate() {
@@ -20,7 +18,7 @@ export default function WhereWeOperate() {
       <PageHeader
         eyebrow="Where We Operate"
         title="A growing footprint across India"
-        subtitle="NEXERA, an authorised distributor of TCL and Hithium battery energy storage systems, is headquartered in Bangalore, with a regional office and technician training centre in Kalaburagi, Karnataka."
+        subtitle="NEXERA, an authorised distributor of TCL and Hithium battery energy storage systems, has its head office in Bengaluru, Karnataka, with a technician training centre opening in Kalaburagi in 2027."
       />
 
       <section className="bg-white">
@@ -50,7 +48,7 @@ export default function WhereWeOperate() {
                       : "bg-line/60 text-copy"
                   }`}
                 >
-                  {o.status === "active" ? "Active" : "Planned"}
+                  {o.status === "active" ? "Active" : "Opening 2027"}
                 </span>
               </div>
             ))}

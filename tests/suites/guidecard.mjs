@@ -100,6 +100,10 @@ for (const [W, H] of [[1440, 900], [390, 844]]) {
   // Without JavaScript.
   {
     const p = await page(W, H, false);
+    // Bring the arrow to the middle first (instantly): one straddling the bottom edge otherwise keeps
+    // moving under the page's smooth scroll and Playwright's own scroll-into-view, never reading as stable.
+    await p.locator(CARD).locator("svg.lucide-arrow-right").evaluate((s) => s.scrollIntoView({ block: "center", behavior: "instant" }));
+    await p.waitForTimeout(300);
     await p.locator(CARD).locator("svg.lucide-arrow-right").click();
     const r = await landed(p);
     check(`${tag} no JavaScript: click on the arrow → the article`, r.path === "/blog/what-is-bess" && r.h1 === H1, r);

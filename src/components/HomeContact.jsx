@@ -13,7 +13,7 @@ import { STAGGER } from "../lib/tokens";
 const TRUST = [
   { icon: BadgeCheck, text: "Authorised partner for TCL and Hithium" },
   { icon: Ruler, text: "Design, sizing and commissioning support" },
-  { icon: GraduationCap, text: "Hands-on technician training in Kalaburagi" },
+  { icon: GraduationCap, text: "Technician training centre in Kalaburagi, opening 2027" },
 ];
 const EMPTY = { name: "", mobile: "", email: "", company: "", city: "", interest: "", message: "", website: "" };
 

@@ -6,7 +6,7 @@
 export const SERVICE_TRAINING_FAQ = [
   {
     q: "Where can EPC technicians get hands-on BESS training in South India?",
-    a: "At NEXERA's Kalaburagi Technician Training Centre, a hands-on BESS training centre for EPC technicians. Technicians train on live TCL and Hithium hardware, not manuals and PDFs: installation and commissioning practice, electrical safety, and fault diagnosis and troubleshooting on live systems, with a certification path for field-ready technicians.",
+    a: "At NEXERA's Kalaburagi Technician Training Centre, a hands-on BESS training centre for EPC technicians opening in 2027. Technicians will train on live TCL and Hithium hardware, not manuals and PDFs: installation and commissioning practice, electrical safety, and fault diagnosis and troubleshooting on live systems, with a certification path for field-ready technicians.",
   },
 ];
 
@@ -31,8 +31,8 @@ export const SUPPORT_POINTS = [
   {
     key: "training",
     title: "Technician training",
-    // Service & Training: Kalaburagi Technician Training Centre.
-    text: "In Kalaburagi, BESS technician training happens on live TCL and Hithium hardware — not manuals and PDFs.",
+    // Service & Training: Kalaburagi Technician Training Centre (opening 2027).
+    text: "From 2027, BESS technician training in Kalaburagi will happen on live TCL and Hithium hardware — not manuals and PDFs.",
   },
   {
     key: "after-sales",

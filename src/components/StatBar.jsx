@@ -17,13 +17,16 @@ const STATS = [
   { type: "static", label: "Response times", text: "Quick" },
 ];
 
-// The Home stat bar's figures, as confirmed by NEXERA (~10x from the mockup stays out: it can't be
-// verified). `text` is what HomeStats shows and counts up to; `statement` marks the closing line, which
-// has no number and doesn't count.
+// The Home stat bar's figures, as confirmed by NEXERA, each linked to its public source (~10x from the
+// mockup and the CAGR range stay out: no named source). `text` is what HomeStats shows and counts up
+// to; `statement` marks the closing line, which has no number and doesn't count.
+// CEA: National Electricity Plan 2022–32 (Vol. I, Generation), 73.93 GW / 411.4 GWh of storage by 2031–32.
+const CEA_NEP = "https://cea.nic.in/wp-content/uploads/irp/2023/05/NEP_2022_32_FINAL_GAZETTE-1.pdf";
+// Ministry of Power (PIB, June 2025): VGF for 30 GWh of standalone BESS.
+const PIB_VGF = "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2135450";
 export const HOME_STATS = [
-  { type: "range", prefix: "~", lo: 30, hi: 33, suffix: "%", label: "Projected CAGR, India BESS market (2026–2031)", text: "~30–33%" },
-  { type: "count", value: 400, suffix: "+ GWh", label: "Storage capacity India needs by 2031⁠–⁠32 (CEA estimate)", text: "400+ GWh" },
-  { type: "count", value: 30, suffix: " GWh", label: "New standalone storage backed by the Government’s VGF scheme (2025)", text: "30 GWh" },
+  { type: "count", value: 400, suffix: "+ GWh", label: "Storage capacity India needs by 2031⁠–⁠32 (CEA estimate)", text: "400+ GWh", source: { label: "CEA", href: CEA_NEP } },
+  { type: "count", value: 30, suffix: " GWh", label: "New standalone storage backed by the Government’s VGF scheme (2025)", text: "30 GWh", source: { label: "Ministry of Power (PIB)", href: PIB_VGF } },
   { type: "static", statement: true, label: "Powered by Storage", text: "A Cleaner, More Resilient India" },
 ];
 

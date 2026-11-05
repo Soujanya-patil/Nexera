@@ -167,9 +167,8 @@ export default function LocationBengaluru() {
         id="support"
         tone="paper"
         title="How we support local projects"
-        intro="NEXERA is headquartered in Bengaluru, with a regional office and technician training centre in Kalaburagi, Karnataka."
+        intro="NEXERA's head office is in Bengaluru, with a technician training centre opening in Kalaburagi, Karnataka, in 2027."
       >
-        <p className="mt-3 text-small text-copy">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
         <FeatureGrid columns={4} items={SUPPORT.map((s) => ({ ...s, icon: SUPPORT_ICONS[s.key] }))} />
         <div className="mt-10 flex flex-wrap gap-x-8 gap-y-2">
           <ArrowLink to="/service-training" className="min-h-11">

@@ -73,7 +73,7 @@ const listOf = (items) => (items.length > 1 ? `${items.slice(0, -1).join(", ")} 
 export const PARTNER_WHY = [
   { title: "Authorised access", text: "Authorised TCL and Hithium partner" },
   { title: "Design and sizing support", text: "Not just sales — our engineers work your first sizing and commissioning with you." },
-  { title: "Technician training", text: "Hands-on technician training centre in Kalaburagi" },
+  { title: "Technician training", text: "Technician training centre in Kalaburagi, opening 2027" },
   { title: "After-sales and warranty", text: "Local-first warranty handling — we manage the OEM relationship so your customer relationship stays intact." },
 ];
 

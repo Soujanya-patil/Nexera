@@ -580,9 +580,9 @@ const DRAFTS = import.meta.env.DEV ? [LFP_VS_NMC, AC_VS_DC, SAFETY] : [];
 const ALL = [
   {
     slug: "what-is-bess",
-    title: "What Is a BESS? Battery Energy Storage Explained | NEXERA",
+    title: "What Is a BESS? Battery Energy Storage Explained | Nexera",
     description:
-      "BESS full form: Battery Energy Storage System. Learn how a BESS works, its key components, kW vs kWh, and where homes, businesses and the grid use it.",
+      "How battery energy storage systems (BESS) work and where they pay off for Indian homes, businesses and utilities.",
     shortTitle: "What Is a BESS?",
     eyebrow: "Guide",
     // The Solutions pages that link to it as their guide (FaqList `guide`).

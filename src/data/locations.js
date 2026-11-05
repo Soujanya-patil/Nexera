@@ -45,8 +45,8 @@ export { SUPPORT_POINTS as SUPPORT } from "./serviceTraining";
 export const BENGALURU_FAQ = [
   {
     q: "Where is NEXERA's office in Bengaluru?",
-    // The footer address (data/business) and its hours; Where We Operate: Bangalore, Headquarters.
-    a: `NEXERA's headquarters is at ${ADDRESS}. It is open ${HOURS_LINE}.`,
+    // The footer address (data/business) and its hours; Where We Operate: Bengaluru, Head office.
+    a: `NEXERA's head office is at ${ADDRESS}. It is open ${HOURS_LINE}.`,
   },
   {
     q: "Which battery brands does NEXERA supply in Karnataka?",

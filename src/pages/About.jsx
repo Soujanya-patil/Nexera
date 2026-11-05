@@ -13,7 +13,7 @@ const leaders = [
 const why = [
   "Authorised TCL and Hithium partner",
   "India-based design and commissioning support",
-  "Hands-on technician training centre in Kalaburagi",
+  "Technician training centre in Kalaburagi, opening 2027",
   "Built by EPCs who understand the site-level problem",
 ];
 

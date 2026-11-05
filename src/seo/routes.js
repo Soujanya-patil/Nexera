@@ -77,9 +77,9 @@ const PAGES = [
     path: "/",
     localBusiness: true,
     h1: "Battery Energy Storage Systems Powering India’s Transition to Smart Energy Storage",
-    title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
+    title: "BESS in India: TCL & Hithium Energy Storage | Nexera",
     description:
-      "Authorised distributor of TCL and Hithium battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
+      "Authorised TCL and Hithium distributor in India. Battery energy storage for homes, businesses and utilities, with design, commissioning and service.",
   },
   {
     path: "/solutions",
@@ -94,27 +94,27 @@ const PAGES = [
   {
     path: SOLUTION_PAGES.utility.path,
     h1: "Utility-Scale Energy Storage Powering the Grid of Tomorrow.",
-    title: "Utility-Scale BESS & Battery Containers India | NEXERA",
+    title: "Utility-Scale BESS in India | Hithium DC Blocks | Nexera",
     description:
-      "Utility-scale BESS and containerised battery storage from Hithium, 5 MWh-class and up, with sizing, engineering and commissioning by NEXERA.",
+      "Hithium containerised battery storage for grid-connected projects in India, including the 6.25 MWh system. Supplied and supported by Nexera.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.utility.label, SOLUTION_PAGES.utility.path]],
     faq: UTILITY_FAQ,
   },
   {
     path: SOLUTION_PAGES.ci.path,
     h1: "Commercial & Industrial Energy Solutions Power Your Business. Smarter.",
-    title: "Commercial & Industrial Battery Storage India | NEXERA",
+    title: "C&I Battery Energy Storage in India | Nexera Powertech",
     description:
-      "Commercial battery storage systems for peak shaving, solar self-consumption and backup power. TCL and Hithium C&I BESS with engineering by NEXERA.",
+      "Cut peak-hour power costs and diesel use with commercial and industrial battery storage from TCL and Hithium. Sizing and commissioning included.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.ci.label, SOLUTION_PAGES.ci.path]],
     faq: CI_FAQ,
   },
   {
     path: SOLUTION_PAGES.residential.path,
     h1: "Residential Energy Solutions Power Your Home. Smarter.",
-    title: "Home Energy Storage & Solar Battery Backup | NEXERA",
+    title: "Home Battery Storage in India | TCL | Nexera Powertech",
     description:
-      "Solar battery for home from TCL: store rooftop solar, keep essential loads running in power cuts and cut grid dependence. Supplied by NEXERA.",
+      "Store your solar power for evenings and outages with TCL home battery storage. Supplied and supported in India by Nexera Powertech.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.residential.label, SOLUTION_PAGES.residential.path]],
     faq: RESIDENTIAL_FAQ,
   },
@@ -132,14 +132,14 @@ const PAGES = [
     [
       "hithium",
       "Hithium",
-      "Hithium Energy Storage in India | NEXERA",
-      "Hithium BESS in India through NEXERA: ∞BLOCK C&I cabinets and ∞Power utility-scale containers, with sizing, commissioning and local support.",
+      "Hithium Energy Storage in India | Cabinets & DC Blocks",
+      "Hithium C&I cabinets and utility-scale DC blocks, supplied in India with design support and service by Nexera Powertech.",
     ],
     [
       "tcl",
       "TCL",
-      "TCL BlueArk Energy Storage in India | NEXERA",
-      "TCL BlueArk energy storage in India through NEXERA: residential and C&I systems with design, commissioning, training and after-sales support.",
+      "TCL Battery Storage in India | BlueArk X5, W10 | Nexera",
+      "TCL BlueArk commercial and industrial storage and TCL home batteries, supplied in India with local spares and service by Nexera Powertech.",
     ],
   ].map(([id, name, title, description]) => ({
     path: `/partners/${id}`,
@@ -154,16 +154,16 @@ const PAGES = [
     path: "/become-a-partner",
     h1: "Become a BESS Distributor Build More. Store Smarter.",
     label: "Become a Partner",
-    title: "Become a BESS Distributor in India | NEXERA",
+    title: "Become a BESS Distributor or EPC Partner in India | Nexera",
     description:
-      "Become an authorised BESS distributor for TCL and Hithium in India, with design, commissioning, technician training and after-sales support.",
+      "Join Nexera Powertech as an EPC or distributor. Get TCL and Hithium storage, project sizing, installer training and warranty-claim support.",
   },
   {
     path: "/about",
     h1: "Built by an EPC, for EPCs",
     title: "About Us — Built by an EPC, for EPCs | NEXERA",
     description:
-      "NEXERA is an authorised TCL and Hithium partner built by EPCs, with design and commissioning support and a Kalaburagi training centre.",
+      "NEXERA is an authorised TCL and Hithium partner built by EPCs, with design and commissioning support and a Kalaburagi training centre opening 2027.",
   },
   {
     path: "/how-it-works",
@@ -178,16 +178,16 @@ const PAGES = [
     label: "Service & Training",
     title: "BESS Installation, Commissioning & Training | NEXERA",
     description:
-      "BESS installation and commissioning support, sizing, warranty service and hands-on technician training at NEXERA's Kalaburagi training centre.",
+      "BESS installation and commissioning support, sizing, warranty service and technician training at NEXERA's Kalaburagi training centre from 2027.",
     faq: SERVICE_TRAINING_FAQ,
   },
   {
     path: "/where-we-operate",
     h1: "A growing footprint across India",
     label: "Where We Operate",
-    title: "Battery Energy Storage in Bangalore & India | NEXERA",
+    title: "Where We Operate in India | Nexera Powertech",
     description:
-      "NEXERA is headquartered in Bangalore, with a regional office and technician training centre in Kalaburagi, and planned expansion to Nagpur and Delhi.",
+      "NEXERA's head office is in Bengaluru, Karnataka, with a technician training centre opening in Kalaburagi in 2027.",
   },
   // The Bengaluru location page (pages/LocationBengaluru.jsx, content in data/locations.js): the same
   // LocalBusiness node as Home and Contact, breadcrumb Home > Where We Operate > Bengaluru, and its FAQ.
@@ -196,9 +196,9 @@ const PAGES = [
     localBusiness: true,
     h1: "Battery Energy Storage in Bengaluru & Karnataka",
     label: "Bengaluru",
-    title: "Battery Energy Storage in Bengaluru & Karnataka | NEXERA",
+    title: "Battery Energy Storage in Bengaluru | Nexera Powertech",
     description:
-      "Authorised distributor of TCL and Hithium battery energy storage in Bengaluru and Karnataka, with sizing, commissioning support and training.",
+      "Nexera Powertech in Bengaluru: TCL and Hithium battery storage, design support and service for Karnataka projects.",
     crumbs: [["Where We Operate", "/where-we-operate"], ["Bengaluru", BENGALURU_PATH]],
     faq: BENGALURU_FAQ,
   },
@@ -238,9 +238,10 @@ const PAGES = [
     path: "/contact",
     localBusiness: true,
     h1: "Talk to Nexera",
-    title: "Contact Us — Energy Storage Enquiries | NEXERA",
+    label: "Contact",
+    title: "Contact Nexera Powertech | BESS Enquiries, Bengaluru",
     description:
-      "Talk to NEXERA about battery energy storage for your home, business or project. Tell us what you need and we'll route it to the right team.",
+      "Talk to Nexera Powertech about battery storage for your project. Call +91 97423 53341 or send an enquiry.",
   },
 ];
 

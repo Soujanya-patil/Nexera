@@ -59,11 +59,11 @@ export default function ServiceTraining() {
             Kalaburagi Technician Training Centre
           </h2>
           <p data-sr className="mt-2 text-small text-copy">
-            India's Hands-On BESS Training Centre for EPC Technicians
+            Opening 2027: a hands-on BESS training centre for EPC technicians
           </p>
           <p data-sr className="mt-heading max-w-measure text-body text-copy">
-            In Kalaburagi, BESS technician training happens on live TCL and Hithium
-            hardware — not manuals and PDFs.
+            From 2027, BESS technician training in Kalaburagi will happen on live TCL
+            and Hithium hardware — not manuals and PDFs.
           </p>
           <ul data-sr className="mt-6 space-y-2 text-body text-copy">
             <li className="flex gap-3"><Check aria-hidden="true" className="mt-1 h-4 w-4 shrink-0 text-label" strokeWidth={2.4} /> Hands-on installation and commissioning practice</li>

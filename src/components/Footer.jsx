@@ -63,7 +63,7 @@ export default function Footer() {
               </a>
             </p>
           )}
-          <p className="mt-3 text-small">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
+          <p className="mt-3 text-small">Head office: Bengaluru · Training centre: Kalaburagi, opening 2027</p>
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
           {groups.map((g) => (

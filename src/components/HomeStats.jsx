@@ -7,27 +7,25 @@ import { DUR, EASE, STAGGER } from "../lib/tokens";
 /**
  * Home stat bar — the business impact that follows the product story. The confirmed figures
  * (HOME_STATS) count up to their real values once (CountUp, the site's figure animation); the last
- * cell is a statement in the figure's style, a size smaller, with no count.
+ * cell is a statement in the figure's style, a size smaller, with no count. Each figure names its
+ * source under its label (a small link, in a new tab).
  *
- * Grid: two cells per row on phones (a left hairline unless a cell starts its row, a top one on the second
- * row), all four in one row from 1024 px with a hairline between each, across the page container. In
- * that row the figures scale with the cells (3.3vw, 2rem–3rem: 48 px from ~1455 px), since text-h2 alone
- * would overflow a cell around 1024 px. The closing statement there is as large as fits "A Cleaner, More"
- * on one line: each cell is a size container and --stmt is its content width / 7.1 (that line is ~6.98 em
- * wide), capped at 3rem. Every cell's figure line is two statement lines tall with the figure at its
- * foot, so the rules and labels of all four cells sit at the same height (the first cell carries a
- * transparent divider, so every content box, and with it --stmt, is the same width).
+ * Grid: below 1024 px the two figures side by side (a hairline between them) and the statement below
+ * across both (a top hairline); from 1024 px all three in one row with a hairline between each, across
+ * the page container. In that row the figures scale with the cells (3.3vw, 2rem–3rem: 48 px from
+ * ~1455 px). The closing statement there is as large as fits "A Cleaner, More" on one line: each cell is
+ * a size container and --stmt is its content width / 7.1 (that line is ~6.98 em wide), capped at 3rem.
+ * Every cell's figure line is two statement lines tall with the figure at its foot, so the rules and
+ * labels of all three cells sit at the same height (the first cell carries a transparent divider, so
+ * every content box, and with it --stmt, is the same width).
  *
  * Entrance ("precision"): a hairline draws out from the centre, the bar widens in from its centre, each
  * figure settles in (a little scale), its green rule draws, then its label.
  * Hover: the rule lengthens and the label comes up to full contrast; the figures stay green (no colour
  * change, no dot — a resting pointer must not make one figure look different). No cards.
  */
-// Phone hairlines per cell: [starts a row ? none : left][first row ? none : top].
-const CELL_LINES = [
-  ["", "border-t"],
-  ["border-l", "border-l border-t"],
-];
+// Hairlines per cell below 1024 px: the second figure a left one, the statement (across both columns) a top one.
+const CELL_LINES = ["", "border-l", "col-span-2 border-t lg:col-span-1"];
 
 export default function HomeStats() {
   const root = useRef(null);
@@ -47,9 +45,9 @@ export default function HomeStats() {
     <section ref={root} data-enter={enter} aria-label="Market outlook" className="bg-white">
       <div className="container-site py-10">
         <span data-e="hairline" aria-hidden="true" className="mx-auto mb-6 block h-px w-24 bg-line" />
-        <div data-e="bar" className="grid grid-cols-2 lg:grid-cols-4">
+        <div data-e="bar" className="grid grid-cols-2 lg:grid-cols-3">
           {HOME_STATS.map((s, i) => (
-            <div key={s.label} className={`group/stat @container relative border-line px-4 py-6 text-center [--stmt:min(3rem,100cqi/7.1)] sm:px-6 lg:px-4 xl:px-6 ${CELL_LINES[i % 2 ? 1 : 0][i >= 2 ? 1 : 0]} ${i ? "lg:border-l lg:border-t-0" : "lg:border-l lg:border-l-transparent"}`}>
+            <div key={s.label} className={`group/stat @container relative border-line px-4 py-6 text-center [--stmt:min(3rem,100cqi/7.1)] sm:px-6 lg:px-4 xl:px-6 ${CELL_LINES[i]} ${i ? "lg:border-l lg:border-t-0" : "lg:border-l lg:border-l-transparent"}`}>
               <p
                 className={`font-semibold text-accent lg:flex lg:min-h-[calc(2.24*var(--stmt))] lg:items-end lg:justify-center ${
                   s.statement
@@ -69,6 +67,15 @@ export default function HomeStats() {
               <p data-label className="mx-auto mt-2 max-w-[16rem] text-small text-copy transition-colors duration-fast group-hover/stat:text-ink group-focus-visible/stat:text-ink group-focus-within/stat:text-ink">
                 {s.label}
               </p>
+              {s.source && (
+                <p className="mt-1 text-micro text-copy">
+                  Source:{" "}
+                  <a href={s.source.href} target="_blank" rel="noopener noreferrer" className="link-inline inline-block py-1 text-navy">
+                    {s.source.label}
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </p>
+              )}
             </div>
           ))}
         </div>

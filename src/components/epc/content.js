@@ -11,10 +11,10 @@
  *   engineers on sizing, single-line diagrams, on-site commissioning      Service & Training
  *   "our engineers work your first sizing and commissioning with you"     Become a Partner, Resources
  *   after-sales, warranty handling, "we manage the OEM relationship"      Become a Partner, Service & Training
- *   technician training on live TCL and Hithium hardware in Kalaburagi    Service & Training
+ *   technician training on live TCL and Hithium hardware in Kalaburagi, from 2027  Service & Training
  *   region formally mapped and protected once onboarded                   Become a Partner
  *   "Built by an EPC, for EPCs" / site-level problem                      About
- *   offices: Bangalore HQ, Kalaburagi regional office, Nagpur + Delhi planned  Where We Operate, Footer
+ *   offices: Bengaluru head office, Kalaburagi training centre opening 2027  Where We Operate, Footer
  */
 import {
   Boxes,
@@ -103,7 +103,7 @@ export const JOURNEY = [
     title: "Scale",
     icon: TrendingUp,
     copy: "Grow into new projects with a protected territory.",
-    detail: "Once you're onboarded, your region is formally mapped and protected — and technician training in Kalaburagi helps your team take on more storage work.",
+    detail: "Once you're onboarded, your region is formally mapped and protected — and from 2027, technician training in Kalaburagi will help your team take on more storage work.",
     photo: "scale",
     focus: "50% 60%",
     alt: "Aerial view of a solar farm with battery storage containers",
@@ -143,7 +143,7 @@ export const CAPABILITIES = [
   {
     title: "Training",
     icon: GraduationCap,
-    copy: "Technicians train on live TCL and Hithium hardware in Kalaburagi.",
+    copy: "From 2027, technicians will train on live TCL and Hithium hardware in Kalaburagi.",
     to: "/service-training",
     cta: "Training centre",
   },
@@ -209,21 +209,19 @@ export const VALUES = [
  * network schematic (true relative positions, no country outline is drawn).
  */
 export const OFFICES = [
-  { id: "delhi", city: "Delhi", role: "Planned expansion", detail: "", status: "planned", lat: 28.61, lon: 77.21 },
-  { id: "nagpur", city: "Nagpur", role: "Planned expansion", detail: "", status: "planned", lat: 21.15, lon: 79.09 },
   {
     id: "kalaburagi",
     city: "Kalaburagi (Gulbarga)",
-    role: "Regional office",
-    detail: "Service support and technician training centre",
-    status: "active",
+    role: "Technician training centre",
+    detail: "",
+    status: "opening",
     lat: 17.33,
     lon: 76.83,
   },
   {
     id: "bangalore",
-    city: "Bangalore",
-    role: "Headquarters",
+    city: "Bengaluru",
+    role: "Head office",
     detail: "Strategy, brand partnerships and sales support",
     status: "active",
     lat: 12.97,
