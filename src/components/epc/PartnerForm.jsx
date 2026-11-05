@@ -3,6 +3,7 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import { jumpTo } from "../../lib/lenis";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../../lib/enquiry";
+import { trackLead } from "../../lib/analytics";
 import { COMPANY_TYPES, ENQUIRY_TYPES, PROJECT_APPLICATIONS } from "./content";
 
 // This form's fields and the enquiry rule each follows (lib/enquiry), in the order they appear (the
@@ -105,7 +106,10 @@ export default function PartnerForm() {
         application: PROJECT_APPLICATIONS.find((a) => a.id === f.application)?.label ?? "",
       },
     });
-    if (res.ok) return setSubmitted(true);
+    if (res.ok) {
+      trackLead("partner");
+      return setSubmitted(true);
+    }
     if (res.fields) {
       // The API's own field errors (should it ever disagree with the page) go under their fields.
       const fromApi = {};

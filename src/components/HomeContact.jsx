@@ -6,6 +6,7 @@ import { onceInView } from "../lib/inview";
 import { jumpTo } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
 import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
+import { trackLead } from "../lib/analytics";
 import { ADDRESS } from "../data/business";
 import { STAGGER } from "../lib/tokens";
 
@@ -130,6 +131,7 @@ export default function HomeContact() {
     const wait = MIN_FILL_MS - (Date.now() - started.current);
     if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     const res = await sendEnquiry({ ...values, startedAt: started.current });
+    if (res.ok) trackLead("full");
     if (res.ok) {
       setFirstName(values.name.trim().split(/\s+/)[0]);
       setValues(EMPTY);

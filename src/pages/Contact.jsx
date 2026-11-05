@@ -6,6 +6,7 @@ import { applicationLabel, getProduct, productLabel } from "../data/products";
 import { topicLabels } from "../data/solutionTopics";
 import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
 import { ADDRESS } from "../data/business";
+import { trackLead } from "../lib/analytics";
 
 // The customer enquiry types as the enquiry API's interest values.
 const INTEREST_OF = { residential: "home", ci: "ci", utility: "utility" };
@@ -121,6 +122,7 @@ export default function Contact() {
       else setStatus("error");
       return;
     }
+    if (res.ok) trackLead("full");
     setStatus(res.ok ? "done" : "error");
   }
 

@@ -6,6 +6,7 @@ import { getLenis, jumpTo } from "../lib/lenis";
 import { scrollToId } from "../lib/scrollTo";
 import { useBottomInset } from "../lib/floatingBottom";
 import { INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, prettyMobile, sendEnquiry } from "../lib/enquiry";
+import { trackLead } from "../lib/analytics";
 import { DUR, EASE } from "../lib/tokens";
 
 const EMPTY = { name: "", mobile: "", interest: "", website: "" };
@@ -427,6 +428,7 @@ export default function CallbackWidget() {
     const wait = MIN_FILL_MS - (Date.now() - started.current);
     if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     const res = await sendEnquiry({ ...values, startedAt: started.current, source: "quick" });
+    if (res.ok) trackLead("callback");
     if (res.ok) {
       setSent({ firstName: values.name.trim().split(/\s+/)[0], mobile: prettyMobile(values.mobile) });
       setStatus("done");

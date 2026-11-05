@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import { ADDRESS, PHONE, phoneHref } from "../data/business";
 import { SOLUTION_PAGES } from "../data/solutions";
+import { openConsent } from "../lib/analytics";
 
 // Every group lists existing routes only, each page once. Partner pages keep their order (Hithium, TCL,
 // CLOU); the Blog and its published articles come from data/articles.js (drafts are never listed).
@@ -83,9 +84,13 @@ export default function Footer() {
         </nav>
       </div>
       <div className="border-t border-line">
-        <p className="container-site py-5 text-micro text-muted">
-          © {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.
-        </p>
+        <div className="container-site flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-5 text-micro text-muted">
+          <p>© {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.</p>
+          {/* Reopens the cookie consent banner (lib/analytics). */}
+          <button type="button" data-cookie-settings onClick={openConsent} className="link inline-flex items-center text-muted pointer-coarse:min-h-11">
+            Cookie settings
+          </button>
+        </div>
       </div>
     </footer>
   );

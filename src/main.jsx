@@ -1,4 +1,5 @@
 import './lib/featureGuards'
+import { initAnalytics } from './lib/analytics'
 import { createRoot, hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import './index.css'
@@ -11,6 +12,10 @@ import StartupBoundary, { captureHead } from './components/StartupBoundary'
 // everything is simply visible). On a direct load nothing in the first viewport is ever held: the
 // hold states only apply to content below the fold (lib/firstLoad).
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-motion')
+
+// Analytics with consent (lib/analytics): only the Consent Mode default (denied) and a click listener
+// until the visitor accepts; GA4 itself loads only after "Accept".
+initAnalytics()
 
 // The page as served, kept for StartupBoundary: if the app stops on an error, this is put back.
 const root = document.getElementById('root')

@@ -1,10 +1,11 @@
-import { Suspense, lazy, useEffect, useLayoutEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import { initSmoothScroll, jumpTo } from "../lib/lenis";
 import { loadRouteMeta } from "../seo/loadRouteMeta";
 import { isFirstLoad, markNavigated } from "../lib/firstLoad";
+import { pageView } from "../lib/analytics";
 
 /**
  * On navigation: jump to the #hash target if there is one (e.g. /solutions#ci), otherwise to the top.
@@ -33,6 +34,8 @@ function useScrollOnNavigate() {
 // The floating call-back widget (every page) is its own chunk, loaded once the page has loaded and
 // the browser is idle: it only appears after some scrolling, and nothing of it is pre-rendered.
 const CallbackWidget = lazy(() => import("./CallbackWidget"));
+// The cookie consent banner (lib/analytics): its own chunk too, mounted at the same idle moment.
+const ConsentBanner = lazy(() => import("./ConsentBanner"));
 function useIdleAfterLoad() {
   const [idle, setIdle] = useState(false);
   useEffect(() => {
@@ -66,6 +69,14 @@ export default function Layout() {
   useEffect(() => {
     if (pathname !== firstPath) loadRouteMeta({ now: true });
   }, [pathname]);
+  // A GA4 page view for each client-side navigation (only with consent; the first one is sent when GA4
+  // loads). The query string counts too (/products?app=ci), the #hash does not.
+  const { search } = useLocation();
+  const seen = useRef(false);
+  useEffect(() => {
+    if (seen.current) pageView();
+    seen.current = true;
+  }, [pathname, search]);
   // A page arriving by a View Transition doesn't get the route fade at all (decided as it renders):
   // toggling the animation off only while html[data-vt] is set made it restart — a blank flash — the
   // moment the transition ended and the flag was removed.
@@ -88,6 +99,11 @@ export default function Layout() {
       {widget && (
         <Suspense fallback={null}>
           <CallbackWidget />
+        </Suspense>
+      )}
+      {widget && (
+        <Suspense fallback={null}>
+          <ConsentBanner />
         </Suspense>
       )}
     </div>

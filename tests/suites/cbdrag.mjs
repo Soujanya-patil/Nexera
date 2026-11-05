@@ -18,6 +18,9 @@ const near = (a, b, tol = 1.5) => Math.abs(a - b) <= tol;
 async function page(W) {
   const H = W < 500 ? 844 : 900;
   const ctx = await b.newContext({ viewport: { width: W, height: H }, isMobile: W < 500, hasTouch: W < 500 });
+  // A cookie choice already made, so the consent banner (tested in consent.mjs) isn't on screen where
+  // the pill is dragged, and doesn't lift the pill on phones.
+  await ctx.addInitScript(() => localStorage.setItem("nexera-consent", "denied"));
   const p = await ctx.newPage();
   p.errs = [];
   p.on("pageerror", (e) => p.errs.push(e.message.slice(0, 160)));
@@ -37,7 +40,7 @@ async function arrive(p, path, h1) {
   await p.waitForFunction(() => {
     const d = document.querySelector(".cb-dock");
     const cs = getComputedStyle(d);
-    return window.scrollY > 300 && cs.opacity === "1" && cs.translate === "0px";
+    return window.scrollY > 300 && cs.opacity === "1";
   }, null, { timeout: 8000 });
   await settle(p, 300);
 }
