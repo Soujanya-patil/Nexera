@@ -115,8 +115,9 @@ export function pageView() {
 /** A successful enquiry: which form only ("callback" | "full" | "partner" | "quick"). */
 export const trackLead = (formSource) => track("generate_lead", { form_source: formSource });
 
-// --- Clicks: calls, emails, datasheet requests, Solutions / Products CTAs (one listener) ----------
-const placement = (a) => (a.closest("header") ? "header" : a.closest("footer") ? "footer" : a.closest(".cb-dock, [role='dialog']") ? "callback" : "page");
+// --- Clicks: calls, emails, WhatsApp, the mobile bar's Enquire, datasheet requests, Solutions /
+// Products CTAs (one listener) ---------------------------------------------------------------------
+const placement = (a) => (a.closest("[data-mobile-bar]") ? "mobile_bar" : a.closest("header") ? "header" : a.closest("footer") ? "footer" : a.closest(".cb-dock, [role='dialog']") ? "callback" : "page");
 const CTA = /\b(Explore|View all|Browse)\b[^·\n]*/i;
 function onClick(e) {
   const a = e.target instanceof Element && e.target.closest("a[href]");
@@ -124,6 +125,8 @@ function onClick(e) {
   const href = a.getAttribute("href") || "";
   if (href.startsWith("tel:")) return track("click_call", { link_placement: placement(a) });
   if (href.startsWith("mailto:")) return track("click_email", { link_placement: placement(a) });
+  if (/^https:\/\/wa\.me\//.test(href)) return track("click_whatsapp", { link_placement: placement(a) });
+  if (a.dataset.track === "click_enquire") return track("click_enquire", { link_placement: placement(a) });
   const text = (a.getAttribute("aria-label") || a.textContent || "").replace(/\s+/g, " ").trim();
   let url;
   try {

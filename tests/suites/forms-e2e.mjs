@@ -1,4 +1,4 @@
-// The enquiry forms in the browser, at 1440 and 390, against the built site on `php -S` (real
+// The enquiry forms in the browser, at 1440 and 390 (the call-back widget at 768: phones have the bar), against the built site on `php -S` (real
 // api/contact.php, test recipient, mail into the local SMTP sink).
 // Usage: MAILS=<mails.log> RATE_DIR=<e2e/nexera-private> node forms-e2e.mjs http://127.0.0.1:8800
 // Each form: a junk value shows its error on blur; the brief's junk set shows the right message under
@@ -129,10 +129,13 @@ const stateOf = (p, scope, names) =>
     [scope, names]
   );
 
-for (const W of [1440, 390]) {
+// Phones (390) show the bottom action bar instead of the call-back pill, so the call-back form runs on a
+// 768 px touch tablet instead; every other form runs at 1440 and 390.
+for (const W of [1440, 768, 390]) {
   for (const F of FORMS) {
+    if ((W === 768) !== (F.id === "call-back widget") && W !== 1440) continue;
     const tag = `${F.id} @${W}:`;
-    const ctx = await b.newContext({ viewport: { width: W, height: W < 800 ? 844 : 900 }, isMobile: W < 800, hasTouch: W < 800 });
+    const ctx = await b.newContext({ viewport: { width: W, height: W === 768 ? 1024 : W < 800 ? 844 : 900 }, isMobile: W < 1024, hasTouch: W < 1024 });
     const p = await ctx.newPage();
     const errs = [];
     p.on("pageerror", (e) => errs.push(e.message.slice(0, 160)));

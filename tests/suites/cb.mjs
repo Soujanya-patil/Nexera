@@ -20,7 +20,7 @@ const subjectOf = (m) => {
 };
 
 async function newPage(w, h, { reduced = false } = {}) {
-  const ctx = await b.newContext({ viewport: { width: w, height: h }, reducedMotion: reduced ? "reduce" : "no-preference", deviceScaleFactor: w < 500 ? 2 : 1, hasTouch: w < 500 });
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, reducedMotion: reduced ? "reduce" : "no-preference", deviceScaleFactor: w < 1024 ? 2 : 1, hasTouch: w < 1024 });
   const p = await ctx.newPage();
   p.errors = [];
   p.on("console", (m) => m.type() === "error" && !/#418|ERR_FAILED/.test(m.text()) && p.errors.push(m.text().slice(0, 140)));
@@ -43,9 +43,10 @@ const pillShown = (p) => p.evaluate(() => {
 const scrollTo = (p, y) => p.evaluate((y) => window.scrollTo(0, typeof y === "number" ? y : eval(y)), y);
 const settle = (p, ms = 700) => p.waitForTimeout(ms);
 
+// Desktop and a touch tablet: on phones (< 768 px) the bottom action bar replaces the pill (below).
 for (const [W, H] of [
   [1440, 900],
-  [390, 844],
+  [768, 1024],
 ]) {
   const tag = `@${W}`;
 
@@ -336,6 +337,30 @@ for (const [W, H] of [
     check(`${tag} nudge: ✕ dismisses; never again in the session (other page, reload)`, gone && !again1 && !again2, { gone, again1, again2 });
     await p.context().close();
   }
+}
+
+// ---- phones: no pill — the bottom action bar (MobileBar) takes its place --------------------------------
+for (const path of ["/", "/about", "/products"]) {
+  const p = await newPage(390, 844);
+  await p.goto(BASE + path, { waitUntil: "load" });
+  await settle(p, 4000);
+  await scrollTo(p, 900);
+  await settle(p, 900);
+  const r = await p.evaluate(() => {
+    const bar = document.querySelector("[data-mobile-bar]");
+    return { pill: !!document.querySelector(".cb-dock"), bar: !!bar && getComputedStyle(bar).display !== "none", links: bar ? [...bar.querySelectorAll("a")].map((a) => a.textContent.replace(" (opens in a new tab)", "").trim()) : [] };
+  });
+  check(`@390 ${path}: no call-back pill (nor nudge); the bottom bar shows Call, WhatsApp, Enquire`, !r.pill && r.bar && r.links.join() === "Call,WhatsApp,Enquire" && !(await p.evaluate(() => !!document.querySelector(".cb-nudge"))), r);
+  await p.context().close();
+}
+{
+  // Tablets keep the pill and never show the bar.
+  const p = await newPage(768, 1024);
+  await p.goto(BASE + "/about", { waitUntil: "load" });
+  await ready(p);
+  const barShown = await p.evaluate(() => getComputedStyle(document.querySelector("[data-mobile-bar]")).display !== "none");
+  check("@768 tablet: the pill is there, the bottom bar is not", !barShown, { barShown });
+  await p.context().close();
 }
 
 // ---- nudge by time (25 s) ----------------------------------------------------------------------------

@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from "re
 import { Outlet, useLocation } from "react-router-dom";
 import Nav from "./Nav";
 import Footer from "./Footer";
+import MobileBar from "./MobileBar";
 import { initSmoothScroll, jumpTo } from "../lib/lenis";
 import { loadRouteMeta } from "../seo/loadRouteMeta";
 import { isFirstLoad, markNavigated } from "../lib/firstLoad";
@@ -96,6 +97,8 @@ export default function Layout() {
         </div>
       </main>
       <Footer />
+      {/* Phones only: the bottom action bar (Call · WhatsApp · Enquire), part of the pre-rendered page. */}
+      <MobileBar />
       {widget && (
         <Suspense fallback={null}>
           <CallbackWidget />

@@ -4,7 +4,8 @@
 // "Accept" loads gtag.js for G-3CT5021X9H with Consent Mode v2 (default denied → update granted);
 // page views follow navigation; click_call, explore_click, datasheet_request and generate_lead are
 // queued with no personal data; Cookie settings reopens the banner; rejecting later stops all requests;
-// the banner causes no layout shift and, on phones, lifts the call-back pill above itself.
+// the banner causes no layout shift and, on phones, sits above the bottom action bar; the bar's
+// Call / WhatsApp / Enquire events are sent only with consent.
 // Usage: node consent.mjs <apache base> <php base>   (the PHP server takes the form submission)
 import { chromium } from "playwright-core";
 const BASE = process.argv[2] ?? "http://127.0.0.1:8810";
@@ -182,22 +183,39 @@ const clientNav = (p, to) => p.evaluate((to) => { history.pushState({}, "", to);
   await ctx.close();
 }
 
-// ---- Phones: fits, and the call-back pill sits above it -----------------------------------------
+// ---- Phones: fits, and sits above the bottom action bar (MobileBar; no call-back pill there) ---------
 {
   const ctx = await context(390);
   const p = await ctx.newPage();
   await p.goto(BASE + "/about", { waitUntil: "load" });
   await banner(p).waitFor({ state: "visible", timeout: 12000 });
   await p.evaluate(() => scrollTo(0, 500));
-  await p.waitForFunction(() => getComputedStyle(document.querySelector(".cb-dock")).opacity === "1", null, { timeout: 8000 }).catch(() => {});
-  await p.waitForTimeout(600);
+  await p.waitForTimeout(900);
   const r = await p.evaluate(() => {
     const s = document.querySelector('section[aria-labelledby="consent-title"]').getBoundingClientRect();
-    const d = document.querySelector(".cb-dock").getBoundingClientRect();
-    return { sTop: Math.round(s.top), sL: Math.round(s.left), sR: Math.round(s.right), dBottom: Math.round(d.bottom), hscroll: document.documentElement.scrollWidth > innerWidth, shifts: window.__shifts };
+    const bar = document.querySelector("[data-mobile-bar]").getBoundingClientRect();
+    return { sTop: Math.round(s.top), sBottom: Math.round(s.bottom), sL: Math.round(s.left), sR: Math.round(s.right), barTop: Math.round(bar.top), pill: !!document.querySelector(".cb-dock"), hscroll: document.documentElement.scrollWidth > innerWidth, shifts: window.__shifts };
   });
-  check("390: banner inside the screen, no sideways scroll, the call-back pill above it, CLS 0", r.sL >= 0 && r.sR <= 390 && !r.hscroll && r.dBottom <= r.sTop && r.shifts === 0, r);
-  check("390: still no request to Google", ctx.google.length === 0, ctx.google);
+  check("390: banner inside the screen and above the bottom bar (never under it), no pill, no sideways scroll, CLS 0", r.sL >= 0 && r.sR <= 390 && r.sBottom <= r.barTop && !r.pill && !r.hscroll && r.shifts === 0, r);
+  // Without consent, the bar's buttons send nothing.
+  for (const sel of ['[data-mobile-bar] a[href^="tel:"]', '[data-mobile-bar] a[href^="https://wa.me/"]', '[data-mobile-bar] a[data-track="click_enquire"]']) {
+    await p.evaluate((sel) => { const a = document.querySelector(sel); a.addEventListener("click", (e) => e.preventDefault(), { once: true }); a.click(); }, sel);
+  }
+  const none = (await dl(p)).filter((a) => a[0] === "event").length;
+  check("390: before a choice the bar's Call / WhatsApp / Enquire queue no events and nothing is requested from Google", none === 0 && ctx.google.length === 0, { events: none, google: ctx.google });
+  await ctx.close();
+}
+{
+  const ctx = await context(390, { consent: "granted" });
+  const p = await ctx.newPage();
+  await p.goto(BASE + "/products/tcl-blueark-x5", { waitUntil: "load" });
+  await p.waitForTimeout(4500);
+  for (const sel of ['[data-mobile-bar] a[href^="tel:"]', '[data-mobile-bar] a[href^="https://wa.me/"]', '[data-mobile-bar] a[data-track="click_enquire"]']) {
+    await p.evaluate((sel) => { const a = document.querySelector(sel); a.addEventListener("click", (e) => e.preventDefault(), { once: true }); a.click(); }, sel);
+  }
+  const [call, wa, enq] = await Promise.all(["click_call", "click_whatsapp", "click_enquire"].map((n) => events(p, n)));
+  const all = JSON.stringify([call, wa, enq]);
+  check("390 with consent: click_call, click_whatsapp and click_enquire from the bar (link_placement mobile_bar), no number or message in them", call.length === 1 && wa.length === 1 && enq.length === 1 && [call[0], wa[0], enq[0]].every((e) => e.link_placement === "mobile_bar") && !/\d{6,}|interested/i.test(all), { call, wa, enq });
   await ctx.close();
 }
 

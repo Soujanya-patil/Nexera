@@ -8,6 +8,7 @@ import { useBottomInset } from "../lib/floatingBottom";
 import { INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, prettyMobile, sendEnquiry } from "../lib/enquiry";
 import { trackLead } from "../lib/analytics";
 import { DUR, EASE } from "../lib/tokens";
+import { useMediaQuery } from "../lib/scrollSteps";
 
 const EMPTY = { name: "", mobile: "", interest: "", website: "" };
 const FIELDS = ["name", "mobile", "interest"];
@@ -100,6 +101,7 @@ export default function CallbackWidget() {
   const closing = useRef(false);
   const isOpen = useRef(false);
 
+  const barScreen = useMediaQuery("(max-width: 767px)"); // phones: the bottom action bar instead
   const [past, setPast] = useState(false); // scrolled past the start point
   const [blocked, setBlocked] = useState(false); // a contact form is on screen
   const [open, setOpen] = useState(false);
@@ -480,6 +482,8 @@ export default function CallbackWidget() {
   const done = status === "done";
   const lift = { "--cb-lift": `${inset}px` };
 
+  // Phones (< 768 px): the bottom action bar (MobileBar) replaces the pill; tablets and up keep it.
+  if (barScreen) return null;
   return (
     <>
       {/* The pill (and the nudge beside it). Lifted above a compare tray while one is shown. */}

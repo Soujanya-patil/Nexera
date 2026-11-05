@@ -5,7 +5,10 @@ const results = [];
 const check = (n, c, x = "") => { results.push(!!c); console.log(`${c ? "PASS" : "FAIL"} ${n}${x !== "" ? " — " + JSON.stringify(x) : ""}`); };
 const CARD = 'section[aria-label="Articles"] a[data-slug="what-is-bess"]';
 async function page(w, h, js = true) {
-  const p = await (await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: w < 500 ? 2 : 1, javaScriptEnabled: js, hasTouch: w < 500 })).newPage();
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: w < 500 ? 2 : 1, javaScriptEnabled: js, hasTouch: w < 500 });
+  // A cookie choice already made: the consent banner (consent.mjs) isn't over the card.
+  await ctx.addInitScript(() => localStorage.setItem("nexera-consent", "denied"));
+  const p = await ctx.newPage();
   p.errors = [];
   p.on("pageerror", (e) => p.errors.push(e.message.slice(0, 120)));
   await p.goto(BASE + "/blog", { waitUntil: "networkidle" });
@@ -32,7 +35,14 @@ for (const [W, H] of [[1440, 900], [390, 844]]) {
       const svg = a.querySelector("svg.lucide-arrow-right, svg[class*='arrow']") || [...a.querySelectorAll("svg")].pop();
       // The whole card is the link: a grid of points across it all hit inside the link.
       const pts = [];
-      for (const fx of [0.05, 0.5, 0.95]) for (const fy of [0.05, 0.5, 0.95]) pts.push(document.elementFromPoint(r.left + r.width * fx, r.top + r.height * fy));
+      // Points under the phones' bottom action bar (MobileBar, an overlay) are left out.
+      const bar = document.querySelector("[data-mobile-bar]");
+      const barTop = bar && getComputedStyle(bar).display !== "none" ? bar.getBoundingClientRect().top : innerHeight;
+      for (const fx of [0.05, 0.5, 0.95])
+        for (const fy of [0.05, 0.5, 0.95]) {
+          const y = r.top + r.height * fy;
+          if (y < barTop) pts.push(document.elementFromPoint(r.left + r.width * fx, y));
+        }
       return { links: links.length, arrowInside: !!svg, href: a.getAttribute("href") === "/blog/what-is-bess", covers: pts.every((el) => el && a.contains(el)), name: a.getAttribute("aria-labelledby") && document.getElementById(a.getAttribute("aria-labelledby")).textContent.trim() };
     }, CARD);
     check(`${tag} one real <a href> is the whole card, arrow inside it, accessible name = title`, s.links === 1 && s.arrowInside && s.href && s.covers && s.name === H1, s);

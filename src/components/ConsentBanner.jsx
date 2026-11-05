@@ -1,15 +1,13 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { Link } from "react-router-dom";
 import { consentChoice, consentOpen, setConsent, subscribeConsent } from "../lib/analytics";
-import { useBottomClaim } from "../lib/floatingBottom";
-import { useMediaQuery } from "../lib/scrollSteps";
 
 /*
  * The cookie consent banner (lib/analytics). Shown until the visitor chooses, and again from the
  * footer's Cookie settings. A small fixed panel at the bottom — bottom-left from 768 px, full width on
- * phones, where it lifts the call-back pill above itself (lib/floatingBottom) — so it never moves the
- * page (no layout shift). Not a modal: the page stays usable and focus isn't trapped. "Accept" and
- * "Reject" are styled exactly alike. It's its own chunk, mounted after the page has loaded (Layout).
+ * phones — so it never moves the page (no layout shift). On phones it sits above the bottom action
+ * bar (MobileBar), never under it. Not a modal: the page stays usable and focus isn't trapped.
+ * "Accept" and "Reject" are styled exactly alike. It's its own chunk, mounted after the page has loaded (Layout).
  *
  * The privacy link goes to /contact: the site has no privacy policy page yet.
  */
@@ -22,8 +20,6 @@ export default function ConsentBanner() {
   const [reopened, choice] = state.split("|");
   const visible = reopened === "true" || choice === "null";
   const ref = useRef(null);
-  const phone = useMediaQuery("(max-width: 767px)");
-  useBottomClaim("consent", ref, visible && phone);
 
   // Reopened from Cookie settings: take keyboard focus to the banner; after the choice, back to the button.
   const fromSettings = useRef(false);
@@ -45,7 +41,7 @@ export default function ConsentBanner() {
       ref={ref}
       tabIndex={-1}
       aria-labelledby="consent-title"
-      className="fixed inset-x-3 bottom-3 z-50 rounded-card border border-white/10 bg-deep-grid p-5 text-white shadow-float outline-none animate-[spec-row_0.4s_ease-out_both] motion-reduce:animate-none md:inset-x-auto md:bottom-6 md:left-6 md:w-[26rem]"
+      className="fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-50 rounded-card border border-white/10 bg-deep-grid p-5 text-white shadow-float outline-none animate-[spec-row_0.4s_ease-out_both] motion-reduce:animate-none md:inset-x-auto md:bottom-6 md:left-6 md:w-[26rem]"
     >
       <h2 id="consent-title" className="sr-only">
         Cookie consent

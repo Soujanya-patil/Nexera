@@ -84,7 +84,8 @@ export default function Footer() {
         </nav>
       </div>
       <div className="border-t border-line">
-        <div className="container-site flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-5 text-micro text-muted">
+        {/* Phones: room at the end for the bottom action bar (MobileBar: 4rem + the home indicator). */}
+        <div className="container-site flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-5 text-micro text-muted max-md:pb-[calc(1.25rem+4rem+env(safe-area-inset-bottom))]">
           <p>© {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.</p>
           {/* Reopens the cookie consent banner (lib/analytics). */}
           <button type="button" data-cookie-settings onClick={openConsent} className="link inline-flex items-center text-muted pointer-coarse:min-h-11">

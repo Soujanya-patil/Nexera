@@ -1,4 +1,5 @@
-// The draggable call-back pill, at 1440 and 390, against the built site. Usage: node cbdrag.mjs <base>
+// The draggable call-back pill, at 1440 and on a 900 px touch tablet (phones show the bottom action bar
+// instead; 900, so the resize check stays above the 768 px phone breakpoint), against the built site. Usage: node cbdrag.mjs <base>
 // Tap / Enter / Space open the card; a press that moves < 6px is still a tap; a drag moves the pill by
 // exactly the drag and doesn't open the card; touch drags too (and doesn't scroll the page); it stays
 // where dropped while scrolling; it is kept 8px inside the viewport and below the header (again on
@@ -16,8 +17,8 @@ const check = (name, cond, extra) => {
 const near = (a, b, tol = 1.5) => Math.abs(a - b) <= tol;
 
 async function page(W) {
-  const H = W < 500 ? 844 : 900;
-  const ctx = await b.newContext({ viewport: { width: W, height: H }, isMobile: W < 500, hasTouch: W < 500 });
+  const H = W < 1024 ? 1180 : 900;
+  const ctx = await b.newContext({ viewport: { width: W, height: H }, isMobile: W < 1024, hasTouch: W < 1024 });
   // A cookie choice already made, so the consent banner (tested in consent.mjs) isn't on screen where
   // the pill is dragged, and doesn't lift the pill on phones.
   await ctx.addInitScript(() => localStorage.setItem("nexera-consent", "denied"));
@@ -84,7 +85,7 @@ async function touchDrag(p, dx, dy) {
   await settle(p, 400);
 }
 
-for (const W of [1440, 390]) {
+for (const W of [1440, 900]) {
   const tag = `@${W}`;
   const p = await page(W);
   const vp = p.viewportSize();
@@ -178,8 +179,8 @@ for (const W of [1440, 390]) {
   await p.setViewportSize(vp);
   await settle(p, 400);
 
-  // Touch drag (phones): moves, no card, the page doesn't scroll.
-  if (W < 500) {
+  // Touch drag (touch tablets): moves, no card, the page doesn't scroll.
+  if (W < 1024) {
     const before = await dockRect(p);
     const sy = await p.evaluate(() => scrollY);
     await touchDrag(p, -120, -200);
@@ -203,7 +204,7 @@ for (const W of [1440, 390]) {
 }
 
 // The nudge hides while the pill is dragged (a fresh session; it shows half-way down a page).
-for (const W of [1440, 390]) {
+for (const W of [1440, 900]) {
   const p = await page(W);
   await showPill(p);
   await p.evaluate(() => scrollTo(0, document.documentElement.scrollHeight / 2));
