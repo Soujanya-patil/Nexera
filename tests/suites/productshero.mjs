@@ -13,9 +13,13 @@ const check = (name, ok, info) => {
   if (!ok) fails++;
   console.log(`${ok ? "PASS" : "FAIL"} ${name}${ok ? "" : " — " + JSON.stringify(info)}`);
 };
-const IDS = ["tcl-blueark-x5", "hithium-power-cabinet-1022", "clou-aqua-c25s"];
-const NAMES = ["BlueArk X5", "∞Power 1022 kWh Cabinet", "Aqua C2.5S"];
-const FIGS = ["100 kWh", "1022 kWh", "2.089 MWh"];
+// Small to large: TCL BlueArk X5 → Hithium ∞Power 1022 kWh Cabinet → Hithium ∞Power 6.25 MWh (products.js).
+const IDS = ["tcl-blueark-x5", "hithium-power-cabinet-1022", "hithium-power-625"];
+const NAMES = ["BlueArk X5", "∞Power 1022 kWh Cabinet", "∞Power 6.25 MWh"];
+const FIGS = ["100 kWh", "1022 kWh", "6.25 MWh"];
+const TABS = ["TCL X5", "Hithium 1022 kWh", "Hithium 6.25 MWh"];
+// The partner tabs read TCL, Hithium, Hithium: tabs are picked by position.
+const tab = (p, i) => p.locator(`${HERO} [role=tab]`).nth(i);
 const HERO = "[data-products-hero]";
 
 async function page(W, { touch = false, reduce = false, js = true } = {}) {
@@ -83,7 +87,8 @@ const state = (p) =>
   );
   // The hero's text as a crawler reads it (tags removed): each product's figure exactly once.
   // (Product names are taken out first: "∞Power 1022 kWh Cabinet" contains its own figure.)
-  const heroText = NAMES.reduce((t, n) => t.split(n).join(" "), hero.replace(/<[^>]+>/g, " ").replace(/\s+/g, " "));
+  // Product names and the tab labels ("Hithium 1022 kWh", which name a size on purpose) come out first.
+  const heroText = [...NAMES, ...TABS].reduce((t, n) => t.split(n).join(" "), hero.replace(/<[^>]+>/g, " ").replace(/\s+/g, " "));
   const figCounts = FIGS.map((f) => heroText.split(f).length - 1);
   check(
     "pre-rendered: slide 1 on, slides 2 and 3 inert; name + figure of product 1 in the markup; each figure once in the text",
@@ -136,7 +141,7 @@ const state = (p) =>
   const s3 = await state(p);
   const figs = await p.evaluate(() => window.__figs.slice());
   check("@1440: → product 3, then loops back to product 1", s2.on === 2 && s3.on === 0, { s2: s2.on, s3: s3.on });
-  check("@1440: product 3's figure counted to 2.089 (three decimals throughout)", figs.includes("0.000") && figs.includes("2.089") && figs.filter((f) => /^\d\.\d{3}$/.test(f)).length >= 5, figs.filter((f) => f.includes(".")).slice(0, 8));
+  check("@1440: product 3's figure counted to 6.25 (two decimals throughout)", figs.includes("0.00") && figs.includes("6.25") && figs.filter((f) => /^\d\.\d{2}$/.test(f)).length >= 5, figs.filter((f) => f.includes(".")).slice(0, 8));
   const cls = await p.evaluate(() => window.__cls);
   check("@1440: layout shift 0 over load + a full loop", cls === 0, { cls });
   const bad = await p.evaluate((HERO) => [...document.querySelectorAll(`${HERO} source, ${HERO} img`)].map((e) => e.getAttribute("srcset") || e.getAttribute("src")).filter((s) => !s || /undefined/.test(s)), HERO);
@@ -166,13 +171,13 @@ const state = (p) =>
 // 5. Partner list: click jumps (and announces); clicking the product or its name opens its page.
 {
   const p = await page(1440);
-  await p.locator(`${HERO} [role=tab]`, { hasText: "CLOU" }).click();
+  await tab(p, 2).click();
   await p.mouse.move(2, 600);
   await p.waitForTimeout(1200);
   const s = await state(p);
-  check("click CLOU: product 3 shown, tab selected, counter 03, live text", s.on === 2 && s.selected === 2 && s.counter === "03 / 03" && s.visible[2] && !s.visible[0] && s.live === "Aqua C2.5S, 2.089 MWh", s);
-  await p.locator(`${HERO} [role=tab]`, { hasText: "Hithium" }).hover();
-  await p.locator(`${HERO} [role=tab]`, { hasText: "Hithium" }).click();
+  check("click tab 3 (Hithium ∞Power 6.25 MWh): product 3 shown, tab selected, counter 03, live text", s.on === 2 && s.selected === 2 && s.counter === "03 / 03" && s.visible[2] && !s.visible[0] && s.live === "∞Power 6.25 MWh, 6.25 MWh", s);
+  await tab(p, 1).hover();
+  await tab(p, 1).click();
   await p.waitForTimeout(1200);
   const h = await state(p);
   check("click Hithium (pointer over the carousel): product 2, live region polite and announcing it", h.on === 1 && h.liveMode === "polite" && h.live === "∞Power 1022 kWh Cabinet, 1022 kWh", h);
@@ -184,7 +189,7 @@ const state = (p) =>
   await p.waitForTimeout(500);
   await p.locator(`${HERO} .ph-slide[data-state="on"] .ph-info a`).click();
   await p.waitForURL((u) => u.pathname.startsWith("/products/") && u.pathname !== "/products", { timeout: 8000 }).catch(() => {});
-  check("click the product name → its product page", /^\/products\/(tcl-blueark-x5|hithium-power-cabinet-1022|clou-aqua-c25s)$/.test(new URL(p.url()).pathname), p.url());
+  check("click the product name → its product page", /^\/products\/(tcl-blueark-x5|hithium-power-cabinet-1022|hithium-power-625)$/.test(new URL(p.url()).pathname), p.url());
   await p.context().close();
 }
 
@@ -280,12 +285,12 @@ const state = (p) =>
   const a = await state(p);
   const anims = await p.evaluate((HERO) => document.querySelector(HERO).getAnimations({ subtree: true }).length, HERO);
   check("reduced motion: product 1 after 6 s, not rotating, no pause button, no running animations", a.on === 0 && !a.rotating && a.pause === null && anims === 0 && a.visible[0], { ...a, anims });
-  await p.locator(`${HERO} [role=tab]`, { hasText: "CLOU" }).click();
+  await tab(p, 2).click();
   const r = await p.evaluate((HERO) => {
     const s = document.querySelectorAll(`${HERO} .ph-slide`);
     return { op: getComputedStyle(s[2].querySelector(".ph-prod")).opacity, vis: getComputedStyle(s[2]).visibility, old: getComputedStyle(s[0]).visibility, fig: window.__figs.slice(-3) };
   }, HERO);
-  check("reduced motion: CLOU shows at once (no transition), figure as written (no count)", r.op === "1" && r.vis === "visible" && r.old === "hidden" && !r.fig.includes("0.000"), r);
+  check("reduced motion: product 3 shows at once (no transition), figure as written (no count)", r.op === "1" && r.vis === "visible" && r.old === "hidden" && !r.fig.includes("0.00"), r);
   await p.context().close();
 }
 
@@ -329,11 +334,11 @@ const state = (p) =>
   const r = await p.evaluate(() => {
     const load = performance.getEntriesByType("navigation")[0].loadEventEnd;
     // The hero's own files (AVIF in Chrome); the catalogue cards below load the plain WebP cut-outs.
-    const res = performance.getEntriesByType("resource").filter((e) => /\/(tcl-blueark-x5|hithium-power-cabinet-1022|clou-aqua-c25s)-\d+-[^/]+\.avif$/.test(e.name));
+    const res = performance.getEntriesByType("resource").filter((e) => /\/(tcl-blueark-x5|hithium-power-cabinet-1022|hithium-power-625)-\d+-[^/]+\.avif$/.test(e.name));
     const pick = (k) => res.filter((e) => e.name.includes(k)).map((e) => Math.round(e.startTime));
-    return { load: Math.round(load), x5: pick("tcl-blueark-x5"), cab: pick("hithium-power-cabinet-1022"), clou: pick("clou-aqua-c25s"), fmt: res.map((e) => e.name.split("/").pop()) };
+    return { load: Math.round(load), x5: pick("tcl-blueark-x5"), cab: pick("hithium-power-cabinet-1022"), big: pick("hithium-power-625"), fmt: res.map((e) => e.name.split("/").pop()) };
   });
-  check("images: product 1's AVIF before the load event; products 2 and 3 (AVIF) requested after it", r.x5.length >= 1 && r.x5[0] < r.load && r.cab.length >= 1 && r.clou.length >= 1 && r.cab.every((t) => t >= r.load) && r.clou.every((t) => t >= r.load), r);
+  check("images: product 1's AVIF before the load event; products 2 and 3 (AVIF) requested after it", r.x5.length >= 1 && r.x5[0] < r.load && r.cab.length >= 1 && r.big.length >= 1 && r.cab.every((t) => t >= r.load) && r.big.every((t) => t >= r.load), r);
   await p.context().close();
 }
 

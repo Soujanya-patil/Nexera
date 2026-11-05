@@ -83,18 +83,8 @@ const PARTNERS = [
       ["4,700+", "global patents and patent applications"],
     ],
   },
-  {
-    id: "clou",
-    title: "CLOU — 30+ years of power-electronics experience.",
-    copy: "Founded in 1996, CLOU entered the energy-storage sector in 2009. It has developed its own BMS, PCS, EMS and battery-system technologies.",
-    stats: [
-      ["16 GWh", "contracted and delivered systems"],
-      ["100+", "countries active"],
-      ["8.6 GWh", "contracted and installed outside China"],
-    ],
-  },
 ];
-const PARTNER_NAMES = { tcl: "TCL", hithium: "Hithium", clou: "CLOU" };
+const PARTNER_NAMES = { tcl: "TCL", hithium: "Hithium" };
 
 const PORTFOLIO = [
   {
@@ -142,27 +132,6 @@ const PORTFOLIO = [
     cta: "Explore Hithium 261",
   },
   {
-    product: "clou-aqua-e261",
-    name: "CLOU Aqua-E261",
-    figures: "125 kW / 261 kWh",
-    tagline: "Liquid-Cooled C&I Energy Storage",
-    copy: "An all-in-one C&I storage system, pre-installed and pre-commissioned, with intelligent temperature control, cloud-based monitoring and remote O&M.",
-    specs: [
-      "125 kW power",
-      "261 kWh energy",
-      "LFP 314 Ah cells",
-      "Liquid cooling",
-      "IP55",
-      "≥7,000-cycle specification",
-      "Self-powered auxiliary system",
-      "Integrated fire detection and suppression",
-      "Ethernet / CAN / RS485 / 4G communication",
-      "IEC / UN38.3 compliance",
-    ],
-    alt: "CLOU Aqua-E261 all-in-one liquid-cooled C&I battery energy storage cabinet",
-    cta: "Explore Aqua-E261",
-  },
-  {
     product: "tcl-blueark-x5",
     name: "TCL BlueArk X5",
     figures: "50 kW / 100 kWh",
@@ -197,7 +166,7 @@ export default function SolutionsCI() {
         subheading="Intelligent Energy Storage for Commercial & Industrial Applications"
         body={[
           "Reduce peak demand. Store solar energy. Improve energy resilience. Take greater control of your electricity costs.",
-          "NEXERA brings together advanced C&I Battery Energy Storage Systems from TCL, Hithium and CLOU, engineered for demanding commercial and industrial applications.",
+          "NEXERA brings together advanced C&I Battery Energy Storage Systems from TCL and Hithium, engineered for demanding commercial and industrial applications.",
         ]}
         tagline="Solar + Storage + Energy Management. Built for performance. Designed for scale."
         cta={{ label: "Explore C&I Solutions", target: "ci-products" }}
@@ -218,7 +187,7 @@ export default function SolutionsCI() {
       <BenefitStrip
         items={[
           { icon: Wallet, title: "Lower Operating Costs", text: "Peak shaving & energy arbitrage" },
-          { icon: Sun, title: "Maximize Solar Usage", text: "Higher self-consumption" },
+          { icon: Sun, title: "Maximise Solar Usage", text: "Higher self-consumption" },
           { icon: BatteryCharging, title: "Reliable Backup Power", text: "Keep your operations running" },
           { icon: Leaf, title: "A Cleaner, Greener Future", text: "For your business and the planet" },
         ]}
@@ -259,10 +228,10 @@ export default function SolutionsCI() {
         mark="One NEXERA Energy Ecosystem"
         tone="ice"
         eyebrow="Our global technology partners"
-        title="Three Global Energy Storage Platforms. One NEXERA Energy Ecosystem."
+        title="Two Global Energy Storage Platforms. One NEXERA Energy Ecosystem."
         intro="We work with technology platforms that have significant global manufacturing, R&D and deployment experience."
       >
-        <CardGrid>
+        <CardGrid columns={2}>
           {PARTNERS.map((p) => (
             <article key={p.id} className="group/card flex h-full flex-col rounded-card border border-line bg-white p-6 md:p-8">
               <PartnerMark partner={p.id} decorative />
@@ -290,11 +259,11 @@ export default function SolutionsCI() {
         id="ci-products"
         mark="Multiple Applications"
         eyebrow="Our C&I BESS portfolio"
-        title="Four Solutions. Multiple Applications."
+        title="Three Solutions. Multiple Applications."
         intro="From a compact 100 kWh all-in-one system to 261 kWh liquid-cooled cabinets, choose the platform that fits your site."
       >
         <CompareProvider>
-          <CardGrid columns={4}>
+          <CardGrid columns={3}>
             {PORTFOLIO.map((c) => (
               <SolutionProductCard key={c.product} {...c} product={getProduct(c.product)} />
             ))}

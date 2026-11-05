@@ -4,14 +4,14 @@
  *
  * Content rule: nothing here is new. Every sentence and figure is copied word for word from a page
  * the site already has (source noted on each), and the systems come from the catalogue
- * (data/products.js). NEXERA is the authorized distributor and solutions partner; the partners design
+ * (data/products.js). NEXERA is the authorised distributor and solutions partner; the partners design
  * and manufacture the systems. The FAQ text is built here once, so the visible FAQ and the page's
  * FAQPage structured data are the same words.
  */
 import { PRODUCTS, partnerOf } from "./products";
 
 /** The hero's one line, for every partner (the partner-page brief). */
-export const PARTNER_LINE = "Available in India through NEXERA Powertech, an authorized distributor and solutions partner.";
+export const PARTNER_LINE = "Available in India through NEXERA Powertech, an authorised distributor and solutions partner.";
 
 export const PARTNER_PAGES = [
   {
@@ -58,25 +58,6 @@ export const PARTNER_PAGES = [
       ],
     },
   },
-  {
-    id: "clou",
-    name: "CLOU",
-    interest: "ci",
-    about: {
-      copy: [
-        // C&I page, CLOU card
-        "Founded in 1996, CLOU entered the energy-storage sector in 2009. It has developed its own BMS, PCS, EMS and battery-system technologies.",
-      ],
-      stats: [
-        // C&I page, CLOU card
-        ["16 GWh", "contracted and delivered systems"],
-        ["8.6 GWh", "contracted and installed outside China"],
-        ["100+", "countries active"],
-        // Utility-Scale page, CLOU card
-        ["30+ years", "in power electronics"],
-      ],
-    },
-  },
 ];
 
 export const getPartnerPage = (id) => PARTNER_PAGES.find((p) => p.id === id);
@@ -90,9 +71,9 @@ const listOf = (items) => (items.length > 1 ? `${items.slice(0, -1).join(", ")} 
  * Nexera"), Become a Partner ("Design & Technical Support") and Service & Training (After-Sales).
  */
 export const PARTNER_WHY = [
-  { title: "Authorized access", text: "Authorized TCL, Hithium and CLOU partner" },
+  { title: "Authorised access", text: "Authorised TCL and Hithium partner" },
   { title: "Design and sizing support", text: "Not just sales — our engineers work your first sizing and commissioning with you." },
-  { title: "Technician training", text: "Hands-on technician training center in Kalaburagi" },
+  { title: "Technician training", text: "Hands-on technician training centre in Kalaburagi" },
   { title: "After-sales and warranty", text: "Local-first warranty handling — we manage the OEM relationship so your customer relationship stays intact." },
 ];
 
@@ -108,7 +89,7 @@ export function partnerFaq(id) {
   return [
     {
       q: `Is ${page.name} available in India, and who supports it?`,
-      a: `Yes. ${brand} systems are available in India through NEXERA Powertech, an authorized distributor and solutions partner, with design, commissioning, training and after-sales support.`,
+      a: `Yes. ${brand} systems are available in India through NEXERA Powertech, an authorised distributor and solutions partner, with design, commissioning, training and after-sales support.`,
     },
     {
       q: `Which ${page.name} systems does NEXERA offer?`,

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useEntrance } from "../lib/entrance";
-import { PARTNERS, PRODUCTS } from "../data/products";
+import { LISTED_PRODUCTS, PARTNERS } from "../data/products";
 import { SOLUTION_PAGES } from "../data/solutions";
 
 // The card photos (src/assets/home-cards): each exported at 600 / 900 / 1200 px wide (4:3) as AVIF,
@@ -35,10 +35,10 @@ function CardPicture({ name, alt, position }) {
   );
 }
 
-// Which technology partners have systems for each application — read from the product catalogue,
-// so the preview can never claim a pairing the catalogue doesn't have.
-const partnersFor = (app) => PARTNERS.filter((p) => PRODUCTS.some((x) => x.partner === p.id && x.applications.includes(app)));
-const countFor = (app) => PRODUCTS.filter((x) => x.applications.includes(app)).length;
+// Which technology partners have systems for each application — read from the listed catalogue (as on
+// /products), so the preview can never claim a pairing or a count the catalogue doesn't show.
+const partnersFor = (app) => PARTNERS.filter((p) => LISTED_PRODUCTS.some((x) => x.partner === p.id && x.applications.includes(app)));
+const countFor = (app) => LISTED_PRODUCTS.filter((x) => x.applications.includes(app)).length;
 
 /** A very soft light that follows the pointer across the section (mouse only). */
 const trackSpotlight = (e) => {

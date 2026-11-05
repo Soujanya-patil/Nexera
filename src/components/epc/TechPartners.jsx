@@ -2,19 +2,19 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import AnimatedText from "../ui/AnimatedText";
-import { APPLICATIONS, PARTNERS, PRODUCTS, applicationLabel } from "../../data/products";
+import { APPLICATIONS, LISTED_PRODUCTS, PARTNERS, applicationLabel } from "../../data/products";
 
 // Per partner, straight from the catalogue data: its systems and the applications they cover.
 const LINEUP = Object.fromEntries(
   PARTNERS.map((p) => {
-    const products = PRODUCTS.filter((x) => x.partner === p.id);
+    const products = LISTED_PRODUCTS.filter((x) => x.partner === p.id);
     const apps = APPLICATIONS.filter((a) => products.some((x) => x.applications.includes(a.id))).map((a) => a.id);
     return [p.id, { products, apps }];
   })
 );
 
 /**
- * GLOBAL TECHNOLOGY. LOCAL EXECUTION. — the three technology partners as selectable logo tiles
+ * GLOBAL TECHNOLOGY. LOCAL EXECUTION. — the technology partners as selectable logo tiles
  * (tabs). Pointing at, focusing or tapping a partner makes its logo active (full colour, a green
  * indicator) and swaps the panel to that partner's systems and applications — all read from the
  * product catalogue, so nothing here is written separately from it. The panel links into the
@@ -45,7 +45,7 @@ export default function TechPartners() {
             Global Technology. Local Execution.
           </AnimatedText>
           <p className="mt-4 max-w-md text-body text-copy">
-            The systems are designed and manufactured by our technology partners. NEXERA is their authorized partner —
+            The systems are designed and manufactured by our technology partners. NEXERA is their authorised partner —
             bringing the technology to your projects with design, commissioning and after-sales support in India.
           </p>
 
@@ -76,7 +76,7 @@ export default function TechPartners() {
                     alt={`${p.name} logo`}
                     width={p.logoSize?.[0]}
                     height={p.logoSize?.[1]}
-                    className={`${p.id === "clou" ? "h-7" : "h-5"} w-auto max-w-full object-contain transition-[opacity,filter] duration-fast ${
+                    className={`h-5 w-auto max-w-full object-contain transition-[opacity,filter] duration-fast ${
                       on ? "opacity-100 grayscale-0" : "opacity-50 grayscale group-hover:opacity-80 group-focus-visible:opacity-80 group-focus-within:opacity-80"
                     }`}
                   />

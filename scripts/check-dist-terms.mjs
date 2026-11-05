@@ -1,9 +1,10 @@
 /*
  * Post-build: fails if a name that must not appear on the site is anywhere in dist/ — any file, any
- * case. Midea is not a NEXERA partner: its page was removed, and nothing may name it.
+ * case. Midea is not a NEXERA partner: its page was removed, and nothing may name it. CLOU is no
+ * longer presented either: its partner and product pages were removed (whole word only: "cloud" is fine).
  *
- * The one allowed form is its old URL path, /partners/midea, which only the redirects use (the 301 in
- * .htaccess and the in-app redirect to /products), so old links keep working. Every file is read
+ * The one allowed form is each name's old URL paths, which only the redirects use (the 301s in
+ * .htaccess and the in-app redirects to /products), so old links keep working. Every file is read
  * byte for byte (latin1), so text inside scripts, styles, JSON-LD, the sitemap and .htaccess is all
  * checked.
  */
@@ -13,7 +14,12 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const dist = path.join(root, "dist");
-const TERMS = [{ term: /midea/gi, allowed: /partners\/midea/gi }];
+// CLOU is no longer presented either (the whole word, so "cloud" is fine): its old partner and
+// product paths stay only in the redirects (/partners/clou, /products/clou-aqua-e261, /products/clou-aqua-c25s).
+const TERMS = [
+  { name: "Midea", term: /midea/gi, allowed: /partners\/midea/gi, find: /(?<!partners\/)midea/i, paths: "/partners/midea" },
+  { name: "CLOU", term: /\bclou\b/gi, allowed: /(?:partners|products)\/clou\b/gi, find: /(?<!(?:partners|products)\/)\bclou\b/i, paths: "/partners/clou and /products/clou-aqua-*" },
+];
 
 const files = [];
 (function walk(d) {
@@ -25,17 +31,17 @@ const files = [];
 })(dist);
 
 const hits = [];
-let allowed = 0;
+const allowed = Object.fromEntries(TERMS.map((t) => [t.name, 0]));
 for (const file of files) {
   const s = fs.readFileSync(file, "latin1");
-  for (const { term, allowed: ok } of TERMS) {
+  for (const { name, term, allowed: ok, find } of TERMS) {
     const all = s.match(term)?.length ?? 0;
     if (!all) continue;
     const fine = s.match(ok)?.length ?? 0;
-    allowed += fine;
+    allowed[name] += fine;
     if (all > fine) {
-      const i = s.search(new RegExp(`(?<!partners/)${term.source}`, "i"));
-      hits.push(`${path.relative(dist, file).replaceAll("\\", "/")}: ${all - fine}× — …${s.slice(Math.max(0, i - 50), i + 40).replace(/\s+/g, " ")}…`);
+      const i = s.search(find);
+      hits.push(`${name} — ${path.relative(dist, file).replaceAll("\\", "/")}: ${all - fine}× — …${s.slice(Math.max(0, i - 50), i + 40).replace(/\s+/g, " ")}…`);
     }
   }
 }
@@ -45,4 +51,6 @@ if (hits.length) {
   for (const h of hits) console.error("  " + h);
   process.exit(1);
 }
-console.log(`check-dist-terms: ${files.length} files in dist/, no removed names (only the old /partners/midea path, ${allowed}× in the redirects)`);
+console.log(
+  `check-dist-terms: ${files.length} files in dist/, no removed names (only the old redirect paths: ${TERMS.map((t) => `${t.paths} ${allowed[t.name]}×`).join(", ")})`
+);

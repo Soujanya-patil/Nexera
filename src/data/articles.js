@@ -526,7 +526,7 @@ const SAFETY = {
             "Who handles commissioning, safety checks and after-sales support?",
           ],
         },
-        { p: "NEXERA supplies systems from TCL, Hithium and CLOU, and supports sizing, commissioning and technician training." },
+        { p: "NEXERA supplies systems from TCL and Hithium, and supports sizing, commissioning and technician training." },
         {
           actions: [
             { label: "Talk to an expert", to: "/#contact?interest=ci", primary: true },
@@ -747,7 +747,7 @@ const ALL = [
               "Where will it be installed: indoors, outdoors, on a rooftop or in a yard?",
             ],
           },
-          { p: "NEXERA's engineers help with sizing, system design and commissioning, with systems from TCL, Hithium and CLOU." },
+          { p: "NEXERA's engineers help with sizing, system design and commissioning, with systems from TCL and Hithium." },
           {
             actions: [
               { label: "Talk to an expert", to: "/#contact", primary: true },

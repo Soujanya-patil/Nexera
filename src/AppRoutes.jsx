@@ -95,6 +95,10 @@ export default function AppRoutes() {
         <Route path="/partners" element={<Navigate to="/products" replace />} />
         {/* A removed partner page (not a NEXERA partner): its old URL goes to the catalogue (also a 301 in .htaccess). */}
         <Route path="/partners/midea" element={<Navigate to="/products" replace />} />
+        {/* CLOU is no longer presented: its partner and product pages go to the catalogue (also 301s in .htaccess). */}
+        <Route path="/partners/clou" element={<Navigate to="/products" replace />} />
+        <Route path="/products/clou-aqua-e261" element={<Navigate to="/products" replace />} />
+        <Route path="/products/clou-aqua-c25s" element={<Navigate to="/products" replace />} />
         {/* The articles moved to the Blog: /resources/<slug> -> /blog/<slug> (also a 301 in .htaccess). */}
         <Route path="/resources/:slug" element={<ToBlog />} />
         <Route

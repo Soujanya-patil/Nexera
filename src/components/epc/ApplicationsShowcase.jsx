@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import AnimatedText from "../ui/AnimatedText";
-import { PRODUCTS } from "../../data/products";
+import { LISTED_PRODUCTS } from "../../data/products";
 import { useScrollReveal } from "../../lib/scrollReveal";
 import { STAGGER } from "../../lib/tokens";
 
@@ -65,7 +65,7 @@ const APPS = [
     position: "90% 50%",
     alt: "Engineers walking beside battery storage containers at a solar farm",
   },
-].map((a) => ({ ...a, count: PRODUCTS.filter((p) => p.applications.includes(a.id)).length }));
+].map((a) => ({ ...a, count: LISTED_PRODUCTS.filter((p) => p.applications.includes(a.id)).length }));
 
 /**
  * BESS APPLICATIONS — where EPCs deploy the systems: residential, C&I, utility (the Products
@@ -85,7 +85,7 @@ export default function ApplicationsShowcase() {
               Where Your Projects Can Deploy Storage
             </AnimatedText>
           </div>
-          <p className="max-w-md text-copy">Residential, commercial &amp; industrial, and utility-scale systems from TCL, Hithium and CLOU.</p>
+          <p className="max-w-md text-copy">Residential, commercial &amp; industrial, and utility-scale systems from TCL and Hithium.</p>
         </div>
 
         <ul ref={grid} data-sr-state={reveal} className="mt-12 grid gap-5 md:grid-cols-3">

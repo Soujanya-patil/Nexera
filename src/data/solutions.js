@@ -4,7 +4,7 @@
  * The FAQ text lives here, not in the pages, because two places must show exactly the same words:
  * the visible FAQ on each page and its FAQPage structured data (written at build time by
  * scripts/seo-pages.mjs through src/seo/routes.js). Copy is from the director-approved Solutions
- * content; CLOU's Aqua C2.5S is written the way the catalogue writes it.
+ * content.
  */
 
 import { BatteryCharging, Expand, Moon, Smartphone, Sun, Unplug } from "lucide-react";
@@ -40,7 +40,7 @@ export const UTILITY_FAQ = [
   },
   {
     q: "Which utility-scale platforms does NEXERA offer?",
-    a: "NEXERA offers utility-scale systems from Hithium (∞Power 5.016 MWh and 6.25 MWh) and CLOU (Aqua C2.5S series).",
+    a: "NEXERA offers utility-scale systems from Hithium: ∞Power 5.016 MWh and 6.25 MWh.",
   },
   {
     q: "Can utility BESS work with an existing solar or wind plant?",
@@ -48,7 +48,7 @@ export const UTILITY_FAQ = [
   },
   {
     q: "Does NEXERA manufacture these systems?",
-    a: "No. Hithium and CLOU design and manufacture the systems. NEXERA supplies them in India and supports sizing, engineering, commissioning and lifecycle service.",
+    a: "No. Hithium designs and manufactures the systems. NEXERA supplies them in India and supports sizing, engineering, commissioning and lifecycle service.",
   },
 ];
 
@@ -67,11 +67,11 @@ export const CI_FAQ = [
   },
   {
     q: "Which brands does NEXERA offer for C&I projects?",
-    a: "TCL (BlueArk X5 and W10), Hithium (261 kWh all-in-one) and CLOU (Aqua-E261).",
+    a: "TCL (BlueArk X5 and W10) and Hithium (261 kWh all-in-one).",
   },
   {
     q: "Does NEXERA manufacture these systems?",
-    a: "No. TCL, Hithium and CLOU design and manufacture the systems. NEXERA supplies them in India and provides design, commissioning, training and after-sales support.",
+    a: "No. TCL and Hithium design and manufacture the systems. NEXERA supplies them in India and provides design, commissioning, training and after-sales support.",
   },
 ];
 

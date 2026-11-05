@@ -33,13 +33,11 @@ PRODUCTS = [
      "segments": ["Commercial & Industrial", "Utility-Scale"], "image": "hithium-power-cabinet-1022.webp"},
     {"id": "hithium-power-625", "partner": "Hithium", "name": "∞Power 6.25 MWh", "figure": "6.25 MWh",
      "segments": ["Utility-Scale"], "image": "hithium-power-625.webp"},
-    {"id": "clou-aqua-c25s", "partner": "CLOU", "name": "Aqua C2.5S", "figure": "2.089 MWh",
-     "segments": ["Utility-Scale"], "image": "clou-aqua-c25s.webp"},
 ]
 ARTICLES = [
     {"id": "blog-what-is-bess", "eyebrow": "Guide", "title": "What Is a BESS?", "subtitle": "A Plain Guide to Battery Energy Storage",
      "intro": "A simple explanation of battery energy storage systems: what they are, how they work and where they're used in India.",
-     "lineup": [("tcl-blueark-x5.webp", 205), ("hithium-power-cabinet-1022.webp", 250), ("clou-aqua-c25s.webp", 190)]},
+     "lineup": [("tcl-blueark-x5.webp", 205), ("hithium-power-cabinet-1022.webp", 250), ("hithium-power-625.webp", 120)]},
 ]
 
 # --- Fonts -----------------------------------------------------------------------------------------------
@@ -221,7 +219,7 @@ for p in PRODUCTS:
     end = draw_text(d, 72, y, num, 600, 66, GREEN)
     draw_text(d, end + 12, y, unit, 500, 32, GREEN)
     draw_text(d, 72, y + 40, " · ".join(p["segments"]).upper(), 600, 16, MUTED, tracking=0.2)
-    draw_text(d, 72, 582, f"Supplied in India by NEXERA, authorized {p['partner']} distributor.", 400, 20, PAPER)
+    draw_text(d, 72, 582, f"Supplied in India by NEXERA, authorised {p['partner']} distributor.", 400, 20, PAPER)
     save(img, p["id"])
 
 for a in ARTICLES:

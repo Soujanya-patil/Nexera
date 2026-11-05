@@ -42,7 +42,7 @@ const SEGMENTS = [
     id: "ci",
     page: SOLUTION_PAGES.ci.path,
     title: "Commercial & Industrial Energy Storage",
-    copy: "Reduce peak demand, store solar energy and keep critical loads running with TCL, Hithium and CLOU.",
+    copy: "Reduce peak demand, store solar energy and keep critical loads running with TCL and Hithium.",
     cta: "Explore C&I Solutions",
     img: "ci",
     pos: "50% 100%",
@@ -52,7 +52,7 @@ const SEGMENTS = [
     id: "utility",
     page: SOLUTION_PAGES.utility.path,
     title: "Utility-Scale Energy Storage",
-    copy: "Grid-scale battery storage from Hithium and CLOU for renewable integration, grid support and round-the-clock power.",
+    copy: "Grid-scale battery storage from Hithium for renewable integration, grid support and round-the-clock power.",
     cta: "Explore Utility Solutions",
     img: "utility",
     pos: "50% 30%",
@@ -144,7 +144,7 @@ export default function Solutions() {
             </li>
           ))}
         </ul>
-        <PartnerStrip partners={["tcl", "hithium", "clou"]} className="container-site mt-14" />
+        <PartnerStrip partners={["tcl", "hithium"]} className="container-site mt-14" />
       </section>
     </div>
   );

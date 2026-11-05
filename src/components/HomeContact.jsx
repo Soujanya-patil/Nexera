@@ -11,7 +11,7 @@ import { ADDRESS } from "../data/business";
 import { STAGGER } from "../lib/tokens";
 
 const TRUST = [
-  { icon: BadgeCheck, text: "Authorized partner for TCL, Hithium and CLOU" },
+  { icon: BadgeCheck, text: "Authorised partner for TCL and Hithium" },
   { icon: Ruler, text: "Design, sizing and commissioning support" },
   { icon: GraduationCap, text: "Hands-on technician training in Kalaburagi" },
 ];
@@ -238,7 +238,7 @@ export default function HomeContact() {
           <p data-sr className="mt-8 text-small text-paper/75">
             Want to become a distributor?{" "}
             <Link to="/become-a-partner" className="group inline-flex items-center gap-1 font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
-              Explore our partner program
+              Explore our partner programme
               <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 group-focus-within:translate-x-0.5" />
             </Link>
           </p>

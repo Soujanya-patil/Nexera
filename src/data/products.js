@@ -7,19 +7,15 @@
  * simply absent — the UI hides empty groups, highlights and comparison cells rather than filling them.
  *
  * Images are transparent cutouts of the partners' own product renders (src/assets/catalogue/), made
- * from Downloads/TCL_photos.zip, Hithium_photos.zip and CLOU_photos.
- *
- * CLOU Aqua-E261's cutout comes from the CLOU BESS deck (src/assets/clou-aqua-e261.webp). (A project
- * datasheet names a 261 kWh CLOU system "Aqua-X-261-125-2h"; the approved Solutions content uses
- * "Aqua-E261".)
+ * from Downloads/TCL_photos.zip and Hithium_photos.zip.
  *
  * Listed without a product photo (`imageFallback: true` — `image` is the partner's logo, shown
  * small on the usual plinth, and never used as a product image in search or share data):
  *   - Hithium ∞Power 5.016 MWh: no image in the repo or the Hithium brochure is labelled as this system
  *     (the brochure's ∞Power container renders carry no capacity), so it is also left out of the
  *     /products listing (`listed: false`). Its product page, and the Utility page's link to it, remain.
- * Their data comes from the director-approved Solutions content (checked against the CLOU BESS deck
- * and the Hithium brochure), and is limited to what that content states.
+ * Their data comes from the director-approved Solutions content (checked against the Hithium
+ * brochure), and is limited to what that content states.
  *
  * `imageSize` is the image file's own width and height (set on every <img> so nothing moves while it loads).
  * `shareImage` (optional) is the page's 1200x630 JPG for link previews, made by scripts/share-images.py
@@ -32,7 +28,6 @@
  */
 import tclLogo from "../assets/partners/tcl-logo.png";
 import hithiumLogo from "../assets/partners/hithium-logo.png";
-import clouLogo from "../assets/partners/clou-logo.png";
 import imgX1 from "../assets/catalogue/tcl-blueark-x1.webp";
 import imgX5 from "../assets/catalogue/tcl-blueark-x5.webp";
 import imgW10 from "../assets/catalogue/tcl-blueark-w10.webp";
@@ -40,8 +35,6 @@ import imgW10Open from "../assets/catalogue/tcl-blueark-w10-open.webp";
 import imgBlock261 from "../assets/catalogue/hithium-block-261.webp";
 import imgCabinet1022 from "../assets/catalogue/hithium-power-cabinet-1022.webp";
 import imgPower625 from "../assets/catalogue/hithium-power-625.webp";
-import imgClouC25s from "../assets/catalogue/clou-aqua-c25s.webp";
-import imgClouE261 from "../assets/clou-aqua-e261.webp";
 
 export const APPLICATIONS = [
   { id: "residential", label: "Residential" },
@@ -53,7 +46,6 @@ export const applicationLabel = (id) => APPLICATIONS.find((a) => a.id === id)?.l
 export const PARTNERS = [
   { id: "tcl", name: "TCL", logo: tclLogo, logoSize: [86, 31], logoClass: "h-5" },
   { id: "hithium", name: "Hithium", logo: hithiumLogo, logoSize: [355, 89], logoClass: "h-5" },
-  { id: "clou", name: "CLOU", logo: clouLogo, logoSize: [94, 44], logoClass: "h-7" },
 ];
 export const partnerOf = (id) => PARTNERS.find((p) => p.id === id);
 
@@ -82,7 +74,6 @@ const TCL_BROCHURE = "TCL Digital Power product brochure (EN)";
 const HITHIUM_BROCHURE = "Hithium product brochure — all solutions and company presentation";
 // Lines added from the director-approved Solutions content, which was checked against these decks.
 const TCL_DECK = "NEXERA Solutions content, checked against the TCL Digital Power Introduction deck";
-const CLOU_DECK = "NEXERA Solutions content, checked against the CLOU BESS deck";
 const HITHIUM_CONTENT = "NEXERA Solutions content";
 
 export const PRODUCTS = [
@@ -478,108 +469,9 @@ export const PRODUCTS = [
     datasheet: null,
     sources: [`${HITHIUM_BROCHURE}: Liquid-Cooled Energy Storage System table`, "Hithium DS ESS ∞Power 6.25MWh 4h datasheet (product image)", HITHIUM_CONTENT],
   },
-  {
-    id: "clou-aqua-e261",
-    partner: "clou",
-    name: "Aqua-E261",
-    type: "All-in-one C&I energy storage system",
-    applications: ["ci"],
-    image: imgClouE261,
-    imageSize: [427, 616],
-    imageAlt: "CLOU Aqua-E261 all-in-one liquid-cooled C&I battery energy storage cabinet",
-    summary:
-      "An all-in-one C&I storage system, pre-installed and pre-commissioned, with intelligent temperature control, cloud-based monitoring and remote O&M.",
-    cardSpecs: ["125 kW", "261 kWh"],
-    keySpecs: [
-      { label: "Power", value: "125 kW" },
-      { label: "Energy", value: "261 kWh" },
-      { label: "Battery cell", value: "LFP 314 Ah" },
-      { label: "Protection", value: "IP55" },
-    ],
-    specs: {
-      system: [
-        { label: "Power", value: "125 kW" },
-        { label: "Energy", value: "261 kWh" },
-        { label: "Format", value: "All-in-one, pre-installed and pre-commissioned" },
-        { label: "Auxiliary power", value: "Self-powered auxiliary system" },
-      ],
-      battery: [
-        { label: "Cell", value: "LFP 314 Ah" },
-        { label: "Cooling", value: "Liquid cooling" },
-        { label: "Cycle life", value: "≥7,000 cycles (specification)" },
-      ],
-      safety: [{ label: "Fire", value: "Integrated fire detection and suppression" }],
-      control: [
-        { label: "Communication", value: "Ethernet / CAN / RS485 / 4G" },
-        { label: "Monitoring", value: "Cloud-based monitoring and remote O&M" },
-      ],
-      installation: [
-        { label: "Protection", value: "IP55" },
-        { label: "Compliance", value: "IEC / UN38.3" },
-      ],
-    },
-    highlights: [
-      { icon: "Snowflake", title: "Liquid-cooled", text: "Liquid cooling with intelligent temperature control." },
-      { icon: "Boxes", title: "Pre-installed and pre-commissioned", text: "An all-in-one C&I system, with a self-powered auxiliary system." },
-      { icon: "ShieldCheck", title: "Integrated fire protection", text: "Fire detection and suppression built in, with IP55 protection." },
-    ],
-    compare: {
-      capacity: "261 kWh",
-      power: "125 kW",
-      configuration: "All-in-one",
-      cell: "LFP 314 Ah",
-      cooling: "Liquid",
-      protection: "IP55",
-    },
-    datasheet: null,
-    sources: [CLOU_DECK, "CLOU BESS deck (product image)"],
-  },
-  {
-    id: "clou-aqua-c25s",
-    partner: "clou",
-    name: "Aqua C2.5S",
-    model: "Aqua C2.5S-2089-500-4h",
-    type: "Containerised energy storage system",
-    applications: ["utility"],
-    image: imgClouC25s,
-    imageSize: [765, 640],
-    shareImage: "/og/clou-aqua-c25s.jpg",
-    imageAlt: "CLOU Aqua C2.5S containerised energy storage system",
-    summary: "A containerised energy storage system from CLOU for utility-scale applications.",
-    cardSpecs: ["2.089 MWh", "500 kVA"],
-    keySpecs: [
-      { label: "Model", value: "Aqua C2.5S-2089-500-4h" },
-      { label: "Format", value: "Containerised" },
-      { label: "Energy", value: "2.089 MWh" },
-      { label: "Power", value: "500 kVA" },
-    ],
-    specsNote: "Detailed specifications for this system are available from NEXERA on request.",
-    specs: {
-      system: [
-        { label: "Energy", value: "2.089 MWh" },
-        { label: "Power", value: "500 kVA" },
-        { label: "Duration", value: "4 h" },
-      ],
-      battery: [
-        { label: "Cell", value: "314 Ah LFP" },
-        { label: "Cooling", value: "Intelligent liquid cooling" },
-      ],
-      safety: [{ label: "Fire", value: "Multi-level fire protection" }],
-      installation: [{ label: "Protection", value: "IP55" }],
-    },
-    highlights: [],
-    compare: {
-      capacity: "2.089 MWh",
-      power: "500 kVA",
-      configuration: "Containerised",
-      cell: "314 Ah LFP",
-      cooling: "Liquid",
-      protection: "IP55",
-    },
-    datasheet: null,
-    sources: ["CLOU Aqua C2.5S-2089-500-4h IEC datasheet (product image and model designation)", CLOU_DECK],
-  },
 ];
 
 export const getProduct = (id) => PRODUCTS.find((p) => p.id === id);
+/** The catalogue as listed on /products (without `listed: false` systems): every "N systems" count uses it. */
+export const LISTED_PRODUCTS = PRODUCTS.filter((p) => p.listed !== false);
 export const productLabel = (p) => `${partnerOf(p.partner).name} ${p.name}`;

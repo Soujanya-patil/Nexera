@@ -21,7 +21,7 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
 
 // Category heading copy — the approved Home "Solutions" card lines, reused as the category intros.
 const CATEGORY_COPY = {
-  all: { title: "All systems", text: "Residential, commercial & industrial, and utility-scale storage from TCL, Hithium and CLOU." },
+  all: { title: "All systems", text: "Residential, commercial & industrial, and utility-scale storage from TCL and Hithium." },
   residential: { title: "Residential", text: "Store your solar power. Use it when you need it. Greater independence, lower bills, reliable backup." },
   ci: { title: "Commercial & Industrial", text: "Cut peak demand charges. Improve reliability. Maximise solar ROI." },
   utility: { title: "Utility-scale", text: "Enable a cleaner, more stable grid with large-scale storage." },
@@ -358,7 +358,7 @@ export default function Products() {
             <LiveCount count={visibleCount} total={LISTED.length} />
           </div>
           <p className="mt-3 max-w-2xl text-micro text-muted">
-            NEXERA is an authorized solution provider and distributor. Every system here is designed and manufactured by
+            NEXERA is an authorised solution provider and distributor. Every system here is designed and manufactured by
             the technology partner named on it.
           </p>
 

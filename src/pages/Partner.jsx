@@ -17,7 +17,7 @@ import { DUR, EASE, STAGGER } from "../lib/tokens";
 const WHY_ICONS = [BadgeCheck, Ruler, GraduationCap, Wrench];
 
 /**
- * /partners/:partnerId — one page per technology partner (Hithium, TCL, CLOU), so each brand
+ * /partners/:partnerId — one page per technology partner (Hithium, TCL), so each brand
  * has a real page to be found by: the hero (logo, "{Partner} energy storage in India"), about the
  * partner with the figures the site already shows, its systems from the catalogue, why buy it
  * through NEXERA, the FAQ (also the page's
@@ -25,7 +25,7 @@ const WHY_ICONS = [BadgeCheck, Ruler, GraduationCap, Wrench];
  *
  * Built only from existing components (the Solutions pages' sections, the catalogue's product cards,
  * the homepage's closing band) and existing copy (data/partners.js names the source of every line).
- * NEXERA is the authorized distributor; the partner designs and manufactures the systems.
+ * NEXERA is the authorised distributor; the partner designs and manufactures the systems.
  */
 export default function Partner() {
   const { partnerId } = useParams();
@@ -116,7 +116,7 @@ function PartnerHero({ id, name, contact }) {
           {/* The logo on a light panel (as on the product pages). */}
           <div data-a="logo" className="inline-flex h-14 items-center rounded-control bg-white px-5">
             {logo ? (
-              <img src={logo.logo} alt={`${name} logo`} width={logo.logoSize?.[0]} height={logo.logoSize?.[1]} decoding="async" className={`${id === "clou" ? "h-8" : "h-6"} w-auto`} />
+              <img src={logo.logo} alt={`${name} logo`} width={logo.logoSize?.[0]} height={logo.logoSize?.[1]} decoding="async" className="h-6 w-auto" />
             ) : (
               // The site's typeset wordmark for a partner without a logo file (as PartnerMark sets it).
               <span className="text-2xl font-semibold uppercase leading-6 tracking-tight text-ink">{name}</span>

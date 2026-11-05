@@ -14,7 +14,7 @@ const HQ = OFFICES.find((o) => o.id === "bangalore");
 
 /**
  * PAN-INDIA NETWORK — the offices from Where We Operate as points on a minimal network schematic:
- * Bangalore (headquarters) and Kalaburagi (regional office, training center) as solid green points
+ * Bangalore (headquarters) and Kalaburagi (regional office, training centre) as solid green points
  * with a solid link, Nagpur and Delhi as outlined points on dashed links, labelled "Planned".
  * Pointing at, focusing or tapping a point — or its row in the list — pulses it and opens a small
  * card with what that location does. Nothing is implied beyond the listed locations.
@@ -33,7 +33,7 @@ export default function NetworkMap() {
             Rooted in Karnataka. Growing Across India.
           </AnimatedText>
           <p className="mt-4 max-w-md text-body text-paper/75">
-            Headquartered in Bangalore, with a regional office and technician training center in Kalaburagi. Nagpur and
+            Headquartered in Bangalore, with a regional office and technician training centre in Kalaburagi. Nagpur and
             Delhi are planned expansions.
           </p>
 

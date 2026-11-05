@@ -32,22 +32,23 @@ const status = async (path) => (await fetch(BASE + path, { redirect: "manual" })
   const r2 = await fetch(BASE + "/partners/", { redirect: "manual" });
   check("/partners and /partners/ → 301 to /products", r.status === 301 && /^(https?:\/\/[^/]+)?\/products$/.test(r.headers.get("location") || "") && r2.status === 301, { s: r.status, loc: r.headers.get("location"), s2: r2.status });
   const codes = {};
-  for (const id of ["hithium", "tcl", "clou", "nope"]) codes[id] = await status(`/partners/${id}`);
-  check("partner pages 200; an unknown partner 404", codes.hithium === 200 && codes.tcl === 200 && codes.clou === 200 && codes.nope === 404, codes);
-  // The removed partner page (not a NEXERA partner): its old URL, .html and trailing slash → 301 /products.
+  for (const id of ["hithium", "tcl", "nope"]) codes[id] = await status(`/partners/${id}`);
+  check("partner pages 200; an unknown partner 404", codes.hithium === 200 && codes.tcl === 200 && codes.nope === 404, codes);
+  // Removed pages: the old Midea partner page, and CLOU's partner page and product pages (no longer
+  // presented) — each old URL, .html and trailing slash → 301 /products.
   const gone = [];
-  for (const u of ["/partners/midea", "/partners/midea.html", "/partners/midea/"]) {
+  const removed = ["/partners/midea", "/partners/clou", "/products/clou-aqua-e261", "/products/clou-aqua-c25s"];
+  for (const u of removed.flatMap((x) => [x, `${x}.html`, `${x}/`])) {
     const g = await fetch(BASE + u, { redirect: "manual" });
     gone.push([u, g.status, g.headers.get("location")]);
   }
-  check("the removed partner page's old URL (also .html, trailing slash) → 301 /products", gone.every(([, st, loc]) => st === 301 && /^(https?:\/\/[^/]+)?\/products$/.test(loc || "")), gone);
+  check("removed partner / product pages (Midea, CLOU; also .html, trailing slash) → one 301 to /products", gone.every(([, st, loc]) => st === 301 && /^(https?:\/\/[^/]+)?\/products$/.test(loc || "")), gone);
 }
 
 // ---- each page: sections, links, hero buttons -----------------------------------------------------------
 for (const [id, interest, nProducts] of [
   ["hithium", "ci", 3], // the ∞Power 5.016 MWh is `listed: false`: no card (its page and FAQ mention remain)
   ["tcl", "ci", 3],
-  ["clou", "ci", 2],
 ]) {
   const p = await newPage();
   await p.goto(`${BASE}/partners/${id}`, { waitUntil: "networkidle" });
@@ -69,7 +70,7 @@ for (const [id, interest, nProducts] of [
   check(`/partners/${id}: hero buttons — See systems (#systems), Contact Us (/#contact?interest=${interest}); closing band → same`, contact === `/#contact?interest=${interest}` && see?.endsWith("#systems") && s.cta === contact, { contact, see, cta: s.cta });
   for (const href of s.cards) if ((await status(href)) !== 200) check(`card link ${href} works`, false);
   // See systems glides to the section.
-  await p.getByRole("link", { name: new RegExp(`^See ${id === "tcl" ? "TCL" : id === "clou" ? "CLOU" : id[0].toUpperCase() + id.slice(1)} systems`) }).click();
+  await p.getByRole("link", { name: new RegExp(`^See ${id === "tcl" ? "TCL" : id[0].toUpperCase() + id.slice(1)} systems`) }).click();
   await p.waitForTimeout(1800);
   const top = await p.evaluate(() => Math.round(document.getElementById("systems").getBoundingClientRect().top));
   check(`/partners/${id}: "See … systems" scrolls to the systems section`, Math.abs(top - 64) <= 3, top);
@@ -147,15 +148,15 @@ async function linksOn(path, selector, setup) {
 }
 {
   const l = await linksOn("/solutions", "main a[href^='/partners/']");
-  check("Solutions partner strip: all three logos → /partners/{id}", l.length === 3 && ["tcl", "hithium", "clou"].every((id) => l.some(([, h]) => h === `/partners/${id}`)), l);
+  check("Solutions partner strip: both logos → /partners/{id}", l.length === 2 && ["tcl", "hithium"].every((id) => l.some(([, h]) => h === `/partners/${id}`)), l);
 }
 {
   const l = await linksOn("/solutions/commercial-industrial", "main a[href^='/partners/']");
-  check('C&I partner cards: "View {Partner} systems" → /partners/{id}', ["TCL", "Hithium", "CLOU"].every((n) => l.some(([t, h]) => t.startsWith(`View ${n} systems`) && h === `/partners/${n.toLowerCase()}`)), l);
+  check('C&I partner cards: "View {Partner} systems" → /partners/{id}', ["TCL", "Hithium"].every((n) => l.some(([t, h]) => t.startsWith(`View ${n} systems`) && h === `/partners/${n.toLowerCase()}`)), l);
 }
 {
   const l = await linksOn("/solutions/utility-scale", "main a[href^='/partners/']");
-  check('Utility partner cards: "All {Partner} systems" → /partners/{id}', l.some(([t, h]) => t.startsWith("All Hithium systems") && h === "/partners/hithium") && l.some(([t, h]) => t.startsWith("All CLOU systems") && h === "/partners/clou"), l);
+  check('Utility partner card: "All Hithium systems" → /partners/hithium (the only partner link)', l.some(([t, h]) => t.startsWith("All Hithium systems") && h === "/partners/hithium") && l.every(([, h]) => h === "/partners/hithium"), l);
 }
 {
   const l = await linksOn("/become-a-partner", "main a[href^='/partners/']");
@@ -163,11 +164,11 @@ async function linksOn(path, selector, setup) {
 }
 {
   const l = await linksOn("/", "main a[href^='/partners/']");
-  check("homepage partners section: TCL, Hithium, CLOU → /partners/{id} (and no other partner)", ["tcl", "hithium", "clou"].every((id) => l.some(([, h]) => h === `/partners/${id}`)) && l.every(([, h]) => /^\/partners\/(tcl|hithium|clou)$/.test(h)), l);
+  check("homepage partners section: TCL, Hithium → /partners/{id} (and no other partner)", ["tcl", "hithium"].every((id) => l.some(([, h]) => h === `/partners/${id}`)) && l.every(([, h]) => /^\/partners\/(tcl|hithium)$/.test(h)), l);
 }
 {
   const l = await linksOn("/about", "footer a[href^='/partners/']");
-  check("footer Partners column: Hithium · TCL · CLOU", l.map(([t]) => t).join(" · ") === "Hithium · TCL · CLOU", l);
+  check("footer Partners column: Hithium · TCL", l.map(([t]) => t).join(" · ") === "Hithium · TCL", l);
 }
 // Every /partners link on these pages resolves to a 200 page.
 {

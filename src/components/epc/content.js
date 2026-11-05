@@ -2,11 +2,11 @@
  * For EPCs — page content. Every statement here restates something the site already establishes
  * (About, Become a Partner, How It Works, Service & Training, Where We Operate, the Home "Why
  * NEXERA" steps, and the product data). Nothing is added: no counts, capacities, certifications,
- * response times or guarantees. NEXERA is the authorized partner and solution provider — TCL,
- * Hithium and CLOU design and manufacture the systems.
+ * response times or guarantees. NEXERA is the authorised partner and solution provider — TCL
+ * and Hithium design and manufacture the systems.
  *
  * Sources, by claim:
- *   authorized TCL / Hithium / CLOU access, no separate brand negotiation  About, Become a Partner
+ *   authorised TCL / Hithium access, no separate brand negotiation  About, Become a Partner
  *   add storage without building a supply chain from scratch             Become a Partner
  *   engineers on sizing, single-line diagrams, on-site commissioning      Service & Training
  *   "our engineers work your first sizing and commissioning with you"     Become a Partner, Resources
@@ -51,9 +51,9 @@ export const JOURNEY = [
     n: "01",
     title: "Select",
     icon: SlidersHorizontal,
-    copy: "Choose from TCL, Hithium and CLOU systems across residential, C&I and utility-scale.",
+    copy: "Choose from TCL and Hithium systems across residential, C&I and utility-scale.",
     detail:
-      "Direct, authorized access to our technology partners' storage — the right system sized to your load, with no separate brand negotiation on your side.",
+      "Direct, authorised access to our technology partners' storage — the right system sized to your load, with no separate brand negotiation on your side.",
     photo: "select",
     focus: "60% 50%",
     alt: "Consultant presenting battery storage options to a business owner",
@@ -73,7 +73,7 @@ export const JOURNEY = [
     title: "Deploy",
     icon: Truck,
     copy: "Add battery storage without building a supply chain from scratch.",
-    detail: "Your systems come through NEXERA as an authorized TCL, Hithium and CLOU partner, so your team can focus on the project on site.",
+    detail: "Your systems come through NEXERA as an authorised TCL and Hithium partner, so your team can focus on the project on site.",
     photo: "deploy",
     focus: "80% 50%",
     alt: "Crane placing a battery storage container on site",
@@ -115,7 +115,7 @@ export const CAPABILITIES = [
   {
     title: "Technology Partners",
     icon: Boxes,
-    copy: "Authorized access to TCL, Hithium and CLOU battery storage technology.",
+    copy: "Authorised access to TCL and Hithium battery storage technology.",
     to: "/products",
     cta: "View products",
   },
@@ -145,7 +145,7 @@ export const CAPABILITIES = [
     icon: GraduationCap,
     copy: "Technicians train on live TCL and Hithium hardware in Kalaburagi.",
     to: "/service-training",
-    cta: "Training center",
+    cta: "Training centre",
   },
   {
     title: "After-Sales Support",
@@ -166,7 +166,7 @@ export const STORY = [
   {
     label: "BESS system",
     title: "The right system for it.",
-    copy: "Selected from TCL, Hithium and CLOU storage, and sized to your load with our engineers.",
+    copy: "Selected from TCL and Hithium storage, and sized to your load with our engineers.",
   },
   {
     label: "Deployment",
@@ -185,7 +185,7 @@ export const VALUES = [
   {
     title: "Technology Access",
     icon: Boxes,
-    copy: "A lithium battery distributorship with direct, authorized access to TCL, Hithium and CLOU — no separate brand negotiation on your side.",
+    copy: "A lithium battery distributorship with direct, authorised access to TCL and Hithium — no separate brand negotiation on your side.",
   },
   {
     title: "Design & Technical Support",
@@ -215,7 +215,7 @@ export const OFFICES = [
     id: "kalaburagi",
     city: "Kalaburagi (Gulbarga)",
     role: "Regional office",
-    detail: "Service support and technician training center",
+    detail: "Service support and technician training centre",
     status: "active",
     lat: 17.33,
     lon: 76.83,

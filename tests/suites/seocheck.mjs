@@ -10,12 +10,12 @@ const KW = {
   "/solutions/commercial-industrial": ["commercial battery storage system", "Peak Shaving"],
   "/solutions/utility-scale": ["containerised battery storage", "BESS container"],
   "/become-a-partner": ["Become a BESS Distributor", "lithium battery distributorship", "Build More. Store Smarter."],
-  "/locations/bengaluru": ["battery energy storage systems", "authorized distributor", "commercial and industrial", "solar battery"],
+  "/locations/bengaluru": ["battery energy storage systems", "authorised distributor", "commercial and industrial", "solar battery"],
   "/service-training": ["BESS installation", "BESS commissioning", "BESS technician training", "Where can EPC technicians get hands-on BESS training in South India?"],
 };
 // Every listed product page: its intro line, both new headings and the support section.
-const PRODUCT_PAGES = ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "hithium-block-261", "hithium-power-cabinet-1022", "hithium-power-625", "clou-aqua-e261", "clou-aqua-c25s"].map((id) => `/products/${id}`);
-for (const p of PRODUCT_PAGES) KW[p] = ["available in India through NEXERA, an authorized", "Who it’s for", "Typical applications", "NEXERA support in India", "What Is a BESS?"];
+const PRODUCT_PAGES = ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "hithium-block-261", "hithium-power-cabinet-1022", "hithium-power-625"].map((id) => `/products/${id}`);
+for (const p of PRODUCT_PAGES) KW[p] = ["available in India through NEXERA, an authorised", "Who it’s for", "Typical applications", "NEXERA support in India", "What Is a BESS?"];
 let bad = 0;
 for (const p of ["/", "/solutions", "/solutions/commercial-industrial", "/solutions/residential", "/solutions/utility-scale", "/products", "/become-a-partner", "/service-training", "/where-we-operate", "/resources", "/locations/bengaluru", "/contact", ...PRODUCT_PAGES]) {
   const h = fs.readFileSync(file(p), "utf8");

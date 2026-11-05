@@ -4,8 +4,8 @@ import { ADDRESS, PHONE, phoneHref } from "../data/business";
 import { SOLUTION_PAGES } from "../data/solutions";
 import { openConsent } from "../lib/analytics";
 
-// Every group lists existing routes only, each page once. Partner pages keep their order (Hithium, TCL,
-// CLOU); the Blog and its published articles come from data/articles.js (drafts are never listed).
+// Every group lists existing routes only, each page once. Partner pages keep their order (Hithium,
+// TCL); the Blog and its published articles come from data/articles.js (drafts are never listed).
 const groups = [
   {
     title: "Solutions",
@@ -20,7 +20,6 @@ const groups = [
       { label: "All products", href: "/products" },
       { label: "Hithium", href: "/partners/hithium" },
       { label: "TCL", href: "/partners/tcl" },
-      { label: "CLOU", href: "/partners/clou" },
     ],
   },
   {

@@ -266,7 +266,7 @@ export default function SolutionsResidential() {
       <CtaBand
         id="contact-home"
         eyebrow="Ready to make your home smarter?"
-        title="Get a Personalized Energy Recommendation"
+        title="Get a Personalised Energy Recommendation"
         body="Tell us your monthly electricity consumption and your current solar capacity. We'll help you determine:"
         checklist={CTA_TOPICS.residential}
         segment="residential"

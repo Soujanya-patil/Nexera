@@ -27,7 +27,7 @@ export default function WhyPartner() {
           </div>
           <p className="max-w-xl text-body text-copy">
             NEXERA was founded to solve a problem we lived ourselves as a solar EPC: getting reliable battery storage into
-            Indian projects, backed by service that actually shows up. As an authorized TCL, Hithium and CLOU partner, we
+            Indian projects, backed by service that actually shows up. As an authorised TCL and Hithium partner, we
             work with you from technology access to long-term partnership.
           </p>
         </div>

@@ -24,10 +24,8 @@ import {
 } from "lucide-react";
 import { getProduct } from "../data/products";
 import { CTA_TOPICS } from "../data/solutionTopics";
-import imgAquaC25_5mwh from "../assets/clou-aqua-c25-5mwh.webp";
 import { UTILITY_FAQ } from "../data/solutions";
 import { guideFor } from "../data/articles";
-import UseCaseMap from "../components/solutions/UseCaseMap";
 import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
 const LoadShiftChart = lazy(() => import("../components/solutions/LoadShiftChart"));
@@ -67,7 +65,7 @@ const PARTNERS = [
     whyTitle: "Why Hithium",
     why: [
       ["Pure-play energy storage focus", "Dedicated entirely to energy-storage technologies."],
-      ["High-capacity battery systems", "Large-format systems designed to maximize energy density and reduce project footprint."],
+      ["High-capacity battery systems", "Large-format systems designed to maximise energy density and reduce project footprint."],
       ["Liquid cooling", "Advanced thermal management for consistent battery operating conditions."],
       ["Long-cycle battery technology", "Cells designed for thousands of cycles and long operating life."],
       ["Integrated safety architecture", "Battery, thermal, electrical and fire-protection systems designed as part of the complete solution."],
@@ -83,67 +81,9 @@ const PARTNERS = [
       {
         product: "hithium-power-625",
         name: "Hithium ∞Power 6.25 MWh | 4-Hour",
-        copy: "A 20-foot containerized system delivering up to 6.25 MWh of energy capacity, with a 0.25P charge/discharge configuration, liquid cooling, IP55 protection and an operating range of –30°C to +55°C.",
+        copy: "A 20-foot containerised system delivering up to 6.25 MWh of energy capacity, with a 0.25P charge/discharge configuration, liquid cooling, IP55 protection and an operating range of –30°C to +55°C.",
         alt: "Hithium ∞Power 6.25 MWh liquid-cooled utility-scale battery energy storage container",
         cta: "Explore ∞Power 6.25 MWh",
-      },
-    ],
-  },
-  {
-    id: "clou",
-    title: "CLOU — Intelligent Energy Storage. Engineered for the Grid.",
-    copy: "CLOU, an energy technology company, brings 30+ years of power-electronics experience together with dedicated battery energy-storage technology. Its utility portfolio includes 5 MWh-class and 6.25 MWh-class systems, alongside PCS and medium-voltage solutions.",
-    stats: [
-      ["16 GWh", "contracted and delivered energy-storage systems"],
-      ["8.6 GWh", "contracted and installed outside China"],
-      ["100+", "countries active"],
-      ["1,900+", "patent applications"],
-      ["30+ years", "in power electronics"],
-    ],
-    whyTitle: "Why CLOU",
-    why: [
-      ["30+ Years of Power Electronics Experience", "Its energy-storage platform is built on in-house expertise in power electronics, BMS, PCS and energy-management systems."],
-      ["Integrated Energy Storage Architecture", "Battery systems, PCS, BMS and EMS integrated into a coordinated storage platform."],
-      ["Advanced Thermal Management", "Liquid-cooled systems help maintain battery temperature consistency and long-term performance."],
-      ["Grid-Ready Power Quality", "Designed around high-power AC integration, power-factor control and low harmonic distortion."],
-      ["Advanced Safety", "Multi-level electrical protection, battery-health monitoring, and fire detection and suppression."],
-      ["Intelligent O&M", "Rapid state detection, fault recording and active balancing to simplify maintenance and improve availability."],
-    ],
-    systems: [
-      {
-        product: "clou-aqua-c25s",
-        name: "CLOU Aqua C2.5S",
-        figures: "5 MWh-class | 2-Hour / 4-Hour Configurations",
-        specs: [
-          "314 Ah LFP cells",
-          "Intelligent liquid cooling",
-          "IP55",
-          "5.0159 MWh nominal capacity",
-          "Power factor ≥0.99",
-          "<3% current THD",
-          "–30°C to +55°C operating range",
-          "Up to 4,000 m altitude",
-          "IEEE 693 seismic qualification",
-          "Multiple fire detection and suppression layers",
-          "Ethernet / Modbus-TCP / IEC 104 / IEC 61850 communication",
-        ],
-        // A different configuration from the catalogue's Aqua C2.5S (the 2.089 MWh / 500 kVA model), so
-        // this card has its own cutout (CLOU BESS deck) and asks for the datasheet instead of linking there.
-        photo: {
-          src: imgAquaC25_5mwh,
-          width: 864,
-          height: 459,
-          alt: "CLOU Aqua C2.5S 5 MWh-class liquid-cooled utility-scale battery energy storage container",
-        },
-        to: "/contact?intent=utility",
-        cta: "Request Datasheet",
-      },
-      {
-        product: "clou-aqua-c25s",
-        name: "CLOU Aqua C2.5S 2.089 MWh | 4-Hour",
-        copy: "For projects requiring longer-duration storage, the 2.089 MWh / 500 kVA configuration provides a compact 4-hour architecture, with 314 Ah LFP cells, intelligent liquid cooling, IP55 protection and multi-level fire protection.",
-        alt: "CLOU Aqua C2.5S 2.089 MWh 4-hour containerised battery energy storage system",
-        cta: "Explore Aqua C2.5S 2.089 MWh",
       },
     ],
   },
@@ -161,7 +101,7 @@ export default function SolutionsUtility() {
         line2="Grid of Tomorrow."
         subheading="Grid-Scale Battery Energy Storage Systems Built for Renewable Integration"
         body={[
-          "NEXERA brings utility-scale energy storage solutions from Hithium and CLOU for large renewable energy projects, grid support, energy shifting and round-the-clock power management.",
+          "NEXERA brings utility-scale energy storage solutions from Hithium for large renewable energy projects, grid support, energy shifting and round-the-clock power management.",
           "From 5 MWh-class systems to multi-hundred-MWh projects, our solutions are designed for high energy throughput, intelligent thermal management, advanced safety and long-term operation.",
         ]}
         cta={{ label: "Explore Utility Solutions", target: "utility-solutions" }}
@@ -181,30 +121,30 @@ export default function SolutionsUtility() {
 
       <BenefitStrip
         items={[
-          { icon: Leaf, title: "Enable Higher Renewable Utilization", text: "Store clean energy for when it's needed most" },
+          { icon: Leaf, title: "Enable Higher Renewable Utilisation", text: "Store clean energy for when it's needed most" },
           { icon: Activity, title: "Improve Grid Stability", text: "Support frequency, voltage and grid reliability" },
-          { icon: TrendingUp, title: "Better Project Economics", text: "Maximize asset utilization and reduce curtailment" },
+          { icon: TrendingUp, title: "Better Project Economics", text: "Maximise asset utilisation and reduce curtailment" },
           { icon: ShieldCheck, title: "Built for Long-Term Operation", text: "Safe. Reliable. Scalable." },
         ]}
       />
       <KeywordTicker
         label="Utility-scale storage capabilities"
-        items={["Renewable Integration", "Peak Shifting", "Grid Stabilization", "24/7 Renewable Power", "Energy Arbitrage", "T&D Support"]}
+        items={["Renewable Integration", "Peak Shifting", "Grid Stabilisation", "24/7 Renewable Power", "Energy Arbitrage", "T&D Support"]}
       />
 
       <Section
         id="why-utility"
         push
-        mark="Stabilize the Grid"
+        mark="Stabilise the Grid"
         eyebrow="Why utility-scale storage?"
-        title="Store More. Shift More. Stabilize the Grid."
+        title="Store More. Shift More. Stabilise the Grid."
         intro="Utility-scale BESS enables renewable power to be stored when generation is high and dispatched when it is needed most."
       >
         <FeatureGrid
           items={[
             { icon: Sun, title: "Renewable Energy Integration", text: "Store excess solar and wind generation and dispatch it when renewable generation falls." },
-            { icon: Repeat, title: "Peak Shifting", text: "Move energy from low-demand periods to high-demand periods to improve asset utilization and project economics." },
-            { icon: Activity, title: "Grid Stabilization", text: "Support grid frequency, voltage and power quality requirements through fast-response energy storage." },
+            { icon: Repeat, title: "Peak Shifting", text: "Move energy from low-demand periods to high-demand periods to improve asset utilisation and project economics." },
+            { icon: Activity, title: "Grid Stabilisation", text: "Support grid frequency, voltage and power quality requirements through fast-response energy storage." },
             { icon: Clock, title: "24/7 Renewable Power", text: "Combine renewable generation with storage to create more predictable and dispatchable power." },
             { icon: Wallet, title: "Energy Arbitrage", text: "Charge during lower-cost periods and discharge during higher-value periods." },
             { icon: UtilityPole, title: "Transmission & Distribution Support", text: "Deploy storage close to demand or generation to improve flexibility and reduce grid constraints." },
@@ -221,12 +161,12 @@ export default function SolutionsUtility() {
       <Section
         id="utility-solutions"
         tone="ice"
-        mark="One NEXERA Utility Ecosystem"
-        eyebrow="Two global technology platforms"
-        title="Hithium + CLOU. Two Specialists. One NEXERA Utility Ecosystem."
-        intro="NEXERA brings together two dedicated platforms for containerised battery storage, so project developers, IPPs, EPCs and utilities can select the BESS container architecture that best fits their project."
+        mark="Delivered and Supported by NEXERA"
+        eyebrow="Our global technology platform"
+        title="Utility-Scale Storage from Hithium. Delivered and Supported by NEXERA."
+        intro="NEXERA brings Hithium's dedicated platform for containerised battery storage to project developers, IPPs, EPCs and utilities, so they can select the BESS container architecture that best fits their project."
       >
-        {/* One compare selection across both partners' featured systems. */}
+        {/* One compare selection across the featured systems. */}
         <CompareProvider>
           <div className="mt-12 space-y-16">
             {PARTNERS.map((p) => (
@@ -238,7 +178,7 @@ export default function SolutionsUtility() {
                     <p className="mt-3 text-body text-copy">{p.copy}</p>
                     <Stats items={p.stats} />
                     <ArrowLink to={`/partners/${p.id}`} className="mt-6">
-                      All {p.id === "clou" ? "CLOU" : "Hithium"} systems
+                      All Hithium systems
                     </ArrowLink>
                   </div>
                   <div>
@@ -274,7 +214,7 @@ export default function SolutionsUtility() {
         <FeatureGrid
           columns={4}
           items={[
-            { icon: Layers, title: "High Energy Density", text: "More MWh within a standardized container footprint." },
+            { icon: Layers, title: "High Energy Density", text: "More MWh within a standardised container footprint." },
             { icon: Thermometer, title: "Thermal Management", text: "Liquid cooling helps maintain consistent cell operating temperatures." },
             { icon: Gauge, title: "Battery Life", text: "Cell chemistry, operating window, thermal conditions and operating strategy all influence lifetime performance." },
             { icon: ShieldCheck, title: "Safety by Design", text: "Protection extends from the cell and module through the container and site-level protection system." },
@@ -323,8 +263,7 @@ export default function SolutionsUtility() {
           ))}
         </ul>
         <p className="mt-8 max-w-3xl text-body text-copy">
-          For example, the CLOU Aqua C2.5S platform specifies operation from –30°C to +55°C, IP55 protection and C4 corrosion protection, with C5
-          available as an option.
+          For example, the Hithium ∞Power 6.25 MWh specifies operation from –30°C to +55°C and IP55 protection.
         </p>
       </Section>
 
@@ -334,16 +273,15 @@ export default function SolutionsUtility() {
         title="Powering Multiple Use Cases"
         intro="Utility-scale storage plays a critical role in building a cleaner, more flexible and more resilient power system."
       >
-        {/* Hotspot positions on the CLOU illustration: the feature each use case is pinned to. */}
-        <UseCaseMap
+        <FeatureGrid
           items={[
-            { icon: Sun, at: [15, 74], title: "Solar + Storage", text: "Store midday solar generation and dispatch it during evening demand." },
-            { icon: Wind, at: [88, 42], title: "Wind + Storage", text: "Smooth variable wind generation and improve dispatchability." },
-            { icon: Leaf, at: [69, 22], title: "Renewable Firming", text: "Increase renewable utilization and reduce curtailment." },
-            { icon: Activity, at: [25, 65], title: "Grid Support", text: "Provide fast-response power and improve grid flexibility." },
-            { icon: BarChart3, at: [47, 27], title: "Peak Demand Management", text: "Shift large blocks of energy to high-demand periods." },
-            { icon: Clock, at: [35, 86], title: "Round-the-Clock Renewable Power", text: "Combine renewable generation and storage for more predictable delivery." },
-            { icon: Network, at: [52, 63], title: "Transmission & Distribution", text: "Support constrained grid infrastructure and improve network flexibility." },
+            { icon: Sun, title: "Solar + Storage", text: "Store midday solar generation and dispatch it during evening demand." },
+            { icon: Wind, title: "Wind + Storage", text: "Smooth variable wind generation and improve dispatchability." },
+            { icon: Leaf, title: "Renewable Firming", text: "Increase renewable utilisation and reduce curtailment." },
+            { icon: Activity, title: "Grid Support", text: "Provide fast-response power and improve grid flexibility." },
+            { icon: BarChart3, title: "Peak Demand Management", text: "Shift large blocks of energy to high-demand periods." },
+            { icon: Clock, title: "Round-the-Clock Renewable Power", text: "Combine renewable generation and storage for more predictable delivery." },
+            { icon: Network, title: "Transmission & Distribution", text: "Support constrained grid infrastructure and improve network flexibility." },
           ]}
         />
       </Section>
@@ -354,7 +292,7 @@ export default function SolutionsUtility() {
           items={[
             { title: "Project Assessment", text: "Understand generation profile, load profile, grid requirements and operating objective." },
             { title: "System Sizing", text: "Determine the right MW / MWh configuration and duration." },
-            { title: "Technology Selection", text: "Select the appropriate Hithium or CLOU architecture based on project requirements." },
+            { title: "Technology Selection", text: "Select the appropriate Hithium architecture based on project requirements." },
             { title: "Engineering", text: "Electrical design, container configuration, PCS/MV integration and communication architecture." },
             { title: "Procurement & Logistics", text: "Coordinate equipment supply and project delivery." },
             { title: "Commissioning", text: "Support installation, testing and system commissioning." },
@@ -371,7 +309,7 @@ export default function SolutionsUtility() {
       >
         <FeatureGrid
           items={[
-            { icon: Cpu, title: "Technology Partners", text: "Hithium and CLOU utility-scale platforms." },
+            { icon: Cpu, title: "Technology Partner", text: "Hithium utility-scale platforms." },
             { icon: SlidersHorizontal, title: "Technical Engineering", text: "System sizing and architecture based on project requirements." },
             { icon: Wrench, title: "India-Focused Support", text: "Local technical and commissioning support." },
             { icon: Wallet, title: "Project Economics", text: "Evaluate CAPEX, energy throughput, degradation and expected project returns." },
@@ -389,7 +327,7 @@ export default function SolutionsUtility() {
         id="contact-utility"
         eyebrow="Ready to build your utility-scale project?"
         title="Let's Design the Right Storage Solution for Your Project."
-        body="Tell us your project capacity, solar/wind capacity, required duration, grid voltage and location. Our team will help evaluate the appropriate Hithium or CLOU solution, system configuration and project architecture."
+        body="Tell us your project capacity, solar/wind capacity, required duration, grid voltage and location. Our team will help evaluate the appropriate Hithium solution, system configuration and project architecture."
         checklist={CTA_TOPICS.utility}
         segment="utility"
         button={{ label: "Talk to a Utility BESS Expert", to: "/contact?intent=utility" }}

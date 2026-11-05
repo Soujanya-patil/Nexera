@@ -56,10 +56,10 @@ export default function ServiceTraining() {
         <div className="container-site py-section">
           <SectionIcon icon={GraduationCap} />
           <h2 data-sr="heading" className="mt-5 text-h2 font-semibold text-ink">
-            Kalaburagi Technician Training Center
+            Kalaburagi Technician Training Centre
           </h2>
           <p data-sr className="mt-2 text-small text-copy">
-            India's Hands-On BESS Training Center for EPC Technicians
+            India's Hands-On BESS Training Centre for EPC Technicians
           </p>
           <p data-sr className="mt-heading max-w-measure text-body text-copy">
             In Kalaburagi, BESS technician training happens on live TCL and Hithium

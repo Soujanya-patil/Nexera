@@ -6,7 +6,7 @@
  * Content rule: nothing new. Every line restates a field of data/products.js or copy the site already
  * has (the source is noted beside each one). No prices, delivery times, warranty years, certifications
  * beyond the catalogue, customers or projects; the partner designs and manufactures every system and
- * NEXERA is its authorized distributor. A product kept off the catalogue (`listed: false`) has no entry.
+ * NEXERA is its authorised distributor. A product kept off the catalogue (`listed: false`) has no entry.
  *
  * The FAQ text is built here once, so the visible FAQ and the FAQPage data are the same words; `links`
  * only turn words of an answer into links.
@@ -45,23 +45,23 @@ export const USES = {
     text: "Keep critical loads operating during grid interruptions.",
     to: "/solutions/commercial-industrial#why-ci",
   },
-  // Utility, "Store More. Shift More. Stabilize the Grid." (Renewable Energy Integration)
+  // Utility, "Store More. Shift More. Stabilise the Grid." (Renewable Energy Integration)
   "renewable-integration": {
     title: "Renewable energy integration",
     text: "Store excess solar and wind generation and dispatch it when renewable generation falls.",
     to: "/solutions/utility-scale#why-utility",
   },
-  // Utility, "Store More. Shift More. Stabilize the Grid." (Peak Shifting)
+  // Utility, "Store More. Shift More. Stabilise the Grid." (Peak Shifting)
   "peak-shifting": {
     title: "Peak shifting",
-    text: "Move energy from low-demand periods to high-demand periods to improve asset utilization and project economics.",
+    text: "Move energy from low-demand periods to high-demand periods to improve asset utilisation and project economics.",
     to: "/solutions/utility-scale#why-utility",
   },
   // Utility, "Powering Multiple Use Cases" (Renewable Firming); the Utility FAQ: a 4-hour system "suits
   // longer evening peaks and renewable firming", so only systems with a 4-hour configuration list it.
   "renewable-firming": {
     title: "Renewable firming",
-    text: "Increase renewable utilization and reduce curtailment.",
+    text: "Increase renewable utilisation and reduce curtailment.",
     to: "/solutions/utility-scale#applications",
   },
 };
@@ -78,7 +78,7 @@ const PAGES = {
   "tcl-blueark-x1": {
     title: "TCL BlueArk X1 Home Battery Storage India | NEXERA",
     description:
-      "TCL BlueArk X1 home battery: 8–128 kWh stacked LFP battery with a hybrid inverter up to 15 kW. From NEXERA, TCL authorized distributor in India.",
+      "TCL BlueArk X1 home battery: 8–128 kWh stacked LFP battery with a hybrid inverter up to 15 kW. From NEXERA, TCL authorised distributor in India.",
     audience: [
       // RESIDENTIAL_BENEFITS "Store the Solar You Generate"; highlight "Made for solar" (3 MPPTs, 2× PV oversizing)
       "Homes with rooftop solar that want to store the solar they generate",
@@ -103,7 +103,7 @@ const PAGES = {
   "tcl-blueark-x5": {
     title: "TCL BlueArk X5 C&I Energy Storage India | NEXERA",
     description:
-      "TCL BlueArk X5 all-in-one C&I storage: 50 kW / 100 kWh, expandable to 1 MWh, with direct PV access. From NEXERA, TCL authorized distributor in India.",
+      "TCL BlueArk X5 all-in-one C&I storage: 50 kW / 100 kWh, expandable to 1 MWh, with direct PV access. From NEXERA, TCL authorised distributor in India.",
     audience: [
       // summary: "for small and medium C&I sites"
       "Small and medium commercial and industrial sites",
@@ -129,7 +129,7 @@ const PAGES = {
   "tcl-blueark-w10": {
     title: "TCL BlueArk W10 C&I Storage Cabinet India | NEXERA",
     description:
-      "TCL BlueArk W10 C&I storage cabinet: 125 kW / 261 kWh, liquid-cooled, expandable to 6.3 MWh. From NEXERA, TCL authorized distributor in India.",
+      "TCL BlueArk W10 C&I storage cabinet: 125 kW / 261 kWh, liquid-cooled, expandable to 6.3 MWh. From NEXERA, TCL authorised distributor in India.",
     audience: [
       // C&I page: "Designed for businesses requiring higher storage capacity in a compact footprint: 261 kWh in a single cabinet"
       "Businesses that need higher storage capacity in a compact footprint: 261 kWh in a single cabinet",
@@ -154,7 +154,7 @@ const PAGES = {
   "hithium-block-261": {
     title: "Hithium ∞BLOCK C&I All-in-One ESS 261 kWh India | NEXERA",
     description:
-      "Hithium ∞BLOCK C&I All-in-One ESS: 261 kWh, liquid-cooled, adjustable 125 kW PCS, IP55. From NEXERA, Hithium authorized distributor in India.",
+      "Hithium ∞BLOCK C&I All-in-One ESS: 261 kWh, liquid-cooled, adjustable 125 kW PCS, IP55. From NEXERA, Hithium authorised distributor in India.",
     audience: [
       // C&I page: "combines battery storage, power conversion and system controls in a compact cabinet"; summary: "for commercial and industrial sites"
       "Commercial and industrial sites that want battery storage, power conversion and system controls in one compact cabinet",
@@ -175,7 +175,7 @@ const PAGES = {
   "hithium-power-cabinet-1022": {
     title: "Hithium ∞Power 1022 kWh Cabinet BESS India | NEXERA",
     description:
-      "Hithium ∞Power 1022 kWh liquid-cooled cabinet for C&I and utility projects, 400 Vac. From NEXERA, Hithium authorized distributor in India.",
+      "Hithium ∞Power 1022 kWh liquid-cooled cabinet for C&I and utility projects, 400 Vac. From NEXERA, Hithium authorised distributor in India.",
     audience: [
       // applications: ci, utility
       "Commercial and industrial sites and utility-scale projects",
@@ -199,7 +199,7 @@ const PAGES = {
   "hithium-power-625": {
     title: "Hithium ∞Power 6.25 MWh Utility BESS India | NEXERA",
     description:
-      "Hithium ∞Power 6.25 MWh liquid-cooled utility BESS, 2-hour or 4-hour, IP55, 20-foot container. From NEXERA, Hithium authorized distributor in India.",
+      "Hithium ∞Power 6.25 MWh liquid-cooled utility BESS, 2-hour or 4-hour, IP55, 20-foot container. From NEXERA, Hithium authorised distributor in India.",
     audience: [
       // Utility page: "so project developers, IPPs, EPCs and utilities can select the BESS container architecture that best fits their project"
       "Project developers, IPPs, EPCs and utilities building utility-scale storage",
@@ -217,54 +217,12 @@ const PAGES = {
       a: "The Hithium ∞Power 6.25 MWh has 6.25 MWh rated energy at 1331.2 V rated voltage, in a 2-hour configuration (8P416S, 0.5P / 0.5P) or a 4-hour configuration (4P416S, 0.25P / 0.25P).",
     },
   },
-  "clou-aqua-e261": {
-    title: "CLOU Aqua-E261 C&I BESS India | NEXERA",
-    description:
-      "CLOU Aqua-E261 all-in-one C&I BESS: 125 kW / 261 kWh, liquid-cooled, pre-commissioned, IP55. From NEXERA, CLOU authorized distributor in India.",
-    audience: [
-      // summary / specs: format
-      "Commercial and industrial sites that want an all-in-one system, pre-installed and pre-commissioned",
-      // specs: communication, monitoring
-      "Operators who want cloud-based monitoring and remote O&M, over Ethernet, CAN, RS485 or 4G",
-      // specs: protection, fire
-      "Outdoor installations: IP55, with integrated fire detection and suppression",
-    ],
-    uses: CI,
-    capacity: {
-      q: "What is the capacity and power of the CLOU Aqua-E261?",
-      // specs: power, energy
-      a: "The CLOU Aqua-E261 has 125 kW power and 261 kWh energy.",
-    },
-    // specs: cell, cooling, cycle life
-    chemistry: "The CLOU Aqua-E261 uses LFP (lithium iron phosphate) 314 Ah cells with liquid cooling, and a cycle-life specification of ≥7,000 cycles.",
-  },
-  "clou-aqua-c25s": {
-    title: "CLOU Aqua C2.5S Containerised BESS India | NEXERA",
-    description:
-      "CLOU Aqua C2.5S containerised utility BESS: 2.089 MWh / 500 kVA, 4-hour, liquid-cooled, IP55. From NEXERA, CLOU authorized distributor in India.",
-    audience: [
-      // Utility page (see the 6.25 MWh)
-      "Project developers, IPPs, EPCs and utilities building utility-scale storage",
-      // Utility page: "For projects requiring longer-duration storage, the 2.089 MWh / 500 kVA configuration provides a compact 4-hour architecture"
-      "Projects that need longer-duration storage: a compact 4-hour architecture at 2.089 MWh / 500 kVA",
-      // specs: protection, cooling, fire
-      "Outdoor sites: IP55, with intelligent liquid cooling and multi-level fire protection",
-    ],
-    uses: UTILITY_4H,
-    capacity: {
-      q: "What is the capacity and power of the CLOU Aqua C2.5S?",
-      // specs: energy, power, duration; model
-      a: "The CLOU Aqua C2.5S (model Aqua C2.5S-2089-500-4h) has 2.089 MWh energy and 500 kVA power, for 4 hours.",
-    },
-    // specs: cell, cooling
-    chemistry: "The CLOU Aqua C2.5S uses 314 Ah LFP (lithium iron phosphate) cells with intelligent liquid cooling.",
-  },
 };
 
-/** "<name> by <Partner>, available in India through NEXERA, an authorized <Partner> distributor." */
+/** "<name> by <Partner>, available in India through NEXERA, an authorised <Partner> distributor." */
 export const introLine = (p) => {
   const brand = partnerOf(p.partner).name;
-  return `${p.name} by ${brand}, available in India through NEXERA, an authorized ${brand} distributor.`;
+  return `${p.name} by ${brand}, available in India through NEXERA, an authorised ${brand} distributor.`;
 };
 
 /** The product's page content, or undefined (a product kept off the catalogue has none). */
@@ -279,7 +237,7 @@ export function productPage(id) {
       q: `Is the ${label} available in India?`,
       // The brief's pattern; "designs and manufactures… supplies… design, commissioning, training and
       // after-sales support": the Solutions FAQs ("Does NEXERA manufacture these systems?").
-      a: `Yes. The ${label} is available in India through NEXERA, an authorized ${brand} distributor. ${brand} designs and manufactures the system; NEXERA supplies it and provides design, commissioning, training and after-sales support. Contact NEXERA for a quote.`,
+      a: `Yes. The ${label} is available in India through NEXERA, an authorised ${brand} distributor. ${brand} designs and manufactures the system; NEXERA supplies it and provides design, commissioning, training and after-sales support. Contact NEXERA for a quote.`,
       links: [{ text: "Contact NEXERA for a quote", to: `/contact?product=${p.id}&intent=quote` }],
     },
     page.capacity,
@@ -287,8 +245,8 @@ export function productPage(id) {
     page.expansion && { q: `Can the ${label} be expanded?`, a: page.expansion },
     {
       q: `Who installs and supports the ${label} in India?`,
-      // Service & Training: Design & Commissioning Support, After-Sales & Warranty, the training center.
-      a: "NEXERA supports it in India. Every partner gets our engineering team for sizing, single-line diagrams, and on-site support with BESS installation and BESS commissioning; technicians train on live hardware at our Kalaburagi Technician Training Center; and warranty handling is local-first, with NEXERA managing the OEM relationship. More on Service & Training.",
+      // Service & Training: Design & Commissioning Support, After-Sales & Warranty, the training centre.
+      a: "NEXERA supports it in India. Every partner gets our engineering team for sizing, single-line diagrams, and on-site support with BESS installation and BESS commissioning; technicians train on live hardware at our Kalaburagi Technician Training Centre; and warranty handling is local-first, with NEXERA managing the OEM relationship. More on Service & Training.",
       links: [{ text: "Service & Training", to: "/service-training" }],
     },
   ].filter(Boolean);

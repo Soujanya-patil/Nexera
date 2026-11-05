@@ -34,9 +34,9 @@ import { COUNT_DUR } from "../../lib/tokens";
 // Rotation order (small to large) and each product's height on the stage relative to the tallest
 // (a gentle progression, not a scale drawing). Image sizes are the catalogue cut-outs'.
 const ROTATION = [
-  { id: "tcl-blueark-x5", scale: 0.8, size: [480, 900] },
-  { id: "hithium-power-cabinet-1022", scale: 0.92, size: [640, 900] },
-  { id: "clou-aqua-c25s", scale: 1, size: [765, 640] },
+  { id: "tcl-blueark-x5", scale: 0.8, size: [480, 900], tab: "TCL X5" },
+  { id: "hithium-power-cabinet-1022", scale: 0.92, size: [640, 900], tab: "Hithium 1022 kWh" },
+  { id: "hithium-power-625", scale: 1, size: [1404, 800], tab: "Hithium 6.25 MWh" },
 ];
 const SEGMENT = { residential: "Residential", ci: "Commercial & Industrial", utility: "Utility-Scale" };
 
@@ -62,7 +62,7 @@ function reflection(ws, url, k) {
   return vars;
 }
 
-const ITEMS = ROTATION.map(({ id, scale, size }) => {
+const ITEMS = ROTATION.map(({ id, scale, size, tab }) => {
   const product = getProduct(id);
   if (!product || product.listed === false) return null;
   const k = (scale * size[0]) / size[1]; // product width per unit of stage height
@@ -71,6 +71,7 @@ const ITEMS = ROTATION.map(({ id, scale, size }) => {
   return {
     id,
     product,
+    tab, // the tab's label: partner + model or size, so the two Hithium tabs read apart (written as is: kWh, not KWH)
     partner: partnerOf(product.partner),
     figure: product.cardSpecs.find((s) => /Wh$/.test(s)),
     segments: product.applications.map((a) => SEGMENT[a]),
@@ -336,7 +337,7 @@ export default function ProductsHeroStage() {
                 aria-controls={`ph-slide-${item.id}`}
                 tabIndex={on ? 0 : -1}
                 onClick={() => go(i)}
-                className={`ph-tab relative flex min-h-11 items-center justify-center rounded-sm px-3 eyebrow transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 lg:justify-start lg:pl-5 lg:pr-2 ${
+                className={`ph-tab relative flex min-h-11 items-center justify-center rounded-sm px-3 eyebrow normal-case tracking-[0.04em] transition-colors duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 lg:justify-start lg:pl-5 lg:pr-2 ${
                   on ? "text-white" : "text-paper/65 hover:text-white"
                 }`}
               >
@@ -346,8 +347,8 @@ export default function ProductsHeroStage() {
                     onAnimationEnd={(e) => e.animationName.startsWith("ph-fill") && on && go(i + 1)}
                   />
                 </span>
-                {item.partner.name}
-                <span className="sr-only"> {item.product.name}</span>
+                {item.tab}
+                <span className="sr-only"> — {item.partner.name} {item.product.name}</span>
               </button>
             );
           })}

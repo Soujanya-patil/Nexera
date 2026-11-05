@@ -77,7 +77,7 @@ export default function EpcHero() {
             </span>
           </h1>
           <p data-a="desc" className="mt-6 max-w-lg text-body text-paper/80">
-            NEXERA gives EPCs authorized access to TCL, Hithium and CLOU battery storage — with design, commissioning,
+            NEXERA gives EPCs authorised access to TCL and Hithium battery storage — with design, commissioning,
             training and after-sales support — so you can add BESS to your projects without building a supply chain from
             scratch.
           </p>

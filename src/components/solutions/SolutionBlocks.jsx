@@ -632,7 +632,7 @@ export function PartnerMark({ partner, name, decorative = false }) {
           alt={`${p.name} logo`}
           width={p.logoSize?.[0]}
           height={p.logoSize?.[1]}
-          className={`${p.id === "clou" ? "h-8" : "h-6"} w-auto transition-transform duration-base ease-standard group-hover/card:scale-110 group-focus-visible/card:scale-110 group-focus-within/card:scale-110`}
+          className={`h-6 w-auto transition-transform duration-base ease-standard group-hover/card:scale-110 group-focus-visible/card:scale-110 group-focus-within/card:scale-110`}
         />
       </span>
     );
@@ -643,7 +643,7 @@ export function PartnerMark({ partner, name, decorative = false }) {
   );
 }
 
-// ---- Product compare (C&I "Four Solutions", Utility "Featured systems") ----------------------------
+// ---- Product compare (C&I "Three Solutions", Utility "Featured systems") ----------------------------
 
 // The tray and the comparison dialog: their own chunk, fetched when a first system is ticked.
 const CompareTray = lazy(() => import("./CompareTray"));
@@ -701,7 +701,7 @@ function CompareChip({ id, name }) {
   );
 }
 
-// Intrinsic sizes of the catalogue images (src/assets/catalogue, src/assets/clou-aqua-e261.webp) and
+// Intrinsic sizes of the catalogue images (src/assets/catalogue) and
 // partner logos, for the width/height attributes on Solutions product cards (no layout shift).
 const IMAGE_SIZES = {
   "tcl-blueark-x1": [389, 774],
@@ -710,10 +710,8 @@ const IMAGE_SIZES = {
   "hithium-block-261": [506, 900],
   "hithium-power-cabinet-1022": [640, 900],
   "hithium-power-625": [1404, 800],
-  "clou-aqua-c25s": [765, 640],
-  "clou-aqua-e261": [427, 616],
 };
-const LOGO_SIZES = { tcl: [86, 31], hithium: [355, 89], clou: [94, 44] };
+const LOGO_SIZES = { tcl: [86, 31], hithium: [355, 89] };
 
 /**
  * A product in a Solutions portfolio: the catalogue card's light plinth with the product cutout (or

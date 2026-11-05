@@ -4,21 +4,19 @@ import AnimatedText from "./ui/AnimatedText";
 import { useEntrance } from "../lib/entrance";
 import { useMediaQuery } from "../lib/scrollSteps";
 import { Marquee } from "./ui/marquee";
-import { APPLICATIONS, PRODUCTS, applicationLabel } from "../data/products";
+import { APPLICATIONS, LISTED_PRODUCTS, applicationLabel } from "../data/products";
 import tclLogo from "../assets/partners/tcl-logo.png";
 import hithiumLogo from "../assets/partners/hithium-logo.png";
-import clouLogo from "../assets/partners/clou-logo.png";
 import { DUR, EASE } from "../lib/tokens";
 
-// Equal treatment for all three: the CLOU agreement is signed, so the earlier text-only rule is gone.
+// Equal treatment for both partners.
 // Heights are set per logo so the three read at a similar optical size (the source PNGs differ).
 // Where each partner's systems fit is read from the product catalogue — never written separately.
 const logos = [
   { id: "tcl", name: "TCL", src: tclLogo, size: [86, 31], className: "h-8" },
   { id: "hithium", name: "Hithium", src: hithiumLogo, size: [355, 89], className: "h-9" },
-  { id: "clou", name: "CLOU", src: clouLogo, size: [94, 44], className: "h-10" },
 ].map((l) => {
-  const products = PRODUCTS.filter((p) => p.partner === l.id);
+  const products = LISTED_PRODUCTS.filter((p) => p.partner === l.id);
   const apps = APPLICATIONS.filter((a) => products.some((p) => p.applications.includes(a.id))).map((a) => applicationLabel(a.id));
   return { ...l, apps, count: products.length };
 });
@@ -27,7 +25,6 @@ const logos = [
 const NAMED = [
   ["tcl", "TCL"],
   ["hithium", "Hithium"],
-  ["clou", "CLOU"],
 ];
 
 // Each logo rests slightly muted; on hover it comes to full presence (colour + opacity) with a short
@@ -65,7 +62,7 @@ const Logo = ({ l, index, hidden, onHover }) => (
  * still in a single row.
  *
  * Entrance ("technology reveal"): eyebrow → heading (its own word reveal) → description, then the
- * logos arrive from the right partner by partner — TCL, Hithium, CLOU, ~100 ms apart.
+ * logos arrive from the right partner by partner — TCL, then Hithium, ~100 ms apart.
  * Hover: the partner's logo comes to full presence (above) and the line beneath the strip shows
  * where that partner's systems fit — applications and number of systems, from the catalogue.
  * The partner names in the description link to their partner pages (/partners/:id).

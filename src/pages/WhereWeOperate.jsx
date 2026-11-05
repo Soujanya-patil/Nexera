@@ -6,7 +6,7 @@ import { useScrollReveal } from "../lib/scrollReveal";
 const offices = [
   // The headquarters links to its local page (/locations/bengaluru).
   { city: "Bangalore", role: "Headquarters", detail: "Strategy, brand partnerships, sales support", status: "active", link: { to: "/locations/bengaluru", label: "Battery storage in Bengaluru & Karnataka" } },
-  { city: "Kalaburagi (Gulbarga)", role: "Regional office", detail: "Service Support, Technician Training Center", status: "active" },
+  { city: "Kalaburagi (Gulbarga)", role: "Regional office", detail: "Service Support, Technician Training Centre", status: "active" },
   { city: "Nagpur", role: "Planned expansion", detail: "", status: "planned" },
   { city: "Delhi", role: "Planned expansion", detail: "", status: "planned" },
 ];
@@ -20,7 +20,7 @@ export default function WhereWeOperate() {
       <PageHeader
         eyebrow="Where We Operate"
         title="A growing footprint across India"
-        subtitle="NEXERA, an authorized distributor of TCL, Hithium and CLOU battery energy storage systems, is headquartered in Bangalore, with a regional office and technician training center in Kalaburagi, Karnataka."
+        subtitle="NEXERA, an authorised distributor of TCL and Hithium battery energy storage systems, is headquartered in Bangalore, with a regional office and technician training centre in Kalaburagi, Karnataka."
       />
 
       <section className="bg-white">

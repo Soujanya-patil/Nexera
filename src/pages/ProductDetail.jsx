@@ -460,7 +460,7 @@ function ProductView({ product }) {
         <div className="container-site py-6">
           <p className="text-micro text-copy">
             <span className="font-semibold text-ink">Source:</span> {product.sources.join("; ")}. {partner.name} designs and manufactures this
-            system; NEXERA supplies it and provides system design and support as an authorized partner.
+            system; NEXERA supplies it and provides system design and support as an authorised partner.
           </p>
         </div>
       </section>

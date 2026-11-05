@@ -73,7 +73,7 @@ function Hero() {
             Battery Energy Storage in Bengaluru &amp; Karnataka
           </h1>
           <p data-a className="mt-heading max-w-xl text-lead text-paper/90">
-            NEXERA supplies battery energy storage systems from TCL, Hithium and CLOU to homes, businesses and utility projects across Karnataka, from our Bengaluru office.
+            NEXERA supplies battery energy storage systems from TCL and Hithium to homes, businesses and utility projects across Karnataka, from our Bengaluru office.
           </p>
           <div data-a className="mt-9 flex flex-wrap items-center gap-4">
             <MagneticButton to="/contact" arrow spotlight>
@@ -167,7 +167,7 @@ export default function LocationBengaluru() {
         id="support"
         tone="paper"
         title="How we support local projects"
-        intro="NEXERA is headquartered in Bengaluru, with a regional office and technician training center in Kalaburagi, Karnataka."
+        intro="NEXERA is headquartered in Bengaluru, with a regional office and technician training centre in Kalaburagi, Karnataka."
       >
         <p className="mt-3 text-small text-copy">Regional offices: Kalaburagi, Nagpur (planned), Delhi (planned)</p>
         <FeatureGrid columns={4} items={SUPPORT.map((s) => ({ ...s, icon: SUPPORT_ICONS[s.key] }))} />
@@ -185,9 +185,9 @@ export default function LocationBengaluru() {
         id="partners"
         tone="ice"
         title="Partner products"
-        intro="NEXERA brings systems from world-leading BESS manufacturers — TCL, Hithium and CLOU — with products across residential, C&I and utility-scale segments."
+        intro="NEXERA brings systems from world-leading BESS manufacturers — TCL and Hithium — with products across residential, C&I and utility-scale segments."
       >
-        <PartnerStrip partners={["tcl", "hithium", "clou"]} className="mt-12" />
+        <PartnerStrip partners={["tcl", "hithium"]} className="mt-12" />
         <div className="mt-10 text-center">
           <ArrowLink to="/products" className="min-h-11">
             Explore all products

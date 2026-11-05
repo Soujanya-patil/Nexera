@@ -18,8 +18,8 @@ import PartnerForm from "../components/epc/PartnerForm";
  * applications → network → why EPCs → partner CTA → partner enquiry form.
  *
  * Content rule: every statement restates something the site already establishes (sources listed in
- * components/epc/content.js). NEXERA is positioned as the authorized partner and solution provider;
- * the systems are designed and manufactured by TCL, Hithium and CLOU.
+ * components/epc/content.js). NEXERA is positioned as the authorised partner and solution provider;
+ * the systems are designed and manufactured by TCL and Hithium.
  */
 export default function BecomePartner() {
   return (

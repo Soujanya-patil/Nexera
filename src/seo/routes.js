@@ -10,7 +10,7 @@
  *     script also checks every entry against the limits below (and that every path is lowercase),
  *     and fails the build if anything is off.
  *
- * Positioning: NEXERA is the authorized distributor / solution provider; TCL, Hithium and CLOU design
+ * Positioning: NEXERA is the authorised distributor / solution provider; TCL and Hithium design
  * and manufacture the systems. Descriptions only restate what the page itself says.
  *
  * Limits: title < 60 characters, unique, ending "| NEXERA"; description < 155 characters, unique;
@@ -61,7 +61,7 @@ export const ORGANIZATION = {
   legalName: "Nexera Powertech Private Limited",
   alternateName: [SITE_NAME, BUSINESS_NAME],
   description:
-    "Authorized distributor and solution provider for TCL, Hithium and CLOU battery energy storage systems in India, with design, commissioning, training and after-sales support.",
+    "Authorised distributor and solution provider for TCL and Hithium battery energy storage systems in India, with design, commissioning, training and after-sales support.",
   address: ADDRESS_PARTS,
   telephone: PHONE,
   logo: "/apple-touch-icon.png",
@@ -79,7 +79,7 @@ const PAGES = [
     h1: "Battery Energy Storage Systems Powering India’s Transition to Smart Energy Storage",
     title: "Battery Energy Storage Systems (BESS) in India | NEXERA",
     description:
-      "Authorized distributor of TCL, Hithium and CLOU battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
+      "Authorised distributor of TCL and Hithium battery energy storage systems (BESS) in India, with sizing, commissioning and support.",
   },
   {
     path: "/solutions",
@@ -87,7 +87,7 @@ const PAGES = [
     label: "Solutions",
     title: "Energy Storage Solutions: Home, C&I & Utility | NEXERA",
     description:
-      "Energy storage solutions for Indian homes, C&I sites and utility-scale projects: TCL, Hithium and CLOU battery storage systems supplied by NEXERA.",
+      "Energy storage solutions for Indian homes, C&I sites and utility-scale projects: TCL and Hithium battery storage systems supplied by NEXERA.",
   },
   // The three Solutions pages: breadcrumb Home > Solutions > page (`crumbs`, after Home), and an FAQ
   // whose text the page renders from the same data (data/solutions.js) — written as FAQPage data.
@@ -96,7 +96,7 @@ const PAGES = [
     h1: "Utility-Scale Energy Storage Powering the Grid of Tomorrow.",
     title: "Utility-Scale BESS & Battery Containers India | NEXERA",
     description:
-      "Utility-scale BESS and containerised battery storage from Hithium and CLOU, 5 MWh-class and up, with sizing, engineering and commissioning by NEXERA.",
+      "Utility-scale BESS and containerised battery storage from Hithium, 5 MWh-class and up, with sizing, engineering and commissioning by NEXERA.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.utility.label, SOLUTION_PAGES.utility.path]],
     faq: UTILITY_FAQ,
   },
@@ -105,7 +105,7 @@ const PAGES = [
     h1: "Commercial & Industrial Energy Solutions Power Your Business. Smarter.",
     title: "Commercial & Industrial Battery Storage India | NEXERA",
     description:
-      "Commercial battery storage systems for peak shaving, solar self-consumption and backup power. TCL, Hithium and CLOU C&I BESS with engineering by NEXERA.",
+      "Commercial battery storage systems for peak shaving, solar self-consumption and backup power. TCL and Hithium C&I BESS with engineering by NEXERA.",
     crumbs: [["Solutions", "/solutions"], [SOLUTION_PAGES.ci.label, SOLUTION_PAGES.ci.path]],
     faq: CI_FAQ,
   },
@@ -122,9 +122,9 @@ const PAGES = [
     path: "/products",
     h1: "Energy Storage, Built to Scale.",
     label: "Products",
-    title: "BESS Products — TCL, Hithium & CLOU Energy Storage | NEXERA",
+    title: "BESS Products — TCL & Hithium Energy Storage | NEXERA",
     description:
-      "Explore and compare TCL, Hithium and CLOU battery energy storage systems for residential, C&I and utility-scale projects, available in India via NEXERA.",
+      "Explore and compare TCL and Hithium battery energy storage systems for residential, C&I and utility-scale projects, available in India via NEXERA.",
   },
   // Partner pages (pages/Partner.jsx, content in data/partners.js): breadcrumb Home > Products >
   // partner, and an FAQ built from the catalogue — written as FAQPage data.
@@ -141,12 +141,6 @@ const PAGES = [
       "TCL BlueArk Energy Storage in India | NEXERA",
       "TCL BlueArk energy storage in India through NEXERA: residential and C&I systems with design, commissioning, training and after-sales support.",
     ],
-    [
-      "clou",
-      "CLOU",
-      "CLOU Energy Storage Systems in India | NEXERA",
-      "CLOU Aqua battery energy storage in India through NEXERA: C&I and containerised utility-scale systems, with engineering and commissioning support.",
-    ],
   ].map(([id, name, title, description]) => ({
     path: `/partners/${id}`,
     h1: `${name} energy storage in India`,
@@ -162,14 +156,14 @@ const PAGES = [
     label: "Become a Partner",
     title: "Become a BESS Distributor in India | NEXERA",
     description:
-      "Become an authorized BESS distributor for TCL, Hithium and CLOU in India, with design, commissioning, technician training and after-sales support.",
+      "Become an authorised BESS distributor for TCL and Hithium in India, with design, commissioning, technician training and after-sales support.",
   },
   {
     path: "/about",
     h1: "Built by an EPC, for EPCs",
     title: "About Us — Built by an EPC, for EPCs | NEXERA",
     description:
-      "NEXERA is an authorized TCL, Hithium and CLOU partner built by EPCs, with design and commissioning support and a Kalaburagi training center.",
+      "NEXERA is an authorised TCL and Hithium partner built by EPCs, with design and commissioning support and a Kalaburagi training centre.",
   },
   {
     path: "/how-it-works",
@@ -184,7 +178,7 @@ const PAGES = [
     label: "Service & Training",
     title: "BESS Installation, Commissioning & Training | NEXERA",
     description:
-      "BESS installation and commissioning support, sizing, warranty service and hands-on technician training at NEXERA's Kalaburagi training center.",
+      "BESS installation and commissioning support, sizing, warranty service and hands-on technician training at NEXERA's Kalaburagi training centre.",
     faq: SERVICE_TRAINING_FAQ,
   },
   {
@@ -193,7 +187,7 @@ const PAGES = [
     label: "Where We Operate",
     title: "Battery Energy Storage in Bangalore & India | NEXERA",
     description:
-      "NEXERA is headquartered in Bangalore, with a regional office and technician training center in Kalaburagi, and planned expansion to Nagpur and Delhi.",
+      "NEXERA is headquartered in Bangalore, with a regional office and technician training centre in Kalaburagi, and planned expansion to Nagpur and Delhi.",
   },
   // The Bengaluru location page (pages/LocationBengaluru.jsx, content in data/locations.js): the same
   // LocalBusiness node as Home and Contact, breadcrumb Home > Where We Operate > Bengaluru, and its FAQ.
@@ -204,7 +198,7 @@ const PAGES = [
     label: "Bengaluru",
     title: "Battery Energy Storage in Bengaluru & Karnataka | NEXERA",
     description:
-      "Authorized distributor of TCL, Hithium and CLOU battery energy storage in Bengaluru and Karnataka, with sizing, commissioning support and training.",
+      "Authorised distributor of TCL and Hithium battery energy storage in Bengaluru and Karnataka, with sizing, commissioning support and training.",
     crumbs: [["Where We Operate", "/where-we-operate"], ["Bengaluru", BENGALURU_PATH]],
     faq: BENGALURU_FAQ,
   },
@@ -262,7 +256,7 @@ function productPage(p) {
   const label = productLabel(p); // "TCL BlueArk X1"
   const shortType = p.type.replace(/energy storage system/i, "ESS");
   const apps = p.applications.map(applicationLabel).join(" & ");
-  const supplied = ` Supplied in India by NEXERA, authorized ${brand} distributor.`;
+  const supplied = ` Supplied in India by NEXERA, authorised ${brand} distributor.`;
   // A listed product's own title, description and FAQ (data/productPages.js); the generated ones below
   // are the fallback (a product kept off the catalogue).
   const content = productContent(p.id);

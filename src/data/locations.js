@@ -50,19 +50,18 @@ export const BENGALURU_FAQ = [
   },
   {
     q: "Which battery brands does NEXERA supply in Karnataka?",
-    // Where We Operate: "an authorized distributor of TCL, Hithium and CLOU battery energy storage systems";
-    // the Solutions FAQs: "TCL, Hithium and CLOU design and manufacture the systems. NEXERA supplies them in India …".
-    a: "NEXERA is an authorized distributor of TCL, Hithium and CLOU battery energy storage systems. TCL, Hithium and CLOU design and manufacture the systems; NEXERA supplies them in India and provides design, commissioning, training and after-sales support.",
+    // Where We Operate: "an authorised distributor of TCL and Hithium battery energy storage systems";
+    // the Solutions FAQs: "TCL and Hithium design and manufacture the systems. NEXERA supplies them in India …".
+    a: "NEXERA is an authorised distributor of TCL and Hithium battery energy storage systems. TCL and Hithium design and manufacture the systems; NEXERA supplies them in India and provides design, commissioning, training and after-sales support.",
     links: [
       { text: "TCL", to: "/partners/tcl" },
       { text: "Hithium", to: "/partners/hithium" },
-      { text: "CLOU", to: "/partners/clou" },
     ],
   },
   {
     q: "Do you support commercial and industrial sites in Karnataka?",
     // SolutionsCI hero, word for word.
-    a: "Yes. NEXERA brings together advanced C&I Battery Energy Storage Systems from TCL, Hithium and CLOU, engineered for demanding commercial and industrial applications. See our Commercial & Industrial solutions.",
+    a: "Yes. NEXERA brings together advanced C&I Battery Energy Storage Systems from TCL and Hithium, engineered for demanding commercial and industrial applications. See our Commercial & Industrial solutions.",
     links: [{ text: "Commercial & Industrial solutions", to: SOLUTION_PAGES.ci.path }],
   },
   {
