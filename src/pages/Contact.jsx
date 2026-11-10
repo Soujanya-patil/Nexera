@@ -5,7 +5,7 @@ import { useScrollReveal } from "../lib/scrollReveal";
 import { applicationLabel, getProduct, productLabel } from "../data/products";
 import { topicLabels } from "../data/solutionTopics";
 import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
-import { ADDRESS } from "../data/business";
+import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
 import { trackLead } from "../lib/analytics";
 
 // The customer enquiry types as the enquiry API's interest values.
@@ -141,7 +141,8 @@ export default function Contact() {
         <div className="mx-auto max-w-2xl px-6 py-section">
           {/* Where to find and call us (data/business: as on the Google Business Profile). */}
           <address data-sr className="mb-8 rounded-control border border-line bg-ice px-5 py-4 text-small not-italic text-copy">
-            <span className="block font-medium text-ink">{ADDRESS}</span>
+            <span className="block font-medium text-ink">Head office: {ADDRESS}</span>
+            <span className="mt-1 block">Branch office: {BRANCH_ADDRESS}</span>
             {CONTACT_PHONE && (
               <span className="mt-1 block">
                 Call{" "}

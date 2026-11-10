@@ -9,7 +9,7 @@ import { ArrowLink, ArrowUnderline, PartnerStrip } from "../components/solutions
 import { CardGrid, FaqList, FeatureGrid, Section } from "../components/solutions/SolutionBlocks";
 import { useIntro } from "../lib/intro";
 import { DUR, RISE, STAGGER } from "../lib/tokens";
-import { ADDRESS, PHONE, phoneHref } from "../data/business";
+import { ADDRESS, BRANCH_ADDRESS, PHONE, phoneHref } from "../data/business";
 import { BENGALURU_FAQ, DIRECTIONS_HREF, HOURS_LINE, OFFERS, SUPPORT } from "../data/locations";
 
 /*
@@ -116,14 +116,21 @@ export default function LocationBengaluru() {
       <Section id="visit" tone="paper" title="Visit or call us">
         <CardGrid columns={3} className="mt-10">
           {[
-          <InfoCard key="office" icon={MapPin} title="Office">
-            <address className="not-italic">{ADDRESS}</address>
+          <InfoCard key="office" icon={MapPin} title="Offices">
+            <address className="not-italic">
+              <span className="block font-semibold text-ink">Head office</span>
+              {ADDRESS}
+            </address>
             {/* A plain link to Google Maps directions (new tab): no map embed, so the page stays light. */}
             <a href={DIRECTIONS_HREF} target="_blank" rel="noopener noreferrer" className={`${linkClass} mt-3`}>
               <ArrowUnderline>
-                Get directions<span className="sr-only"> (opens in a new tab)</span>
+                Get directions<span className="sr-only"> to the head office (opens in a new tab)</span>
               </ArrowUnderline>
             </a>
+            <address className="mt-4 not-italic">
+              <span className="block font-semibold text-ink">Branch office</span>
+              {BRANCH_ADDRESS}
+            </address>
           </InfoCard>,
           PHONE && (
             <InfoCard key="phone" icon={Phone} title="Phone">

@@ -2,6 +2,8 @@
  * Post-build: fails if a name that must not appear on the site is anywhere in dist/ — any file, any
  * case. Midea is not a NEXERA partner: its page was removed, and nothing may name it. CLOU is no
  * longer presented either: its partner and product pages were removed (whole word only: "cloud" is fine).
+ * And the structured data's address is the head office (WeWork Galaxy): the old address, now the
+ * branch office (shown on the pages, data/business), must never be in a JSON-LD PostalAddress.
  *
  * The one allowed form is each name's old URL paths, which only the redirects use (the 301s in
  * .htaccess and the in-app redirects to /products), so old links keep working. Every file is read
@@ -46,11 +48,29 @@ for (const file of files) {
   }
 }
 
+// JSON-LD: every PostalAddress (the Organization / LocalBusiness head office) on every page.
+const OLD_ADDRESS = /vijayanagar|chowdappa|hampi\s*nagar|(?<!\d)560104(?!\d)/i;
+let addresses = 0;
+for (const file of files.filter((f) => f.endsWith(".html"))) {
+  const html = fs.readFileSync(file, "utf8");
+  for (const [, json] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    (function walk(node) {
+      if (!node || typeof node !== "object") return;
+      if (node["@type"] === "PostalAddress") {
+        addresses++;
+        const old = Object.values(node).find((v) => typeof v === "string" && OLD_ADDRESS.test(v));
+        if (old) hits.push(`old address in JSON-LD PostalAddress — ${path.relative(dist, file).replaceAll("\\", "/")}: "${old}"`);
+      }
+      Object.values(node).forEach(walk);
+    })(JSON.parse(json));
+  }
+}
+
 if (hits.length) {
-  console.error(`check-dist-terms: a removed name appears in dist/ (${hits.length} file(s)):`);
+  console.error(`check-dist-terms: a removed name in dist/, or the old address in the structured data (${hits.length}):`);
   for (const h of hits) console.error("  " + h);
   process.exit(1);
 }
 console.log(
-  `check-dist-terms: ${files.length} files in dist/, no removed names (only the old redirect paths: ${TERMS.map((t) => `${t.paths} ${allowed[t.name]}×`).join(", ")})`
+  `check-dist-terms: ${files.length} files in dist/, no removed names (only the old redirect paths: ${TERMS.map((t) => `${t.paths} ${allowed[t.name]}×`).join(", ")}); ${addresses} JSON-LD addresses, all the head office`
 );

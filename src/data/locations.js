@@ -15,7 +15,7 @@ export const BENGALURU_PATH = "/locations/bengaluru";
 export const HOURS_LINE = `${HOURS.days[0]} to ${HOURS.days[HOURS.days.length - 1]}, ${HOURS.opens}–${HOURS.closes}`;
 
 /** "Get directions": Google Maps directions to the office's location (a plain link, new tab; no map embed). */
-export const DIRECTIONS_HREF = "https://www.google.com/maps/dir/?api=1&destination=12.959425,77.5364414";
+export const DIRECTIONS_HREF = "https://www.google.com/maps/dir/?api=1&destination=WeWork+Galaxy+43+Residency+Rd+Ashok+Nagar+Bengaluru+560025";
 
 /** "What we offer in Karnataka": one line from each Solutions page. */
 export const OFFERS = [
@@ -45,8 +45,8 @@ export { SUPPORT_POINTS as SUPPORT } from "./serviceTraining";
 export const BENGALURU_FAQ = [
   {
     q: "Where is NEXERA's office in Bengaluru?",
-    // The footer address (data/business) and its hours; Where We Operate: Bengaluru, Head office.
-    a: `NEXERA's head office is at ${ADDRESS}. It is open ${HOURS_LINE}.`,
+    // The footer addresses (data/business) and the hours; Where We Operate: Bengaluru, Head office and Branch office.
+    a: `NEXERA's head office is at ${ADDRESS}. It is open ${HOURS_LINE}. We also have a branch office at 2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Bengaluru 560104.`,
   },
   {
     q: "Which battery brands does NEXERA supply in Karnataka?",

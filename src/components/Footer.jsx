@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
-import { ADDRESS, PHONE, phoneHref } from "../data/business";
+import { ADDRESS, BRANCH_ADDRESS, PHONE, phoneHref } from "../data/business";
 import { SOLUTION_PAGES } from "../data/solutions";
 import { openConsent } from "../lib/analytics";
 
@@ -55,7 +55,12 @@ export default function Footer() {
       <div className="container-site grid gap-x-10 gap-y-12 py-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)] lg:py-16">
         <div className="max-w-sm">
           <Logo className="h-10" />
-          <address className="mt-5 text-small not-italic leading-relaxed">{ADDRESS}</address>
+          <address className="mt-5 text-small not-italic leading-relaxed">
+            <span className="block font-semibold">Head office</span>
+            {ADDRESS}
+            <span className="mt-2 block font-semibold">Branch office</span>
+            {BRANCH_ADDRESS}
+          </address>
           {PHONE && (
             <p className="mt-3 text-small">
               <a href={phoneHref(PHONE)} className={`${linkClass} font-medium`}>

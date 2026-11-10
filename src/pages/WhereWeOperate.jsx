@@ -6,6 +6,7 @@ import { useScrollReveal } from "../lib/scrollReveal";
 const offices = [
   // The head office links to its local page (/locations/bengaluru).
   { city: "Bengaluru", role: "Head office", detail: "Strategy, brand partnerships, sales support", status: "active", link: { to: "/locations/bengaluru", label: "Battery storage in Bengaluru & Karnataka" } },
+  { city: "Bengaluru", role: "Branch office", detail: "", status: "active" },
   { city: "Kalaburagi (Gulbarga)", role: "Technician training centre", detail: "", status: "opening" },
 ];
 
@@ -26,7 +27,7 @@ export default function WhereWeOperate() {
           <div className="space-y-6">
             {offices.map((o) => (
               <div
-                key={o.city}
+                key={`${o.city} ${o.role}`}
                 data-sr
                 className="flex items-start justify-between border-b border-line pb-6 last:border-0"
               >

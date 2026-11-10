@@ -9,13 +9,16 @@ const ENV = import.meta.env ?? {};
 
 /** The name on the Google Business Profile. */
 export const BUSINESS_NAME = "NEXERA Power Tech";
-export const ADDRESS = "2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Vijayanagar 2nd Stage, Bengaluru, Karnataka 560104";
-/** The same address in schema.org PostalAddress parts. */
+/** The head office (the address in the structured data). */
+export const ADDRESS = "WeWork Galaxy, 43, Residency Rd, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka 560025";
+/** The branch office (shown on the site, not in the structured data). */
+export const BRANCH_ADDRESS = "2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Vijayanagar 2nd Stage, Bengaluru, Karnataka 560104";
+/** The head office in schema.org PostalAddress parts. */
 export const ADDRESS_PARTS = {
-  street: "2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Vijayanagar 2nd Stage",
+  street: "WeWork Galaxy, 43, Residency Rd, Shanthala Nagar, Ashok Nagar",
   locality: "Bengaluru",
   region: "Karnataka",
-  postalCode: "560104",
+  postalCode: "560025",
   country: "IN",
 };
 export const PHONE = (ENV.VITE_CONTACT_PHONE || "").trim();
