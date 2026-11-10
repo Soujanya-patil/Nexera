@@ -3,18 +3,17 @@ import { BatteryFull } from "lucide-react";
 import { useSceneMotion } from "./useScene";
 import { DUR, EASE, STAGGER } from "../../../lib/tokens";
 
-// The section's two systems, in its order, with the cell wording the article gives each. `product`:
+// The section's systems, in its order, with the cell wording the article gives each. `product`:
 // its catalogue entry (photo and alt text from data/products.js).
 const SYSTEMS = [
   { name: "TCL BlueArk W10", cell: "314 Ah LFP", product: "tcl-blueark-w10" },
-  { name: "Hithium ∞BLOCK C&I", cell: "314 Ah LFP", product: "hithium-block-261" },
 ];
 
 /**
- * "Which NEXERA systems use LFP?": the two systems as thumbnails — the catalogue photos with their
+ * "Which NEXERA systems use LFP?": the systems as thumbnails — the catalogue photos with their
  * existing alt text — fading in one after another; the one being read
  * is lit (phones: in turn while in view). The catalogue (images) is fetched when the scene mounts, not
- * with the article. Final state: both shown.
+ * with the article. Final state: all shown.
  *
  * Each tile's white block is the same fixed size and clips: the photo is pinned inside it (absolute,
  * object-fit: contain, centred, padded), so it never spills onto the name below. A tile without a photo
@@ -54,7 +53,7 @@ export default function NexeraLfp({ active, motion, mode, step }) {
   const compact = mode === "inline";
   return (
     <div ref={root} className={`flex h-full items-center justify-center ${compact ? "px-3" : "px-5"}`}>
-      <ul aria-label="NEXERA systems that use LFP cells" className={`grid w-full grid-cols-2 ${compact ? "gap-2" : "gap-3"}`}>
+      <ul aria-label="NEXERA systems that use LFP cells" className={`grid w-full ${SYSTEMS.length > 1 ? "grid-cols-2" : "max-w-[12rem] grid-cols-1"} ${compact ? "gap-2" : "gap-3"}`}>
         {SYSTEMS.map((s, i) => {
           const p = s.product && catalogue?.getProduct(s.product);
           const on = any && i === lit;

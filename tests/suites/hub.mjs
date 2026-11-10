@@ -60,7 +60,6 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
   const texts = [
     "Datasheets, answers, and the latest from Nexera",
     "BlueArk W10",
-    "∞BLOCK C&I All-in-One ESS",
     "∞Power 6.25 MWh",
     "Request Datasheet",
     "Request Brochure",
@@ -140,7 +139,6 @@ for (const [W, H] of [
 // ---- Datasheets: product cards → the homepage contact form, with the request pre-filled ------------------
 const SHEETS = [
   { name: "BlueArk W10", partner: "TCL", kind: "Datasheet", interest: "ci", alt: "TCL BlueArk W10 energy storage cabinet", specs: "125 kW261 kWh", summary: "A 125 kW / 261 kWh cabinet, expandable to 6.3 MWh, with a layered protection architecture.", message: "Please send me the datasheet for TCL BlueArk W10." },
-  { name: "∞BLOCK C&I All-in-One ESS", partner: "Hithium", kind: "Datasheet", interest: "ci", alt: "Hithium ∞BLOCK 261 kWh energy storage cabinet", specs: "125 kW261 kWh", summary: "A liquid-cooled 261 kWh cabinet with an integrated, adjustable 125 kW PCS for commercial and industrial sites.", message: "Please send me the datasheet for Hithium ∞BLOCK C&I All-in-One ESS." },
   { name: "∞Power 6.25 MWh", partner: "Hithium", kind: "Brochure", interest: "utility", alt: "Hithium ∞Power 6.25 MWh liquid-cooled containerised energy storage system", specs: "6.25 MWh2 h | 4 h", summary: "A 6.25 MWh liquid-cooled system for utility-scale projects, available in 2-hour and 4-hour configurations.", message: "Please send me the brochure for Hithium ∞Power 6.25 MWh." },
 ];
 const formState = (p) =>
@@ -163,7 +161,7 @@ for (const [W, H] of [
   await p.goto(BASE + "/resources", { waitUntil: "networkidle" });
   await p.waitForTimeout(1200);
   // (the images are lazy: bring each card on screen first)
-  for (let k = 0; k < 3; k++) {
+  for (let k = 0; k < SHEETS.length; k++) {
     await p.locator("#datasheets .sheet-card").nth(k).scrollIntoViewIfNeeded();
     await p.waitForTimeout(500);
   }
@@ -186,13 +184,13 @@ for (const [W, H] of [
   );
   const exp = SHEETS.map((s) => ({ ...s, label: `Request ${s.kind}: ${s.partner} ${s.name}` }));
   const okCards =
-    cards.length === 3 &&
+    cards.length === SHEETS.length &&
     cards.every(
       (c, i) => c.alt === exp[i].alt && c.loaded && c.partner === exp[i].partner && c.name === exp[i].name && c.specs === exp[i].specs && c.summary === exp[i].summary && c.label === exp[i].label && c.forms === 0 && c.href.startsWith(`/#contact?interest=${exp[i].interest}&doc=`)
     );
-  check(`${tag} three product cards (products.js image + alt, partner, name, power/energy line, summary; one "Request …" link; no form)`, okCards, cards);
+  check(`${tag} two product cards (products.js image + alt, partner, name, power/energy line, summary; one "Request …" link; no form)`, okCards, cards);
   const hrefs = cards.map((c) => new URLSearchParams(c.href.slice("/#contact?".length)));
-  check(`${tag} links: interest ci / ci / utility, doc = product name, kind=brochure on the brochure only`, hrefs.map((q) => `${q.get("interest")}|${q.get("doc")}|${q.get("kind")}`).join(";") === "ci|TCL BlueArk W10|null;ci|Hithium ∞BLOCK C&I All-in-One ESS|null;utility|Hithium ∞Power 6.25 MWh|brochure", hrefs.map((q) => q.toString()));
+  check(`${tag} links: interest ci / utility, doc = product name, kind=brochure on the brochure only`, hrefs.map((q) => `${q.get("interest")}|${q.get("doc")}|${q.get("kind")}`).join(";") === "ci|TCL BlueArk W10|null;utility|Hithium ∞Power 6.25 MWh|brochure", hrefs.map((q) => q.toString()));
   if (W > 500) {
     const card = p.locator("#datasheets .sheet-card").nth(1);
     await card.scrollIntoViewIfNeeded();
@@ -215,7 +213,7 @@ for (const [W, H] of [
     check(`${tag} touch targets ≥ 44px (bar, Request links, Start here, FAQ)`, small.length === 0, small);
   }
   // Click (the button at 1440, the card's image at 390 — the whole card is the link) → the form.
-  const i = W > 500 ? 0 : 2;
+  const i = W > 500 ? 0 : 1;
   await p.evaluate(() => (window.__sameDoc = 1));
   const card = p.locator("#datasheets .sheet-card").nth(i);
   await card.locator("img").evaluate((el) => el.scrollIntoView({ block: "center" }));
@@ -241,10 +239,10 @@ for (const [W, H] of [
 {
   // A direct load of the link (a new tab, a shared URL): the same pre-fill.
   const p = await newPage(390, 844);
-  await p.goto(BASE + "/#contact?interest=ci&doc=Hithium+%E2%88%9EBLOCK+C%26I+All-in-One+ESS", { waitUntil: "networkidle" });
+  await p.goto(BASE + "/#contact?interest=ci&doc=TCL+BlueArk+W10", { waitUntil: "networkidle" });
   await p.waitForTimeout(2500);
   const f = await formState(p);
-  check("direct load of a card's link: form in view, interest ci, message pre-filled", f.path === "/" && f.top >= 0 && f.top < 200 && f.interest === "ci" && f.message === SHEETS[1].message, f);
+  check("direct load of a card's link: form in view, interest ci, message pre-filled", f.path === "/" && f.top >= 0 && f.top < 200 && f.interest === "ci" && f.message === SHEETS[0].message, f);
   // Without a doc, nothing is pre-filled (the existing ?interest= links).
   await p.goto(BASE + "/#contact?interest=utility", { waitUntil: "networkidle" });
   await p.waitForTimeout(2000);
@@ -303,7 +301,7 @@ for (const [W, H] of [
     insights: document.querySelectorAll(".insight-soon").length,
     hiddenText: [...document.querySelectorAll("main h2, main h3, .insight-soon")].filter((el) => getComputedStyle(el).opacity === "0" || el.getBoundingClientRect().height === 0).length,
   }));
-  check("JS disabled: everything readable (h1, 3 datasheet cards, 3 FAQs, 4 insights)", t.h1 === "Datasheets, answers, and the latest from Nexera" && t.cards === 3 && t.faq === 3 && t.insights === 4 && t.hiddenText === 0, t);
+  check("JS disabled: everything readable (h1, 2 datasheet cards, 3 FAQs, 4 insights)", t.h1 === "Datasheets, answers, and the latest from Nexera" && t.cards === SHEETS.length && t.faq === 3 && t.insights === 4 && t.hiddenText === 0, t);
   await q.context().close();
 }
 

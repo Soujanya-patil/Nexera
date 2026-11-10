@@ -190,8 +190,7 @@ const LFP_VS_NMC = {
         { p: "Many of the systems NEXERA offers use LFP cells, including:" },
         {
           ul: [
-            [{ b: "TCL BlueArk W10" }, " (314 Ah LFP cells);"],
-            [{ b: "Hithium ∞BLOCK C&I" }, " (314 Ah LFP cells)."],
+            [{ b: "TCL BlueArk W10" }, " (314 Ah LFP cells)."],
           ],
         },
         { p: "Check each product page for its exact specification." },
@@ -355,8 +354,8 @@ const AC_VS_DC = {
         {
           p: [
             "NEXERA's C&I range includes both approaches. The ",
-            { a: "Hithium ∞BLOCK C&I", to: "/products/hithium-block-261" },
-            " cabinet has a built-in 125 kW PCS and a 400 V AC connection, so it connects on the AC side. The ",
+            { a: "Hithium ∞Power 1022 kWh Cabinet", to: "/products/hithium-power-cabinet-1022" },
+            " connects to a 400 Vac grid and works with various PCS models. The ",
             { a: "TCL BlueArk X5", to: "/products/tcl-blueark-x5" },
             " is an all-in-one, DC-coupled system for small and medium C&I sites.",
           ],
@@ -638,7 +637,7 @@ const ALL = [
               {
                 lead: "Battery modules:",
                 text: [
-                  "battery cells grouped into modules and racks that store the energy. Many of the systems NEXERA offers, including TCL BlueArk W10 and Hithium 261, use ",
+                  "battery cells grouped into modules and racks that store the energy. Many of the systems NEXERA offers, including the TCL BlueArk W10, use ",
                   { a: "LFP (lithium iron phosphate)", to: "/blog/lfp-vs-nmc" },
                   " cells.",
                 ],
@@ -776,7 +775,7 @@ const ALL = [
       },
       {
         q: "What battery chemistry do NEXERA's systems use?",
-        a: "Many of the systems NEXERA offers, including TCL BlueArk W10 and Hithium 261, use LFP (lithium iron phosphate) cells. Check each product page for its exact specification.",
+        a: "Many of the systems NEXERA offers, including the TCL BlueArk W10, use LFP (lithium iron phosphate) cells. Check each product page for its exact specification.",
       },
     ],
     related: [

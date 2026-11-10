@@ -29,6 +29,9 @@ ErrorDocument 404 /404.html
   # a trailing slash) -> the catalogue, in one hop.
   RewriteRule ^partners/clou(?:\.html)?/?$ /products [R=301,NC,L]
   RewriteRule ^products/clou-aqua-(?:e261|c25s)(?:\.html)?/?$ /products [R=301,NC,L]
+  # A product no longer offered (Hithium's 261 kWh C&I all-in-one): its page (also .html or a trailing
+  # slash) -> the Hithium partner page, in one hop.
+  RewriteRule ^products/hithium-block-261(?:\.html)?/?$ /partners/hithium [R=301,NC,L]
   # The Home v2 preview was retired: /home-v2 (also .html or a trailing slash) -> Home. Above the rules
   # that serve files, so it redirects even while an old home-v2.html is still on the server.
   RewriteRule ^home-v2(?:\.html)?/?$ / [R=301,L]

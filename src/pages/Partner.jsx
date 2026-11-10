@@ -56,7 +56,12 @@ function PartnerPage({ page }) {
         title={`${name} systems available through NEXERA`}
         className="scroll-mt-16"
       >
-        <ul ref={list} data-sr-state={reveal} className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Two systems: two columns, centred (one on phones); three or more: three columns from 1024 px. */}
+        <ul
+          ref={list}
+          data-sr-state={reveal}
+          className={`mt-10 grid gap-6 sm:grid-cols-2 ${products.length === 2 ? "mx-auto max-w-[54rem]" : "lg:grid-cols-3"}`}
+        >
           {products.map((p) => (
             <li data-sr key={p.id}>
               <ProductCard product={p} />

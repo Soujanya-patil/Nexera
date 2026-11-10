@@ -47,7 +47,7 @@ const status = async (path) => (await fetch(BASE + path, { redirect: "manual" })
 
 // ---- each page: sections, links, hero buttons -----------------------------------------------------------
 for (const [id, interest, nProducts] of [
-  ["hithium", "ci", 3], // the ∞Power 5.016 MWh is `listed: false`: no card (its page and FAQ mention remain)
+  ["hithium", "ci", 2], // the ∞Power 1022 kWh Cabinet and 6.25 MWh; the 5.016 MWh is `listed: false`: no card (its page and FAQ mention remain)
   ["tcl", "ci", 3],
 ]) {
   const p = await newPage();

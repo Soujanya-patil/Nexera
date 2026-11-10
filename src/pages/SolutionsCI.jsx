@@ -112,24 +112,24 @@ const PORTFOLIO = [
     cta: "Explore BlueArk W10",
   },
   {
-    product: "hithium-block-261",
-    name: "Hithium 261",
-    sub: "∞BLOCK C&I All-in-One ESS · model HCL 125kW-261kWh-400",
-    figures: "125 kW / 261 kWh",
+    // Catalogue facts only (data/products.js: hithium-power-cabinet-1022).
+    product: "hithium-power-cabinet-1022",
+    name: "Hithium ∞Power 1022 kWh Cabinet",
+    figures: "1022 kWh",
     tagline: "Energy Storage From a Battery Specialist",
-    copy: "Hithium's C&I all-in-one system combines battery storage, power conversion and system controls in a compact cabinet.",
+    copy: "A 1022 kWh liquid-cooled cabinet that integrates battery, thermal management and control in a compact footprint.",
     specs: [
-      "261 kWh rated energy",
-      "125 kW adjustable PCS",
-      "314 Ah LFP cells",
-      "0.5P charge/discharge",
-      "IP55 protection",
-      "400 V AC connection",
-      "2.7-tonne maximum specified weight",
+      "1022 kWh rated energy",
+      "Liquid-cooled",
+      "Battery, thermal management and control in one cabinet",
+      "400 Vac grid connection, compatible with various PCS models",
+      "Built-in EMU for real-time monitoring and data analysis",
+      "Automatic on-grid / off-grid switching",
+      "Grid-tied, off-grid and solar-storage hybrid use",
     ],
     note: "Hithium's broader cell portfolio includes cycle-life specifications up to 11,000 cycles, depending on cell model.",
-    alt: "Hithium 261 kWh liquid-cooled C&I all-in-one battery energy storage cabinet",
-    cta: "Explore Hithium 261",
+    alt: "Hithium ∞Power 1022 kWh liquid-cooled energy storage cabinet",
+    cta: "Explore Hithium 1022 kWh",
   },
   {
     product: "tcl-blueark-x5",
@@ -260,7 +260,7 @@ export default function SolutionsCI() {
         mark="Multiple Applications"
         eyebrow="Our C&I BESS portfolio"
         title="Three Solutions. Multiple Applications."
-        intro="From a compact 100 kWh all-in-one system to 261 kWh liquid-cooled cabinets, choose the platform that fits your site."
+        intro="From a compact 100 kWh all-in-one system to 1022 kWh liquid-cooled cabinets, choose the platform that fits your site."
       >
         <CompareProvider>
           <CardGrid columns={3}>

@@ -13,7 +13,8 @@ import { docHref } from "../../lib/contactLinks";
  */
 export default function DatasheetCards({ items }) {
   return (
-    <ul className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+    // Two cards fill the row in two columns; three or more take three from 1024 px (no empty slot).
+    <ul className={`mt-8 grid gap-5 md:grid-cols-2 ${items.length > 2 ? "lg:grid-cols-3" : ""}`}>
       {items.map(({ product: id, kind }) => {
         const product = PRODUCTS.find((p) => p.id === id);
         return product ? (

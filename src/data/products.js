@@ -32,7 +32,6 @@ import imgX1 from "../assets/catalogue/tcl-blueark-x1.webp";
 import imgX5 from "../assets/catalogue/tcl-blueark-x5.webp";
 import imgW10 from "../assets/catalogue/tcl-blueark-w10.webp";
 import imgW10Open from "../assets/catalogue/tcl-blueark-w10-open.webp";
-import imgBlock261 from "../assets/catalogue/hithium-block-261.webp";
 import imgCabinet1022 from "../assets/catalogue/hithium-power-cabinet-1022.webp";
 import imgPower625 from "../assets/catalogue/hithium-power-625.webp";
 
@@ -280,65 +279,6 @@ export const PRODUCTS = [
     },
     datasheet: null,
     sources: [`${TCL_BROCHURE}: Flexible Scalability page`, "TCL Protection Architecture slide", TCL_DECK],
-  },
-  {
-    id: "hithium-block-261",
-    partner: "hithium",
-    name: "∞BLOCK C&I All-in-One ESS",
-    model: "HCL 125kW-261kWh-400",
-    type: "Liquid-cooled C&I energy storage cabinet",
-    applications: ["ci"],
-    image: imgBlock261,
-    imageSize: [506, 900],
-    imageAlt: "Hithium ∞BLOCK 261 kWh energy storage cabinet",
-    imageNote: "Pictured: Hithium ∞BLOCK 261 kWh cabinet. Exterior may vary by configuration.",
-    summary: "A liquid-cooled 261 kWh cabinet with an integrated, adjustable 125 kW PCS for commercial and industrial sites.",
-    cardSpecs: ["125 kW", "261 kWh"],
-    keySpecs: [
-      { label: "Rated energy", value: "261 kWh" },
-      { label: "PCS", value: "125 kW (adjustable)" },
-      { label: "Battery cell", value: "314 Ah" },
-      { label: "Protection", value: "IP55" },
-    ],
-    specsNote: "Specifications as listed for the HCL 125kW-261kWh-400 C&I all-in-one configuration.",
-    specs: {
-      system: [
-        { label: "Rated energy", value: "261 kWh" },
-        { label: "PCS", value: "125 kW (adjustable)" },
-        { label: "Rated AC voltage", value: "400 Vac, 3W+N+PE" },
-        { label: "Rated charge/discharge", value: "0.5P / 0.5P" },
-      ],
-      battery: [
-        { label: "Cell", value: "314 Ah" },
-        { label: "Chemistry", value: "LFP" },
-        { label: "Series-parallel mode", value: "1P260S" },
-        { label: "Battery modules", value: "5" },
-        { label: "Rated DC voltage", value: "832 V" },
-        { label: "Cooling", value: "Liquid-cooled" },
-      ],
-      installation: [
-        { label: "Dimensions (L×W×H)", value: "1000 × 1350 × 2380 mm" },
-        { label: "Weight", value: "≤2.7 t" },
-        { label: "Protection", value: "IP55" },
-      ],
-    },
-    highlights: [
-      { icon: "Snowflake", title: "Liquid-cooled", text: "A liquid-cooled battery built on 314 Ah cells in five modules." },
-      { icon: "Cpu", title: "Integrated PCS", text: "An adjustable 125 kW PCS in the same cabinet, connecting at 400 Vac." },
-      { icon: "ShieldCheck", title: "Outdoor-rated", text: "IP55 protection in a 1000 × 1350 mm footprint." },
-    ],
-    compare: {
-      capacity: "261 kWh",
-      power: "125 kW PCS (adjustable)",
-      configuration: "All-in-one with PCS",
-      cell: "314 Ah",
-      cooling: "Liquid",
-      protection: "IP55",
-      dimensions: "1000 × 1350 × 2380 mm",
-      weight: "≤2.7 t",
-    },
-    datasheet: null,
-    sources: [`${HITHIUM_BROCHURE}: C&I All-in-One Energy Storage System table`, "Hithium DS ESS 261kWh datasheet (product image)", HITHIUM_CONTENT],
   },
   {
     id: "hithium-power-cabinet-1022",

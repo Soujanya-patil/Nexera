@@ -99,6 +99,8 @@ export default function AppRoutes() {
         <Route path="/partners/clou" element={<Navigate to="/products" replace />} />
         <Route path="/products/clou-aqua-e261" element={<Navigate to="/products" replace />} />
         <Route path="/products/clou-aqua-c25s" element={<Navigate to="/products" replace />} />
+        {/* A product no longer offered: its page goes to the Hithium partner page (also a 301 in .htaccess). */}
+        <Route path="/products/hithium-block-261" element={<Navigate to="/partners/hithium" replace />} />
         {/* The articles moved to the Blog: /resources/<slug> -> /blog/<slug> (also a 301 in .htaccess). */}
         <Route path="/resources/:slug" element={<ToBlog />} />
         <Route

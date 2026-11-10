@@ -15,8 +15,8 @@ const mails = () => (fs.existsSync(MAILS) ? fs.readFileSync(MAILS, "utf8").split
 const subjectOf = (m) => Buffer.from(m.match(/Subject: =\?UTF-8\?B\?([^?]+)\?=/)?.[1] ?? "", "base64").toString("utf8");
 
 for (const [W, H, i, interestLabel, ask] of [
-  [1440, 900, 1, "Business / C&I", "Please send me the datasheet for Hithium ∞BLOCK C&I All-in-One ESS."],
-  [390, 844, 2, "Utility-scale", "Please send me the brochure for Hithium ∞Power 6.25 MWh."],
+  [1440, 900, 0, "Business / C&I", "Please send me the datasheet for TCL BlueArk W10."],
+  [390, 844, 1, "Utility-scale", "Please send me the brochure for Hithium ∞Power 6.25 MWh."],
 ]) {
   const p = await (await b.newContext({ viewport: { width: W, height: H }, hasTouch: W < 500 })).newPage();
   const errors = [];

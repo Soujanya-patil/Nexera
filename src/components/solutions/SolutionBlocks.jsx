@@ -707,7 +707,6 @@ const IMAGE_SIZES = {
   "tcl-blueark-x1": [389, 774],
   "tcl-blueark-x5": [480, 900],
   "tcl-blueark-w10": [380, 900],
-  "hithium-block-261": [506, 900],
   "hithium-power-cabinet-1022": [640, 900],
   "hithium-power-625": [1404, 800],
 };

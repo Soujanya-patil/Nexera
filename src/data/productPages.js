@@ -151,27 +151,6 @@ const PAGES = {
     // specs: scalability
     expansion: "Yes. It starts at 125 kW / 261 kWh and is expandable to 6.3 MWh.",
   },
-  "hithium-block-261": {
-    title: "Hithium ∞BLOCK C&I All-in-One ESS 261 kWh India | NEXERA",
-    description:
-      "Hithium ∞BLOCK C&I All-in-One ESS: 261 kWh, liquid-cooled, adjustable 125 kW PCS, IP55. From NEXERA, Hithium authorised distributor in India.",
-    audience: [
-      // C&I page: "combines battery storage, power conversion and system controls in a compact cabinet"; summary: "for commercial and industrial sites"
-      "Commercial and industrial sites that want battery storage, power conversion and system controls in one compact cabinet",
-      // specs: rated AC voltage, PCS
-      "Sites connecting at 400 Vac (3W+N+PE), with an adjustable 125 kW PCS",
-      // specs: protection, dimensions
-      "Outdoor installations: IP55, in a 1000 × 1350 mm footprint",
-    ],
-    uses: CI,
-    capacity: {
-      q: "What is the capacity and power of the Hithium ∞BLOCK C&I All-in-One ESS?",
-      // specs: rated energy, PCS, rated charge/discharge; model
-      a: "The Hithium ∞BLOCK C&I All-in-One ESS (model HCL 125kW-261kWh-400) has 261 kWh rated energy and an adjustable 125 kW PCS, at 0.5P / 0.5P rated charge/discharge.",
-    },
-    // specs: cell, chemistry, series-parallel mode, modules
-    chemistry: "It uses 314 Ah LFP (lithium iron phosphate) cells, in five liquid-cooled battery modules (1P260S).",
-  },
   "hithium-power-cabinet-1022": {
     title: "Hithium ∞Power 1022 kWh Cabinet BESS India | NEXERA",
     description:

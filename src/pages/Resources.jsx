@@ -13,7 +13,6 @@ import { isFirstLoad } from "../lib/firstLoad";
 // The documents on offer: a product (data/products.js) and which document it is.
 const datasheets = [
   { product: "tcl-blueark-w10", kind: "Datasheet" },
-  { product: "hithium-block-261", kind: "Datasheet" },
   { product: "hithium-power-625", kind: "Brochure" },
 ];
 

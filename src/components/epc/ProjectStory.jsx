@@ -5,13 +5,13 @@ import { getProduct, partnerOf } from "../../data/products";
 import { useMediaQuery, useScrollSteps } from "../../lib/scrollSteps";
 
 const STAGE = "(min-width: 1024px) and (min-height: 700px) and (prefers-reduced-motion: no-preference)";
-const PRODUCT_ID = "hithium-block-261";
+const PRODUCT_ID = "hithium-power-cabinet-1022";
 
 /**
  * SCROLL-DRIVEN PROJECT STORY — project requirement → BESS system → deployment → support.
  *
  * On tall desktop screens the section sticks while it scrolls (CSS sticky, ScrollTrigger progress
- * via useScrollSteps): one real product (Hithium ∞BLOCK 261 kWh cutout from the catalogue) rises
+ * via useScrollSteps): one real product (the Hithium ∞Power 1022 kWh Cabinet cutout from the catalogue) rises
  * and scales by a few percent as --progress advances, a site frame, the product's confirmed
  * headline figures, a ground line and a support ring appear stage by stage, and the stage text
  * changes. Movement is scrubbed and small. Elsewhere (phones, short screens, reduced motion) the
@@ -25,7 +25,7 @@ export default function ProjectStory() {
   const partner = partnerOf(product.partner);
 
   const productFigure = (
-    <div className="relative mx-auto aspect-[733/1366] h-[min(30rem,58svh)]">
+    <div className="relative mx-auto h-[min(30rem,58svh)]" style={{ aspectRatio: `${product.imageSize[0]} / ${product.imageSize[1]}` }}>
       {/* Stage 1: site frame corners (requirement) */}
       <span
         aria-hidden="true"

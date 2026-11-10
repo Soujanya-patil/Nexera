@@ -15,7 +15,6 @@ const DIMENSIONS = {
   "hero-cabinet": [811, 1196],
   "energy-night": [3166, 1784], // TODO(india-imagery)
   "storage-tcl": [2160, 1699],
-  "hithium-block": [733, 1366],
   "hithium-container": [1790, 974],
   "tech-cabinet": [3840, 2160],
   "partner-tcl": [3585, 4894], // TODO(india-imagery): partner HQ
