@@ -41,26 +41,22 @@ const fill = async (p, scope, v) => {
   await p.goto(BASE + "/", { waitUntil: "networkidle" });
   const nav = await ev(p, () => ({ home: [...document.querySelectorAll("header a")].filter((a) => a.textContent.trim() === "Home").length, logo: ((a) => a && (a.getAttribute("aria-label") ?? [...a.querySelectorAll("img")].map((i) => i.alt).join(" ").trim()))(document.querySelector('header a[href="/"]')) }));
   ok("header: no Home link; the logo is labelled 'NEXERA Powertech home'", nav.home === 0 && nav.logo === "NEXERA Powertech home", JSON.stringify(nav));
-  const explore = await ev(p, () => [...document.querySelectorAll("a")].find((a) => a.textContent.trim().startsWith("Explore Solutions"))?.getAttribute("href"));
-  ok("hero: Explore Solutions -> /solutions", explore === "/solutions", explore);
+  const explore = await ev(p, () => [...document.querySelectorAll("a")].find((a) => a.textContent.trim().startsWith("Explore BESS Solutions"))?.getAttribute("href"));
+  ok("hero: Explore BESS Solutions -> /solutions", explore === "/solutions", explore);
   await p.waitForTimeout(1500);
-  await p.locator('a[href="/#contact"]').filter({ hasText: "Contact Us" }).first().click();
-  await p.waitForTimeout(1800);
-  await settle(p);
-  const at = await ev(p, () => ({ top: Math.round(document.getElementById("contact").getBoundingClientRect().top), path: location.pathname + location.hash, focus: document.activeElement?.id }));
-  ok("hero: Contact Us glides to the form (JS), clearing the sticky header", at.top >= 56 && at.top <= 72 && at.path === "/" && at.focus === "contact", JSON.stringify(at));
+  await p.locator("section").first().getByRole("link", { name: "Become a Partner" }).click();
+  await p.waitForURL((u) => u.pathname === "/become-a-partner", { timeout: 8000 }).catch(() => {});
+  await p.waitForTimeout(800);
+  const at = await ev(p, () => ({ path: location.pathname, h1: document.querySelector("h1")?.textContent.trim().slice(0, 30) }));
+  ok("hero: Become a Partner -> /become-a-partner (JS)", at.path === "/become-a-partner" && !!at.h1, JSON.stringify(at));
   ok("no console errors (home)", !p.errs.length, p.errs.join(" | "));
   await p.context().close();
 }
 {
   const p = await page(1440, { javaScriptEnabled: false });
   await p.goto(BASE + "/", { waitUntil: "load" });
-  const href = await ev(p, () => [...document.querySelectorAll("a")].find((a) => a.textContent.trim() === "Contact Us" && !a.closest("header"))?.getAttribute("href"));
-  await p.locator(`a[href="${href}"]`).filter({ hasText: "Contact Us" }).first().click();
-  await p.waitForTimeout(2000); // the site's CSS scroll-behavior: smooth glides there
-  const at = await ev(p, () => ({ top: Math.round(document.getElementById("contact").getBoundingClientRect().top), hash: location.hash, atEnd: Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 2 }));
-  // The section's top at its scroll-margin (64 px) — or the page scrolled as far as it goes (it is the last section).
-  ok("hero: Contact Us works without JS (plain #contact anchor)", href === "/#contact" && at.hash === "#contact" && (Math.abs(at.top - 64) <= 4 || (at.atEnd && at.top < 400)), `${href} ${JSON.stringify(at)}`);
+  const href = await ev(p, () => [...document.querySelectorAll("a")].find((a) => a.textContent.trim() === "Become a Partner" && !a.closest("header") && a.closest("section"))?.getAttribute("href"));
+  ok("hero: Become a Partner is a plain link without JS", href === "/become-a-partner", href);
   await p.context().close();
 }
 

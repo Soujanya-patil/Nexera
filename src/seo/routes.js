@@ -30,6 +30,7 @@ import { ARTICLES, DRAFT_ARTICLES } from "../data/articles";
 import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
 import { productPage as productContent } from "../data/productPages";
 import { ADDRESS_PARTS, BUSINESS_NAME, HOURS, PHONE } from "../data/business";
+import { HOME_FAQ } from "../data/home";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -76,7 +77,8 @@ const PAGES = [
   {
     path: "/",
     localBusiness: true,
-    h1: "Battery Energy Storage Systems Powering India’s Transition to Smart Energy Storage",
+    h1: "Battery Energy Storage Systems (BESS) for India’s Homes, Businesses and Grids",
+    faq: HOME_FAQ,
     title: "BESS in India: TCL & Hithium Energy Storage | Nexera",
     description:
       "Authorised TCL and Hithium distributor in India. Battery energy storage for homes, businesses and utilities, with design, commissioning and service.",

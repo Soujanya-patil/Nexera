@@ -32,7 +32,7 @@ for (const w of [1440, 390]) {
   await hub.close();
   // Home: the solutions section.
   const home = await go("/");
-  const sol = home.locator("section", { has: home.getByText("Energy Storage for Every Need") }).last();
+  const sol = home.locator("section", { has: home.getByText("BESS Solutions for Residential, C&I and Utility-Scale Projects") }).last();
   // Walk through the section so every entrance plays, then hide the sticky header for the stitched shot.
   const box = await sol.boundingBox();
   for (let y = box.y - 400; y < box.y + box.height; y += 300) { await home.evaluate((v) => window.scrollTo(0, v), y); await home.waitForTimeout(350); }

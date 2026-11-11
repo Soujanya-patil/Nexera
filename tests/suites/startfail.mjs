@@ -47,7 +47,7 @@ const state = (p) =>
   });
 
 const PAGES = [
-  ["/", "Battery Energy Storage Systems Powering India’s Transition to Smart Energy Storage", "https://nexerapower.com/"],
+  ["/", "Battery Energy Storage Systems (BESS) for India’s Homes, Businesses and Grids", "https://nexerapower.com/"],
   ["/products", "Energy Storage, Built to Scale.", "https://nexerapower.com/products"],
   ["/products?app=ci", "Energy Storage, Built to Scale.", "https://nexerapower.com/products"],
   ["/solutions", "Storage built for how you'll actually use it", "https://nexerapower.com/solutions"],

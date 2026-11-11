@@ -7,13 +7,13 @@ import { jumpTo } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
 import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
 import { trackLead } from "../lib/analytics";
-import { ADDRESS } from "../data/business";
+import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
 import { STAGGER } from "../lib/tokens";
 
 const TRUST = [
-  { icon: BadgeCheck, text: "Authorised partner for TCL and Hithium" },
-  { icon: Ruler, text: "Design, sizing and commissioning support" },
-  { icon: GraduationCap, text: "Technician training centre in Kalaburagi, opening 2027" },
+  { icon: BadgeCheck, text: "Authorised partner for TCL and Hithium." },
+  { icon: Ruler, text: "Design, sizing and commissioning support." },
+  { icon: GraduationCap, text: "Installer training. Our Kalaburagi training centre opens in 2027." },
 ];
 const EMPTY = { name: "", mobile: "", email: "", company: "", city: "", interest: "", message: "", website: "" };
 
@@ -196,10 +196,10 @@ export default function HomeContact() {
             Get in touch
           </p>
           <h2 id={`${uid}-title`} data-sr className="mt-eyebrow text-h2 font-semibold">
-            Let&rsquo;s power your project.
+            Contact Nexera Powertech
           </h2>
           <p data-sr className="mt-heading max-w-measure text-lead text-paper/80">
-            Tell us about your home, business or utility project. Our team will help you choose the right battery energy storage system.
+            Let&rsquo;s power your project
           </p>
           <ul data-sr className="mt-8 space-y-4">
             {TRUST.map(({ icon: Icon, text }) => (
@@ -232,8 +232,12 @@ export default function HomeContact() {
               )}
             </p>
           )}
+          {/* Head office, then the branch office, as in the footer (data/business). */}
           <address data-sr className="mt-3 max-w-md text-small not-italic text-paper/75">
+            <span className="block font-semibold text-paper/90">Head office</span>
             {ADDRESS}
+            <span className="mt-2 block font-semibold text-paper/90">Branch office</span>
+            {BRANCH_ADDRESS}
           </address>
           <p data-sr className="mt-8 text-small text-paper/75">
             Want to become a distributor?{" "}

@@ -73,7 +73,9 @@ const cards = [
       benefits: { left: "6%", bottom: "9%", maxWidth: "36%" },
     },
     page: SOLUTION_PAGES.residential.path,
-    cta: "Explore Residential Storage",
+    heading: "Home Battery Storage (TCL)",
+    text: "Store your solar by day and power your evenings and outages.",
+    cta: "Explore home battery storage",
     img: "residential",
     position: "70% 50%",
     alt: "Indian home with rooftop solar and a wall-mounted home battery",
@@ -92,7 +94,10 @@ const cards = [
       benefits: { left: "calc(66% - 15cqi)", top: "calc(50% + 13cqi)", maxWidth: "38cqi" },
     },
     page: SOLUTION_PAGES.ci.path,
-    cta: "Explore C&I Storage",
+    heading: "C&I Battery Energy Storage (TCL, Hithium)",
+    // Figures as in data/products.js: TCL BlueArk X5 100 kWh, "to 500 kW / 1 MWh" in parallel.
+    text: "Peak shaving, solar self-consumption and backup for factories, campuses and commercial sites. Systems range from the 100 kWh TCL BlueArk X5 solar-plus-storage cabinet, which scales to 1 MWh, to larger Hithium cabinets.",
+    cta: "Explore C&I storage",
     img: "ci",
     position: "70% 50%",
     alt: "Factory with rooftop solar and outdoor battery cabinets",
@@ -110,7 +115,9 @@ const cards = [
       benefits: { right: "6%", bottom: "8%", textAlign: "right" },
     },
     page: SOLUTION_PAGES.utility.path,
-    cta: "Explore Utility-Scale Storage",
+    heading: "Utility-Scale BESS (Hithium)",
+    text: "Containerised DC blocks for grid-connected projects, including the ∞Power 6.25 MWh system.",
+    cta: "Explore utility-scale BESS",
     img: "utility",
     position: "100% 50%",
     alt: "Solar farm with utility-scale battery storage containers",
@@ -167,9 +174,9 @@ export default function HomeSolutions() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="eyebrow text-muted">Our Solutions</p>
-            <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Energy Storage for Every Need</AnimatedText>
+            <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">BESS Solutions for Residential, C&amp;I and Utility-Scale Projects</AnimatedText>
             <p className="mt-heading max-w-measure text-copy">
-              From homes to industries to the grid — Nexera brings the right storage solution for every application.
+              From a single home to a utility-scale plant, Nexera supplies and supports the right battery storage system for the job.
             </p>
           </div>
           <Link
@@ -203,14 +210,14 @@ export default function HomeSolutions() {
                 <p className={`absolute ${font} text-[0.6875rem] font-bold uppercase tracking-[0.24em] text-white`} style={c.at.eyebrow}>
                   {c.eyebrow}
                 </p>
-                <h3 className={`absolute ${font} font-extrabold uppercase leading-[0.95] text-accent`} style={c.at.title}>
+                <p className={`absolute ${font} font-extrabold uppercase leading-[0.95] text-accent`} style={c.at.title}>
                   {c.title.map((line) => (
                     <span key={line} className="block">
                       {line}
                     </span>
                   ))}
-                </h3>
-                {/* The same title in white, clipped to the shape (decorative: the h3 above is the heading) */}
+                </p>
+                {/* The same word in white, clipped to the shape (decorative: the word above is read once) */}
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ clipPath: c.shape }}>
                   <p className={`absolute ${font} font-extrabold uppercase leading-[0.95] text-white`} style={c.at.title}>
                     {c.title.map((line) => (
@@ -225,8 +232,10 @@ export default function HomeSolutions() {
                 </p>
               </div>
               <div className="flex flex-1 flex-col p-6">
+                <h3 className="text-h4 font-semibold text-ink">{c.heading}</h3>
+                <p className="mt-2 text-small text-copy">{c.text}</p>
                 {/* Product preview (space always reserved, so hovering never shifts the layout) */}
-                <p className="flex translate-y-1 items-center gap-2 text-micro text-copy transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
+                <p className="mt-auto flex translate-y-1 items-center gap-2 pt-5 text-micro text-copy transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
                   <span className="h-1.5 w-1.5 rounded-full bg-label" aria-hidden="true" />
                   <span className="font-semibold text-copy">{partnersFor(c.id).map((p) => p.name).join(" · ")}</span>
                   <span aria-hidden="true">·</span>

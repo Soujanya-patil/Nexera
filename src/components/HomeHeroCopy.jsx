@@ -3,22 +3,22 @@ import { ChartNoAxesColumnIncreasing, Leaf, Zap } from "lucide-react";
 import MagneticButton from "./ui/MagneticButton";
 import { loadGsap } from "../lib/motion";
 import { isFirstLoad } from "../lib/firstLoad";
-import { scrollToId } from "../lib/scrollTo";
 import { DUR, EASE, STAGGER } from "../lib/tokens";
 
+// The three proof points (director's Final Copy), each pre-broken into the lines it shows.
 const trust = [
-  { icon: Zap, lines: ["Cleaner Energy", "Round the Clock"] },
-  { icon: ChartNoAxesColumnIncreasing, lines: ["Lower Costs", "Higher Reliability"] },
-  { icon: Leaf, lines: ["A Stronger,", "Greener India"] },
+  { icon: ChartNoAxesColumnIncreasing, lines: ["Cut peak-hour", "power costs"] },
+  { icon: Leaf, lines: ["Reduce diesel", "generator use"] },
+  { icon: Zap, lines: ["Keep operations", "running through", "outages"] },
 ];
 
 // The headline, pre-split into its three lines and their words (so there is no runtime splitting,
 // no reflow and no flash of unstyled text). The line breaks are the ones the heading already had at
 // every width.
 const LINES = [
-  { words: ["Powering", "India’s"] },
-  { words: ["Transition", "to"] },
-  { words: ["Smart", "Energy", "Storage"], accent: true },
+  { words: ["for", "India’s"] },
+  { words: ["Homes,", "Businesses"] },
+  { words: ["and", "Grids"], accent: true },
 ];
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -28,7 +28,7 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
  *
  * ENTRANCE — one GSAP timeline on load (weighted easing, no bounce):
  *   0.00 eyebrow  ·  0.15 / 0.28 headline lines 1–2, word by word (~55 ms apart)
- *   0.41 "Smart Energy Storage" — slightly stronger: longer rise, 0.97 → 1 scale and a soft green glow
+ *   0.41 "and Grids" — slightly stronger: longer rise, 0.97 → 1 scale and a soft green glow
  *        that fades as it lands  ·  0.65 paragraph as one block  ·  0.85 / 0.95 CTAs  ·  trust row last.
  *   Words and blocks go opacity + y + a small blur → sharp; every inline style is cleared when done.
  *   Until GSAP has built the timeline the animated parts are held at opacity 0 by [data-intro] CSS;
@@ -45,8 +45,8 @@ const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)"
  * In the desktop scroll story (`story`) the scroll-away lift is off: HomeHero's wrapper steps the whole
  * copy back and forward instead, driven by the story's progress.
  *
- * HOVER — Explore Solutions: magnetic pull, arrow nudge, and a soft light that follows the pointer
- * across the green; Contact Us (scrolls to the contact form, #contact): magnetic pull and a short
+ * HOVER — Explore BESS Solutions: magnetic pull, arrow nudge, and a soft light that follows the pointer
+ * across the green; Become a Partner (/become-a-partner): magnetic pull and a short
  * green light travelling around its border. Trust points: the icon lifts and fills green, a small green rule draws under the text and
  * the text brightens.
  *
@@ -148,7 +148,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             that would reach the eyebrow, so the headline's styles sit on its own span. */}
         <h1>
           <span data-a="eyebrow" className="block eyebrow text-paper/80">
-            Battery Energy Storage Systems
+            Battery Energy Storage Systems (BESS)
           </span>{" "}
           <span
             style={depth(3)}
@@ -196,21 +196,23 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             })}
           </span>
         </h1>
-        <p data-a="para" className="mt-6 max-w-md text-body text-paper/80">
-          Bridging world-class BESS technology with India&rsquo;s solar ecosystem through distribution, design,
-          training and service.
-        </p>
+        {/* The tagline (not a heading) and the sub-line arrive together, as the paragraph did. */}
+        <div data-a="para" className="mt-6 max-w-md text-body">
+          <p className="font-semibold text-white">Store today. Power tomorrow.</p>
+          <p className="mt-2 text-paper/80">
+            Nexera Powertech is the authorised distributor of TCL and Hithium battery energy storage in India, with
+            local stock, system design, commissioning and service.
+          </p>
+        </div>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <span data-a="cta" className="inline-block">
             <MagneticButton to="/solutions" arrow spotlight>
-              Explore Solutions
+              Explore BESS Solutions
             </MagneticButton>
           </span>
           <span data-a="cta" className="inline-block">
-            {/* An in-page link to the contact form (#contact): works without JavaScript; with it, glides
-                there through Lenis and clears the sticky nav. */}
-            <MagneticButton to="#contact" onClick={scrollToId("contact")} variant="outline" sweep>
-              Contact Us
+            <MagneticButton to="/become-a-partner" variant="outline" sweep>
+              Become a Partner
             </MagneticButton>
           </span>
         </div>
@@ -224,9 +226,18 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
                 <Icon aria-hidden="true" className="h-4 w-4 transition-transform duration-base ease-standard group-hover/trust:scale-110 group-focus-visible/trust:scale-110 group-focus-within/trust:scale-110" strokeWidth={1.8} />
               </span>
               <span className="whitespace-nowrap text-micro text-paper/85 transition-colors duration-fast group-hover/trust:text-white group-focus-visible/trust:text-white group-focus-within/trust:text-white">
-                {lines[0]}
-                <br />
-                {lines[1]}
+                {/* A space before each break keeps the words apart in the text that is read out. */}
+                {lines.map((line, i) => (
+                  <Fragment key={line}>
+                    {i > 0 && (
+                      <>
+                        {" "}
+                        <br />
+                      </>
+                    )}
+                    {line}
+                  </Fragment>
+                ))}
                 <span aria-hidden="true" className="mt-1.5 block h-px w-8 origin-left scale-x-0 bg-accent transition-[scale] duration-base ease-standard group-hover/trust:scale-x-100 group-focus-visible/trust:scale-x-100 group-focus-within/trust:scale-x-100" />
               </span>
             </li>

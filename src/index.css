@@ -1263,7 +1263,7 @@ html.js-motion [data-enter="pending"] [data-e] {
   }
   .hero-fit .hero-product {
     --bleed: calc(max(0px, (100vw - 1440px) / 2) + var(--site-pad));
-    --door-x: calc(24px - var(--copy-gap, var(--copy-gap-css, 6.5625rem))); /* open door's left edge, from the column (fallback = the measured gap, so the first paint matches) */
+    --door-x: calc(24px - var(--copy-gap, var(--copy-gap-css, 5.75rem))); /* open door's left edge, from the column (fallback = the measured gap, so the first paint matches) */
     --shift: 6vw;
     --above: 42px; /* top label chips (~23px) + 6px gap to the eyes + 8px to the hero's top + slack */
     --below: 12px;
@@ -1280,13 +1280,25 @@ html.js-motion [data-enter="pending"] [data-e] {
     margin: calc((var(--above) - var(--below)) / 2 - var(--w) * 0.553 * 54 / 65) 0 0 calc(var(--door-x) - var(--w) * 0.061 + var(--shift));
   }
 }
-/* 1024–1279: the gap HomeHero measures follows the viewport (from 1280 px up it is a constant 105 px).
-   The widest copy line is the headline's second line, 9.6745 em of the h1 size, and the copy column is
-   1.1x the product column plus the 3 rem grid gap — so the same gap, rounded to the pixel as HomeHero
-   rounds it, is known before the script runs and the product does not move when it does. */
+/* 1024–1279: the gap HomeHero measures follows the viewport (from 1280 px up it is a constant 92 px).
+   The copy column is 1.1x the product column (110%) and ends 3 rem before it; the copy's furthest text
+   is whichever reaches furthest of: the sub-line's longest line (24.2725 em of the body size, inside its
+   max-w-md), the third proof point (its column starts at 2/3 of the proof-point grid — the copy column,
+   at most 576 px — plus 16 px padding and the 83.875 px of "Keep operations" at 11 px) and the headline's
+   widest line (8.6343 em of the h1 size). So the same gap,
+   rounded to the pixel as HomeHero rounds it, is known before the script runs and the product does not
+   move when it does. (Measured with the real fonts; re-measure if the hero copy changes.) */
 @media (64rem <= width < 80rem) {
   .hero-fit .hero-product {
-    --copy-gap-css: round(nearest, calc(110% + 3rem - 9.6745 * var(--text-h1)), 1px);
+    --copy-gap-css: round(
+      nearest,
+      min(
+        calc(110% + 3rem - 24.2725 * var(--text-body)),
+        calc(110% + 3rem - 99.875px - min(384px, 110% * 2 / 3)),
+        calc(110% + 3rem - 8.6343 * var(--text-h1))
+      ),
+      1px
+    );
   }
 }
 

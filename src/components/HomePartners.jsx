@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import AnimatedText from "./ui/AnimatedText";
 import { useEntrance } from "../lib/entrance";
@@ -20,12 +20,6 @@ const logos = [
   const apps = APPLICATIONS.filter((a) => products.some((p) => p.applications.includes(a.id))).map((a) => applicationLabel(a.id));
   return { ...l, apps, count: products.length };
 });
-
-// The partners named in the description, each a link to its partner page.
-const NAMED = [
-  ["tcl", "TCL"],
-  ["hithium", "Hithium"],
-];
 
 // Each logo rests slightly muted; on hover it comes to full presence (colour + opacity) with a short
 // lift, a green indicator draws beneath it, and the hairline divider beside it brightens.
@@ -91,18 +85,19 @@ export default function HomePartners() {
           <p data-e="eyebrow" className="eyebrow text-muted">
             Our Technology Partners
           </p>
-          <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Global Technology. Local Impact.</AnimatedText>
+          <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Authorised TCL and Hithium Distributor in India</AnimatedText>
           <p data-e="desc" className="mt-heading max-w-measure text-copy">
-            NEXERA brings systems from world-leading BESS manufacturers —{" "}
-            {NAMED.map(([id, name], i) => (
-              <Fragment key={id}>
-                {i > 0 && (i === NAMED.length - 1 ? " and " : ", ")}
-                <Link to={`/partners/${id}`} className="font-medium text-accent underline-offset-4 hover:underline focus-visible:underline">
-                  {name}
-                </Link>
-              </Fragment>
-            ))}{" "}
-            — with products across residential, C&amp;I and utility-scale segments.
+            Nexera Powertech is an authorised partner of TCL and Hithium, two established battery and energy-storage
+            manufacturers. We hold spares stock in India and provide design, commissioning, warranty-claim support and
+            installer training, so you deal with one local team. See our{" "}
+            <Link to="/partners/tcl" className="font-medium text-accent underline-offset-4 hover:underline focus-visible:underline">
+              TCL range
+            </Link>{" "}
+            and{" "}
+            <Link to="/partners/hithium" className="font-medium text-accent underline-offset-4 hover:underline focus-visible:underline">
+              Hithium range
+            </Link>
+            .
           </p>
         </div>
         <div className="min-w-0">

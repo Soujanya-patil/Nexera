@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { Link } from "react-router-dom";
 import { Database, Leaf, ShieldCheck, Sun } from "lucide-react";
 import PillLink from "./PillLink";
 import SceneImg from "./SceneImg";
@@ -9,10 +10,10 @@ import { useMediaQuery, useScrollSteps } from "../lib/scrollSteps";
 import { DUR, EASE, STAGGER } from "../lib/tokens";
 
 const benefits = [
-  { icon: Sun, label: "Integrate More Renewable Energy" },
-  { icon: Database, label: "Reduce Energy Costs" },
-  { icon: ShieldCheck, label: "Improve Grid Stability" },
-  { icon: Leaf, label: "Lower Emissions", filled: true },
+  { icon: Database, label: "Lower energy bills", text: "Charge when power is cheap and discharge in the peak." },
+  { icon: Leaf, label: "Less diesel", text: "Replace generator runtime with clean backup.", filled: true },
+  { icon: Sun, label: "Full solar use", text: "Store surplus instead of curtailing it." },
+  { icon: ShieldCheck, label: "Stronger grid", text: "Smooth supply and support renewable growth." },
 ];
 
 /**
@@ -73,14 +74,18 @@ export default function HomeWhyNow() {
             Why Energy Storage, Why Now
           </p>
           <h2 data-e="copy" className="mt-eyebrow text-h2 font-semibold">
-            {/* The space keeps "Cleaner," and "More" apart in the heading's text; before a <br> it renders nothing. */}
-            A Stronger, Cleaner,{" "}
+            {/* The space keeps the two lines apart in the heading's text; before a <br> it renders nothing. */}
+            Why Battery Energy Storage?{" "}
             <br />
-            More Reliable India
+            Lower Bills, Less Diesel, a Stronger Grid
           </h2>
           <p data-e="copy" className="mt-heading max-w-measure text-body text-paper/90">
-            Battery storage makes India&rsquo;s clean energy future possible — storing solar power for when it&rsquo;s
-            needed, reducing diesel dependence, and building a more reliable, resilient grid.
+            Solar only produces by day, but electricity costs most in the evening peak and outages do not wait for
+            sunshine. A BESS shifts power to when you need it, keeps sites running when the grid fails, and helps the
+            grid absorb more renewable energy. New to the topic? Read{" "}
+            <Link to="/blog/what-is-bess" className="font-semibold text-accent underline underline-offset-4 hover:text-white focus-visible:text-white">
+              What is a BESS?
+            </Link>
           </p>
           <div data-e="copy" className="mt-8">
             <PillLink to="/resources" arrow spotlight>
@@ -90,7 +95,7 @@ export default function HomeWhyNow() {
         </div>
 
         <ul ref={list} className="grid grid-cols-2 gap-x-8 gap-y-10 lg:justify-self-end">
-          {benefits.map(({ icon: Icon, label, filled }, i) => {
+          {benefits.map(({ icon: Icon, label, text, filled }, i) => {
             const on = lit(i);
             return (
               <li key={label} data-e="benefit" className="group/benefit relative max-w-[12rem] pt-4">
@@ -115,6 +120,7 @@ export default function HomeWhyNow() {
                 >
                   {label}
                 </p>
+                <p className="mt-1 text-small text-paper/80">{text}</p>
               </li>
             );
           })}
