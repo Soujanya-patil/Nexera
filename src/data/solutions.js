@@ -67,7 +67,7 @@ export const CI_FAQ = [
   },
   {
     q: "Which brands does NEXERA offer for C&I projects?",
-    a: "TCL (BlueArk X5 and W10) and Hithium (∞Power 1022 kWh Cabinet).",
+    a: "TCL (BlueArk X5, W10 and X10) and Hithium (∞Power 1022 kWh Cabinet).",
   },
   {
     q: "Does NEXERA manufacture these systems?",

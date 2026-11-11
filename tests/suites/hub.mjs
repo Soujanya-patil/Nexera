@@ -33,7 +33,8 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
   // partner list lost a name that is not a NEXERA partner, and the node gained the legal name and the
   // Business Profile spelling, and later took "NexEra PowerTech Pvt Ltd" as its name (the brand and the
   // Profile spelling as alternate names); the description then names TCL and Hithium only, in UK
-  // spelling ("Authorised"); and the office moved to WeWork Galaxy, Residency Rd (its PostalAddress).
+  // spelling ("Authorised"); the office moved to WeWork Galaxy, Residency Rd (its PostalAddress); and the
+  // node gained the public email (sales@nexerapower.com).
   // Applied to the reference, so everything else in the head must still match exactly.
   const before = fs
     .readFileSync(`${BEFORE_DIST}/resources.html`, "utf8")
@@ -41,7 +42,8 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
     .replace("Authorized distributor and solution provider", "Authorised distributor and solution provider")
     .replace('"name":"NEXERA Powertech","url"', '"name":"NexEra PowerTech Pvt Ltd","legalName":"Nexera Powertech Private Limited","alternateName":["NEXERA Powertech","NEXERA Power Tech"],"url"')
     .replace('"streetAddress":"2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Vijayanagar 2nd Stage"', '"streetAddress":"WeWork Galaxy, 43, Residency Rd, Shanthala Nagar, Ashok Nagar"')
-    .replace('"postalCode":"560104"', '"postalCode":"560025"');
+    .replace('"postalCode":"560104"', '"postalCode":"560025"')
+    .replace('"telephone":"+91 97423 53341"', '"telephone":"+91 97423 53341","email":"sales@nexerapower.com"');
   const after = fs.readFileSync(`${AFTER_DIST}/resources.html`, "utf8");
   const pick = (h) => ({
     title: h.match(/<title>[^<]*<\/title>/)[0],

@@ -174,6 +174,14 @@ export default function Contact() {
                 </a>
               </span>
             )}
+            {CONTACT_EMAIL && (
+              <span className="mt-1 block">
+                Email{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="link-inline font-semibold text-accent">
+                  {CONTACT_EMAIL}
+                </a>
+              </span>
+            )}
             <span className="mt-1 block">
               Visiting us?{" "}
               <Link to="/locations/bengaluru" className="link-inline font-semibold text-accent">

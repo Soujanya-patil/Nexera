@@ -48,7 +48,7 @@ const status = async (path) => (await fetch(BASE + path, { redirect: "manual" })
 // ---- each page: sections, links, hero buttons -----------------------------------------------------------
 for (const [id, interest, nProducts] of [
   ["hithium", "ci", 2], // the ∞Power 1022 kWh Cabinet and 6.25 MWh; the 5.016 MWh is `listed: false`: no card (its page and FAQ mention remain)
-  ["tcl", "ci", 3],
+  ["tcl", "ci", 4], // X1, X5, W10 and X10
 ]) {
   const p = await newPage();
   await p.goto(`${BASE}/partners/${id}`, { waitUntil: "networkidle" });
@@ -187,7 +187,7 @@ async function linksOn(path, selector, setup) {
   const p = await newPage(1440, 900, false);
   await p.goto(`${BASE}/partners/tcl`, { waitUntil: "load" });
   const s = await p.evaluate(() => ({ h1: document.querySelector("h1")?.textContent.replace(/\s+/g, " ").trim(), cards: document.querySelectorAll("#systems article").length, faq: document.querySelectorAll("#faq details").length }));
-  check("no JS: /partners/tcl is complete in the pre-rendered HTML", s.h1 === "TCL energy storage in India" && s.cards === 3 && s.faq === 2, s);
+  check("no JS: /partners/tcl is complete in the pre-rendered HTML", s.h1 === "TCL energy storage in India" && s.cards === 4 && s.faq === 2, s);
   await p.context().close();
 }
 

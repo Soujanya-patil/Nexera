@@ -33,6 +33,10 @@ import imgX1 from "../assets/catalogue/tcl-blueark-x1.webp";
 import imgX5 from "../assets/catalogue/tcl-blueark-x5.webp";
 import imgW10 from "../assets/catalogue/tcl-blueark-w10.webp";
 import imgW10Open from "../assets/catalogue/tcl-blueark-w10-open.webp";
+import imgX10 from "../assets/catalogue/tcl-blueark-x10-640.webp";
+import imgX10Webp320 from "../assets/catalogue/tcl-blueark-x10-320.webp";
+import imgX10Avif320 from "../assets/catalogue/tcl-blueark-x10-320.avif";
+import imgX10Avif640 from "../assets/catalogue/tcl-blueark-x10-640.avif";
 import imgCabinet1022 from "../assets/catalogue/hithium-power-cabinet-1022.webp";
 import imgPower625 from "../assets/catalogue/hithium-power-625.webp";
 
@@ -280,6 +284,107 @@ export const PRODUCTS = [
     },
     datasheet: "/datasheets/tcl-blueark-w10-datasheet.pdf",
     sources: [`${TCL_BROCHURE}: Flexible Scalability page`, "TCL Protection Architecture slide", TCL_DECK],
+  },
+  {
+    // Every value from TCL's BlueArk X10 datasheet (model X10-125K-261; public/datasheets/tcl-blueark-x10-datasheet.pdf).
+    // Not the W10: the same 125 kW / 261 kWh, but a hybrid — PV input, a built-in generator ATS, on/off-grid
+    // transfer < 20 ms and black start. The W10 has no PV input.
+    id: "tcl-blueark-x10",
+    partner: "tcl",
+    name: "BlueArk X10",
+    model: "X10-125K-261",
+    type: "Hybrid C&I energy storage system",
+    applications: ["ci"],
+    image: imgX10,
+    imageSize: [640, 1099],
+    // The resources card's <picture> (AVIF / WebP at 320 and 640 px wide).
+    sources: [
+      { type: "image/avif", srcSet: `${imgX10Avif320} 320w, ${imgX10Avif640} 640w` },
+      { type: "image/webp", srcSet: `${imgX10Webp320} 320w, ${imgX10} 640w` },
+    ],
+    imageAlt: "TCL BlueArk X10 C&I energy storage cabinet",
+    summary: "A 125 kW / 261 kWh hybrid C&I system with PV input (up to 250 kWp at 1500 V, 8 MPPTs) and diesel-generator support.",
+    cardSpecs: ["125 kW", "261 kWh"],
+    keySpecs: [
+      { label: "Rated output power", value: "125 kW" },
+      { label: "Rated energy", value: "261 kWh" },
+      { label: "Max. PV input", value: "250 kWp" },
+      { label: "On/off-grid transfer", value: "<20 ms" },
+    ],
+    specsNote: "Specifications as listed in TCL's datasheet for model X10-125K-261. Specifications subject to change without notice.",
+    specs: {
+      system: [
+        { label: "Model", value: "X10-125K-261" },
+        { label: "Rated output power", value: "125 kW" },
+        { label: "Max. output power", value: "125 kVA" },
+        { label: "Rated voltage", value: "3L + N + PE, 380 V / 400 V" },
+        { label: "Rated frequency", value: "50/60 Hz" },
+        { label: "Power factor adjustment range", value: "-0.8 to +0.8" },
+        { label: "Total harmonic distortion (THDi)", value: "<3%" },
+        { label: "Topology", value: "Transformerless" },
+        { label: "Max. PV input power (STC)", value: "250 kWp" },
+        { label: "Max. PV input voltage", value: "1500 V" },
+        { label: "MPPT voltage range", value: "300–1500 V" },
+        { label: "Rated PV input voltage", value: "1050 V" },
+        { label: "Start-up voltage", value: "400 V" },
+        { label: "MPPTs", value: "Up to 8, with 2 PV strings per MPPT" },
+        { label: "Max. PV input current", value: "8 × 40 A" },
+        { label: "Max. PV short-circuit current", value: "8 × 55 A" },
+        { label: "Off-grid output", value: "125 kVA max.; 1.1 × rated power continuous, 1.55 × rated power for 1 s" },
+        { label: "Off-grid THDv (linear load)", value: "<3%" },
+        { label: "Generator input", value: "Built-in ATS, 3L + N + PE, 380 V / 400 V, 50/60 Hz" },
+        { label: "Grid-tied/off-grid transfer", value: "<20 ms" },
+        { label: "ESS–genset transfer", value: "<20 ms, in standalone and parallel operation" },
+      ],
+      battery: [
+        { label: "Battery type", value: "LiFePO4" },
+        { label: "Rated energy", value: "261 kWh" },
+        { label: "Battery voltage range", value: "728–936 V" },
+        { label: "Max. charge/discharge current", value: "179 A" },
+        { label: "Cooling", value: "Liquid cooling (battery) / smart air cooling (inverter)" },
+      ],
+      safety: [
+        { label: "PV reverse polarity protection", value: "Integrated" },
+        { label: "Anti-islanding protection", value: "Integrated" },
+        { label: "AC overcurrent, short-circuit and overvoltage protection", value: "Integrated" },
+        { label: "DC switch", value: "Integrated" },
+        { label: "DC and AC surge protection", value: "Type II" },
+        { label: "Arc-fault detection", value: "Integrated" },
+        { label: "Rapid shutdown", value: "Optional" },
+      ],
+      control: [
+        { label: "Communication", value: "Ethernet / RS485 / 4G" },
+        { label: "Black start", value: "Supported, even without grid or PV power" },
+        { label: "Parallel operation", value: "Multi-unit parallel operation for capacity expansion" },
+        { label: "Management", value: "Centralised multi-site management" },
+      ],
+      installation: [
+        { label: "Dimensions (W × D × H)", value: "1420 × 1350 × 2355 mm" },
+        { label: "Weight", value: "Approx. 2.45 t" },
+        { label: "Ingress protection", value: "Battery compartment IP55; inverter IP66" },
+        { label: "Operating temperature", value: "-30 °C to +50 °C (derating from 45 °C to 50 °C)" },
+        { label: "Operating humidity", value: "0–95%, non-condensing" },
+        { label: "Max. operating altitude", value: "3,000 m" },
+        { label: "Design", value: "All-in-one, factory pre-integrated" },
+      ],
+    },
+    highlights: [
+      { icon: "Sun", title: "Multi-energy integration", text: "Supports PV and diesel-generator inputs for grid-connected, off-grid and weak-grid applications." },
+      { icon: "Zap", title: "High PV compatibility", text: "A 1500 V platform with a 300–1500 V MPPT range and up to 8 MPPTs, 2 strings each." },
+      { icon: "Network", title: "Strong off-grid capability", text: "Up to 125 kVA off-grid output, transfer in under 20 ms, and black start without grid or PV power." },
+    ],
+    compare: {
+      capacity: "261 kWh",
+      power: "125 kW",
+      configuration: "Hybrid all-in-one: PV input, built-in generator ATS",
+      cell: "LiFePO4",
+      cooling: "Liquid (battery) / smart air (inverter)",
+      protection: "Battery IP55 / inverter IP66",
+      dimensions: "1420 × 1350 × 2355 mm (W × D × H)",
+      weight: "Approx. 2.45 t",
+    },
+    datasheet: "/datasheets/tcl-blueark-x10-datasheet.pdf",
+    sources: ["TCL BlueArk X10 datasheet (model X10-125K-261), pages 1–2"],
   },
   {
     id: "hithium-power-cabinet-1022",

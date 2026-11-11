@@ -56,11 +56,12 @@ function PartnerPage({ page }) {
         title={`${name} systems available through NEXERA`}
         className="scroll-mt-16"
       >
-        {/* Two systems: two columns, centred (one on phones); three or more: three columns from 1024 px. */}
+        {/* Two or four systems: two columns, centred (one on phones); otherwise three columns from 1024 px —
+            so no row ends in an empty slot. */}
         <ul
           ref={list}
           data-sr-state={reveal}
-          className={`mt-10 grid gap-6 sm:grid-cols-2 ${products.length === 2 ? "mx-auto max-w-[54rem]" : "lg:grid-cols-3"}`}
+          className={`mt-10 grid gap-6 sm:grid-cols-2 ${products.length === 2 || products.length === 4 ? "mx-auto max-w-[54rem]" : "lg:grid-cols-3"}`}
         >
           {products.map((p) => (
             <li data-sr key={p.id}>

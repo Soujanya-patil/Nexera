@@ -143,6 +143,7 @@ const organization = {
     addressCountry: ORGANIZATION.address.country,
   },
   ...(ORGANIZATION.telephone ? { telephone: ORGANIZATION.telephone } : {}),
+  ...(ORGANIZATION.email ? { email: ORGANIZATION.email } : {}),
 };
 // The homepage, the contact page and the Bengaluru page: the same node is also the LocalBusiness (same names, address and
 // phone as on every page, plus the opening hours).

@@ -29,7 +29,7 @@ import { partnerFaq } from "../data/partners";
 import { ARTICLES, DRAFT_ARTICLES } from "../data/articles";
 import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
 import { productPage as productContent } from "../data/productPages";
-import { ADDRESS_PARTS, BUSINESS_NAME, HOURS, PHONE } from "../data/business";
+import { ADDRESS_PARTS, BUSINESS_NAME, EMAIL, HOURS, PHONE } from "../data/business";
 import { HOME_FAQ } from "../data/home";
 
 export const SITE_URL = "https://nexerapower.com";
@@ -46,7 +46,7 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
 /**
  * The Organization for structured data (scripts/seo-pages.mjs puts it on every page). Only facts the
  * site itself states: the address and phone are the Footer's (data/business, as on the Google
- * Business Profile); the site shows no email or social profiles, so none are given. On the homepage,
+ * Business Profile), and the email is the one the site shows (sales@nexerapower.com); no social profiles. On the homepage,
  * the contact page and the Bengaluru page (`localBusiness` routes) the same node is also the
  * LocalBusiness, with the opening hours. Every page names the business the same way (structured data
  * only; the visible brand is unchanged): name "NexEra PowerTech Pvt Ltd", legalName (the footer's
@@ -65,6 +65,7 @@ export const ORGANIZATION = {
     "Authorised distributor and solution provider for TCL and Hithium battery energy storage systems in India, with design, commissioning, training and after-sales support.",
   address: ADDRESS_PARTS,
   telephone: PHONE,
+  email: EMAIL,
   logo: "/apple-touch-icon.png",
 };
 

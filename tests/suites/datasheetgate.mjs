@@ -50,7 +50,7 @@ async function fillAndSend(p, who) {
 // ---- Every datasheet button: "Request Datasheet", to /contact?datasheet=<id>; no page links a PDF ------
 {
   const p = await page(1440, A);
-  const SHEETS = { "/resources": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "tcl-blueark-x10"], "/products": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10"], "/partners/tcl": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10"], "/products/tcl-blueark-x5": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10"] };
+  const SHEETS = { "/resources": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "tcl-blueark-x10"], "/products": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "tcl-blueark-x10"], "/partners/tcl": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "tcl-blueark-x10"], "/products/tcl-blueark-x5": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "tcl-blueark-x10"], "/products/tcl-blueark-x10": ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "tcl-blueark-x10"] };
   for (const [path, ids] of Object.entries(SHEETS)) {
     const html = await (await fetch(A + path)).text();
     const r = await (async () => {

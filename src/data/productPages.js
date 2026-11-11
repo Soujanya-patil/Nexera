@@ -100,6 +100,39 @@ const PAGES = {
     // highlight "Modular stacked battery"
     expansion: "Yes. Its battery is modular and stacked: it scales from 8 kWh to 128 kWh, with up to 15 kW charge/discharge in one system.",
   },
+  // Everything from TCL's BlueArk X10 datasheet (X10-125K-261); the W10 facts in `extra` are the W10's catalogue entry.
+  "tcl-blueark-x10": {
+    title: "TCL BlueArk X10 Hybrid C&I Storage India | Nexera",
+    description:
+      "TCL BlueArk X10 hybrid C&I storage: 125 kW / 261 kWh, PV input up to 250 kWp and genset support. From NEXERA, TCL authorised distributor in India.",
+    audience: [
+      // p.1 Multi-energy integration ("Supports PV and diesel generator inputs"); Flexible deployment ("All-in-one integrated design")
+      "Commercial and industrial sites that want solar, storage and a diesel generator in one integrated system",
+      // p.1 Multi-energy integration: "grid-connected, off-grid and weak-grid applications, including islands, industrial parks and microgrids"
+      "Grid-connected, off-grid and weak-grid sites, including islands, industrial parks and microgrids",
+      // p.1 High PV & storage compatibility; p.2 DC input: max. PV input power 250000 Wp, max. input voltage 1500 V
+      "Projects with a large PV array: up to 250 kWp on a 1500 V platform, with up to 8 MPPTs and 2 strings per MPPT",
+      // p.1 Multi-energy integration: transfer time < 20 ms; Strong off-grid capability: black start
+      "Sites with critical loads: grid-tied/off-grid transfer in under 20 ms, and black start without grid or PV power",
+    ],
+    // ci-backup: p.1 off-grid output and < 20 ms transfer "ensuring uninterrupted power supply to critical loads"
+    uses: [...CI, "ci-backup"],
+    capacity: {
+      q: "What is the capacity and power of the TCL BlueArk X10?",
+      // p.2 Model; AC output (grid side): rated output power 125000 W; battery: rated energy 261 kWh; AC output (off-grid): 125000 VA
+      a: "The TCL BlueArk X10 (model X10-125K-261) has 125 kW rated output power and 261 kWh rated energy, with up to 125 kVA off-grid output.",
+    },
+    extra: [
+      {
+        q: "How is the TCL BlueArk X10 different from the TCL BlueArk W10?",
+        // X10: p.1–2 (PV input, built-in ATS, < 20 ms, black start). W10: its catalogue entry (no PV input; expandable to 6.3 MWh).
+        a: "Both are 125 kW / 261 kWh. The X10 is a hybrid: it takes PV input (up to 250 kWp at 1500 V, with up to 8 MPPTs) and a diesel generator through a built-in ATS, switches between grid-tied and off-grid in under 20 ms, and supports black start. The W10 has no PV input; it is expandable to 6.3 MWh.",
+        links: [{ text: "W10", to: "/products/tcl-blueark-w10" }],
+      },
+    ],
+    // p.2 Battery type LiFePO4; cooling method
+    chemistry: "The TCL BlueArk X10 uses LiFePO4 (lithium iron phosphate) batteries, with liquid cooling for the battery and smart air cooling for the inverter.",
+  },
   "tcl-blueark-x5": {
     title: "TCL BlueArk X5 C&I Energy Storage India | NEXERA",
     description:
@@ -220,6 +253,7 @@ export function productPage(id) {
       links: [{ text: "Contact NEXERA for a quote", to: `/contact?product=${p.id}&intent=quote` }],
     },
     page.capacity,
+    ...(page.extra ?? []),
     page.chemistry && { q: `What battery chemistry does the ${label} use?`, a: page.chemistry },
     page.expansion && { q: `Can the ${label} be expanded?`, a: page.expansion },
     {

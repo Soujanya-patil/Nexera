@@ -112,6 +112,27 @@ const PORTFOLIO = [
     cta: "Explore BlueArk W10",
   },
   {
+    // Catalogue facts only (data/products.js: tcl-blueark-x10, from its datasheet).
+    product: "tcl-blueark-x10",
+    name: "TCL BlueArk X10",
+    figures: "125 kW / 261 kWh",
+    tagline: "Multi-Energy Integration",
+    copy: "A hybrid C&I energy storage system that supports PV and diesel-generator inputs for grid-connected, off-grid and weak-grid applications, including islands, industrial parks and microgrids.",
+    specs: [
+      "261 kWh LiFePO4 battery",
+      "125 kW rated output power",
+      "PV input up to 250 kWp",
+      "1500 V platform, 300–1500 V MPPT range",
+      "Up to 8 MPPTs, 2 strings per MPPT",
+      "Built-in generator ATS",
+      "Grid-tied/off-grid transfer under 20 ms",
+      "Black start without grid or PV power",
+      "Battery IP55 / inverter IP66",
+    ],
+    alt: "TCL BlueArk X10 C&I energy storage cabinet",
+    cta: "Explore BlueArk X10",
+  },
+  {
     // Catalogue facts only (data/products.js: hithium-power-cabinet-1022).
     product: "hithium-power-cabinet-1022",
     name: "Hithium ∞Power 1022 kWh Cabinet",
@@ -259,11 +280,11 @@ export default function SolutionsCI() {
         id="ci-products"
         mark="Multiple Applications"
         eyebrow="Our C&I BESS portfolio"
-        title="Three Solutions. Multiple Applications."
+        title="Four Solutions. Multiple Applications."
         intro="From a compact 100 kWh all-in-one system to 1022 kWh liquid-cooled cabinets, choose the platform that fits your site."
       >
         <CompareProvider>
-          <CardGrid columns={3}>
+          <CardGrid columns={2}>
             {PORTFOLIO.map((c) => (
               <SolutionProductCard key={c.product} {...c} product={getProduct(c.product)} />
             ))}

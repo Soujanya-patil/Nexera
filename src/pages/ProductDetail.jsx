@@ -480,7 +480,12 @@ function ProductView({ product }) {
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/all:translate-x-1 group-focus-visible/all:translate-x-1 group-focus-within/all:translate-x-1" />
               </Link>
             </div>
-            <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {/* Three cards fill the row; one or two sit centred at their usual width (no empty slot). */}
+            <ul
+              className={`mt-8 grid gap-6 ${
+                related.length >= 3 ? "sm:grid-cols-2 lg:grid-cols-3" : related.length === 2 ? "mx-auto max-w-[54rem] sm:grid-cols-2" : "mx-auto max-w-[27rem]"
+              }`}
+            >
               {related.map((p) => (
                 <li data-sr key={p.id}>
                   <ProductCard product={p} />

@@ -126,7 +126,7 @@ for (const [path, W] of [
 ]) {
   const p = await open(path, { W, H: W < 500 ? 844 : 900, broken: true });
   const forms = await formState(p);
-  const ok = forms.length >= 1 && forms.every((f) => /^This form can’t be sent right now\. (Please call \+91[\d ]+, or reload|Please reload) the page and try again\.$/.test(f.note ?? "") && f.noteShown && f.describedBy && f.controls > 0 && f.disabled === f.controls);
+  const ok = forms.length >= 1 && forms.every((f) => /^This form can’t be sent right now\. (Please call \+91[\d ]+( or email sales@nexerapower\.com)?, or reload|Please reload) the page and try again\.$/.test(f.note ?? "") && f.noteShown && f.describedBy && f.controls > 0 && f.disabled === f.controls);
   check(`fallback ${path} @${W}: every form (${forms.length}) disabled, with the note first (visible, aria-describedby)`, ok, forms);
   // Try hard to submit: requestSubmit, a forced click on the button, Enter in a field — nothing leaves.
   const before = p.url();

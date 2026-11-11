@@ -9,7 +9,7 @@ import { ArrowLink, ArrowUnderline, PartnerStrip } from "../components/solutions
 import { CardGrid, FaqList, FeatureGrid, Section } from "../components/solutions/SolutionBlocks";
 import { useIntro } from "../lib/intro";
 import { DUR, RISE, STAGGER } from "../lib/tokens";
-import { ADDRESS, BRANCH_ADDRESS, PHONE, phoneHref } from "../data/business";
+import { ADDRESS, BRANCH_ADDRESS, EMAIL, PHONE, phoneHref } from "../data/business";
 import { BENGALURU_FAQ, DIRECTIONS_HREF, HOURS_LINE, OFFERS, SUPPORT } from "../data/locations";
 
 /*
@@ -132,13 +132,16 @@ export default function LocationBengaluru() {
               {BRANCH_ADDRESS}
             </address>
           </InfoCard>,
-          PHONE && (
-            <InfoCard key="phone" icon={Phone} title="Phone">
-              <a href={phoneHref(PHONE)} className="link-inline inline-flex min-h-11 items-center text-body font-semibold text-accent">
+          <InfoCard key="phone" icon={Phone} title={PHONE ? "Phone and email" : "Email"}>
+            {PHONE && (
+              <a href={phoneHref(PHONE)} className="link-inline flex min-h-11 items-center text-body font-semibold text-accent">
                 {PHONE}
               </a>
-            </InfoCard>
-          ),
+            )}
+            <a href={`mailto:${EMAIL}`} className="link-inline flex min-h-11 items-center text-body font-semibold text-accent">
+              {EMAIL}
+            </a>
+          </InfoCard>,
           <InfoCard key="hours" icon={Clock} title="Opening hours">
             <p>{HOURS_LINE}</p>
           </InfoCard>,

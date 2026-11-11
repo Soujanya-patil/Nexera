@@ -3,16 +3,16 @@
  * site-wide call-back widget and the /contact page). Validation here mirrors public/api/contact.php,
  * which validates again server-side and sends the email.
  *
- * Optional contact details are read at build time; when they are not set, nothing is shown (no phone
- * number or email address is ever invented):
- *   VITE_CONTACT_PHONE   e.g. +91 80 1234 5678
- *   VITE_CONTACT_EMAIL   e.g. hello@example.com
+ * The phone number is read at build time (VITE_CONTACT_PHONE, e.g. +91 80 1234 5678); when it is not set,
+ * none is shown. The email is the site's public address (data/business: sales@nexerapower.com).
  */
+import { EMAIL } from "../data/business.js";
+
 export const ENDPOINT = "/api/contact.php";
 // (`?? {}`: outside Vite — the rules' unit tests in Node — there is no import.meta.env.)
 const ENV = import.meta.env ?? {};
 export const CONTACT_PHONE = (ENV.VITE_CONTACT_PHONE || "").trim();
-export const CONTACT_EMAIL = (ENV.VITE_CONTACT_EMAIL || "").trim();
+export const CONTACT_EMAIL = EMAIL; // data/business: sales@nexerapower.com
 export const telHref = (phone) => `tel:${phone.replace(/[^\d+]/g, "")}`;
 
 /** "I'm interested in" values (the API accepts these ids only). `oem` is the /contact page's brand / OEM path. */

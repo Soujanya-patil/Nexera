@@ -22,6 +22,8 @@ export const ADDRESS_PARTS = {
   country: "IN",
 };
 export const PHONE = (ENV.VITE_CONTACT_PHONE || "").trim();
+/** The public contact email (shown on the site and in the structured data). */
+export const EMAIL = "sales@nexerapower.com";
 /** "+91 97423 53341" → "tel:+919742353341" */
 export const phoneHref = (phone) => `tel:${phone.replace(/[^\d+]/g, "")}`;
 /** Opening hours (as on the Business Profile): Monday to Saturday, 09:00–18:00. */
