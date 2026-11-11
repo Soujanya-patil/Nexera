@@ -19,5 +19,6 @@ r cbdrag node "$(native "$S/cbdrag.mjs")" $A
 for f in article guidecard partners motion scaleheader productshero headtags; do r $f node "$(native "$S/$f.mjs")" $A; done
 rm -rf "$W/nexera-private"; RATE_DIR="$(native "$W/nexera-private")" r forms-e2e node "$(native "$S/forms-e2e.mjs")" $P
 rm -rf "$W/nexera-private"; r consent node "$(native "$S/consent.mjs")" $A $P
+rm -rf "$W/nexera-private"; RATE_DIR="$(native "$W/nexera-private")" r datasheetgate node "$(native "$S/datasheetgate.mjs")" $A $P
 rm -rf "$W/nexera-private"
 echo ALLDONE

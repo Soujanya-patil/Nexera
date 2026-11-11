@@ -6,7 +6,8 @@ import { applicationLabel, getProduct, productLabel } from "../data/products";
 import { topicLabels } from "../data/solutionTopics";
 import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
 import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
-import { trackLead } from "../lib/analytics";
+import { track, trackLead } from "../lib/analytics";
+import { datasheetFor } from "../data/datasheets";
 
 // The customer enquiry types as the enquiry API's interest values.
 const INTEREST_OF = { residential: "home", ci: "ci", utility: "utility" };
@@ -24,6 +25,16 @@ const ENQUIRY_TYPES = [
   { id: "utility", label: "Utility-Scale" },
 ];
 
+/** Starts a file download (same origin; the browser keeps the visitor on the page). */
+function download(file) {
+  const a = document.createElement("a");
+  a.href = file;
+  a.download = "";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
 export default function Contact() {
   const [path, setPath] = useState("general");
   const [status, setStatus] = useState("idle"); // idle | sending | done | error
@@ -37,9 +48,14 @@ export default function Contact() {
   const quote = intent === "quote";
   const type = ENQUIRY_TYPES.find((t) => t.id === (ENQUIRY_TYPES.some((x) => x.id === intent) ? intent : null)) ?? null;
   const name = product ? productLabel(product) : null;
+  // The datasheet gate: /contact?datasheet=<id> (a system with a datasheet PDF, data/datasheets.js) asks
+  // for the visitor's details first; the PDF downloads only once the form is sent. Unknown id: the plain form.
+  const sheet = datasheetFor(params.get("datasheet"));
   // ?topics=<slugs>: the items chosen in a Solutions page's final CTA.
   const topics = topicLabels(intent, params.get("topics"));
-  const starter = quote
+  const starter = sheet
+    ? `Datasheet request: ${sheet.name}`
+    : quote
     ? `I'd like a quote${name ? ` for the ${name}` : ""}.`
     : name
       ? `I'd like to know more about the ${name}.`
@@ -90,8 +106,8 @@ export default function Contact() {
     const details =
       path === "general"
         ? {
-            enquiry: quote ? "Quote request" : product ? "Product enquiry" : "General enquiry",
-            product: f.product ?? "",
+            enquiry: sheet ? "Datasheet request" : quote ? "Quote request" : product ? "Product enquiry" : "General enquiry",
+            product: sheet ? sheet.name : (f.product ?? ""),
             application: f.application ?? "",
             brand: f.brand ?? "",
             topics: topics.join(", "),
@@ -122,8 +138,15 @@ export default function Contact() {
       else setStatus("error");
       return;
     }
-    if (res.ok) trackLead("full");
+    // Only a successful send releases the datasheet: the lead (form_source datasheet), the download event
+    // (both only with consent, lib/analytics), then the PDF itself. A failed send downloads nothing.
+    const gated = res.ok && sheet && path === "general";
+    if (gated) {
+      trackLead("datasheet", { item_name: sheet.name });
+      track("datasheet_download", { item_name: sheet.name });
+    } else if (res.ok) trackLead("full");
     setStatus(res.ok ? "done" : "error");
+    if (gated) download(sheet.file);
   }
 
   // The site's scroll reveal: the address, the path choice and the form fade up in turn.
@@ -194,14 +217,33 @@ export default function Contact() {
           <div data-sr>
           {status === "done" ? (
             <div role="status" className="mt-8 rounded-card border border-accent/30 bg-ice p-6">
-              <p className="font-medium text-ink">Message received.</p>
-              <p className="mt-1 text-small text-copy">
-                We'll be in touch shortly at the email address you provided.
-              </p>
+              {sheet && path === "general" ? (
+                <>
+                  <p className="font-medium text-ink">Thank you. Your datasheet is downloading.</p>
+                  <p className="mt-1 text-small text-copy">
+                    <a href={sheet.file} download="" className="link-inline font-semibold text-accent">
+                      Download again
+                      <span className="sr-only">: {sheet.name} datasheet (PDF)</span>
+                    </a>
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="font-medium text-ink">Message received.</p>
+                  <p className="mt-1 text-small text-copy">
+                    We'll be in touch shortly at the email address you provided.
+                  </p>
+                </>
+              )}
             </div>
           ) : (
             <form method="post" key={path} onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} onInput={onInput} noValidate className="relative mt-8 space-y-5">
               <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
+              {path === "general" && sheet && (
+                <p className="rounded-control bg-ice px-4 py-3 text-small text-ink">
+                  Fill in your details and your {sheet.short} datasheet will download straight away.
+                </p>
+              )}
               <div className="grid sm:grid-cols-2 gap-5">
                 <Field label="Name" name="name" required error={errors.name} />
                 <Field label="Email" name="email" type="email" required error={errors.email} />
@@ -210,7 +252,7 @@ export default function Contact() {
 
               {path === "general" && (
                 <>
-                  {(product || quote || type) && (
+                  {!sheet && (product || quote || type) && (
                     <p className="rounded-control bg-ice px-4 py-3 text-small text-ink">
                       <span className="font-semibold">
                         {quote ? "Quote request" : product ? "Product enquiry" : `${type.label} enquiry`}
@@ -226,7 +268,7 @@ export default function Contact() {
                     <select
                       id="enquiry_type"
                       name="enquiry_type"
-                      defaultValue={type?.id ?? ""}
+                      defaultValue={sheet?.type ?? type?.id ?? ""}
                       required
                       aria-invalid={!!errors.enquiry_type || undefined}
                       aria-describedby="enquiry_type-err"

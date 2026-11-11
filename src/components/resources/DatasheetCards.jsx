@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PRODUCTS, partnerOf } from "../../data/products";
-import { DATASHEET_ONLY } from "../../data/datasheets";
+import { DATASHEET_ONLY, datasheetHref } from "../../data/datasheets";
 import { docHref } from "../../lib/contactLinks";
 
 /**
  * Datasheets & Brochures as product cards (data/products.js, or data/datasheets.js for a system with no
  * catalogue entry; nothing invented): the product image with its alt text, the partner and product
  * name, a DATASHEET / BROCHURE badge, the power / energy line and the one-line summary, and one link:
- * "Download Datasheet" where the PDF is on the site (`datasheet`), otherwise "Request Datasheet" /
- * "Request Brochure" — the homepage contact form with that request filled in (docHref). Both count as a
- * datasheet_request (lib/analytics; `data-doc` names the document). The link covers the whole card; it
+ * "Request Datasheet" — for a system whose PDF is on the site (`datasheet`), the contact page, which
+ * downloads it once the form is sent (/contact?datasheet=<id>, data/datasheets.js); otherwise
+ * "Request Datasheet" / "Request Brochure" on the homepage form with the request filled in (docHref).
+ * Both count as a datasheet_request (lib/analytics; `data-doc` names the document). The link covers the whole card; it
  * is a real <a href>, so it works without JavaScript. Hover: the card lifts, its border firms, the
  * product rises a little over a soft light, the arrow slides. The cards arrive in turn (data-rv).
  *
@@ -33,7 +34,7 @@ export default function DatasheetCards({ items }) {
   );
 }
 
-// The card's one link (a download or a request): an outline pill that fills green with the card's hover,
+// The card's one link (a request): an outline pill that fills green with the card's hover,
 // its ::after stretched over the whole card.
 const LINK =
   "mt-6 inline-flex min-h-11 items-center justify-center gap-2 self-start rounded-full border border-accent bg-white px-6 text-button font-semibold text-accent transition-colors duration-fast after:absolute after:inset-0 after:content-[''] group-hover/sheet:bg-accent group-focus-visible/sheet:bg-accent group-focus-within/sheet:bg-accent group-hover/sheet:text-on-accent group-focus-visible/sheet:text-on-accent group-focus-within/sheet:text-on-accent focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:ring-2 focus-visible:after:ring-link";
@@ -86,19 +87,11 @@ function SheetCard({ product, kind }) {
         )}
         <p className="mt-2 flex-1 text-small text-copy">{product.summary}</p>
 
-        {product.datasheet ? (
-          <a href={product.datasheet} download="" data-doc={name} className={LINK}>
-            Download {kind}
-            <span className="sr-only">: {name} (PDF)</span>
-            <Download aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/sheet:translate-y-0.5 group-focus-visible/sheet:translate-y-0.5 group-focus-within/sheet:translate-y-0.5 motion-reduce:transition-none" />
-          </a>
-        ) : (
-          <Link to={docHref(product, kind)} className={LINK}>
-            Request {kind}
-            <span className="sr-only">: {name}</span>
-            <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/sheet:translate-x-1 group-focus-visible/sheet:translate-x-1 group-focus-within/sheet:translate-x-1 motion-reduce:transition-none" />
-          </Link>
-        )}
+        <Link to={product.datasheet ? datasheetHref(product) : docHref(product, kind)} data-doc={name} className={LINK}>
+          Request {kind}
+          <span className="sr-only">: {name}</span>
+          <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/sheet:translate-x-1 group-focus-visible/sheet:translate-x-1 group-focus-within/sheet:translate-x-1 motion-reduce:transition-none" />
+        </Link>
       </div>
     </article>
   );

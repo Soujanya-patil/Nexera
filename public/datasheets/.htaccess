@@ -1,0 +1,7 @@
+# Datasheet PDFs: kept out of search. They are never linked directly — each downloads after its
+# contact form is sent (/contact?datasheet=<id>, src/pages/Contact.jsx).
+<IfModule mod_headers.c>
+  <FilesMatch "\.pdf$">
+    Header set X-Robots-Tag "noindex, nofollow"
+  </FilesMatch>
+</IfModule>

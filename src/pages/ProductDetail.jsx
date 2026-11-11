@@ -8,7 +8,6 @@ import {
   ChevronRight,
   Cpu,
   DraftingCompass,
-  Download,
   FileText,
   Expand,
   Flame,
@@ -33,6 +32,7 @@ import { introLine, productPage } from "../data/productPages";
 import { SUPPORT_POINTS } from "../data/serviceTraining";
 import { ARTICLES } from "../data/articles";
 import { docHref } from "../lib/contactLinks";
+import { datasheetHref } from "../data/datasheets";
 import PillLink from "../components/PillLink";
 import AnimatedTabs from "@/components/smoothui/animated-tabs";
 import MagneticButton from "../components/ui/MagneticButton";
@@ -248,17 +248,17 @@ function ProductView({ product }) {
                     Enquire About This System
                   </MagneticButton>
                 </span>
-                {/* The datasheet: a download where the file exists, otherwise a request (the homepage form,
-                    pre-filled) — the same "Request Datasheet" as the catalogue cards. */}
+                {/* The datasheet: where the PDF is on the site, the contact page, which downloads it once the
+                    form is sent (data/datasheets.js); otherwise the homepage form, pre-filled — the same
+                    "Request Datasheet" as the catalogue cards. */}
                 <a
                   data-a="cta"
-                  href={product.datasheet ?? docHref(product)}
-                  download={product.datasheet ? "" : undefined}
-                  data-doc={product.datasheet ? `${partner.name} ${product.name}` : undefined}
+                  href={product.datasheet ? datasheetHref(product) : docHref(product)}
+                  data-doc={`${partner.name} ${product.name}`}
                   className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full border border-white/60 px-6 py-3 text-button font-semibold text-white hover:border-white focus-visible:border-white hover:bg-white/10 focus-visible:bg-white/10"
                 >
-                  {product.datasheet ? <Download aria-hidden="true" className="h-4 w-4" /> : <FileText aria-hidden="true" className="h-4 w-4" />}
-                  {product.datasheet ? "Download Datasheet" : "Request Datasheet"}
+                  <FileText aria-hidden="true" className="h-4 w-4" />
+                  Request Datasheet
                 </a>
               </div>
               <Link data-a="cta" to="/products" className="group/back mt-6 inline-flex items-center gap-1.5 text-small text-paper/60 hover:text-white focus-visible:text-white">

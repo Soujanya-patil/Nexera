@@ -112,8 +112,9 @@ export function pageView() {
   setTimeout(() => gtag("event", "page_view", { page_location: location.href, page_path: location.pathname + location.search, page_title: document.title }), 120);
 }
 
-/** A successful enquiry: which form only ("callback" | "full" | "partner" | "quick"). */
-export const trackLead = (formSource) => track("generate_lead", { form_source: formSource });
+/** A successful enquiry: which form ("callback" | "full" | "partner" | "quick" | "datasheet"), plus, for a
+ * datasheet, the product's name (`extra`: { item_name }). */
+export const trackLead = (formSource, extra = {}) => track("generate_lead", { form_source: formSource, ...extra });
 
 // --- Clicks: calls, emails, WhatsApp, the mobile bar's Enquire, datasheet requests, Solutions /
 // Products CTAs (one listener) ---------------------------------------------------------------------
@@ -135,8 +136,9 @@ function onClick(e) {
     return;
   }
   if (url.origin !== location.origin) return;
-  // Datasheet / brochure requests: the catalogue's request links (/#contact?…&doc=<product>), the PDF
-  // downloads (data-doc names the document) and any "Request / Download Datasheet" link.
+  // Datasheet / brochure requests: the catalogue's request links (/#contact?…&doc=<product>, or the
+  // datasheet gate's /contact?datasheet=<id>, with data-doc naming the document) and any "Request /
+  // Download Datasheet" link.
   const doc = new URLSearchParams(url.hash.split("?")[1] || "").get("doc") || url.searchParams.get("doc") || a.dataset.doc;
   if (doc || /\b(Request|Download) (Datasheet|Brochure)\b/i.test(text)) {
     return track("datasheet_request", { item_name: doc || "", link_text: text.slice(0, 60) });
