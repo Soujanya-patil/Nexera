@@ -10,9 +10,13 @@ import InsightCards from "../components/resources/InsightCards";
 import { useWanted } from "../components/resources/useWanted";
 import { isFirstLoad } from "../lib/firstLoad";
 
-// The documents on offer: a product (data/products.js) and which document it is.
+// The documents on offer, in order: a product (data/products.js, or data/datasheets.js for the X10, which
+// has no catalogue entry) and which document it is. A product with a `datasheet` file downloads it.
 const datasheets = [
+  { product: "tcl-blueark-x1", kind: "Datasheet" },
+  { product: "tcl-blueark-x5", kind: "Datasheet" },
   { product: "tcl-blueark-w10", kind: "Datasheet" },
+  { product: "tcl-blueark-x10", kind: "Datasheet" },
   { product: "hithium-power-625", kind: "Brochure" },
 ];
 
@@ -87,7 +91,7 @@ function Heading({ id, children }) {
 /**
  * /resources — the Knowledge Hub. A dark hero (energy grid, the h1, count chips from the data), a
  * sticky section bar (FilterBar: glides to a section, follows the one being read), then:
- *   Datasheets           product cards, each asking for its document on the contact form (DatasheetCards)
+ *   Datasheets           product cards, each downloading its PDF or asking for it on the contact form (DatasheetCards)
  *   FAQs                 the article's animated accordion (ArticleFaq), same words
  *   News & Insights      numbered cards — "Coming soon" while a title has no page (InsightCards)
  * and the article's closing band. The page's background shifts softly between white and light grey

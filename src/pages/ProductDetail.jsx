@@ -254,6 +254,7 @@ function ProductView({ product }) {
                   data-a="cta"
                   href={product.datasheet ?? docHref(product)}
                   download={product.datasheet ? "" : undefined}
+                  data-doc={product.datasheet ? `${partner.name} ${product.name}` : undefined}
                   className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full border border-white/60 px-6 py-3 text-button font-semibold text-white hover:border-white focus-visible:border-white hover:bg-white/10 focus-visible:bg-white/10"
                 >
                   {product.datasheet ? <Download aria-hidden="true" className="h-4 w-4" /> : <FileText aria-hidden="true" className="h-4 w-4" />}

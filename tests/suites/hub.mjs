@@ -59,9 +59,12 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
   const strings = [...src.matchAll(/"([^"\n]{14,})"/g)].map((m) => m[1]).filter((t) => /[A-Z]/.test(t) && !/^[./ ]/.test(t) && !/[{=[]/.test(t));
   const texts = [
     "Datasheets, answers, and the latest from Nexera",
+    "BlueArk X1",
+    "BlueArk X5",
     "BlueArk W10",
+    "BlueArk X10",
     "∞Power 6.25 MWh",
-    "Request Datasheet",
+    "Download Datasheet",
     "Request Brochure",
     "Datasheets & Brochures",
     "FAQs",
@@ -137,8 +140,12 @@ for (const [W, H] of [
 }
 
 // ---- Datasheets: product cards → the homepage contact form, with the request pre-filled ------------------
+// Four TCL datasheets (PDF downloads; the X10 is not in the catalogue: data/datasheets.js), then the Hithium brochure (a request).
 const SHEETS = [
-  { name: "BlueArk W10", partner: "TCL", kind: "Datasheet", interest: "ci", alt: "TCL BlueArk W10 energy storage cabinet", specs: "125 kW261 kWh", summary: "A 125 kW / 261 kWh cabinet, expandable to 6.3 MWh, with a layered protection architecture.", message: "Please send me the datasheet for TCL BlueArk W10." },
+  { name: "BlueArk X1", partner: "TCL", kind: "Datasheet", file: "/datasheets/tcl-blueark-x1-datasheet.pdf", alt: "TCL BlueArk X1 residential energy storage system: a stacked battery unit with an integrated hybrid inverter", specs: "8–128 kWhUp to 15 kW", summary: "A hybrid inverter paired with a modular, stacked LFP battery — from 8 kWh up to 128 kWh for the home." },
+  { name: "BlueArk X5", partner: "TCL", kind: "Datasheet", file: "/datasheets/tcl-blueark-x5-datasheet.pdf", alt: "TCL BlueArk X5 all-in-one industrial energy storage cabinet", specs: "50 kW100 kWh", summary: "An all-in-one, DC-coupled system for small and medium C&I sites — suited to new PV + storage projects." },
+  { name: "BlueArk W10", partner: "TCL", kind: "Datasheet", file: "/datasheets/tcl-blueark-w10-datasheet.pdf", alt: "TCL BlueArk W10 energy storage cabinet", specs: "125 kW261 kWh", summary: "A 125 kW / 261 kWh cabinet, expandable to 6.3 MWh, with a layered protection architecture." },
+  { name: "BlueArk X10", partner: "TCL", kind: "Datasheet", file: "/datasheets/tcl-blueark-x10-datasheet.pdf", alt: "TCL BlueArk X10 C&I energy storage cabinet", specs: "125 kW261 kWh", summary: "A 125 kW / 261 kWh hybrid C&I system with PV input (up to 250 kWp at 1500 V, 8 MPPTs) and diesel-generator support." },
   { name: "∞Power 6.25 MWh", partner: "Hithium", kind: "Brochure", interest: "utility", alt: "Hithium ∞Power 6.25 MWh liquid-cooled containerised energy storage system", specs: "6.25 MWh2 h | 4 h", summary: "A 6.25 MWh liquid-cooled system for utility-scale projects, available in 2-hour and 4-hour configurations.", message: "Please send me the brochure for Hithium ∞Power 6.25 MWh." },
 ];
 const formState = (p) =>
@@ -178,19 +185,48 @@ for (const [W, H] of [
         summary: c.querySelectorAll("p")[2]?.textContent.trim(),
         label: a?.textContent.replace(/\s+/g, " ").trim(),
         href: a?.getAttribute("href"),
+        download: a?.hasAttribute("download"),
+        doc: a?.dataset.doc ?? null,
         forms: c.querySelectorAll("form, input").length,
       };
     })
   );
-  const exp = SHEETS.map((s) => ({ ...s, label: `Request ${s.kind}: ${s.partner} ${s.name}` }));
+  const exp = SHEETS.map((s) => ({ ...s, label: s.file ? `Download ${s.kind}: ${s.partner} ${s.name} (PDF)` : `Request ${s.kind}: ${s.partner} ${s.name}` }));
   const okCards =
     cards.length === SHEETS.length &&
     cards.every(
-      (c, i) => c.alt === exp[i].alt && c.loaded && c.partner === exp[i].partner && c.name === exp[i].name && c.specs === exp[i].specs && c.summary === exp[i].summary && c.label === exp[i].label && c.forms === 0 && c.href.startsWith(`/#contact?interest=${exp[i].interest}&doc=`)
+      (c, i) => c.alt === exp[i].alt && c.loaded && c.partner === exp[i].partner && c.name === exp[i].name && c.specs === exp[i].specs && c.summary === exp[i].summary && c.label === exp[i].label && c.forms === 0 && (exp[i].file ? c.href === exp[i].file && c.download && c.doc === `${exp[i].partner} ${exp[i].name}` : c.href.startsWith(`/#contact?interest=${exp[i].interest}&doc=`) && !c.download)
     );
-  check(`${tag} two product cards (products.js image + alt, partner, name, power/energy line, summary; one "Request …" link; no form)`, okCards, cards);
-  const hrefs = cards.map((c) => new URLSearchParams(c.href.slice("/#contact?".length)));
-  check(`${tag} links: interest ci / utility, doc = product name, kind=brochure on the brochure only`, hrefs.map((q) => `${q.get("interest")}|${q.get("doc")}|${q.get("kind")}`).join(";") === "ci|TCL BlueArk W10|null;utility|Hithium ∞Power 6.25 MWh|brochure", hrefs.map((q) => q.toString()));
+  check(`${tag} five document cards in order X1, X5, W10, X10, brochure (image + alt, partner, name, power/energy line, summary; one link: "Download Datasheet" to the PDF, or "Request Brochure"; no form)`, okCards, cards);
+  const hrefs = cards.filter((c) => !c.download).map((c) => new URLSearchParams(c.href.slice("/#contact?".length)));
+  check(`${tag} the brochure's request link: interest utility, doc = product name, kind=brochure`, hrefs.map((q) => `${q.get("interest")}|${q.get("doc")}|${q.get("kind")}`).join(";") === "utility|Hithium ∞Power 6.25 MWh|brochure", hrefs.map((q) => q.toString()));
+  // Every row full, or a short last row centred: no row ends in an empty slot.
+  const rows = await p.evaluate(() => {
+    const ul = document.querySelector("#datasheets ul");
+    const box = ul.getBoundingClientRect();
+    const byTop = {};
+    for (const li of ul.children) {
+      const r = li.getBoundingClientRect();
+      (byTop[Math.round(r.top)] ??= []).push([r.left - box.left, box.right - r.right]);
+    }
+    return Object.keys(byTop).map(Number).sort((a, b) => a - b).map((t) => byTop[t]).map((row) => ({ n: row.length, left: Math.round(row[0][0]), right: Math.round(row[row.length - 1][1]) }));
+  });
+  check(`${tag} rows of ${W > 1000 ? "3 + 2" : "1"}, a short row centred`, rows.every((r) => Math.abs(r.left - r.right) <= 1) && rows.map((r) => r.n).join("+") === (W > 1000 ? "3+2" : "1+1+1+1+1"), rows);
+  if (W > 500) {
+    // The PDFs are served as PDFs.
+    const pdfs = await p.evaluate(
+      async (files) =>
+        Promise.all(
+          files.map(async (f) => {
+            const r = await fetch(f);
+            const b = new Uint8Array(await r.arrayBuffer());
+            return { f, status: r.status, type: r.headers.get("content-type"), pdf: String.fromCharCode(...b.slice(0, 5)) === "%PDF-" };
+          })
+        ),
+      SHEETS.filter((x) => x.file).map((x) => x.file)
+    );
+    check(`${tag} the four datasheets download as PDFs (200, application/pdf)`, pdfs.every((x) => x.status === 200 && /application\/pdf/.test(x.type) && x.pdf), pdfs);
+  }
   if (W > 500) {
     const card = p.locator("#datasheets .sheet-card").nth(1);
     await card.scrollIntoViewIfNeeded();
@@ -210,10 +246,18 @@ for (const [W, H] of [
         .map((el) => ({ h: Math.round(el.getBoundingClientRect().height), t: el.textContent.trim().slice(0, 18) }))
         .filter((x) => x.h > 0 && x.h < 44)
     );
-    check(`${tag} touch targets ≥ 44px (bar, Request links, Start here, FAQ)`, small.length === 0, small);
+    check(`${tag} touch targets ≥ 44px (bar, document links, Start here, FAQ)`, small.length === 0, small);
   }
-  // Click (the button at 1440, the card's image at 390 — the whole card is the link) → the form.
-  const i = W > 500 ? 0 : 1;
+  if (W > 500) {
+    // A click on a download card saves its file (no navigation).
+    const dl = p.waitForEvent("download", { timeout: 8000 }).catch(() => null);
+    await p.locator("#datasheets .sheet-card").nth(0).locator("a").click();
+    const d = await dl;
+    check(`${tag} "Download Datasheet" saves tcl-blueark-x1-datasheet.pdf and stays on /resources`, d?.suggestedFilename() === "tcl-blueark-x1-datasheet.pdf" && new URL(p.url()).pathname === "/resources", { file: d?.suggestedFilename(), url: p.url() });
+  }
+  // The request card (the brochure): click (the button at 1440, the card's image at 390 — the whole card
+  // is the link) → the form.
+  const i = SHEETS.length - 1;
   await p.evaluate(() => (window.__sameDoc = 1));
   const card = p.locator("#datasheets .sheet-card").nth(i);
   await card.locator("img").evaluate((el) => el.scrollIntoView({ block: "center" }));
@@ -242,7 +286,7 @@ for (const [W, H] of [
   await p.goto(BASE + "/#contact?interest=ci&doc=TCL+BlueArk+W10", { waitUntil: "networkidle" });
   await p.waitForTimeout(2500);
   const f = await formState(p);
-  check("direct load of a card's link: form in view, interest ci, message pre-filled", f.path === "/" && f.top >= 0 && f.top < 200 && f.interest === "ci" && f.message === SHEETS[0].message, f);
+  check("direct load of a card's link: form in view, interest ci, message pre-filled", f.path === "/" && f.top >= 0 && f.top < 200 && f.interest === "ci" && f.message === "Please send me the datasheet for TCL BlueArk W10.", f);
   // Without a doc, nothing is pre-filled (the existing ?interest= links).
   await p.goto(BASE + "/#contact?interest=utility", { waitUntil: "networkidle" });
   await p.waitForTimeout(2000);
@@ -301,7 +345,7 @@ for (const [W, H] of [
     insights: document.querySelectorAll(".insight-soon").length,
     hiddenText: [...document.querySelectorAll("main h2, main h3, .insight-soon")].filter((el) => getComputedStyle(el).opacity === "0" || el.getBoundingClientRect().height === 0).length,
   }));
-  check("JS disabled: everything readable (h1, 2 datasheet cards, 3 FAQs, 4 insights)", t.h1 === "Datasheets, answers, and the latest from Nexera" && t.cards === SHEETS.length && t.faq === 3 && t.insights === 4 && t.hiddenText === 0, t);
+  check("JS disabled: everything readable (h1, 5 document cards, 3 FAQs, 4 insights)", t.h1 === "Datasheets, answers, and the latest from Nexera" && t.cards === SHEETS.length && t.faq === 3 && t.insights === 4 && t.hiddenText === 0, t);
   await q.context().close();
 }
 

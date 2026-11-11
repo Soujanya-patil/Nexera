@@ -18,6 +18,7 @@
  * brochure), and is limited to what that content states.
  *
  * `imageSize` is the image file's own width and height (set on every <img> so nothing moves while it loads).
+ * `datasheet` is the product's datasheet PDF in public/datasheets/ (a download), or null (sent on request).
  * `shareImage` (optional) is the page's 1200x630 JPG for link previews, made by scripts/share-images.py
  * (public/og/); without one the page shares the default image.
  *
@@ -139,7 +140,7 @@ export const PRODUCTS = [
       cell: "LFP, Tier 1",
       protection: "IP66 (battery)",
     },
-    datasheet: null,
+    datasheet: "/datasheets/tcl-blueark-x1-datasheet.pdf",
     sources: [`${TCL_BROCHURE}: BlueArk X1, X1 Inverter, X1 Battery, Safety Design and Excellent Performance pages`],
   },
   {
@@ -205,7 +206,7 @@ export const PRODUCTS = [
       cell: "314 Ah",
       protection: "IP55",
     },
-    datasheet: null,
+    datasheet: "/datasheets/tcl-blueark-x5-datasheet.pdf",
     sources: [`${TCL_BROCHURE}: BlueArk X5, All-in-one C&I ESS, Flexible Expansion and Safety & Adaptability pages`, TCL_DECK],
   },
   {
@@ -277,7 +278,7 @@ export const PRODUCTS = [
         { id: "intake", label: "Intake Valve", anchor: [14.7, 57.0], text: "Lower valve on the inside of the cabinet door — part of the protection architecture." },
       ],
     },
-    datasheet: null,
+    datasheet: "/datasheets/tcl-blueark-w10-datasheet.pdf",
     sources: [`${TCL_BROCHURE}: Flexible Scalability page`, "TCL Protection Architecture slide", TCL_DECK],
   },
   {

@@ -5,8 +5,8 @@ import { partnerOf } from "../data/products";
  *
  * docHref — the homepage contact form asking for the product's document: its segment preselects the
  *   interest, and `doc` (+ `kind` for a brochure) pre-fills the message (HomeContact) — "Please send me
- *   the datasheet for TCL BlueArk W10." — which the visitor can still edit. There are no datasheet files
- *   on the site: every datasheet is sent on request.
+ *   the datasheet for TCL BlueArk W10." — which the visitor can still edit. Used where the document is
+ *   not on the site (a product without a `datasheet` PDF, or a brochure).
  *
  * discussHref — the contact page with the product pre-selected (/contact?product=<id>), the same as the
  *   product page's "Enquire About This System".

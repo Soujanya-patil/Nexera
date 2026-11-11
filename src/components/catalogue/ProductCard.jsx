@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, FileText, Plus } from "lucide-react";
+import { ArrowRight, Check, Download, FileText, Plus } from "lucide-react";
 import { applicationLabel, partnerOf } from "../../data/products";
 import { discussHref, docHref } from "../../lib/contactLinks";
 import { useProductTransition } from "../../lib/viewTransition";
@@ -14,8 +14,9 @@ import { useProductTransition } from "../../lib/viewTransition";
  *            there) — the same figures as the product page's "At a glance". A product whose sources
  *            give fewer figures simply shows fewer rows; nothing is estimated or filled in.
  *   summary  two lines
- *   actions  "Request Datasheet" (the homepage form, pre-filled with the request — datasheets are sent
- *            on request) and "Discuss this system" (the contact page with the product pre-selected)
+ *   actions  "Download Datasheet" where the PDF is on the site (`datasheet`), otherwise "Request
+ *            Datasheet" (the homepage form, pre-filled with the request); and "Discuss this system" (the
+ *            contact page with the product pre-selected)
  *
  * The whole card opens the product page (the name's link is stretched over it); the two actions and
  * Compare sit above that link. Hover: the card rises 4 px and its border firms (card-hover), the product
@@ -110,9 +111,15 @@ export default function ProductCard({ product, compared, compareFull, onToggleCo
         <p className="mt-4 line-clamp-2 flex-1 text-small text-copy">{product.summary}</p>
 
         <div className="mt-6 grid gap-2">
-          <a href={docHref(product)} className={`${action} border-line text-ink hover:border-accent hover:text-accent focus-visible:border-accent`}>
-            <FileText aria-hidden="true" className="h-4 w-4 shrink-0" />
-            Request Datasheet
+          {/* A download where the datasheet PDF is on the site, otherwise a request (as on the product page). */}
+          <a
+            href={product.datasheet ?? docHref(product)}
+            download={product.datasheet ? "" : undefined}
+            data-doc={product.datasheet ? fullName : undefined}
+            className={`${action} border-line text-ink hover:border-accent hover:text-accent focus-visible:border-accent`}
+          >
+            {product.datasheet ? <Download aria-hidden="true" className="h-4 w-4 shrink-0" /> : <FileText aria-hidden="true" className="h-4 w-4 shrink-0" />}
+            {product.datasheet ? "Download Datasheet" : "Request Datasheet"}
             <span className="sr-only">: {fullName}</span>
           </a>
           <Link to={discussHref(product)} className={`${action} border-accent text-accent hover:bg-accent hover:text-on-accent focus-visible:bg-accent focus-visible:text-on-accent`}>
