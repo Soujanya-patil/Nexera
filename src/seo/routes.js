@@ -49,24 +49,26 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
  * Business Profile), and the email is the one the site shows (sales@nexerapower.com); no social profiles. On the homepage,
  * the contact page and the Bengaluru page (`localBusiness` routes) the same node is also the
  * LocalBusiness, with the opening hours. Every page names the business the same way (structured data
- * only; the visible brand is unchanged): name "NexEra PowerTech Pvt Ltd", legalName (the footer's
- * legal line) and, as alternateName, the site's brand name and the Business Profile's spelling. The
- * logo is the NEXERA mark (the navy X with the lime bolt, on white) as the 180x180
- * public/apple-touch-icon.png, the same mark as public/favicon.svg.
+ * only; the visible brand is unchanged): name and legalName "Nexera Powertech Private Limited" (the
+ * footer's legal line; the director's Final Copy) and, as alternateName, the site's brand name, the
+ * Business Profile's name ("NexEra PowerTech Pvt Ltd") and its earlier spelling. The phone is written
+ * +91-97423-53341. The logo is the NEXERA wordmark (the header's own file, src/assets/brand/
+ * nexera-logo.svg) at a stable address, public/nexera-logo.svg.
  */
 export const LOCAL_BUSINESS = { hours: HOURS };
 /** The site's own name (the homepage's WebSite node): the visible brand, not the business name. */
 export const SITE_NAME = "NEXERA Powertech";
 export const ORGANIZATION = {
-  name: "NexEra PowerTech Pvt Ltd",
+  name: "Nexera Powertech Private Limited",
   legalName: "Nexera Powertech Private Limited",
-  alternateName: [SITE_NAME, BUSINESS_NAME],
+  alternateName: [SITE_NAME, "NexEra PowerTech Pvt Ltd", BUSINESS_NAME],
   description:
     "Authorised distributor and solution provider for TCL and Hithium battery energy storage systems in India, with design, commissioning, training and after-sales support.",
   address: ADDRESS_PARTS,
-  telephone: PHONE,
+  // "+91 97423 53341" → "+91-97423-53341".
+  telephone: PHONE.replace(/\s+/g, "-"),
   email: EMAIL,
-  logo: "/apple-touch-icon.png",
+  logo: "/nexera-logo.svg",
 };
 
 /** 1200x630 share image (public/og-default.jpg): the NEXERA wordmark and cabinet on the dark green. */

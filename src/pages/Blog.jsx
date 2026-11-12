@@ -43,6 +43,8 @@ export default function Blog() {
       <ResourcesHero id="blog" eyebrow="Blog" crumbs={[["Blog", "/blog"]]} title="NEXERA Blog" intro="Plain guides on battery energy storage for homes, businesses and the grid." reveal={arrived} />
       <section aria-label="Articles" className="bg-white pb-section pt-6 lg:pt-12">
         <div className="container-site">
+          {/* The cards' titles are h3s: this (visually hidden) h2 keeps the heading levels in order. */}
+          <h2 className="sr-only">Articles</h2>
           <GuidesBento articles={posts} motion={motion} />
         </div>
       </section>

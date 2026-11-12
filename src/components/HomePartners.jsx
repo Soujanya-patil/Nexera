@@ -2,58 +2,56 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import AnimatedText from "./ui/AnimatedText";
 import { useEntrance } from "../lib/entrance";
-import { useMediaQuery } from "../lib/scrollSteps";
-import { Marquee } from "./ui/marquee";
 import { APPLICATIONS, LISTED_PRODUCTS, applicationLabel } from "../data/products";
 import tclLogo from "../assets/partners/tcl-logo.png";
 import hithiumLogo from "../assets/partners/hithium-logo.png";
 import { DUR, EASE } from "../lib/tokens";
 
 // Equal treatment for both partners.
-// Heights are set per logo so the three read at a similar optical size (the source PNGs differ).
+// Heights are set per logo so the two read at a similar optical size (a step smaller on phones, so both sit in one row) (the source PNGs differ).
 // Where each partner's systems fit is read from the product catalogue — never written separately.
 const logos = [
-  { id: "tcl", name: "TCL", src: tclLogo, size: [86, 31], className: "h-8" },
-  { id: "hithium", name: "Hithium", src: hithiumLogo, size: [355, 89], className: "h-9" },
+  { id: "tcl", name: "TCL", src: tclLogo, size: [86, 31], className: "h-7 sm:h-8" },
+  { id: "hithium", name: "Hithium", src: hithiumLogo, size: [355, 89], className: "h-8 sm:h-9" },
 ].map((l) => {
   const products = LISTED_PRODUCTS.filter((p) => p.partner === l.id);
   const apps = APPLICATIONS.filter((a) => products.some((p) => p.applications.includes(a.id))).map((a) => applicationLabel(a.id));
   return { ...l, apps, count: products.length };
 });
 
-// Each logo rests slightly muted; on hover it comes to full presence (colour + opacity) with a short
-// lift, a green indicator draws beneath it, and the hairline divider beside it brightens.
-const Logo = ({ l, index, hidden, onHover }) => (
-  <li
-    aria-hidden={hidden || undefined}
-    data-e="logo"
-    data-logo={index}
-    onPointerEnter={() => onHover(l.id)}
-    onPointerLeave={() => onHover(null)}
-    className="group/logo relative flex shrink-0 items-center px-6 sm:px-8"
-  >
-    <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-fast group-hover/logo:bg-accent/60 group-focus-visible/logo:bg-accent/60 group-focus-within/logo:bg-accent/60" />
-    <img
-      src={l.src}
-      width={l.size[0]}
-      height={l.size[1]}
-      loading="lazy"
-      decoding="async"
-      // The same alt in the marquee's looping copies (they sit in aria-hidden, so screen readers skip
-      // them; crawlers still see a description).
-      alt={`${l.name} logo`}
-      className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-base ease-standard group-hover/logo:-translate-y-0.5 group-focus-visible/logo:-translate-y-0.5 group-focus-within/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-focus-visible/logo:opacity-100 group-focus-within/logo:opacity-100 group-hover/logo:grayscale-0 group-focus-visible/logo:grayscale-0 group-focus-within/logo:grayscale-0`}
-    />
-    <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover/logo:scale-x-100 group-focus-visible/logo:scale-x-100 group-focus-within/logo:scale-x-100" />
+// The two logos, static, each a link to its partner page (the director's Final Copy: no looping strip).
+// Each rests slightly muted; on hover or keyboard focus it comes to full presence (colour + opacity)
+// with a short lift, a green indicator draws beneath it, and the hairline between the two brightens.
+const Logo = ({ l, index, last, onHover }) => (
+  <li data-e="logo" data-logo={index} className="group/logo relative flex shrink-0 items-center px-4 sm:px-8">
+    {!last && (
+      <span aria-hidden="true" className="absolute right-0 top-1/2 h-6 w-px -translate-y-1/2 bg-line transition-colors duration-fast group-hover/logo:bg-accent/60 group-focus-within/logo:bg-accent/60" />
+    )}
+    <Link
+      to={`/partners/${l.id}`}
+      onPointerEnter={() => onHover(l.id)}
+      onPointerLeave={() => onHover(null)}
+      onFocus={() => onHover(l.id)}
+      onBlur={() => onHover(null)}
+      className="relative grid min-h-11 place-items-center rounded-control px-2 py-2 focus-visible:outline-2 focus-visible:outline-offset-4"
+    >
+      <img
+        src={l.src}
+        width={l.size[0]}
+        height={l.size[1]}
+        loading="lazy"
+        decoding="async"
+        alt={`${l.name} logo`}
+        className={`${l.className} w-auto max-w-none object-contain opacity-60 grayscale-[70%] transition-[opacity,filter,translate] duration-base ease-standard group-hover/logo:-translate-y-0.5 group-focus-within/logo:-translate-y-0.5 group-hover/logo:opacity-100 group-focus-within/logo:opacity-100 group-hover/logo:grayscale-0 group-focus-within/logo:grayscale-0`}
+      />
+    </Link>
+    <span aria-hidden="true" className="absolute bottom-0 left-1/2 h-0.5 w-10 -translate-x-1/2 scale-x-0 rounded-full bg-accent transition-[scale] duration-base ease-standard group-hover/logo:scale-x-100 group-focus-within/logo:scale-x-100" />
   </li>
 );
 
 /**
- * Technology partners. The logos run in a slow Magic UI Marquee (installed from the Magic UI
- * registry; CSS keyframes only, no JS animation), faded at both edges and paused on hover so a
- * logo can be read. The moving copies are hidden from assistive tech, which gets one plain list of
- * partner names (with where their systems fit) instead. Under prefers-reduced-motion the logos sit
- * still in a single row.
+ * Technology partners. The two logos, TCL and Hithium, sit still in one centred row (no looping strip
+ * and no hidden copies), each a link to its partner page with its alt text ("TCL logo", "Hithium logo").
  *
  * Entrance ("technology reveal"): eyebrow → heading (its own word reveal) → description, then the
  * logos arrive from the right partner by partner — TCL, then Hithium, ~100 ms apart.
@@ -62,7 +60,6 @@ const Logo = ({ l, index, hidden, onHover }) => (
  * The partner names in the description link to their partner pages (/partners/:id).
  */
 export default function HomePartners() {
-  const still = useMediaQuery("(prefers-reduced-motion: reduce)");
   const [hot, setHot] = useState(null);
   const root = useRef(null);
   const enter = useEntrance(root, ({ tl, q }) => {
@@ -101,35 +98,11 @@ export default function HomePartners() {
           </p>
         </div>
         <div className="min-w-0">
-          {still ? (
-            <ul className="flex flex-wrap items-center justify-center" aria-label="Technology partners">
-              {logos.map((l, i) => (
-                <Logo key={l.name} l={l} index={i} onHover={setHot} />
-              ))}
-            </ul>
-          ) : (
-            <>
-              <ul className="sr-only" aria-label="Technology partners">
-                {logos.map((l) => (
-                  <li key={l.name}>
-                    {l.name}: {l.apps.join(", ")}
-                  </li>
-                ))}
-              </ul>
-              <Marquee
-                pauseOnHover
-                repeat={4}
-                aria-hidden="true"
-                className="py-4 [--duration:36s] [--gap:0rem] [mask-image:linear-gradient(to_right,transparent,#000_14%,#000_86%,transparent)]"
-              >
-                <ul className="flex items-center">
-                  {logos.map((l, i) => (
-                    <Logo key={l.name} l={l} index={i} hidden onHover={setHot} />
-                  ))}
-                </ul>
-              </Marquee>
-            </>
-          )}
+          <ul className="flex flex-wrap items-center justify-center py-4" aria-label="Technology partners">
+            {logos.map((l, i) => (
+              <Logo key={l.name} l={l} index={i} last={i === logos.length - 1} onHover={setHot} />
+            ))}
+          </ul>
           {/* Where the hovered partner's systems fit (fixed height: hovering never shifts the layout) */}
           <p data-e="fit" aria-hidden="true" className="mt-3 flex h-5 items-center justify-center gap-2 text-micro text-copy">
             <span className={`h-1.5 w-1.5 rounded-full transition-colors duration-fast ${partner ? "bg-accent" : "bg-line"}`} />

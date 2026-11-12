@@ -34,16 +34,20 @@ const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').re
   // Business Profile spelling, and later took "NexEra PowerTech Pvt Ltd" as its name (the brand and the
   // Profile spelling as alternate names); the description then names TCL and Hithium only, in UK
   // spelling ("Authorised"); the office moved to WeWork Galaxy, Residency Rd (its PostalAddress); and the
-  // node gained the public email (sales@nexerapower.com).
+  // node gained the public email (sales@nexerapower.com). Step 7: the name is "Nexera Powertech Private
+  // Limited" (the Profile's name an alternate), the phone +91-97423-53341, the logo the wordmark, and every
+  // page carries og:locale en_IN.
   // Applied to the reference, so everything else in the head must still match exactly.
   const before = fs
     .readFileSync(`${BEFORE_DIST}/resources.html`, "utf8")
     .replace("for TCL, Hithium, CLOU and Midea battery energy storage systems", "for TCL and Hithium battery energy storage systems")
     .replace("Authorized distributor and solution provider", "Authorised distributor and solution provider")
-    .replace('"name":"NEXERA Powertech","url"', '"name":"NexEra PowerTech Pvt Ltd","legalName":"Nexera Powertech Private Limited","alternateName":["NEXERA Powertech","NEXERA Power Tech"],"url"')
+    .replace('"name":"NEXERA Powertech","url"', '"name":"Nexera Powertech Private Limited","legalName":"Nexera Powertech Private Limited","alternateName":["NEXERA Powertech","NexEra PowerTech Pvt Ltd","NEXERA Power Tech"],"url"')
+    .replace('"url":"https://nexerapower.com/apple-touch-icon.png"', '"url":"https://nexerapower.com/nexera-logo.svg"')
+    .replace('<meta property="og:type"', '<meta property="og:locale" content="en_IN" /><meta property="og:type"')
     .replace('"streetAddress":"2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Vijayanagar 2nd Stage"', '"streetAddress":"WeWork Galaxy, 43, Residency Rd, Shanthala Nagar, Ashok Nagar"')
     .replace('"postalCode":"560104"', '"postalCode":"560025"')
-    .replace('"telephone":"+91 97423 53341"', '"telephone":"+91 97423 53341","email":"sales@nexerapower.com"');
+    .replace('"telephone":"+91 97423 53341"', '"telephone":"+91-97423-53341","email":"sales@nexerapower.com"');
   const after = fs.readFileSync(`${AFTER_DIST}/resources.html`, "utf8");
   const pick = (h) => ({
     title: h.match(/<title>[^<]*<\/title>/)[0],
