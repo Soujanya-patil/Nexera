@@ -1,29 +1,19 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import { useScrollReveal } from "../lib/scrollReveal";
-import { applicationLabel, getProduct, productLabel } from "../data/products";
+import { getProduct, productLabel } from "../data/products";
 import { topicLabels } from "../data/solutionTopics";
-import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
+import { CONTACT_EMAIL, CONTACT_PHONE, FORM_INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
 import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
 import { track, trackLead } from "../lib/analytics";
 import { datasheetFor } from "../data/datasheets";
 
-// The customer enquiry types as the enquiry API's interest values.
+// A segment (a Solutions page's ?intent=, a datasheet's or a product's application) as the form's option.
 const INTEREST_OF = { residential: "home", ci: "ci", utility: "utility" };
 
-const paths = [
-  { id: "general", label: "I'm a customer looking for a BESS system" },
-  { id: "oem", label: "Brand / OEM inquiry" },
-];
-
-// Customer enquiry types. Arriving from a Solutions page — /contact?intent=residential|ci|utility —
-// pre-selects the type, so the submission says where the enquiry came from.
-const ENQUIRY_TYPES = [
-  { id: "residential", label: "Residential" },
-  { id: "ci", label: "Commercial & Industrial" },
-  { id: "utility", label: "Utility-Scale" },
-];
+// The fields, in the form's order (the director's Final Copy; the homepage form has the same set).
+const FIELDS = ["name", "mobile", "email", "company", "city", "interest", "requirement", "message"];
 
 /** Starts a file download (same origin; the browser keeps the visitor on the page). */
 function download(file) {
@@ -36,23 +26,24 @@ function download(file) {
 }
 
 export default function Contact() {
-  const [path, setPath] = useState("general");
   const [status, setStatus] = useState("idle"); // idle | sending | done | error
   const [errors, setErrors] = useState({});
   const started = useRef(0);
-  // Arriving from the catalogue: /contact?product=<id> (and/or &intent=quote) pre-fills the
-  // customer form with the system and its application, so the enquiry is routed with context.
+  // Arriving with context: /contact?product=<id> (and/or &intent=quote) from the catalogue,
+  // ?intent=residential|ci|utility (&topics=…) from a Solutions page, ?datasheet=<id> (the datasheet
+  // gate) — each pre-selects the interest and/or pre-fills the message, so the enquiry is routed with it.
   const [params] = useSearchParams();
   const product = getProduct(params.get("product"));
   const intent = params.get("intent");
   const quote = intent === "quote";
-  const type = ENQUIRY_TYPES.find((t) => t.id === (ENQUIRY_TYPES.some((x) => x.id === intent) ? intent : null)) ?? null;
   const name = product ? productLabel(product) : null;
   // The datasheet gate: /contact?datasheet=<id> (a system with a datasheet PDF, data/datasheets.js) asks
   // for the visitor's details first; the PDF downloads only once the form is sent. Unknown id: the plain form.
   const sheet = datasheetFor(params.get("datasheet"));
   // ?topics=<slugs>: the items chosen in a Solutions page's final CTA.
   const topics = topicLabels(intent, params.get("topics"));
+  const preInterest =
+    INTEREST_OF[sheet?.type] ?? INTEREST_OF[intent] ?? (product ? INTEREST_OF[product.applications.includes("ci") ? "ci" : product.applications[0]] : undefined) ?? "";
   const starter = sheet
     ? `Datasheet request: ${sheet.name}`
     : quote
@@ -63,23 +54,28 @@ export default function Contact() {
         ? `I'd like help with: ${topics.join(", ")}`
         : undefined;
 
-  // One check per field, the same rules as the API (lib/enquiry): email is required on this page, and
-  // the company on the brand / OEM path. The proposal is sent as the message, so it has the message's rule.
-  const required = path === "oem" ? { email: true, company: true } : { email: true };
-  const check = (name, value) => {
-    if (name === "enquiry_type") return value ? "" : "Please choose an enquiry type.";
-    if (name === "brand" && path === "oem" && !value.trim()) return "Please fill this in.";
-    return fieldError(name === "proposal" ? "message" : name, value, { required });
-  };
+  // The page is pre-rendered without its query, so on a direct load the browser keeps the plain form's
+  // empty choices: once the page is live, the pre-selection and the pre-filled message go into any field
+  // that is still empty (never over what the visitor has typed). A client-side visit renders them at once.
+  const formRef = useRef(null);
+  useEffect(() => {
+    const f = formRef.current;
+    if (!f) return;
+    if (preInterest && !f.elements.interest.value) f.elements.interest.value = preInterest;
+    if (starter && !f.elements.message.value) f.elements.message.value = starter;
+  }, [preInterest, starter]);
+
+  // One check per field, the same rules (and required fields: name, mobile, interest) as the API (lib/enquiry).
+  const check = (k, value) => fieldError(k, value);
   const onBlur = (e) => {
-    const { name, value } = e.target;
-    if (!name || name === "website") return;
-    afterPress(() => setErrors((er) => ({ ...er, [name]: check(name, value) || undefined })));
+    const { name: k, value } = e.target;
+    if (!FIELDS.includes(k)) return;
+    afterPress(() => setErrors((er) => ({ ...er, [k]: check(k, value) || undefined })));
   };
   // Once a field shows an error, it is checked again as the visitor fixes it.
   const onInput = (e) => {
-    const { name, value } = e.target;
-    if (name && errors[name]) setErrors((er) => ({ ...er, [name]: check(name, value) || undefined }));
+    const { name: k, value } = e.target;
+    if (k && errors[k]) setErrors((er) => ({ ...er, [k]: check(k, value) || undefined }));
   };
 
   // Sends through the shared helper (lib/enquiry -> /api/contact.php), with everything the form knows.
@@ -88,14 +84,13 @@ export default function Contact() {
     started.current ||= Date.now();
     const form = e.currentTarget;
     const f = Object.fromEntries(new FormData(form));
-    const names = path === "general" ? ["name", "email", "mobile", "enquiry_type", "message"] : ["name", "email", "mobile", "company", "brand", "proposal"];
     const er = {};
-    for (const n of names) {
-      const m = check(n, f[n] ?? "");
-      if (m) er[n] = m;
+    for (const k of FIELDS) {
+      const m = check(k, f[k] ?? "");
+      if (m) er[k] = m;
     }
     setErrors(er);
-    const first = names.find((n) => er[n]);
+    const first = FIELDS.find((k) => er[k]);
     if (first) {
       form.elements[first]?.focus();
       return;
@@ -103,53 +98,44 @@ export default function Contact() {
     setStatus("sending");
     const wait = MIN_FILL_MS - (Date.now() - started.current);
     if (wait > 0) await new Promise((r) => setTimeout(r, wait));
-    const details =
-      path === "general"
-        ? {
-            enquiry: sheet ? "Datasheet request" : quote ? "Quote request" : product ? "Product enquiry" : "General enquiry",
-            product: sheet ? sheet.name : (f.product ?? ""),
-            application: f.application ?? "",
-            brand: f.brand ?? "",
-            topics: topics.join(", "),
-            site: f.site ?? "",
-            purpose: f.purpose ?? "",
-            scale: f.scale ?? "",
-          }
-        : { enquiry: "Brand / OEM inquiry", brand: f.brand ?? "" };
     const res = await sendEnquiry({
       name: f.name,
       mobile: f.mobile,
-      email: f.email,
+      email: f.email ?? "",
       company: f.company ?? "",
-      interest: path === "general" ? INTEREST_OF[f.enquiry_type] : "oem",
-      message: (path === "general" ? f.message : f.proposal) ?? "",
+      city: f.city ?? "",
+      requirement: f.requirement ?? "",
+      interest: f.interest,
+      message: f.message ?? "",
       website: f.website ?? "",
       startedAt: started.current,
-      details,
+      details: {
+        enquiry: sheet ? "Datasheet request" : quote ? "Quote request" : product ? "Product enquiry" : "General enquiry",
+        product: sheet ? sheet.name : (name ?? ""),
+        topics: topics.join(", "),
+      },
     });
     // The API's own field errors (should it ever disagree with the page) go under their fields.
     if (res.fields) {
-      const er = {};
-      for (const [k, m] of Object.entries(res.fields)) er[k === "message" && path === "oem" ? "proposal" : k] = m;
-      setErrors(er);
+      setErrors(res.fields);
       setStatus("idle");
-      const first = names.find((n) => er[n]);
-      if (first) form.elements[first]?.focus();
+      const bad = FIELDS.find((k) => res.fields[k]);
+      if (bad) form.elements[bad]?.focus();
       else setStatus("error");
       return;
     }
     // Only a successful send releases the datasheet: the lead (form_source datasheet), the download event
     // (both only with consent, lib/analytics), then the PDF itself. A failed send downloads nothing.
-    const gated = res.ok && sheet && path === "general";
+    const gated = res.ok && sheet;
     if (gated) {
-      trackLead("datasheet", { item_name: sheet.name });
+      trackLead("datasheet", { item_name: sheet.name, interest: f.interest });
       track("datasheet_download", { item_name: sheet.name });
-    } else if (res.ok) trackLead("full");
+    } else if (res.ok) trackLead("full", { interest: f.interest });
     setStatus(res.ok ? "done" : "error");
     if (gated) download(sheet.file);
   }
 
-  // The site's scroll reveal: the address, the path choice and the form fade up in turn.
+  // The site's scroll reveal: the address, the distributor link and the form fade up in turn.
   const root = useRef(null);
   const reveal = useScrollReveal(root);
   return (
@@ -190,8 +176,7 @@ export default function Contact() {
               </Link>
             </span>
           </address>
-          {/* Path selector — distributor intent routes straight to the real application page;
-              the two form paths below are genuinely different audiences with different fields. */}
+          {/* Distributor intent routes straight to the partner programme's own page and form. */}
           <div data-sr className="flex flex-wrap gap-2">
             <Link
               to="/become-a-partner"
@@ -207,26 +192,12 @@ export default function Contact() {
                 <path d="M3 8h9M8 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
-            {paths.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => { setPath(p.id); setStatus("idle"); setErrors({}); started.current = 0; }}
-                className={`min-h-11 rounded-full px-4 py-2 text-small font-medium transition-colors duration-fast ${
-                  path === p.id
-                    ? "bg-forest text-white focus-visible:outline-link"
-                    : "bg-ice text-copy hover:text-ink focus-visible:text-ink"
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
           </div>
 
           <div data-sr>
           {status === "done" ? (
             <div role="status" className="mt-8 rounded-card border border-accent/30 bg-ice p-6">
-              {sheet && path === "general" ? (
+              {sheet ? (
                 <>
                   <p className="font-medium text-ink">Thank you. Your datasheet is downloading.</p>
                   <p className="mt-1 text-small text-copy">
@@ -239,93 +210,54 @@ export default function Contact() {
               ) : (
                 <>
                   <p className="font-medium text-ink">Message received.</p>
-                  <p className="mt-1 text-small text-copy">
-                    We'll be in touch shortly at the email address you provided.
-                  </p>
+                  <p className="mt-1 text-small text-copy">We&rsquo;ll be in touch shortly.</p>
                 </>
               )}
             </div>
           ) : (
-            <form method="post" key={path} onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} onInput={onInput} noValidate className="relative mt-8 space-y-5">
-              <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
-              {path === "general" && sheet && (
+            <form ref={formRef} method="post" onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} onInput={onInput} noValidate className="relative mt-8 space-y-5">
+              {/* First in the form: without JavaScript it can't be sent. */}
+              <noscript><p className="app-fallback-note">Please enable JavaScript to send this form{CONTACT_PHONE ? `, or call ${CONTACT_PHONE}` : ""}.</p></noscript>
+              {sheet && (
                 <p className="rounded-control bg-ice px-4 py-3 text-small text-ink">
                   Fill in your details and your {sheet.short} datasheet will download straight away.
                 </p>
               )}
               <div className="grid sm:grid-cols-2 gap-5">
-                <Field label="Name" name="name" required error={errors.name} />
-                <Field label="Email" name="email" type="email" required error={errors.email} />
+                <Field label="Name" name="name" required autoComplete="name" error={errors.name} />
+                <Field label="Mobile number" name="mobile" type="tel" inputMode="tel" required autoComplete="tel" error={errors.mobile} />
               </div>
-              <Field label="Mobile number" name="mobile" type="tel" required error={errors.mobile} />
+              <div className="grid sm:grid-cols-2 gap-5">
+                <Field label="Email" name="email" type="email" autoComplete="email" error={errors.email} />
+                <Field label="Company / organisation" name="company" autoComplete="organization" error={errors.company} />
+              </div>
+              <Field label="City" name="city" autoComplete="address-level2" error={errors.city} />
+              <div>
+                <label htmlFor="interest" className="block text-small font-medium text-ink mb-1.5">
+                  I am interested in<Required />
+                </label>
+                <select
+                  id="interest"
+                  name="interest"
+                  defaultValue={preInterest}
+                  required
+                  aria-invalid={!!errors.interest || undefined}
+                  aria-describedby="interest-err"
+                  className="min-h-11 w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
+                >
+                  <option value="">Select…</option>
+                  {FORM_INTERESTS.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+                <FieldError name="interest" error={errors.interest} />
+              </div>
+              <Field label="Project size (kWh or MWh)" name="requirement" error={errors.requirement} />
+              <Field label="Message" name="message" as="textarea" defaultValue={starter} error={errors.message} />
 
-              {path === "general" && (
-                <>
-                  {!sheet && (product || quote || type) && (
-                    <p className="rounded-control bg-ice px-4 py-3 text-small text-ink">
-                      <span className="font-semibold">
-                        {quote ? "Quote request" : product ? "Product enquiry" : `${type.label} enquiry`}
-                      </span>
-                      {name && <> &middot; {name}</>}
-                      
-                    </p>
-                  )}
-                  <div>
-                    <label htmlFor="enquiry_type" className="block text-small font-medium text-ink mb-1.5">
-                      Enquiry type
-                    </label>
-                    <select
-                      id="enquiry_type"
-                      name="enquiry_type"
-                      defaultValue={sheet?.type ?? type?.id ?? ""}
-                      required
-                      aria-invalid={!!errors.enquiry_type || undefined}
-                      aria-describedby="enquiry_type-err"
-                      className="w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
-                    >
-                      <option value="">Select…</option>
-                      {ENQUIRY_TYPES.map((t) => (
-                        <option key={t.id} value={t.id}>
-                          {t.label}
-                        </option>
-                      ))}
-                    </select>
-                    <FieldError name="enquiry_type" error={errors.enquiry_type} />
-                  </div>
-                  
-                  {product && (
-                    <div className="grid sm:grid-cols-2 gap-5">
-                      <Field label="Product" name="product" defaultValue={name} />
-                      <Field label="Application" name="application" defaultValue={product.applications.map(applicationLabel).join(", ")} />
-                    </div>
-                  )}
-                  <p className="text-micro text-copy">
-                    Sharing a few site details lets our team plan a visit if one's needed.
-                  </p>
-                  <div className="grid sm:grid-cols-3 gap-5">
-                    <Field label="Site" name="site" />
-                    <Field label="Purpose" name="purpose" />
-                    <Field label="Scale" name="scale" />
-                  </div>
-                  <Field label="Message" name="message" as="textarea" defaultValue={starter} error={errors.message} />
-                </>
-              )}
-
-              {path === "oem" && (
-                <>
-                  <p className="text-micro text-copy">
-                    For other manufacturers and prospective brand partners — tell us who you
-                    are and what you're proposing.
-                  </p>
-                  <div className="grid sm:grid-cols-2 gap-5">
-                    <Field label="Company name" name="company" required error={errors.company} />
-                    <Field label="Brand / product you represent" name="brand" required error={errors.brand} />
-                  </div>
-                  <Field label="Partnership proposal" name="proposal" as="textarea" error={errors.proposal} />
-                </>
-              )}
-
-              {/* Honeypot: hidden from people; bots fill it. */}
+              {/* Honeypot: off-screen, hidden from screen readers and out of the tab order; bots fill it. */}
               <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
                 <label>
                   Website
@@ -355,13 +287,19 @@ export default function Contact() {
                 </p>
               )}
 
+              {/* Under the fields: the required legend and how the details are used. */}
+              <div className="space-y-1 text-micro text-copy">
+                <p>* required</p>
+                <p>We use your details only to respond to your enquiry. See our Privacy Policy.</p>
+              </div>
+
               <button
                 type="submit"
                 disabled={status === "sending"}
                 className="btn-motion inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover disabled:cursor-wait disabled:opacity-80"
               >
                 {status === "sending" && <span aria-hidden="true" className="contact-spin h-4 w-4 rounded-full border-2 border-on-accent/30 border-t-on-accent" />}
-                {status === "sending" ? "Sending…" : "Send"}
+                {status === "sending" ? "Sending…" : "Send enquiry"}
               </button>
             </form>
           )}
@@ -370,6 +308,11 @@ export default function Contact() {
       </section>
     </div>
   );
+}
+
+/** The required mark after a label (the form's "* required" legend explains it; `required` says it too). */
+function Required() {
+  return <span aria-hidden="true"> *</span>;
 }
 
 /** A field's error under it (announced politely; empty when there is none). */
@@ -381,23 +324,27 @@ function FieldError({ name, error }) {
   );
 }
 
-function Field({ label, name, required, type = "text", as, defaultValue, error }) {
+function Field({ label, name, required, type = "text", as, defaultValue, error, autoComplete, inputMode }) {
   const Tag = as || "input";
   return (
     <div>
       <label htmlFor={name} className="block text-small font-medium text-ink mb-1.5">
         {label}
+        {required ? <Required /> : <span className="font-normal text-copy"> (optional)</span>}
       </label>
       <Tag
         id={name}
         name={name}
         type={as ? undefined : type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
         required={required}
+        maxLength={LIMITS[name]}
         defaultValue={defaultValue}
         rows={as === "textarea" ? 4 : undefined}
         aria-invalid={!!error || undefined}
         aria-describedby={`${name}-err`}
-        className="w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
+        className="min-h-11 w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
       />
       <FieldError name={name} error={error} />
     </div>

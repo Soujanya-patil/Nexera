@@ -36,7 +36,7 @@ async function page(W, base = P) {
 const formState = (p) =>
   p.evaluate(() => ({
     line: [...document.querySelectorAll("form p")].map((x) => x.textContent.trim()).find((t) => t.startsWith("Fill in your details")) ?? null,
-    type: document.querySelector("#enquiry_type")?.value ?? null,
+    type: document.querySelector("#interest")?.value ?? null,
     message: document.querySelector("#message")?.value ?? null,
   }));
 async function fillAndSend(p, who) {
@@ -44,7 +44,7 @@ async function fillAndSend(p, who) {
   await p.fill("#email", "gate.test@example.com");
   await p.fill("#mobile", "9845012345");
   await p.waitForTimeout(3200); // the form's minimum fill time
-  await p.getByRole("button", { name: "Send", exact: true }).click();
+  await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
 }
 
 // ---- Every datasheet button: "Request Datasheet", to /contact?datasheet=<id>; no page links a PDF ------
@@ -82,7 +82,7 @@ async function fillAndSend(p, who) {
 // ---- The full flow at 1440 and 390: card → form (named, pre-filled, no download) → send → download ----
 for (const [W, id, short, full, type, i] of [
   [1440, "tcl-blueark-x5", "BlueArk X5", "TCL BlueArk X5", "ci", 1],
-  [390, "tcl-blueark-x1", "BlueArk X1", "TCL BlueArk X1", "residential", 0],
+  [390, "tcl-blueark-x1", "BlueArk X1", "TCL BlueArk X1", "home", 0],
 ]) {
   const tag = `@${W}`;
   const p = await page(W);
@@ -128,6 +128,10 @@ for (const [W, id, short, full, type, i] of [
   await p.route("**/api/contact.php", (r) => r.fulfill({ status: 502, contentType: "application/json", body: '{"ok":false,"error":"send_failed"}' }));
   await p.goto(P + "/contact?datasheet=tcl-blueark-w10", { waitUntil: "networkidle" });
   await p.waitForTimeout(1500);
+  // A direct load (a shared link): the pre-rendered page has no query, so the choice and the message are
+  // applied once the page is live.
+  const pre = await formState(p);
+  check("a direct load of /contact?datasheet=tcl-blueark-w10: the line, Commercial & Industrial and the message pre-filled", pre.line?.startsWith("Fill in your details and your BlueArk W10 datasheet") && pre.type === "ci" && pre.message === "Datasheet request: TCL BlueArk W10", pre);
   await fillAndSend(p, "Gate Fail");
   await p.waitForTimeout(3000);
   const s = await p.evaluate(() => ({ alert: document.querySelector('[role="alert"]')?.textContent.replace(/\s+/g, " ").trim(), status: document.querySelector('[role="status"]')?.textContent ?? null }));

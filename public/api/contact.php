@@ -28,14 +28,24 @@ const NEXERA_FROM = "no-reply@nexerapower.com";
 const RATE_LIMIT = 5;        // enquiries …
 const RATE_WINDOW = 3600;    // … per this many seconds, per IP
 const MIN_FILL_MS = 3000;    // at least 3 s from opening the form to sending it
+// The forms' "I am interested in" options (src/lib/enquiry.js FORM_INTERESTS), as the email names them.
 const INTERESTS = [
+    "home" => "Residential storage",
+    "ci" => "Commercial & Industrial",
+    "utility" => "Utility-scale",
+    "epc" => "EPC / installer partnership",
+    "distributor" => "Distributorship",
+    "oem" => "Brand / OEM partnership",
+];
+// The call-back widget keeps its own four chips (src/lib/enquiry.js INTERESTS): its email names the chip chosen.
+const QUICK_INTERESTS = [
     "home" => "Home storage",
     "ci" => "Business / C&I",
     "utility" => "Utility-scale",
     "distributor" => "Becoming a distributor",
-    "oem" => "Brand / OEM partnership",
-    "epc" => "EPC / project partnership",
 ];
+// An optional field left empty, as the email shows it.
+const NOT_GIVEN = "Not given";
 const SOURCES = ["full", "quick", "partner"];
 // The field rules (as in src/lib/enquiry.js): length limits, minimum lengths and letters.
 const LIMITS = ["name" => 60, "mobile" => 20, "email" => 160, "company" => 100, "city" => 80, "requirement" => 100, "message" => 1000, "page" => 200];
@@ -219,24 +229,29 @@ fclose($fh);
 
 // The email.
 $when = (new DateTime("now", new DateTimeZone("Asia/Kolkata")))->format("d M Y, H:i") . " IST";
-$label = INTERESTS[$interest];
 $quick = $source === "quick";
+$label = $quick ? (QUICK_INTERESTS[$interest] ?? INTERESTS[$interest]) : INTERESTS[$interest];
 $kind = $quick ? "Call-back request" : ($partner ? "Partner enquiry" : "New website enquiry");
 $lines = [
     ...($quick ? ["Source: Homepage quick call-back strip", ""] : []),
     ...($partner ? ["Source: Become a Partner form", ""] : []),
     $kind,
     "",
-    "Name:        $name",
-    "Mobile:      " . ($mobile !== "" ? $mobile : "—"),
-    "Email:       " . ($email !== "" ? $email : "—"),
-    "Company:     " . ($company !== "" ? $company : "—"),
-    "City:        " . ($city !== "" ? $city : "—"),
-    "Interest:    $label",
-    ...($requirement !== "" ? ["Requirement: $requirement"] : []),
+    // The form's fields, in the form's order; an optional one left empty says so.
+    "Name:          $name",
+    "Mobile:        " . ($mobile !== "" ? $mobile : NOT_GIVEN),
+    "Email:         " . ($email !== "" ? $email : NOT_GIVEN),
+    "Company:       " . ($company !== "" ? $company : NOT_GIVEN),
+    "City:          " . ($city !== "" ? $city : NOT_GIVEN),
+    "Interested in: $label",
+    ...($quick ? [] : [($partner ? "Requirement:   " : "Project size:  ") . ($requirement !== "" ? $requirement : NOT_GIVEN)]),
+    $message !== "" ? "Message:" : "Message:       " . NOT_GIVEN,
 ];
-foreach ($details as $k => $v) $lines[] = str_pad(ucfirst(str_replace("_", " ", $k)) . ":", 13) . $v;
-array_push($lines, "", "Message:", $message !== "" ? $message : "—", "", "Page:        " . ($page !== "" ? $page : "—"), "Received:    $when");
+if ($message !== "") $lines[] = $message;
+// Context the form adds (the enquiry kind, a product, the Solutions topics …).
+if ($details) $lines[] = "";
+foreach ($details as $k => $v) $lines[] = str_pad(ucfirst(str_replace("_", " ", $k)) . ":", 15) . $v;
+array_push($lines, "", "Page:          " . ($page !== "" ? $page : "—"), "Received:      $when");
 $body = implode("\n", $lines) . "\n";
 
 $subject = "=?UTF-8?B?" . base64_encode(header_safe("$kind: $label – $name")) . "?=";

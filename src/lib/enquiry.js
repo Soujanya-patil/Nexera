@@ -15,7 +15,18 @@ export const CONTACT_PHONE = (ENV.VITE_CONTACT_PHONE || "").trim();
 export const CONTACT_EMAIL = EMAIL; // data/business: sales@nexerapower.com
 export const telHref = (phone) => `tel:${phone.replace(/[^\d+]/g, "")}`;
 
-/** "I'm interested in" values (the API accepts these ids only). `oem` is the /contact page's brand / OEM path. */
+/**
+ * The enquiry forms' "I am interested in" options, in order — the /contact page and the homepage contact
+ * section (the director's Final Copy). The API accepts these ids only (plus `oem`).
+ */
+export const FORM_INTERESTS = [
+  { id: "home", label: "Residential storage" },
+  { id: "ci", label: "Commercial & Industrial" },
+  { id: "utility", label: "Utility-scale" },
+  { id: "epc", label: "EPC / installer partnership" },
+  { id: "distributor", label: "Distributorship" },
+];
+/** The call-back widget's four chips (unchanged). */
 export const INTERESTS = [
   { id: "home", label: "Home storage" },
   { id: "ci", label: "Business / C&I" },
@@ -23,7 +34,7 @@ export const INTERESTS = [
   { id: "distributor", label: "Becoming a distributor" },
 ];
 // `epc`: the Become a Partner form's "EPC / Project Partnership" (its "Distributor application" is `distributor`).
-export const INTEREST_IDS = [...INTERESTS.map((i) => i.id), "oem", "epc"];
+export const INTEREST_IDS = [...FORM_INTERESTS.map((i) => i.id), "oem"];
 
 /** At least this long between opening a form and sending it (bots are faster); the API checks it too. */
 export const MIN_FILL_MS = 3000;

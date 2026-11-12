@@ -109,7 +109,7 @@ for (const url of ["/#contact?interest=ci", "/?interest=utility#contact", "/?int
   // error state: endpoint down (route aborted) — values kept
   await p.route("**/api/contact.php", (r) => r.abort());
   await fill(p, F, { name: "Asha Rao", mobile: "+91 98450 12345", email: "asha@example.com", city: "Pune", message: "Sizing a 15 kWh home system." });
-  await p.locator(`${F} .contact-chip`).filter({ hasText: "Home storage" }).click();
+  await p.locator(`${F} .contact-chip`).filter({ hasText: "Residential storage" }).click();
   const n0 = mails();
   await p.getByRole("button", { name: /Send enquiry/ }).click();
   await p.waitForTimeout(300);
@@ -193,24 +193,25 @@ if (shots) {
   const p = await page(1440);
   await p.goto(BASE + "/contact?intent=ci", { waitUntil: "networkidle" });
   await p.waitForTimeout(1000);
-  await p.getByRole("button", { name: "Send", exact: true }).click();
+  // ?intent=ci pre-selects Commercial & Industrial; empty name and mobile are the errors (email is optional).
+  await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
   await p.waitForTimeout(300);
   const v = await ev(p, () => [...document.querySelectorAll('form [aria-invalid="true"]')].map((e) => e.name));
-  ok("/contact: validation (name, email, mobile)", ["name", "email", "mobile"].every((n) => v.includes(n)), v.join(","));
-  await fill(p, "form", { name: "Ravi Kumar", email: "ravi@example.com", mobile: "9876543210", site: "Hosur", message: "Need a C&I system." });
+  ok("/contact: validation (name, mobile; email optional; interest pre-selected)", ["name", "mobile"].every((n) => v.includes(n)) && !v.includes("email") && !v.includes("interest"), v.join(","));
+  await fill(p, "form", { name: "Ravi Kumar", email: "ravi@example.com", mobile: "9876543210", requirement: "500 kWh", message: "Need a C&I system." });
   const n0 = mails();
   const resp = p.waitForResponse("**/api/contact.php");
-  await p.getByRole("button", { name: "Send", exact: true }).click();
+  await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
   const r = await resp;
   const body = JSON.parse(r.request().postData());
   await p.waitForTimeout(800);
   const done = await ev(p, () => document.querySelector('[role="status"]')?.textContent.trim());
-  ok("/contact: posts to /api/contact.php (interest ci, details carried), success shown", r.status() === 200 && body.interest === "ci" && body.details.site === "Hosur" && !!done && mails() === n0 + 1, `${r.status()} ${body.interest} ${done}`);
+  ok("/contact: posts to /api/contact.php (interest ci, project size carried), success shown", r.status() === 200 && body.interest === "ci" && body.requirement === "500 kWh" && !!done && mails() === n0 + 1, `${r.status()} ${body.interest} ${done}`);
   await p.goto(BASE + "/contact", { waitUntil: "networkidle" });
   await p.route("**/api/contact.php", (rt) => rt.fulfill({ status: 502, contentType: "application/json", body: '{"ok":false,"error":"send_failed"}' }));
   await fill(p, "form", { name: "Ravi Kumar", email: "ravi@example.com", mobile: "9876543210" });
-  await p.selectOption("#enquiry_type", "residential");
-  await p.getByRole("button", { name: "Send", exact: true }).click();
+  await p.selectOption("#interest", "home");
+  await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
   await p.waitForTimeout(3800);
   const err = await ev(p, () => ({ alert: document.querySelector('[role="alert"]')?.textContent.trim(), kept: document.querySelector('[name="name"]').value }));
   ok("/contact: error state, values kept", err.alert?.startsWith("Something went wrong.") && err.kept === "Ravi Kumar", JSON.stringify(err));

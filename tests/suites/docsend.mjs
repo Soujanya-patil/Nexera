@@ -41,7 +41,7 @@ for (const [W, H, i, interestLabel, ask] of [
   await p.waitForTimeout(500);
   const m = mails().slice(before);
   const body = m[0] ?? "";
-  check(`@${W} card → form → sent: one email, interest "${interestLabel}", the message is the pre-filled request`, m.length === 1 && subjectOf(body) === `New website enquiry: ${interestLabel} – Ravi Kumar` && body.includes(`Interest:    ${interestLabel}`) && body.includes(ask), { count: m.length, sub: subjectOf(body), hasAsk: body.includes(ask) });
+  check(`@${W} card → form → sent: one email, interest "${interestLabel}", the message is the pre-filled request`, m.length === 1 && subjectOf(body) === `New website enquiry: ${interestLabel} – Ravi Kumar` && body.includes(`Interested in: ${interestLabel}`) && body.includes(ask), { count: m.length, sub: subjectOf(body), hasAsk: body.includes(ask) });
   check(`@${W} no page errors`, errors.length === 0, errors);
   await p.context().close();
 }

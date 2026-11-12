@@ -86,12 +86,12 @@ for (const [label, body, field] of [
 
 // 2. Realistic values for each form: sent, one email each (the rate limit allows 5 per hour per IP).
 const REAL = [
-  ["/contact", { name: "Ankit Sharma", mobile: "98765 43210", email: "ankit.sharma@gmail.com", interest: "ci", source: "full", message: "We are planning a 500 kWh C&I system for our plant and would like a quote." }, "New website enquiry: Business / C&I – Ankit Sharma"],
+  ["/contact", { name: "Ankit Sharma", mobile: "98765 43210", email: "ankit.sharma@gmail.com", interest: "ci", source: "full", message: "We are planning a 500 kWh C&I system for our plant and would like a quote." }, "New website enquiry: Commercial & Industrial – Ankit Sharma"],
   ["call-back widget", { name: "K. S. Rao", mobile: "+91-9876543210", interest: "home", source: "quick" }, "Call-back request: Home storage – K. S. Rao"],
   [
     "Become a Partner",
     { name: "K. S. Rao", mobile: "+44 20 7946 0958", email: "info@company.co.in", company: "3M India", city: "Bengaluru 560001", requirement: "500 kWh", interest: "epc", source: "partner", message: "We are an EPC in Karnataka planning C&I storage projects.", details: { enquiry: "EPC / Project Partnership", company_type: "EPC", application: "Commercial & Industrial" } },
-    "Partner enquiry: EPC / project partnership – K. S. Rao",
+    "Partner enquiry: EPC / installer partnership – K. S. Rao",
   ],
 ];
 for (const [label, body, subject] of REAL) {
@@ -103,7 +103,7 @@ for (const [label, body, subject] of REAL) {
   const subj = (last.match(/^Subject: =\?UTF-8\?B\?([^?]+)\?=/m) || [])[1];
   const decoded = subj ? Buffer.from(subj, "base64").toString("utf8") : "";
   ok(`${label}: realistic values -> 200, one email, subject "${subject}"`, r.status === 200 && r.json?.ok && mails() === n0 + 1 && decoded === subject, `${r.status} ${decoded}`);
-  if (body.source === "partner") ok("partner email carries the requirement, location and company", /Requirement: 500 kWh/.test(last) && /City: +Bengaluru 560001/.test(last) && /Company: +3M India/.test(last) && /Source: Become a Partner form/.test(last));
+  if (body.source === "partner") ok("partner email carries the requirement, location and company", /Requirement: +500 kWh/.test(last) && /City: +Bengaluru 560001/.test(last) && /Company: +3M India/.test(last) && /Source: Become a Partner form/.test(last));
 }
 
 const passed = results.filter(Boolean).length;

@@ -155,7 +155,8 @@ export default function PartnerForm() {
             </div>
           ) : (
             <form method="post" onSubmit={handleSubmit} onFocusCapture={() => (started.current ||= Date.now())} onBlur={onBlur} onInput={onInput} noValidate className="space-y-5">
-              <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
+              {/* First in the form: without JavaScript it can't be sent. */}
+              <noscript><p className="app-fallback-note">Please enable JavaScript to send this form{CONTACT_PHONE ? `, or call ${CONTACT_PHONE}` : ""}.</p></noscript>
               <Select label="Enquiry type" name="enquiryType" defaultValue={type} options={ENQUIRY_TYPES.map((t) => ({ value: t, label: t }))} />
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field label="Name" name="name" autoComplete="name" required error={errors.name} />
@@ -207,6 +208,8 @@ export default function PartnerForm() {
                   )}
                 </p>
               )}
+              {/* How the details are used. */}
+              <p className="text-micro text-copy">We use your details only to respond to your enquiry. See our Privacy Policy.</p>
               <button
                 type="submit"
                 disabled={status === "sending"}

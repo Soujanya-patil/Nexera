@@ -151,7 +151,7 @@ for (const [path, W] of [
   await p.context().close();
 }
 // ---- 3. No JavaScript at all: forms post (never details in the URL), with the <noscript> note ---------
-const NOSCRIPT = "This form needs JavaScript. Please enable it and reload the page.";
+const NOSCRIPT = "Please enable JavaScript to send this form, or call +91 97423 53341.";
 for (const path of ["/", "/contact", "/become-a-partner"]) {
   const p = await open(path, { js: false });
   const s = await p.evaluate(() =>

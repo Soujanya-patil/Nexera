@@ -5,7 +5,7 @@ import { useScrollReveal } from "../lib/scrollReveal";
 import { onceInView } from "../lib/inview";
 import { jumpTo } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
-import { CONTACT_EMAIL, CONTACT_PHONE, INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
+import { CONTACT_EMAIL, CONTACT_PHONE, FORM_INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
 import { trackLead } from "../lib/analytics";
 import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
 import { STAGGER } from "../lib/tokens";
@@ -15,17 +15,19 @@ const TRUST = [
   { icon: Ruler, text: "Design, sizing and commissioning support." },
   { icon: GraduationCap, text: "Installer training. Our Kalaburagi training centre opens in 2027." },
 ];
-const EMPTY = { name: "", mobile: "", email: "", company: "", city: "", interest: "", message: "", website: "" };
+const EMPTY = { name: "", mobile: "", email: "", company: "", city: "", interest: "", requirement: "", message: "", website: "" };
+// The fields, in the form's order (the director's Final Copy; /contact has the same set).
+const FIELDS = ["name", "mobile", "email", "company", "city", "interest", "requirement", "message"];
 
 /** A parameter from #contact?… (first) or ?… */
 function param(search, hash, key) {
   const fromHash = hash.startsWith("#contact?") ? new URLSearchParams(hash.slice("#contact?".length)).get(key) : null;
   return fromHash ?? new URLSearchParams(search).get(key);
 }
-/** ?interest=ci or #contact?interest=ci → "ci" (only the four homepage values). */
+/** ?interest=ci or #contact?interest=ci → "ci" (only the form's own values). */
 function interestFrom(search, hash) {
   const v = param(search, hash, "interest");
-  return INTERESTS.some((i) => i.id === v) ? v : "";
+  return FORM_INTERESTS.some((i) => i.id === v) ? v : "";
 }
 /**
  * #contact?doc=TCL BlueArk W10 (&kind=brochure) — the /resources document cards — → the message
@@ -113,7 +115,7 @@ export default function HomeContact() {
 
   /** Focuses the first field with an error (in the form's order); whether there was one. */
   const focusFirst = (er) => {
-    const firstBad = ["name", "mobile", "email", "company", "city", "interest", "message"].find((k) => er[k]);
+    const firstBad = FIELDS.find((k) => er[k]);
     if (!firstBad) return false;
     const target = firstBad === "interest" ? form.current.querySelector('input[name="interest"]') : form.current.querySelector(`#${uid}-${firstBad}`);
     target?.focus();
@@ -123,7 +125,7 @@ export default function HomeContact() {
   const submit = async (e) => {
     e.preventDefault();
     begin();
-    const er = validateEnquiry(values);
+    const er = validateEnquiry(values, undefined, FIELDS);
     setErrors(er);
     if (focusFirst(er)) return;
     setStatus("sending");
@@ -131,7 +133,7 @@ export default function HomeContact() {
     const wait = MIN_FILL_MS - (Date.now() - started.current);
     if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     const res = await sendEnquiry({ ...values, startedAt: started.current });
-    if (res.ok) trackLead("full");
+    if (res.ok) trackLead("full", { interest: values.interest });
     if (res.ok) {
       setFirstName(values.name.trim().split(/\s+/)[0]);
       setValues(EMPTY);
@@ -266,7 +268,8 @@ export default function HomeContact() {
               </div>
             ) : (
               <form method="post" ref={form} onSubmit={submit} onFocusCapture={begin} noValidate className="space-y-5">
-                <noscript><p className="app-fallback-note">This form needs JavaScript. Please enable it and reload the page.</p></noscript>
+                {/* First in the form: without JavaScript it can't be sent. */}
+                <noscript><p className="app-fallback-note">Please enable JavaScript to send this form{CONTACT_PHONE ? `, or call ${CONTACT_PHONE}` : ""}.</p></noscript>
                 <div className="grid gap-5 sm:grid-cols-2">
                   {field("name", "Name", { required: true, autoComplete: "name" })}
                   {field("mobile", "Mobile number", { type: "tel", required: true, autoComplete: "tel", inputMode: "tel" })}
@@ -279,10 +282,10 @@ export default function HomeContact() {
 
                 <fieldset>
                   <legend id={`${uid}-interest-legend`} className={label}>
-                    I&rsquo;m interested in<span className="text-accent"> *</span>
+                    I am interested in<span className="text-accent"> *</span>
                   </legend>
                   <div role="radiogroup" aria-labelledby={`${uid}-interest-legend`} aria-required="true" aria-invalid={!!errors.interest || undefined} aria-describedby={`${uid}-interest-err`} className="mt-2 flex flex-wrap gap-2">
-                    {INTERESTS.map((it) => (
+                    {FORM_INTERESTS.map((it) => (
                       <label key={it.id} className="contact-chip">
                         <input
                           type="radio"
@@ -301,6 +304,8 @@ export default function HomeContact() {
                   </div>
                   {err("interest")}
                 </fieldset>
+
+                {field("requirement", "Project size (kWh or MWh)")}
 
                 <div>
                   <div className="flex items-baseline justify-between gap-3">
@@ -326,7 +331,7 @@ export default function HomeContact() {
                   {err("message")}
                 </div>
 
-                {/* Honeypot: hidden from people; bots fill it. */}
+                {/* Honeypot: off-screen, hidden from screen readers and out of the tab order; bots fill it. */}
                 <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
                   <label>
                     Website
@@ -357,7 +362,11 @@ export default function HomeContact() {
                 )}
 
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-                  <p className="text-micro text-paper/70">We&rsquo;ll only use your details to respond to this enquiry.</p>
+                  {/* The required legend and how the details are used. */}
+                  <div className="space-y-1 text-micro text-paper/80">
+                    <p>* required</p>
+                    <p>We use your details only to respond to your enquiry. See our Privacy Policy.</p>
+                  </div>
                   <button
                     type="submit"
                     disabled={status === "sending"}

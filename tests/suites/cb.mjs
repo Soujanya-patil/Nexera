@@ -425,12 +425,12 @@ if (TIMER) {
   const c = p.locator("#contact form");
   await c.locator('[name="name"]').fill("Ravi Kumar");
   await c.locator('[name="mobile"]').fill("9876543210");
-  await c.locator("label.contact-chip", { hasText: "Home storage" }).click();
+  await c.locator("label.contact-chip", { hasText: "Residential storage" }).click();
   await c.getByRole("button", { name: "Send enquiry" }).click();
   await p.locator("#contact").getByText("Thank you, Ravi.").waitFor({ timeout: 8000 });
   await p.waitForTimeout(500);
   const got = mails().slice(before);
-  check('bottom #contact form unchanged: source "full", "New website enquiry: Home storage – Ravi Kumar"', body?.source === "full" && got.length === 1 && subjectOf(got[0]) === "New website enquiry: Home storage – Ravi Kumar", { source: body?.source, subj: got[0] && subjectOf(got[0]) });
+  check('bottom #contact form unchanged: source "full", "New website enquiry: Residential storage – Ravi Kumar"', body?.source === "full" && got.length === 1 && subjectOf(got[0]) === "New website enquiry: Residential storage – Ravi Kumar", { source: body?.source, subj: got[0] && subjectOf(got[0]) });
   await p.context().close();
 }
 
