@@ -22,6 +22,7 @@ export default function ServiceTraining() {
     <div ref={root} data-sr-state={reveal}>
       <PageHeader
         eyebrow="Service & Training"
+        crumb="Service & Training"
         title="We don't just supply the battery. We train the hands that install it."
       />
 

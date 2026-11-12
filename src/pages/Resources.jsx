@@ -121,7 +121,7 @@ export default function Resources() {
 
   return (
     <div ref={page}>
-      <ResourcesHero id="hub" eyebrow="Resources" title={TITLE} chips={chips} reveal={arrived} />
+      <ResourcesHero id="hub" eyebrow="Resources" crumbs={[["Resources", "/resources"]]} title={TITLE} chips={chips} reveal={arrived} />
       <FilterBar active={active} items={[{ id: "all", label: "All", target: "hub" }, ...SECTIONS.map((s) => ({ id: s.id, label: s.label, target: s.id }))]} />
 
       <div data-tone={tone} className="resources-body">

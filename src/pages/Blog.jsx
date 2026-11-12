@@ -40,7 +40,7 @@ export default function Blog() {
   const posts = [...ARTICLES].sort((x, y) => y.datePublished.localeCompare(x.datePublished));
   return (
     <div ref={page}>
-      <ResourcesHero id="blog" eyebrow="Blog" title="NEXERA Blog" intro="Plain guides on battery energy storage for homes, businesses and the grid." reveal={arrived} />
+      <ResourcesHero id="blog" eyebrow="Blog" crumbs={[["Blog", "/blog"]]} title="NEXERA Blog" intro="Plain guides on battery energy storage for homes, businesses and the grid." reveal={arrived} />
       <section aria-label="Articles" className="bg-white pb-section pt-6 lg:pt-12">
         <div className="container-site">
           <GuidesBento articles={posts} motion={motion} />

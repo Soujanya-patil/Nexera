@@ -156,6 +156,7 @@ export default function Contact() {
     <div ref={root} data-sr-state={reveal}>
       <PageHeader
         eyebrow="Contact Us"
+        crumb="Contact"
         title="Talk to Nexera"
         subtitle="Tell us what you need — we'll route it to the right team."
       />

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { APPLICATIONS, PARTNERS, PRODUCTS, partnerOf } from "../data/products";
 import ProductCard from "../components/catalogue/ProductCard";
+import Crumbs from "../components/Crumbs";
 import LiveCount from "../components/catalogue/LiveCount";
 import { CompareDialog, CompareTray, MAX_COMPARE } from "../components/catalogue/Compare";
 import ChooseCta from "../components/catalogue/ChooseCta";
@@ -266,9 +267,13 @@ export default function Products() {
         </div>
         <div data-intro={intro} className="relative grid container-site items-center gap-10 py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12 lg:py-16">
           <div>
-            <p data-a="eyebrow" className="eyebrow text-paper/80">
-              Energy Storage Systems
-            </p>
+            {/* The eyebrow and, on its right, the breadcrumbs: one row, so the hero is no taller. */}
+            <div className="flex items-center justify-between gap-4">
+              <p data-a="eyebrow" className="shrink-0 eyebrow text-paper/80">
+                Energy Storage Systems
+              </p>
+              <Crumbs trail={[["Products", "/products"]]} />
+            </div>
             <h1 className="mt-eyebrow text-h1 font-semibold">
               <span data-a="line1" className="block">
                 Energy Storage,

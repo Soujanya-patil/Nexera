@@ -163,6 +163,7 @@ const PAGES = [
   },
   {
     path: "/about",
+    label: "About",
     h1: "Built by an EPC, for EPCs",
     title: "About Us — Built by an EPC, for EPCs | NEXERA",
     description:
@@ -170,6 +171,7 @@ const PAGES = [
   },
   {
     path: "/how-it-works",
+    label: "How It Works",
     h1: "From First Call to Fully Operational Distributor",
     title: "How to Become a BESS Distributor in India | NEXERA",
     description:

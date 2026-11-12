@@ -25,6 +25,7 @@ export default function About() {
     <div ref={root} data-sr-state={reveal}>
       <PageHeader
         eyebrow="About Us"
+        crumb="About"
         title="Built by an EPC, for EPCs"
       />
 

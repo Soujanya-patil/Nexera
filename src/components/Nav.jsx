@@ -48,15 +48,15 @@ function ScrollProgress() {
   );
 }
 
-// "For EPCs" has no page of its own: it maps to the existing Become a Partner route (confirmed
-// direction), so the nav matches the mockup without placeholders.
+// The director's Final Copy: Solutions | Products | Become a Partner | About | Resources | Contact (the Blog
+// is in the footer; the logo is the way home). The "Contact Us" button stays beside them.
 const links = [
   { label: "Solutions", href: "/solutions" },
   { label: "Products", href: "/products" },
-  { label: "For EPCs", href: "/become-a-partner" },
+  { label: "Become a Partner", href: "/become-a-partner" },
   { label: "About", href: "/about" },
-  { label: "Blog", href: "/blog" },
   { label: "Resources", href: "/resources" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Nav() {

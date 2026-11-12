@@ -18,6 +18,7 @@ export default function WhereWeOperate() {
     <div ref={root} data-sr-state={reveal}>
       <PageHeader
         eyebrow="Where We Operate"
+        crumb="Where We Operate"
         title="A growing footprint across India"
         subtitle="NEXERA, an authorised distributor of TCL and Hithium battery energy storage systems, has its head office in Bengaluru, Karnataka, with a technician training centre opening in Kalaburagi in 2027."
       />

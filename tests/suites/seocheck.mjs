@@ -38,4 +38,31 @@ for (const p of ["/", "/solutions", "/solutions/commercial-industrial", "/soluti
   console.log(`${ok ? "OK  " : "BAD "} ${p.padEnd(34)} h1=${h1} ld=${ld.length} canon=${canon === want} og=${ogt === title && ogd === desc} faq=${faq ? faq.mainEntity.length + " (all visible: " + !faqMiss.length + ")" : "-"}${kwMiss.length ? " MISSING " + kwMiss.join(" | ") : ""}${h3peak ? "" : " no Peak Shaving h3"}`);
   if (faqMiss.length) console.log("   not visible:", faqMiss.map((t) => t.slice(0, 80)));
 }
+// Visible breadcrumbs (every built page that has one) say what the page's BreadcrumbList says, in order.
+const pages = [];
+(function walk(d) {
+  for (const f of fs.readdirSync(d, { withFileTypes: true })) {
+    const p = `${d}/${f.name}`;
+    if (f.isDirectory()) walk(p);
+    else if (f.name.endsWith(".html") && f.name !== "404.html") pages.push(p);
+  }
+})(dist);
+let crumbs = 0;
+for (const f of pages) {
+  const h = fs.readFileSync(f, "utf8");
+  const nav = h.match(/<nav[^>]*aria-label="Breadcrumb"[^>]*>([\s\S]*?)<\/nav>/);
+  // A noindex page (a product kept off the catalogue) has no structured data by design.
+  if (!nav || /<meta name="robots" content="noindex/.test(h)) continue;
+  crumbs++;
+  const seen = [...nav[1].matchAll(/<li(?![^>]*aria-hidden)[^>]*>([\s\S]*?)<\/li>/g)].map((m) => decode(m[1].replace(/<[^>]+>/g, "")).trim());
+  const ld = [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => JSON.parse(m[1])["@graph"]);
+  const list = ld.find((n) => n["@type"] === "BreadcrumbList");
+  const named = list ? list.itemListElement.map((i) => i.name) : null;
+  const ok = !!named && JSON.stringify(seen) === JSON.stringify(named);
+  if (!ok) {
+    bad++;
+    console.log(`BAD  breadcrumbs ${f.slice(dist.length)}: visible ${JSON.stringify(seen)} vs data ${JSON.stringify(named)}`);
+  }
+}
+console.log(`${bad ? "BAD " : "OK  "} visible breadcrumbs on ${crumbs} pages match their BreadcrumbList`);
 process.exit(bad ? 1 : 0);

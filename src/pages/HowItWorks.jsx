@@ -87,6 +87,7 @@ export default function HowItWorks() {
     <div ref={root} data-sr-state={reveal}>
       <PageHeader
         eyebrow="How It Works"
+        crumb="How It Works"
         title="From First Call to Fully Operational Distributor"
       />
 

@@ -168,7 +168,7 @@ async function linksOn(path, selector, setup) {
 }
 {
   const l = await linksOn("/about", "footer a[href^='/partners/']");
-  check("footer Partners column: Hithium · TCL", l.map(([t]) => t).join(" · ") === "Hithium · TCL", l);
+  check("footer Products column: TCL · Hithium", l.map(([t]) => t).join(" · ") === "TCL · Hithium", l);
 }
 // Every /partners link on these pages resolves to a 200 page.
 {

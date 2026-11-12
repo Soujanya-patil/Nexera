@@ -1,4 +1,5 @@
 import EnergyGrid from "../article/EnergyGrid";
+import Crumbs from "../Crumbs";
 
 /**
  * The Resources (and Blog) hero: dark, like the homepage's, over the article's animated energy grid.
@@ -8,7 +9,7 @@ import EnergyGrid from "../article/EnergyGrid";
  * its words rise out of a mask one after another — CSS (the article header's), so nothing pre-rendered
  * is ever hidden by JavaScript. The chips fade up in turn. Reduced motion: static.
  */
-export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], reveal }) {
+export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], reveal, crumbs }) {
   const words = title.split(" ");
   return (
     <section id={id} data-play="now" data-reveal={reveal || undefined} className="article-header relative overflow-hidden bg-deep-grid hero-ground text-white">
@@ -16,7 +17,11 @@ export default function ResourcesHero({ id, eyebrow, title, intro, chips = [], r
       <EnergyGrid />
       {/* Compact band, as the plain pages' header (PageHeader): 20 px phones, 32 px from 1024 px. */}
       <div className="relative container-site pb-5 pt-5 lg:pb-8 lg:pt-8">
-        <p className="article-eyebrow eyebrow text-label">{eyebrow}</p>
+        {/* The eyebrow and, on its right, the breadcrumbs (`crumbs`: the trail after Home): one row. */}
+        <div className="flex items-center justify-between gap-4">
+          <p className="article-eyebrow shrink-0 eyebrow text-label">{eyebrow}</p>
+          {crumbs && <Crumbs trail={crumbs} />}
+        </div>
         <h1 className="article-h1 mt-eyebrow max-w-intro text-h1 font-semibold">
           {words.map((w, i) => (
             <span key={i}>

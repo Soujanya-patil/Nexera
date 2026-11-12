@@ -4,8 +4,8 @@ import { ADDRESS, BRANCH_ADDRESS, EMAIL, PHONE, phoneHref } from "../data/busine
 import { SOLUTION_PAGES } from "../data/solutions";
 import { openConsent } from "../lib/analytics";
 
-// Every group lists existing routes only, each page once. Partner pages keep their order (Hithium,
-// TCL); the Blog and its published articles come from data/articles.js (drafts are never listed).
+// Every group lists existing routes only, each page once (the director's Final Copy: TCL before Hithium;
+// sentence case in Company), plus the Bengaluru page under Company.
 const groups = [
   {
     title: "Solutions",
@@ -18,18 +18,18 @@ const groups = [
     title: "Products",
     links: [
       { label: "All products", href: "/products" },
-      { label: "Hithium", href: "/partners/hithium" },
       { label: "TCL", href: "/partners/tcl" },
+      { label: "Hithium", href: "/partners/hithium" },
     ],
   },
   {
     title: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "How It Works", href: "/how-it-works" },
-      { label: "Where We Operate", href: "/where-we-operate" },
+      { label: "How it works", href: "/how-it-works" },
+      { label: "Where we operate", href: "/where-we-operate" },
       { label: "Bengaluru", href: "/locations/bengaluru" },
-      { label: "Service & Training", href: "/service-training" },
+      { label: "Service & training", href: "/service-training" },
       { label: "Become a Partner", href: "/become-a-partner" },
       { label: "Contact", href: "/contact" },
     ],
@@ -55,6 +55,7 @@ export default function Footer() {
       <div className="container-site grid gap-x-10 gap-y-12 py-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)] lg:py-16">
         <div className="max-w-sm">
           <Logo className="h-10" />
+          <p className="mt-3 text-small font-semibold text-navy">Store today. Power tomorrow.</p>
           <address className="mt-5 text-small not-italic leading-relaxed">
             <span className="block font-semibold">Head office</span>
             {ADDRESS}

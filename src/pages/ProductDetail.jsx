@@ -176,6 +176,14 @@ function ProductView({ product }) {
           <nav data-a="crumbs" aria-label="Breadcrumb" className="text-micro text-paper/60">
             <ol className="flex flex-wrap items-center gap-1.5">
               <li>
+                <Link to="/" className="hit-area hover:text-white focus-visible:text-white">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden="true">
+                <ChevronRight className="h-3.5 w-3.5" />
+              </li>
+              <li>
                 <Link to="/products" className="hit-area hover:text-white focus-visible:text-white">
                   Products
                 </Link>
