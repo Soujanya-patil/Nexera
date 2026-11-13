@@ -21,11 +21,39 @@ function useScrollOnNavigate() {
     // top, at its #hash target, or wherever the visitor scrolled before the app took over. Leave it.
     // (Coming back to it later — Back after a navigation — jumps as before: no longer the first load.)
     if (key === "default" && isFirstLoad()) return;
-    const target = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
     // Clear the sticky nav (h-16) when landing on a section — or the section's own scroll-margin-top
     // where it sets a larger one (the Solutions segment pages also clear their segment switcher).
-    const clear = target ? Math.max(64, parseFloat(getComputedStyle(target).scrollMarginTop) || 0) : 0;
-    jumpTo(target ? target.getBoundingClientRect().top + window.scrollY - clear : 0);
+    const land = (target) => {
+      const clear = target ? Math.max(64, parseFloat(getComputedStyle(target).scrollMarginTop) || 0) : 0;
+      jumpTo(target ? target.getBoundingClientRect().top + window.scrollY - clear : 0);
+    };
+    const id = hash && decodeURIComponent(hash.slice(1));
+    const target = id && document.getElementById(id);
+    land(target);
+    if (!id || target) return;
+    // The #hash target is on a page whose chunk is still loading (every page but Home is lazy, e.g.
+    // About's "Join the Academy" → /service-training#training): the top for now, then the section as
+    // soon as it renders (looked for on each frame, for up to ~2 s). The new page can still be settling
+    // above it (sections hydrating, images decoding), so the landing is checked again a few times and
+    // corrected if the section drifted (as the homepage's contact section does).
+    let raf;
+    let frames = 0;
+    const timers = [];
+    const look = () => {
+      const el = document.getElementById(id);
+      if (!el) {
+        if (++frames < 120) raf = requestAnimationFrame(look);
+        return;
+      }
+      land(el);
+      const want = () => Math.max(64, parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
+      for (const ms of [150, 450, 900, 1600]) timers.push(setTimeout(() => Math.abs(el.getBoundingClientRect().top - want()) > 2 && land(el), ms));
+    };
+    raf = requestAnimationFrame(look);
+    return () => {
+      cancelAnimationFrame(raf);
+      timers.forEach(clearTimeout);
+    };
     // Only path and #hash changes move the page (a query-string change, e.g. the catalogue's filters,
     // does not); `key` is read, not watched.
     // eslint-disable-next-line react-hooks/exhaustive-deps

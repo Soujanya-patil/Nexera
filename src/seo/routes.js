@@ -166,10 +166,10 @@ const PAGES = [
   {
     path: "/about",
     label: "About",
-    h1: "Built by an EPC, for EPCs",
-    title: "About Us — Built by an EPC, for EPCs | NEXERA",
+    h1: "About Nexera Powertech",
+    title: "About Nexera Powertech | BESS Distributor in India",
     description:
-      "NEXERA is an authorised TCL and Hithium partner built by EPCs, with design and commissioning support and a Kalaburagi training centre opening 2027.",
+      "Nexera Powertech brings 15+ years of Indian solar experience to battery energy storage, as an authorised TCL and Hithium partner in India.",
   },
   {
     path: "/how-it-works",

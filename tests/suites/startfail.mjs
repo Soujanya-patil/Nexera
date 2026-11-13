@@ -90,7 +90,7 @@ for (const [path, h1, canonical] of PAGES) {
   await p.waitForURL((u) => u.pathname === "/about");
   await p.waitForTimeout(4000);
   const after = await state(p);
-  check("client-side navigation that fails → the new URL loads afresh as its pre-rendered page (one h1, its canonical)", !before.failed && after.h1.length === 1 && after.h1[0] === "Built by an EPC, for EPCs" && after.canonicals[0] === "https://nexerapower.com/about" && after.titles === 1, { before: before.failed, after });
+  check("client-side navigation that fails → the new URL loads afresh as its pre-rendered page (one h1, its canonical)", !before.failed && after.h1.length === 1 && after.h1[0] === "About Nexera Powertech" && after.canonicals[0] === "https://nexerapower.com/about" && after.titles === 1, { before: before.failed, after });
   await p.context().close();
 }
 {

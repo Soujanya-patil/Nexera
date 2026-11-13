@@ -191,7 +191,7 @@ for (const W of [1440, 900]) {
 
   // Route change: back in the corner; and coming back: in the corner again.
   await p.evaluate(() => document.querySelector('footer a[href="/about"]').click());
-  await arrive(p, "/about", "Built by an EPC, for EPCs");
+  await arrive(p, "/about", "About Nexera Powertech");
   const other = await dockRect(p);
   check(`${tag} another page: the pill is in its default corner`, near(other.x, home.x) && near(other.y, home.y), { other, home });
   await mouseDrag(p, -100, -100); // drag it on that page too

@@ -53,7 +53,8 @@ export default function ServiceTraining() {
         </div>
       </section>
 
-      <section className="bg-white">
+      {/* id="training": the About page's "Join the Academy" lands here. */}
+      <section id="training" className="scroll-mt-16 bg-white">
         <div className="container-site py-section">
           <SectionIcon icon={GraduationCap} />
           <h2 data-sr="heading" className="mt-5 text-h2 font-semibold text-ink">
