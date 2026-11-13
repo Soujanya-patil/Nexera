@@ -53,11 +53,12 @@ const ACADEMY = [
   "certification, so every installer works to one standard",
 ];
 
-// Leadership: simple cards, no photos, in the order given. Raviraj's role is to be confirmed, so none is shown.
+// Leadership: simple cards, no photos, in the order given. Only Siddhant S Patil's role is confirmed;
+// the others' roles are to be confirmed, so none is shown (never add one that hasn't been given).
 const LEADERS = [
-  { name: "Ankit Jain", role: "Co-founder" },
-  { name: "Narendra", role: "Co-founder" },
+  { name: "Ankit Jain" },
   { name: "Siddhant S Patil", role: "Co-founder" },
+  { name: "Narendra" },
   { name: "Raviraj" },
 ];
 
