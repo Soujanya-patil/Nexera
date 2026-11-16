@@ -181,8 +181,8 @@ export default function SolutionsResidential() {
             },
             {
               icon: ShieldCheck,
-              title: "Built-in Protection",
-              text: "TCL BlueArk X1 has Type II surge protection on the AC and DC sides, and its battery meets UN38.3 and IEC 62619.",
+              title: "Multi-Level Safety",
+              text: "TCL BlueArk X1 has a 1+1 redundancy design, five layers of protection and a fire suppression module.",
             },
             { icon: CloudSun, title: "Weather-Ready Design", text: "TCL BlueArk X1 has IP66 protection and a −20 °C to 55 °C battery operating range." },
             { icon: MonitorCheck, title: "Smart Energy Management", text: "Monitor generation, consumption and battery operation through connected energy-management platforms." },

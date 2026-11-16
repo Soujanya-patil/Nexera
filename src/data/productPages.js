@@ -95,8 +95,8 @@ const PAGES = {
       q: "What is the capacity and power of the TCL BlueArk X1?",
       a: "The TCL BlueArk X1 has a modular, stacked battery of 8–128 kWh and a hybrid inverter of 3–8 kW single phase or 5–15 kW three phase, with up to 15 kW charge/discharge in one system.",
     },
-    // datasheet p.1: battery type LiFePO4, cell capacity 314 Ah, cycle life 8000
-    chemistry: "The TCL BlueArk X1 uses LFP (lithium iron phosphate) cells of 314 Ah, rated for 8,000 cycles.",
+    // datasheet p.1: cell capacity 314 Ah, cycle life 8000; TCL presentation slide 15: "Tier 1 LFP Battery Cell, 8000 cycles"
+    chemistry: "The TCL BlueArk X1 uses LFP (lithium iron phosphate) Tier 1 cells of 314 Ah, rated for 8,000 cycles.",
     // highlight "Modular stacked battery"; datasheet p.1: 8 kWh total / 7.2 kWh usable per module, up to 4 inverters in parallel
     expansion:
       "Yes. Its battery is modular and stacked: it scales from 8 kWh to 128 kWh in 8 kWh modules (7.2 kWh usable each), with up to 15 kW charge/discharge in one system. Up to 4 inverters can run in parallel, on-grid and off-grid.",
@@ -139,10 +139,10 @@ const PAGES = {
     description:
       "TCL BlueArk X5 all-in-one C&I storage: 50 kW / 100 kWh, expandable to 1 MWh, 100 kWp PV input. From NEXERA, TCL authorised distributor in India.",
     audience: [
-      // datasheet p.1: plug-and-play, all-in-one design with factory pre-integration
-      "Commercial and industrial sites that want an all-in-one, factory pre-integrated system",
-      // datasheet p.2: max. PV array power 100 kWp @STC, 6 MPPTs
-      "Solar + storage projects, with PV input up to 100 kWp and 6 MPPTs",
+      // TCL presentation slide 23: "designed specifically for the small and medium-sized C&I segment"
+      "Small and medium commercial and industrial sites",
+      // TCL presentation slide 23: "Suitable for the new PV + energy storage systems"; datasheet p.2: 100 kWp, 6 MPPTs
+      "New solar + storage projects, with PV input up to 100 kWp and 6 MPPTs",
       // C&I page: "businesses looking to combine solar, storage and backup power"; datasheet p.2: AC input [Generator]
       "Businesses that want to combine solar, storage and backup power, including sites with a generator",
       // datasheet p.1: single cabinet 2 h to 8 h (50 kW / 400 kWh); up to 10 cabinets in parallel (500 kW / 1 MWh)

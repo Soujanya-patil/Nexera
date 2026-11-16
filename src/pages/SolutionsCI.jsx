@@ -104,6 +104,7 @@ const PORTFOLIO = [
       "Three-phase operation",
       "Stable operation in weak-grid conditions",
       "Three-phase imbalance correction",
+      "All-in-one design with PCS and EMS",
       "Cloud-based monitoring and diagnostics",
       "Multiple fire-protection mechanisms",
     ],

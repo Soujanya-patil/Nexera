@@ -32,6 +32,7 @@ import hithiumLogo from "../assets/partners/hithium-logo.png";
 import imgX1 from "../assets/catalogue/tcl-blueark-x1.webp";
 import imgX5 from "../assets/catalogue/tcl-blueark-x5.webp";
 import imgW10 from "../assets/catalogue/tcl-blueark-w10.webp";
+import imgW10Open from "../assets/catalogue/tcl-blueark-w10-open.webp";
 import imgX10 from "../assets/catalogue/tcl-blueark-x10-640.webp";
 import imgX10Webp320 from "../assets/catalogue/tcl-blueark-x10-320.webp";
 import imgX10Avif320 from "../assets/catalogue/tcl-blueark-x10-320.avif";
@@ -73,6 +74,8 @@ export const COMPARE_FIELDS = [
   { id: "weight", label: "Weight" },
 ];
 
+// TCL's official product presentation (nexera-reference/tcl/), after the datasheets; never published.
+const TCL_PRESENTATION = "TCL Digital Power Introduction (EU, 5 August 2026)";
 const HITHIUM_BROCHURE = "Hithium product brochure — all solutions and company presentation";
 // Lines added from the director-approved Solutions content, which was checked against the Hithium deck.
 const HITHIUM_CONTENT = "NEXERA Solutions content";
@@ -105,7 +108,7 @@ export const PRODUCTS = [
         { label: "Parallel inverters", value: "Up to 4, on-grid and off-grid" },
       ],
       battery: [
-        { label: "Chemistry", value: "LFP (LiFePO4)" },
+        { label: "Chemistry", value: "LFP, Tier 1 cells" },
         { label: "Cell capacity", value: "314 Ah" },
         { label: "Cycle life", value: "8,000 cycles" },
         { label: "Capacity", value: "8–128 kWh, modular stacked" },
@@ -114,6 +117,11 @@ export const PRODUCTS = [
         { label: "Battery voltage range", value: "20–60 V" },
       ],
       safety: [
+        { label: "Redundancy", value: "1+1 redundancy design" },
+        { label: "Protection", value: "5 layers of protection" },
+        { label: "Control", value: "Dual redundant MCU control" },
+        { label: "Fire", value: "Fire suppression module" },
+        { label: "Thermal", value: "Multi-module temperature sampling, thermal shield, heat module" },
         { label: "Surge protection", value: "Type II SPD on AC and DC sides" },
         { label: "Battery standards", value: "UN38.3, IEC 62619, IEC 62040, EMC" },
         {
@@ -122,7 +130,7 @@ export const PRODUCTS = [
         },
       ],
       control: [
-        { label: "MPPTs", value: "3" },
+        { label: "MPPTs", value: "3 independent" },
         { label: "String current", value: "Up to 20 A" },
         { label: "DC/AC ratio", value: "Up to 2.0" },
       ],
@@ -137,20 +145,20 @@ export const PRODUCTS = [
     },
     highlights: [
       { icon: "Layers", title: "Modular stacked battery", text: "Scale from 8 kWh to 128 kWh, with up to 15 kW charge/discharge in one system." },
-      { icon: "ShieldCheck", title: "Safety and reliability", text: "314 Ah LFP cells rated for 8,000 cycles, with Type II SPD on the AC and DC sides." },
+      { icon: "ShieldCheck", title: "Safety and reliability", text: "Tier 1 LFP cells rated for 8,000 cycles, 1+1 redundancy and five layers of protection." },
       { icon: "Zap", title: "Backup-ready", text: "On-grid, off-grid and generator-backup output, switching in 10 ms." },
-      { icon: "Sun", title: "Made for solar", text: "Three MPPTs for complex rooftops, string current up to 20 A and a DC/AC ratio of up to 2.0." },
+      { icon: "Sun", title: "Made for solar", text: "Three independent MPPTs for complex rooftops, string current up to 20 A and a DC/AC ratio of up to 2.0." },
       { icon: "Thermometer", title: "Harsh-environment ready", text: "IP66 for indoor and outdoor installation, and a battery operating range of −20 °C to 55 °C." },
     ],
     compare: {
       capacity: "8–128 kWh",
       power: "3–8 kW (1-phase), 5–15 kW (3-phase)",
       configuration: "Hybrid inverter + stacked battery",
-      cell: "LFP, 314 Ah",
+      cell: "LFP, Tier 1",
       protection: "IP66",
     },
     datasheet: "/datasheets/tcl-blueark-x1-datasheet.pdf",
-    sources: ["TCL BlueArk X1 datasheet (battery and inverters), pages 1–2"],
+    sources: ["TCL BlueArk X1 datasheet (battery and inverters), pages 1–2", `${TCL_PRESENTATION}: slides 15, 20 and 21`],
   },
   {
     id: "tcl-blueark-x5",
@@ -161,7 +169,7 @@ export const PRODUCTS = [
     image: imgX5,
     imageSize: [480, 900],
     imageAlt: "TCL BlueArk X5 all-in-one industrial energy storage cabinet",
-    summary: "An all-in-one, plug-and-play C&I system with PV input up to 100 kWp, generator input and black start.",
+    summary: "An all-in-one, DC-coupled system for small and medium C&I sites — suited to new PV + storage projects.",
     cardSpecs: ["50 kW", "100 kWh"],
     keySpecs: [
       { label: "Rated power", value: "50 kW" },
@@ -173,7 +181,7 @@ export const PRODUCTS = [
       system: [
         { label: "Rated power", value: "50 kW" },
         { label: "System capacity", value: "100 kWh" },
-        { label: "Architecture", value: "All-in-one, factory pre-integrated (plug-and-play)" },
+        { label: "Architecture", value: "All-in-one, DC-coupled; factory pre-integrated (plug-and-play)" },
         { label: "On/off-grid switching", value: "Within 20 ms" },
         { label: "Black start", value: "Self-starting without grid or solar power" },
         { label: "Max. PV array power", value: "100 kWp @STC" },
@@ -191,9 +199,10 @@ export const PRODUCTS = [
       safety: [
         { label: "Surge protection", value: "Type II SPD on AC and DC sides" },
         { label: "Arc fault", value: "AFCI" },
-        { label: "Detection", value: "Combustible gas detector" },
+        { label: "Detection", value: "Smoke detector, temperature sensor, combustible gas detector" },
         { label: "Ventilation", value: "Integrated with combustible gas detection" },
-        { label: "Fire", value: "Fire and aerosol integration; gel fire suppression in the battery compartment" },
+        { label: "Alarm", value: "Audible and visual alarm" },
+        { label: "Fire", value: "Aerosol fire extinguisher; gel fire suppression in the battery compartment" },
       ],
       control: [
         { label: "MPPTs", value: "6, with 2 strings each (12 strings)" },
@@ -208,20 +217,20 @@ export const PRODUCTS = [
       ],
     },
     highlights: [
-      { icon: "Boxes", title: "All-in-one, plug-and-play", text: "Factory pre-integrated for quick deployment, with PV and generator inputs in one cabinet." },
+      { icon: "Boxes", title: "All-in-one, DC-coupled", text: "Designed for small and medium C&I sites and new PV + storage systems." },
       { icon: "Expand", title: "Scales both ways", text: "One cabinet expands from 2 h to 8 h (50 kW / 400 kWh), and up to 10 cabinets run in parallel — to 500 kW / 1 MWh." },
-      { icon: "Flame", title: "Detection and suppression", text: "Combustible-gas detection with integrated ventilation, fire and aerosol integration, and gel fire suppression in the battery compartment." },
+      { icon: "Flame", title: "Detection and suppression", text: "Smoke, temperature and combustible-gas detection, an audible and visual alarm, an aerosol fire extinguisher and gel fire suppression in the battery compartment." },
       { icon: "ShieldCheck", title: "Built for harsh environments", text: "Battery IP55 with C3/C4 corrosion resistance, −30 °C to 50 °C, with Type II SPD on AC/DC sides and AFCI." },
     ],
     compare: {
       capacity: "100 kWh (expandable to 1 MWh)",
       power: "50 kW (expandable to 500 kW)",
-      configuration: "All-in-one, with PV and generator inputs",
+      configuration: "All-in-one, DC-coupled",
       cell: "314 Ah LFP",
       protection: "Battery IP55 / inverter IP66",
     },
     datasheet: "/datasheets/tcl-blueark-x5-datasheet.pdf",
-    sources: ["TCL BlueArk X5 datasheet (model X5-50k-100), pages 1–3"],
+    sources: ["TCL BlueArk X5 datasheet (model X5-50k-100), pages 1–3", `${TCL_PRESENTATION}: slides 23 and 26`],
   },
   {
     id: "tcl-blueark-w10",
@@ -249,6 +258,7 @@ export const PRODUCTS = [
         { label: "Current THD", value: "<2% (at rated power)" },
         { label: "Grid", value: "Three-phase operation, stable in weak-grid conditions, three-phase imbalance correction" },
         { label: "Grid dispatch", value: "Supports AGC/AVC" },
+        { label: "Integration", value: "All-in-one design with PCS and EMS" },
       ],
       battery: [
         { label: "Cell", value: "LFP 3.2 V / 314 Ah" },
@@ -269,14 +279,16 @@ export const PRODUCTS = [
           label: "Fire suppression",
           value: "Aerosol / FK-6-1-12 (Novec 1230 equivalent); optional water-immersion extinguishing and explosion vent panel",
         },
-        { label: "Detection", value: "Combustible gas detector" },
+        { label: "Detection", value: "Smoke detector, temperature sensor, combustible gas detector" },
         { label: "Alarm", value: "Sound and light alarm" },
+        { label: "Pack level", value: "Pack-level fire protection, pack explosion relief valve" },
+        { label: "Ventilation", value: "Exhaust valve and intake valve" },
       ],
     },
     highlights: [
       { icon: "Expand", title: "Expandable to 6.3 MWh", text: "Starts at 125 kW / 261 kWh and expands to 6.3 MWh." },
-      { icon: "ShieldCheck", title: "Layered protection", text: "Cell-to-cabinet protection with partitioned thermal isolation, and aerosol / FK-6-1-12 (Novec 1230 equivalent) fire suppression." },
-      { icon: "Flame", title: "Gas detection and alarm", text: "A combustible gas detector with a sound and light alarm; water-immersion extinguishing and an explosion vent panel are optional." },
+      { icon: "ShieldCheck", title: "Layered protection", text: "Cabinet-level aerosol fire suppression with optional water-immersion extinguishing, gas and smoke detection, plus pack-level fire protection." },
+      { icon: "Flame", title: "Explosion management", text: "An optional explosion vent panel at cabinet level, and explosion relief valves at pack level." },
     ],
     compare: {
       capacity: "261 kWh (expandable to 6.3 MWh)",
@@ -285,8 +297,24 @@ export const PRODUCTS = [
       cooling: "Liquid",
       protection: "IP55",
     },
+    // The open-cabinet view is the held final frame of the Home hero footage (this cabinet design);
+    // the five points are the same pixel-centroid anchors verified there against the Protection
+    // Architecture slide of TCL's Digital Power Introduction (slide 30). Only parts visible in this frame are marked.
+    hotspots: {
+      image: imgW10Open,
+      imageSize: [1040, 864],
+      imageAlt: "Open-cabinet view: door with fans and fire suppression unit, five battery packs, and the lower electrical rack",
+      caption: "Open-cabinet view of this cabinet design. Component names and locations follow TCL's protection-architecture documentation.",
+      points: [
+        { id: "exhaust", label: "Exhaust Valve", anchor: [14.8, 28.9], text: "Upper valve on the inside of the cabinet door — part of the protection architecture." },
+        { id: "aerosol", label: "Aerosol Fire Suppression", anchor: [26.8, 28.5], text: "Aerosol fire suppression unit mounted on the inside of the cabinet door." },
+        { id: "pack-fire", label: "Pack-level Fire Protection", anchor: [38.5, 50.5], text: "Fire protection at battery-pack level." },
+        { id: "relief", label: "Pack Explosion Relief Valve", anchor: [30.3, 51.8], text: "Explosion relief valve on the front of the battery pack." },
+        { id: "intake", label: "Intake Valve", anchor: [14.7, 57.0], text: "Lower valve on the inside of the cabinet door — part of the protection architecture." },
+      ],
+    },
     datasheet: "/datasheets/tcl-blueark-w10-datasheet.pdf",
-    sources: ["TCL BlueArk W10 datasheet (W10 125kW/261kWh), pages 1–2"],
+    sources: ["TCL BlueArk W10 datasheet (W10 125kW/261kWh), pages 1–2", `${TCL_PRESENTATION}: slides 29 and 30`],
   },
   {
     // Every value from TCL's BlueArk X10 datasheet (model X10-125K-261; public/datasheets/tcl-blueark-x10-datasheet.pdf).
