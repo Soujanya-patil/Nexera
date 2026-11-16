@@ -152,7 +152,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
           </span>{" "}
           <span
             style={depth(3)}
-            className="mt-5 block text-h1 font-semibold [--depth:0.5] xl:[--depth:1]"
+            className="mt-5 max-md:mt-3 block text-h1 font-semibold [--depth:0.5] xl:[--depth:1]"
           >
             {/* From 1024 px each line stays one line (lg:whitespace-nowrap): in IBM Plex it always fits,
                 but at 1024 the stand-in shown while the font loads is a few px wider and used to wrap,
@@ -197,14 +197,14 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
           </span>
         </h1>
         {/* The tagline (not a heading) and the sub-line arrive together, as the paragraph did. */}
-        <div data-a="para" className="mt-6 max-w-md text-body">
+        <div data-a="para" className="mt-6 max-w-md text-body max-md:mt-4 max-md:leading-[1.5]">
           <p className="font-semibold text-white">Store today. Power tomorrow.</p>
-          <p className="mt-2 text-paper/80">
+          <p className="mt-2 text-paper/80 max-md:mt-1">
             Nexera Powertech is the authorised distributor of TCL and Hithium battery energy storage in India, with
             local stock, system design, commissioning and service.
           </p>
         </div>
-        <div className="mt-8 flex flex-wrap items-center gap-4">
+        <div className="mt-8 flex flex-wrap items-center gap-4 max-md:mt-5 max-md:gap-3">
           <span data-a="cta" className="inline-block">
             <MagneticButton to="/solutions" arrow spotlight>
               Explore BESS Solutions
@@ -216,7 +216,7 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             </MagneticButton>
           </span>
         </div>
-        <ul data-a="trust" className="mt-10 grid max-w-xl grid-cols-3 divide-x divide-white/15">
+        <ul data-a="trust" className="mt-10 max-md:mt-6 grid max-w-xl grid-cols-3 divide-x divide-white/15">
           {trust.map(({ icon: Icon, lines }) => (
             <li
               key={lines[0]}

@@ -565,8 +565,8 @@ export default function HomeHero() {
       </div>
 
       <div
-        className={`relative grid container-site items-center gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[minmax(0,36rem)_minmax(0,1fr)] ${
-          story ? "h-full pb-20 pt-10" : "hero-fit py-14 lg:py-6"
+        className={`relative grid container-site items-center gap-8 max-md:gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[minmax(0,36rem)_minmax(0,1fr)] ${
+          story ? "h-full pb-20 pt-10" : "hero-fit py-14 max-md:pt-4 lg:py-6"
         }`}
       >
         {/* Copy — in the story it steps back (fades, drifts left, settles smaller) while the product
