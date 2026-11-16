@@ -37,7 +37,7 @@ export default function Seo() {
     if (!meta || appFailed()) return;
     const route = meta.getRoute(pathname);
     if (!route) setHead({ title: meta.NOT_FOUND_TITLE, noindex: true });
-    else if (route.noindex) setHead({ title: route.title, description: route.description, noindex: true });
+    else if (route.noindex) setHead({ title: route.title, description: route.description, noindex: route.robots ?? true });
     else setHead({ title: route.title, description: route.description, canonical: route.canonical });
   }, [meta, pathname]);
   return null;
@@ -62,5 +62,6 @@ function setHead({ title, description, canonical, noindex }) {
   if (t.textContent !== title) t.textContent = title;
   setTag('meta[name="description"]', description, "content", () => element("meta", { name: "description" }));
   setTag('link[rel="canonical"]', canonical, "href", () => element("link", { rel: "canonical" }));
-  setTag('meta[name="robots"]', noindex ? "noindex" : null, "content", () => element("meta", { name: "robots" }));
+  // `noindex`: true (plain "noindex") or the route's own robots value (e.g. "noindex, nofollow").
+  setTag('meta[name="robots"]', noindex ? (noindex === true ? "noindex" : noindex) : null, "content", () => element("meta", { name: "robots" }));
 }

@@ -13,6 +13,7 @@ import {
   LocationBengaluruRoute,
   NotFoundRoute,
   PartnerRoute,
+  PrivacyPolicyRoute,
   ProductDetailRoute,
   ProductsRoute,
   ResourcesRoute,
@@ -21,6 +22,7 @@ import {
   SolutionsResidentialRoute,
   SolutionsRoute,
   SolutionsUtilityRoute,
+  TermsOfUseRoute,
   WhereWeOperateRoute,
 } from "./pages/lazy";
 
@@ -46,6 +48,8 @@ const PAGES = [
   ["/blog", BlogRoute],
   ["/blog/:slug", ArticleRoute],
   ["/contact", ContactRoute],
+  ["/privacy-policy", PrivacyPolicyRoute],
+  ["/terms-of-use", TermsOfUseRoute],
 ];
 
 /**

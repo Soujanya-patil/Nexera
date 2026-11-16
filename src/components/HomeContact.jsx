@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { LEGAL_REVIEW } from "../lib/legal";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, BadgeCheck, GraduationCap, Ruler } from "lucide-react";
 import { useScrollReveal } from "../lib/scrollReveal";
@@ -365,7 +366,15 @@ export default function HomeContact() {
                   {/* The required legend and how the details are used. */}
                   <div className="space-y-1 text-micro text-paper/80">
                     <p>* required</p>
-                    <p>We use your details only to respond to your enquiry. See our Privacy Policy.</p>
+                    {LEGAL_REVIEW ? (
+                <p>We use your details only to respond to your enquiry. See our Privacy Policy.</p>
+              ) : (
+                <p>We use your details only to respond to your enquiry. See our{" "}
+                <Link to="/privacy-policy" className="link-inline font-semibold text-white">
+                  Privacy Policy
+                </Link>
+                .</p>
+              )}
                   </div>
                   <button
                     type="submit"

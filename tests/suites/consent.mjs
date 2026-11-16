@@ -8,6 +8,9 @@
 // Call / WhatsApp / Enquire events are sent only with consent.
 // Usage: node consent.mjs <apache base> <php base>   (the PHP server takes the form submission)
 import { chromium } from "playwright-core";
+import { LEGAL_REVIEW, PRIVACY_PATH } from "../../src/lib/legal.js";
+// The banner's privacy link: /contact while the legal pages are in review, the Privacy Policy after.
+const PRIVACY_LINK = LEGAL_REVIEW ? "/contact" : PRIVACY_PATH;
 const BASE = process.argv[2] ?? "http://127.0.0.1:8810";
 const PHP = process.argv[3] ?? "http://127.0.0.1:8800";
 const ID = "G-3CT5021X9H";
@@ -53,7 +56,8 @@ const clientNav = (p, to) => p.evaluate((to) => { history.pushState({}, "", to);
     const r = sec.getBoundingClientRect();
     return { text: sec.querySelector("p").textContent.trim(), acc: acc.textContent.trim(), rej: rej.textContent.trim(), same: acc.className === rej.className && st(acc) === st(rej), link: sec.querySelector("a")?.getAttribute("href"), fixed: getComputedStyle(sec).position, inView: r.bottom <= innerHeight && r.left >= 0, shifts: window.__shifts };
   });
-  check("banner: the message, Accept and Reject styled exactly alike, a privacy link (/contact), fixed at the bottom", s.text.startsWith("We use cookies to understand how visitors use our site.") && s.acc === "Accept" && s.rej === "Reject" && s.same && s.link === "/contact" && s.fixed === "fixed" && s.inView, s);
+  // The privacy link: /contact while the legal pages are in review (src/lib/legal.js), the Privacy Policy after.
+  check(`banner: the message, Accept and Reject styled exactly alike, a privacy link (${PRIVACY_LINK}), fixed at the bottom`, s.text.startsWith("We use cookies to understand how visitors use our site.") && s.acc === "Accept" && s.rej === "Reject" && s.same && s.link === PRIVACY_LINK && s.fixed === "fixed" && s.inView, s);
   check("banner: no layout shift (CLS 0)", s.shifts === 0, s.shifts);
   const d = await dl(p);
   check("before a choice: no request to Google; Consent Mode default denied in the dataLayer", ctx.google.length === 0 && d.some((a) => a[0] === "consent" && a[1] === "default" && a[2].analytics_storage === "denied" && a[2].ad_storage === "denied" && a[2].ad_user_data === "denied" && a[2].ad_personalization === "denied"), { google: ctx.google, first: d[0] });

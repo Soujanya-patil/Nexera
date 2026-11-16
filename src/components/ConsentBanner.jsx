@@ -1,6 +1,7 @@
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { Link } from "react-router-dom";
 import { consentChoice, consentOpen, setConsent, subscribeConsent } from "../lib/analytics";
+import { LEGAL_REVIEW } from "../lib/legal";
 
 /*
  * The cookie consent banner (lib/analytics). Shown until the visitor chooses, and again from the
@@ -9,7 +10,8 @@ import { consentChoice, consentOpen, setConsent, subscribeConsent } from "../lib
  * bar (MobileBar), never under it. Not a modal: the page stays usable and focus isn't trapped.
  * "Accept" and "Reject" are styled exactly alike. It's its own chunk, mounted after the page has loaded (Layout).
  *
- * The privacy link goes to /contact: the site has no privacy policy page yet.
+ * The privacy link goes to the Privacy Policy (/privacy-policy); while the legal pages are in review
+ * (lib/legal), to /contact as before.
  */
 const snapshot = () => `${consentOpen()}|${consentChoice()}`;
 const BUTTON =
@@ -48,9 +50,15 @@ export default function ConsentBanner() {
       </h2>
       <p className="text-small text-paper/90">
         We use cookies to understand how visitors use our site.{" "}
-        <Link to="/contact" className="link-inline font-semibold text-white">
-          Privacy questions? Contact us
-        </Link>
+        {LEGAL_REVIEW ? (
+          <Link to="/contact" className="link-inline font-semibold text-white">
+            Privacy questions? Contact us
+          </Link>
+        ) : (
+          <Link to="/privacy-policy" className="link-inline font-semibold text-white">
+            Privacy Policy
+          </Link>
+        )}
       </p>
       <div className="mt-4 flex gap-3">
         <button type="button" onClick={() => choose("granted")} className={BUTTON}>

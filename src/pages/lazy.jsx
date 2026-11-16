@@ -48,5 +48,8 @@ export const WhereWeOperateRoute = preloadable(() => import("./WhereWeOperate"))
 export const LocationBengaluruRoute = preloadable(() => import("./LocationBengaluru"));
 export const ResourcesRoute = preloadable(() => import("./Resources"));
 export const ContactRoute = preloadable(() => import("./Contact"));
+// The legal pages (the director's text).
+export const PrivacyPolicyRoute = preloadable(() => import("./PrivacyPolicy"));
+export const TermsOfUseRoute = preloadable(() => import("./TermsOfUse"));
 export const NotFoundRoute = preloadable(() => import("./NotFound"));
 

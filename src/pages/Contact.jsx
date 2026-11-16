@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { LEGAL_REVIEW } from "../lib/legal";
 import { Link, useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import { useScrollReveal } from "../lib/scrollReveal";
@@ -290,7 +291,15 @@ export default function Contact() {
               {/* Under the fields: the required legend and how the details are used. */}
               <div className="space-y-1 text-micro text-copy">
                 <p>* required</p>
+                {LEGAL_REVIEW ? (
                 <p>We use your details only to respond to your enquiry. See our Privacy Policy.</p>
+              ) : (
+                <p>We use your details only to respond to your enquiry. See our{" "}
+                <Link to="/privacy-policy" className="link-inline font-semibold text-accent">
+                  Privacy Policy
+                </Link>
+                .</p>
+              )}
               </div>
 
               <button

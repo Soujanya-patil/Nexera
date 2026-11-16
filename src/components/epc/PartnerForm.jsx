@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { LEGAL_REVIEW } from "../../lib/legal";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { jumpTo } from "../../lib/lenis";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../../lib/enquiry";
@@ -209,7 +210,15 @@ export default function PartnerForm() {
                 </p>
               )}
               {/* How the details are used. */}
-              <p className="text-micro text-copy">We use your details only to respond to your enquiry. See our Privacy Policy.</p>
+              {LEGAL_REVIEW ? (
+                <p className="text-micro text-copy">We use your details only to respond to your enquiry. See our Privacy Policy.</p>
+              ) : (
+                <p className="text-micro text-copy">We use your details only to respond to your enquiry. See our{" "}
+                <Link to="/privacy-policy" className="link-inline font-semibold text-accent">
+                  Privacy Policy
+                </Link>
+                .</p>
+              )}
               <button
                 type="submit"
                 disabled={status === "sending"}

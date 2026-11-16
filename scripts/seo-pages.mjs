@@ -330,7 +330,7 @@ for (const r of resolved) {
   const head = [
     `<title>${esc(r.title)}</title>`,
     `<meta name="description" content="${esc(r.description)}" />`,
-    r.noindex ? `<meta name="robots" content="noindex" />` : `<link rel="canonical" href="${esc(r.canonical)}" />`,
+    r.noindex ? `<meta name="robots" content="${esc(r.robots ?? "noindex")}" />` : `<link rel="canonical" href="${esc(r.canonical)}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:title" content="${esc(r.title)}" />`,
     `<meta property="og:description" content="${esc(r.description)}" />`,

@@ -1,6 +1,7 @@
 // Checks the built pages for the changed routes: one title/description/canonical/h1, JSON-LD parses,
 // FAQ JSON-LD text appears word for word in the visible page, keyword phrases present.
 import fs from "node:fs";
+import { LEGAL_PATHS, LEGAL_REVIEW, REVIEW_ROBOTS } from "../../src/lib/legal.js";
 const dist = process.argv[2];
 const file = (p) => `${dist}/${p === "/" ? "index" : p.slice(1)}.html`;
 const decode = (s) => s.replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, " ");
@@ -17,7 +18,7 @@ const KW = {
 const PRODUCT_PAGES = ["tcl-blueark-x1", "tcl-blueark-x5", "tcl-blueark-w10", "tcl-blueark-x10", "hithium-power-cabinet-1022", "hithium-power-625"].map((id) => `/products/${id}`);
 for (const p of PRODUCT_PAGES) KW[p] = ["available in India through NEXERA, an authorised", "Who it’s for", "Typical applications", "NEXERA support in India", "What Is a BESS?"];
 let bad = 0;
-for (const p of ["/", "/solutions", "/solutions/commercial-industrial", "/solutions/residential", "/solutions/utility-scale", "/products", "/become-a-partner", "/service-training", "/where-we-operate", "/resources", "/locations/bengaluru", "/contact", ...PRODUCT_PAGES]) {
+for (const p of ["/", "/solutions", "/solutions/commercial-industrial", "/solutions/residential", "/solutions/utility-scale", "/products", "/become-a-partner", "/service-training", "/where-we-operate", "/resources", "/locations/bengaluru", "/contact", ...(LEGAL_REVIEW ? [] : LEGAL_PATHS), ...PRODUCT_PAGES]) {
   const h = fs.readFileSync(file(p), "utf8");
   const count = (re) => (h.match(re) || []).length;
   const title = decode(h.match(/<title>([^<]*)<\/title>/)[1]);
@@ -38,6 +39,17 @@ for (const p of ["/", "/solutions", "/solutions/commercial-industrial", "/soluti
   console.log(`${ok ? "OK  " : "BAD "} ${p.padEnd(34)} h1=${h1} ld=${ld.length} canon=${canon === want} og=${ogt === title && ogd === desc} faq=${faq ? faq.mainEntity.length + " (all visible: " + !faqMiss.length + ")" : "-"}${kwMiss.length ? " MISSING " + kwMiss.join(" | ") : ""}${h3peak ? "" : " no Peak Shaving h3"}`);
   if (faqMiss.length) console.log("   not visible:", faqMiss.map((t) => t.slice(0, 80)));
 }
+// The legal pages while in review (src/lib/legal.js): one title, description and h1; robots "noindex,
+// nofollow"; no canonical and no structured data (the indexable checks above apply once approved).
+if (LEGAL_REVIEW)
+  for (const p of LEGAL_PATHS) {
+    const h = fs.readFileSync(file(p), "utf8");
+    const count = (re) => (h.match(re) || []).length;
+    const robots = [...h.matchAll(/<meta name="robots" content="([^"]*)"/g)].map((m) => m[1]);
+    const ok = count(/<title>/g) === 1 && count(/<meta name="description"/g) === 1 && count(/<h1[\s>]/g) === 1 && robots.length === 1 && robots[0] === REVIEW_ROBOTS && !count(/rel="canonical"/g) && !count(/application\/ld\+json/g);
+    if (!ok) bad++;
+    console.log(`${ok ? "OK  " : "BAD "} ${p.padEnd(34)} in review: robots ${JSON.stringify(robots)}, no canonical or JSON-LD`);
+  }
 // Visible breadcrumbs (every built page that has one) say what the page's BreadcrumbList says, in order.
 const pages = [];
 (function walk(d) {

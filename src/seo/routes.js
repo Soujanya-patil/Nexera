@@ -31,6 +31,7 @@ import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
 import { productPage as productContent } from "../data/productPages";
 import { ADDRESS_PARTS, BUSINESS_NAME, EMAIL, HOURS, PHONE } from "../data/business";
 import { HOME_FAQ } from "../data/home";
+import { LEGAL_REVIEW, REVIEW_ROBOTS } from "../lib/legal";
 
 export const SITE_URL = "https://nexerapower.com";
 export const TITLE_SUFFIX = " | NEXERA";
@@ -241,6 +242,24 @@ const PAGES = [
     article: { headline: a.h1, datePublished: a.datePublished, dateModified: a.dateModified },
     faq: a.faqs,
   })),
+  // The legal pages (pages/PrivacyPolicy.jsx, pages/TermsOfUse.jsx): breadcrumb Home > page. In review
+  // (lib/legal LEGAL_REVIEW) they are live but hidden: robots "noindex, nofollow", not in the sitemap.
+  {
+    path: "/privacy-policy",
+    ...(LEGAL_REVIEW && { noindex: true, robots: REVIEW_ROBOTS }),
+    h1: "Privacy Policy",
+    label: "Privacy Policy",
+    title: "Privacy Policy | Nexera Powertech",
+    description: "How Nexera Powertech collects, uses and protects the details you share through our website and enquiry forms.",
+  },
+  {
+    path: "/terms-of-use",
+    ...(LEGAL_REVIEW && { noindex: true, robots: REVIEW_ROBOTS }),
+    h1: "Terms of Use",
+    label: "Terms of Use",
+    title: "Terms of Use | Nexera Powertech",
+    description: "The terms that apply when you use the Nexera Powertech website, nexerapower.com.",
+  },
   {
     path: "/contact",
     localBusiness: true,

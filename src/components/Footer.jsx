@@ -3,6 +3,7 @@ import Logo from "./Logo";
 import { ADDRESS, BRANCH_ADDRESS, EMAIL, PHONE, phoneHref } from "../data/business";
 import { SOLUTION_PAGES } from "../data/solutions";
 import { openConsent } from "../lib/analytics";
+import { LEGAL_REVIEW } from "../lib/legal";
 
 // Every group lists existing routes only, each page once (the director's Final Copy: TCL before Hithium;
 // sentence case in Company), plus the Bengaluru page under Company.
@@ -97,10 +98,24 @@ export default function Footer() {
         {/* Phones: room at the end for the bottom action bar (MobileBar: 4rem + the home indicator). */}
         <div className="container-site flex flex-wrap items-center justify-between gap-x-6 gap-y-2 py-5 text-micro text-muted max-md:pb-[calc(1.25rem+4rem+env(safe-area-inset-bottom))]">
           <p>© {new Date().getFullYear()} Nexera Powertech Private Limited. All rights reserved.</p>
-          {/* Reopens the cookie consent banner (lib/analytics). */}
-          <button type="button" data-cookie-settings onClick={openConsent} className="link inline-flex items-center text-muted pointer-coarse:min-h-11">
-            Cookie settings
-          </button>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            {/* Legal: the two pages (not while they are in review, lib/legal), then Cookie settings (reopens
+                the cookie consent banner, lib/analytics). */}
+            {!LEGAL_REVIEW && (
+            <nav aria-label="Legal" className="flex items-center gap-2">
+              <Link to="/privacy-policy" className="link inline-flex items-center text-muted pointer-coarse:min-h-11">
+                Privacy Policy
+              </Link>
+              <span aria-hidden="true">|</span>
+              <Link to="/terms-of-use" className="link inline-flex items-center text-muted pointer-coarse:min-h-11">
+                Terms of Use
+              </Link>
+            </nav>
+            )}
+            <button type="button" data-cookie-settings onClick={openConsent} className="link inline-flex items-center text-muted pointer-coarse:min-h-11">
+              Cookie settings
+            </button>
+          </div>
         </div>
       </div>
     </footer>

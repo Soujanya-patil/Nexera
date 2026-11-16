@@ -10,6 +10,7 @@
 // served HTML — and on an SVG <image> that is neither hidden (aria-hidden) nor named.
 // Usage: node headtags.mjs <base> [--report]
 import { chromium } from "playwright-core";
+import { LEGAL_PATHS, LEGAL_REVIEW, REVIEW_ROBOTS } from "../../src/lib/legal.js";
 const BASE = process.argv[2];
 const REPORT = process.argv.includes("--report");
 const b = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
@@ -23,6 +24,7 @@ const sitemap = await (await fetch(`${BASE}/sitemap.xml`)).text();
 const ROUTES = [
   ...[...sitemap.matchAll(/<loc>https:\/\/nexerapower\.com([^<]*)<\/loc>/g)].map((m) => m[1] || "/"),
   "/products/hithium-power-5016", // noindex (kept off the catalogue)
+  ...(LEGAL_REVIEW ? LEGAL_PATHS : []), // noindex, nofollow while the legal pages are in review (src/lib/legal.js)
   "/no-such-page", // not a route: 404.html
 ];
 
@@ -181,6 +183,30 @@ if (REPORT) {
   for (const { path, s, c } of table) console.log(`${path} | ${row(s)} | ${row(c)} | most at once t${c.max.title} d${c.max.description} c${c.max.canonical} | no alt: ${c.noAlt.join(", ") || "-"} | empty alt: ${c.emptyAlt.join(", ") || "-"}`);
   console.log("\nclient-side navigation: path | live head | most at once | images");
   for (const { path, c } of nav) console.log(`${path} | ${row(c)} | most at once t${c.max.title} d${c.max.description} c${c.max.canonical} | no alt: ${c.noAlt.join(", ") || "-"} | empty alt: ${c.emptyAlt.join(", ") || "-"}`);
+}
+// The legal pages in review: robots "noindex, nofollow" served, after hydration and after a client-side
+// navigation (the counts above only say there is one robots tag).
+if (LEGAL_REVIEW) {
+  const robots = (p) => p.evaluate(() => [...document.querySelectorAll('meta[name="robots"]')].map((m) => m.content));
+  for (const path of LEGAL_PATHS) {
+    const html = await (await fetch(BASE + path)).text();
+    const servedRobots = [...html.matchAll(/<meta name="robots" content="([^"]*)"/g)].map((m) => m[1]);
+    const p = await ctx.newPage();
+    await p.goto(BASE + path, { waitUntil: "load" });
+    await settle(p);
+    const hydrated = await robots(p);
+    await p.goto(BASE + "/about", { waitUntil: "load" });
+    await settle(p);
+    await p.evaluate((to) => {
+      history.pushState({}, "", to);
+      dispatchEvent(new PopStateEvent("popstate"));
+    }, path);
+    await p.waitForTimeout(800);
+    const navigated = await robots(p);
+    const want = JSON.stringify([REVIEW_ROBOTS]);
+    check(`${path} (in review): robots "${REVIEW_ROBOTS}" served, after hydration and after navigating to it`, [servedRobots, hydrated, navigated].every((r) => JSON.stringify(r) === want), { servedRobots, hydrated, navigated });
+    await p.close();
+  }
 }
 console.log(`${results.filter(Boolean).length}/${results.length} passed`);
 await b.close();
