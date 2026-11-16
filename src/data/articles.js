@@ -357,7 +357,7 @@ const AC_VS_DC = {
             { a: "Hithium ∞Power 1022 kWh Cabinet", to: "/products/hithium-power-cabinet-1022" },
             " connects to a 400 Vac grid and works with various PCS models. The ",
             { a: "TCL BlueArk X5", to: "/products/tcl-blueark-x5" },
-            " is an all-in-one, DC-coupled system for small and medium C&I sites.",
+            " is an all-in-one system with its own PV input: up to 100 kWp across 6 MPPTs.",
           ],
         },
         {

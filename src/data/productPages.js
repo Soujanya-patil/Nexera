@@ -80,10 +80,10 @@ const PAGES = {
     description:
       "TCL BlueArk X1 home battery: 8–128 kWh stacked LFP battery with a hybrid inverter up to 15 kW. From NEXERA, TCL authorised distributor in India.",
     audience: [
-      // RESIDENTIAL_BENEFITS "Store the Solar You Generate"; highlight "Made for solar" (3 MPPTs, 2× PV oversizing)
+      // RESIDENTIAL_BENEFITS "Store the Solar You Generate"; highlight "Made for solar" (3 MPPTs, DC/AC ratio up to 2.0)
       "Homes with rooftop solar that want to store the solar they generate",
-      // specs: AC output "On-grid, off-grid, generator backup", switch time "<10 ms (UPS function)"
-      "Homes that need backup for essential loads during power cuts, switching in under 10 ms",
+      // specs: AC output "On-grid, off-grid, generator backup"; datasheet p.1 "10ms on/off-grid switching time"
+      "Homes that need backup for essential loads during power cuts, switching in 10 ms",
       // Residential "Solutions for Every Home", Solar + Battery: "Homes with significant evening and night-time consumption."
       "Homes with significant evening and night-time consumption",
       // highlight "Modular stacked battery": 8 kWh to 128 kWh; RESIDENTIAL_BENEFITS "Built to Scale"
@@ -95,10 +95,11 @@ const PAGES = {
       q: "What is the capacity and power of the TCL BlueArk X1?",
       a: "The TCL BlueArk X1 has a modular, stacked battery of 8–128 kWh and a hybrid inverter of 3–8 kW single phase or 5–15 kW three phase, with up to 15 kW charge/discharge in one system.",
     },
-    // specs: "LFP, Tier 1 cells", "8,000 cycles"
-    chemistry: "The TCL BlueArk X1 uses LFP (lithium iron phosphate) Tier 1 cells, rated for 8,000 cycles.",
-    // highlight "Modular stacked battery"
-    expansion: "Yes. Its battery is modular and stacked: it scales from 8 kWh to 128 kWh, with up to 15 kW charge/discharge in one system.",
+    // datasheet p.1: battery type LiFePO4, cell capacity 314 Ah, cycle life 8000
+    chemistry: "The TCL BlueArk X1 uses LFP (lithium iron phosphate) cells of 314 Ah, rated for 8,000 cycles.",
+    // highlight "Modular stacked battery"; datasheet p.1: 8 kWh total / 7.2 kWh usable per module, up to 4 inverters in parallel
+    expansion:
+      "Yes. Its battery is modular and stacked: it scales from 8 kWh to 128 kWh in 8 kWh modules (7.2 kWh usable each), with up to 15 kW charge/discharge in one system. Up to 4 inverters can run in parallel, on-grid and off-grid.",
   },
   // Everything from TCL's BlueArk X10 datasheet (X10-125K-261); the W10 facts in `extra` are the W10's catalogue entry.
   "tcl-blueark-x10": {
@@ -136,28 +137,28 @@ const PAGES = {
   "tcl-blueark-x5": {
     title: "TCL BlueArk X5 C&I Energy Storage India | NEXERA",
     description:
-      "TCL BlueArk X5 all-in-one C&I storage: 50 kW / 100 kWh, expandable to 1 MWh, with direct PV access. From NEXERA, TCL authorised distributor in India.",
+      "TCL BlueArk X5 all-in-one C&I storage: 50 kW / 100 kWh, expandable to 1 MWh, 100 kWp PV input. From NEXERA, TCL authorised distributor in India.",
     audience: [
-      // summary: "for small and medium C&I sites"
-      "Small and medium commercial and industrial sites",
-      // summary: "suited to new PV + storage projects"; specs: direct PV access, 6 MPPTs
-      "New solar + storage projects, with direct PV access and 6 MPPTs",
-      // C&I page: "businesses looking to combine solar, storage and backup power, with … diesel-generator integration"; specs: 20 ms switch
-      "Businesses that want to combine solar, storage and backup power, including sites with a diesel generator",
-      // specs: DC-side and AC-side expansion
-      "Sites that expect to grow: up to 4 battery cabinets on the DC side, or up to 10 units in parallel to 500 kW / 1 MWh",
+      // datasheet p.1: plug-and-play, all-in-one design with factory pre-integration
+      "Commercial and industrial sites that want an all-in-one, factory pre-integrated system",
+      // datasheet p.2: max. PV array power 100 kWp @STC, 6 MPPTs
+      "Solar + storage projects, with PV input up to 100 kWp and 6 MPPTs",
+      // C&I page: "businesses looking to combine solar, storage and backup power"; datasheet p.2: AC input [Generator]
+      "Businesses that want to combine solar, storage and backup power, including sites with a generator",
+      // datasheet p.1: single cabinet 2 h to 8 h (50 kW / 400 kWh); up to 10 cabinets in parallel (500 kW / 1 MWh)
+      "Sites that expect to grow: one cabinet expands from 2 h to 8 h (50 kW / 400 kWh), and up to 10 cabinets run in parallel (500 kW / 1 MWh)",
     ],
-    // ci-backup: specs "On/off switch time 20 ms", "Diesel-generator interface"
+    // ci-backup: datasheet p.1 on/off-grid switching within 20 ms, black start; p.2 generator input
     uses: [...CI, "ci-backup"],
     capacity: {
       q: "What is the capacity and power of the TCL BlueArk X5?",
-      // specs: rated power, system capacity, DC-side and AC-side expansion
-      a: "The TCL BlueArk X5 has 50 kW rated power and 100 kWh system capacity. With up to 4 parallel battery cabinets it expands to 50 kW / 400 kWh, and with up to 10 units in parallel to 500 kW / 1 MWh.",
+      // datasheet p.1–2: model X5-50k-100, rated AC power 50 kW, rated energy 100 kWh, 2 h to 8 h, up to 10 in parallel
+      a: "The TCL BlueArk X5 (model X5-50k-100) has 50 kW rated power and 100 kWh system capacity. A single cabinet expands from 2 h to 8 h (50 kW / 400 kWh), and up to 10 cabinets run in parallel (500 kW / 1 MWh).",
     },
-    // specs: battery cell 314 Ah, chemistry LFP, cycle life
-    chemistry: "The TCL BlueArk X5 uses 314 Ah LFP (lithium iron phosphate) battery cells, with a cycle-life specification of up to 8,000 cycles.",
-    // specs: DC-side and AC-side expansion
-    expansion: "Yes. On the DC side it takes up to 4 parallel battery cabinets (50 kW / 100 kWh to 50 kW / 400 kWh); on the AC side, up to 10 units in parallel (to 500 kW / 1 MWh).",
+    // datasheet p.1: LFP 314 Ah cells
+    chemistry: "The TCL BlueArk X5 uses 314 Ah LFP (lithium iron phosphate) battery cells.",
+    // datasheet p.1: single-cabinet expansion and parallel operation
+    expansion: "Yes. A single cabinet expands from 2 h to 8 h (50 kW / 400 kWh), and up to 10 cabinets run in parallel (500 kW / 1 MWh).",
   },
   "tcl-blueark-w10": {
     title: "TCL BlueArk W10 C&I Storage Cabinet India | NEXERA",
@@ -181,8 +182,8 @@ const PAGES = {
     },
     // specs: cell, cycle life, depth of discharge
     chemistry: "The TCL BlueArk W10 uses 314 Ah LFP (lithium iron phosphate) cells, with a specification of 8,000 cycles at 70% SOH and 95% depth of discharge.",
-    // specs: scalability
-    expansion: "Yes. It starts at 125 kW / 261 kWh and is expandable to 6.3 MWh.",
+    // datasheet p.1: modular expansion (261 kWh to 6.3 MWh)
+    expansion: "Yes. It starts at 125 kW / 261 kWh, with modular expansion to 6.3 MWh.",
   },
   "hithium-power-cabinet-1022": {
     title: "Hithium ∞Power 1022 kWh Cabinet BESS India | NEXERA",
