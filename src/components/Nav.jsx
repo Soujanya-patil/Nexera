@@ -125,7 +125,9 @@ export default function Nav() {
           <Link to="/" className="inline-flex min-h-11 items-center">
             <Logo alt="NEXERA Powertech home" className="h-9" />
           </Link>
-          <p className="hidden border-l border-line pl-5 eyebrow text-label xl:block">
+          {/* The label sage, a step darker (80% sage, 20% black): ≥ 4.5:1 on the white bar and on its
+              translucent scrolled ground — the plain sage was 4.6:1 at best, under 4.5:1 beside the hairline. */}
+          <p className="hidden border-l border-line pl-5 eyebrow xl:block" style={{ color: "color-mix(in srgb, var(--color-sage) 80%, black)" }}>
             Store today
             <br />
             Power tomorrow
