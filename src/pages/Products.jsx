@@ -84,38 +84,58 @@ function Segmented({ options, value, onChange, label }) {
   );
 }
 
+/** The heading, intro and partner link for one category/partner. */
+function HeadingBody({ app, partner }) {
+  const copy = CATEGORY_COPY[app];
+  const p = partner === "all" ? null : partnerOf(partner);
+  return (
+    <>
+      <h2 className="text-h2 font-semibold text-ink">
+        {copy.title}
+        {p && <span className="text-muted"> · {p.name}</span>}
+      </h2>
+      <p className="mt-2 text-small text-copy">{copy.text}</p>
+      {p && (
+        <Link to={`/partners/${p.id}`} className="group/about mt-2 inline-flex items-center gap-1 text-button font-semibold text-accent hover:text-link focus-visible:text-link">
+          About {p.name} in India
+          <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/about:translate-x-0.5 group-focus-visible/about:translate-x-0.5 group-focus-within/about:translate-x-0.5" />
+        </Link>
+      )}
+    </>
+  );
+}
+
 /**
- * Heading + intro for the current category/partner. When the filters change, the old heading leaves
- * (fade, 6 px up) and only then does the new one arrive (fade, from 8 px below), 0.28 s each (CSS
- * keyframes in index.css; under reduced motion it simply swaps).
+ * Heading + intro for the current category/partner. When the filters change, the new heading is there
+ * at once (rising in, 8 px, 0.28 s) while the old one fades out over it (6 px up, 0.18 s) — a crossfade,
+ * never a moment with no heading. The old copy is decorative (aria-hidden) and gone after the fade.
+ * Reduced motion: the new heading simply replaces the old one.
  */
 function CategoryHeading({ app, partner }) {
   const key = `${app}-${partner}`;
-  // `shown` is what is on screen; while it differs from the filters the old heading is leaving.
-  const [shown, setShown] = useState({ app, partner, key, entering: false });
-  const leaving = shown.key !== key;
-  useEffect(() => {
-    if (!leaving) return;
-    const t = setTimeout(() => setShown({ app, partner, key, entering: true }), reducedMotion() ? 0 : 280);
+  const last = useRef({ app, partner, key });
+  const [leaving, setLeaving] = useState(null);
+  const [entering, setEntering] = useState(null);
+  useLayoutEffect(() => {
+    if (last.current.key === key) return;
+    const prev = last.current;
+    last.current = { app, partner, key };
+    if (reducedMotion()) return;
+    setLeaving(prev);
+    setEntering(key);
+    const t = setTimeout(() => setLeaving(null), 300);
     return () => clearTimeout(t);
-  }, [leaving, app, partner, key]);
-  const copy = CATEGORY_COPY[shown.app];
-  const p = shown.partner === "all" ? null : partnerOf(shown.partner);
+  }, [app, partner, key]);
   return (
     <div className="relative min-h-[5.5rem] max-w-2xl">
-      <div key={shown.key} className={leaving ? "heading-out" : shown.entering ? "heading-in" : ""}>
-        <h2 className="text-h2 font-semibold text-ink">
-          {copy.title}
-          {p && <span className="text-muted"> · {p.name}</span>}
-        </h2>
-        <p className="mt-2 text-small text-copy">{copy.text}</p>
-        {p && (
-          <Link to={`/partners/${p.id}`} className="group/about mt-2 inline-flex items-center gap-1 text-button font-semibold text-accent hover:text-link focus-visible:text-link">
-            About {p.name} in India
-            <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover/about:translate-x-0.5 group-focus-visible/about:translate-x-0.5 group-focus-within/about:translate-x-0.5" />
-          </Link>
-        )}
+      <div key={key} className={entering === key ? "heading-in" : ""}>
+        <HeadingBody app={app} partner={partner} />
       </div>
+      {leaving && (
+        <div key={`out-${leaving.key}`} aria-hidden="true" inert className="heading-out pointer-events-none absolute inset-x-0 top-0 bg-paper" style={{ animationDuration: "0.18s" }}>
+          <HeadingBody app={leaving.app} partner={leaving.partner} />
+        </div>
+      )}
     </div>
   );
 }
@@ -209,7 +229,11 @@ export default function Products() {
   }, []);
 
   const applyParams = (next) => {
-    if (flip.current && grid.current) pending.current = flip.current.Flip.getState(grid.current.querySelectorAll("[data-card]"));
+    // The same filters again (e.g. the tab already on): nothing changes, nothing to animate.
+    if (next.toString() === params.toString()) return;
+    const ul = grid.current;
+    // The cards' positions and the grid's height as they are now (mid-animation if one is running).
+    if (flip.current && ul) pending.current = { state: flip.current.Flip.getState(ul.querySelectorAll("[data-card]")), from: ul.getBoundingClientRect().height };
     setParams(next, { replace: true, preventScrollReset: true });
   };
   const setFilter = (key, value) => {
@@ -219,12 +243,36 @@ export default function Products() {
     applyParams(next);
   };
 
+  // A filter change: the grid holds its height while the cards swap (Flip: leaving cards fade, staying
+  // cards glide, entering cards rise — positioned absolutely while they move, which on its own would
+  // collapse the grid), and its height then eases to the new size, so nothing below it jumps. Growing,
+  // the height eases at once; shrinking, it waits until the leaving cards have faded. Before Flip has
+  // loaded, under reduced motion, or for a change that didn't come from the filters (back / forward, a
+  // direct load such as /products?app=ci), the cards simply swap — no animation and no collapse.
   useLayoutEffect(() => {
-    const state = pending.current;
+    const job = pending.current;
     const f = flip.current;
-    if (!state || !f) return;
+    const ul = grid.current;
+    if (!job || !f || !ul) return;
     pending.current = null;
-    f.Flip.from(state, {
+    f.gsap.killTweensOf(ul);
+    ul.style.height = "";
+    const to = ul.getBoundingClientRect().height; // the new layout, cards still in the flow
+    ul.style.height = `${job.from}px`;
+    // The height is released only once both the height ease and the cards' move have finished (the
+    // cards stay absolutely positioned until then; released earlier, the grid would collapse under them).
+    // A newer change takes over both, and releases it in turn.
+    let parts = 0;
+    const release = () => ++parts === 2 && pending.current === null && f.gsap.set(ul, { clearProps: "height" });
+    f.gsap.to(ul, {
+      height: to,
+      duration: DUR.base,
+      ease: EASE.inOut,
+      delay: to < job.from ? DUR.fast : 0,
+      onComplete: release,
+    });
+    f.Flip.from(job.state, {
+      onComplete: release,
       duration: DUR.base,
       ease: EASE.inOut,
       absolute: true,

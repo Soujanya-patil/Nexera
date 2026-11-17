@@ -2,7 +2,9 @@ import { chromium } from "playwright-core";
 const BASE = process.argv[2] ?? "http://127.0.0.1:8810";
 const b = await chromium.launch((process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" }));
 let fails = 0;
-const expect = { "/products": 8, "/products?app=residential": 1, "/products?app=ci": 5, "/products?app=utility": 3, "/products?partner=tcl": 3, "/products?partner=hithium": 3, "/products?app=utility&partner=hithium": 2, "/products?app=bogus": 8 };
+// Cards per URL, from the listed catalogue (data/products.js): TCL X1 (residential), X5, W10, X10 (C&I);
+// Hithium ∞Power 1022 kWh (C&I and utility), 6.25 MWh (utility). Update with the catalogue.
+const expect = { "/products": 6, "/products?app=residential": 1, "/products?app=ci": 4, "/products?app=utility": 2, "/products?partner=tcl": 4, "/products?partner=hithium": 2, "/products?app=utility&partner=hithium": 2, "/products?app=bogus": 6 };
 for (const [u, n] of Object.entries(expect)) {
   for (const w of [1366, 412]) {
     const p = await (await b.newContext({ viewport: { width: w, height: 900 }, isMobile: w < 500 })).newPage();
