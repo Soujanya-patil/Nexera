@@ -10,7 +10,7 @@
  * When the director approves: set LEGAL_REVIEW to false — the pages are indexed, in the sitemap and
  * linked from the footer, the forms and the cookie banner.
  */
-export const LEGAL_REVIEW = true;
+export const LEGAL_REVIEW = false;
 
 export const PRIVACY_PATH = "/privacy-policy";
 export const TERMS_PATH = "/terms-of-use";
