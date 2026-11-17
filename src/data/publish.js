@@ -16,16 +16,16 @@
  * any other page or appears in the sitemap, or if a published one is missing from the sitemap.
  */
 export const PUBLISH = {
-  "what-is-bess": null,
-  "why-india-needs-battery-energy-storage": null,
-  "dc-coupled-vs-ac-coupled-vs-hybrid-bess": null,
-  "how-bess-is-designed-and-sized": null,
-  "inside-a-bess-bms-pcs-ems-cooling-fire-safety": null,
-  "commercial-industrial-bess-india-guide": null,
-  "tod-tariff-karnataka-battery-storage": null,
-  "peak-shaving-demand-charges-bess": null,
-  "solar-plus-storage-zero-export-epc-guide": null,
-  "tcl-blueark-hithium-bess-solutions-india": null,
+  "what-is-bess": "2026-11-17",
+  "why-india-needs-battery-energy-storage": "2026-11-17",
+  "dc-coupled-vs-ac-coupled-vs-hybrid-bess": "2026-11-17",
+  "how-bess-is-designed-and-sized": "2026-11-17",
+  "inside-a-bess-bms-pcs-ems-cooling-fire-safety": "2026-11-17",
+  "commercial-industrial-bess-india-guide": "2026-11-17",
+  "tod-tariff-karnataka-battery-storage": "2026-11-17",
+  "peak-shaving-demand-charges-bess": "2026-11-17",
+  "solar-plus-storage-zero-export-epc-guide": "2026-11-17",
+  "tcl-blueark-hithium-bess-solutions-india": "2026-11-17",
 };
 
 /** Refreshes of live articles: while in review they are read at /blog/<slug><REVIEW_SUFFIX>. */

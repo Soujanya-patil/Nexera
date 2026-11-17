@@ -1,4 +1,5 @@
-// Browser checks of /blog/what-is-bess, the Resources Guides card and the links to the article.
+// Browser checks of /blog/what-is-bess (the Step 11 refresh, published 17 November 2026), the /blog cards
+// and the links to the article.
 // Usage: node article.mjs http://127.0.0.1:8803 [--shots]
 import { chromium } from "playwright-core";
 
@@ -57,22 +58,24 @@ for (const [W, H] of [
       navShown: !!nav && getComputedStyle(nav).display !== "none",
       detailsShown: !!det && getComputedStyle(det).display !== "none",
       detailsOpen: det?.open,
-      terms: document.querySelectorAll('[role="note"][aria-label="Key term"]').length,
+      figures: [...document.querySelectorAll('article figure svg[role="img"]')].map((x) => x.getAttribute("aria-label")),
+      tables: document.querySelectorAll('article [role="region"] table').length,
       faq: document.querySelectorAll("#faq details").length,
       related: [...document.querySelectorAll('section[aria-labelledby="related-title"] a')].map((a) => a.getAttribute("href")),
       byline: [...document.querySelectorAll("p")].find((x) => x.textContent.startsWith("By Nexera"))?.textContent.trim(),
     };
   });
   check(`${tag} one h1; body 16–18px (token), line height 1.7; ${W > 500 ? "sticky contents beside the text" : "collapsible contents (closed) above the text"}`, s.h1 === 1 && (W > 500 ? s.font === "18px" : parseFloat(s.font) >= 16) && s.lh === "1.70" && (W > 500 ? s.navShown && !s.detailsShown : s.detailsShown && !s.navShown && !s.detailsOpen), s);
-  check(`${tag} six Key term callouts, five FAQs, four related links, byline`, s.terms === 6 && s.faq === 5 && s.related.join() === "/solutions/residential,/solutions/commercial-industrial,/solutions/utility-scale,/products" && s.byline === "By Nexera Powertech · Published 8 October 2026 · 4 min read", s);
-  if (W > 500) check(`${tag} text measure about 68ch`, s.width > 500 && s.width <= 700, { width: s.width });
+  check(`${tag} one diagram, two tables, six FAQs, five related links, byline (published, updated)`, s.figures.length === 1 && s.tables === 2 && s.faq === 6 && s.related.join() === "/solutions/commercial-industrial,/solutions/utility-scale,/solutions/residential,/products,/become-a-partner" && s.byline === "By Nexera Powertech · Published 8 October 2026 · Updated 17 November 2026 · 7 min read", s);
+  // The Step 11 posts' text column (no scene stage beside it) is 46rem.
+  if (W > 500) check(`${tag} text column at most 46rem`, s.width > 500 && s.width <= 740, { width: s.width });
 
   // Contents: a link scrolls to its section (desktop list or the opened phone list).
   if (W < 500) await p.locator("aside details summary").click();
   const link = W > 500 ? p.locator('nav[aria-label="On this page"] a', { hasText: "Types of BESS by scale" }) : p.locator("aside details a", { hasText: "Types of BESS by scale" });
   await link.click();
   await p.waitForTimeout(1800);
-  const top = await p.evaluate(() => Math.round(document.getElementById("types-by-scale").getBoundingClientRect().top));
+  const top = await p.evaluate(() => Math.round(document.getElementById("types-of-bess-by-scale").getBoundingClientRect().top));
   check(`${tag} contents link scrolls to "Types of BESS by scale" (below the header)`, top >= 60 && top <= 100, top);
   if (W > 500) {
     const st = await p.evaluate(() => {
@@ -82,9 +85,9 @@ for (const [W, H] of [
     });
     check(`${tag} contents stay in view while reading and mark the current section`, st.navTop >= 64 && st.navTop <= 120 && st.current === "Types of BESS by scale", st);
   }
-  // Inline links in "Types of BESS by scale".
-  const inl = await p.evaluate(() => [...document.querySelectorAll("#types-by-scale ~ ul a, section[aria-labelledby='types-by-scale'] a")].map((a) => [a.textContent.trim(), a.getAttribute("href")]));
-  check(`${tag} scale links: Home battery storage / C&I battery storage / Utility-scale BESS`, inl.map((x) => x.join("→")).join(" | ") === "Home battery storage→/solutions/residential | C&I battery storage→/solutions/commercial-industrial | Utility-scale BESS→/solutions/utility-scale", inl);
+  // Links to the other posts in the text are live now that they are published.
+  const inl = await p.evaluate(() => [...document.querySelectorAll("article a[href^='/blog/']")].map((a) => a.getAttribute("href")));
+  check(`${tag} links to the published posts in the text (BMS/PCS/EMS article, design and sizing article)`, inl.includes("/blog/inside-a-bess-bms-pcs-ems-cooling-fire-safety") && inl.includes("/blog/how-bess-is-designed-and-sized"), inl);
   await slowScroll(p, 9000);
   await p.waitForTimeout(500);
   const cls = await p.evaluate(() => window.__cls);
@@ -99,8 +102,20 @@ for (const [W, H] of [
   await p.context().close();
 }
 
-// "Talk to an expert" (plain /#contact from another page) lands on the homepage form.
-for (const name of ["Talk to an expert", "Get in Touch"]) {
+// "Talk to a Nexera BESS expert" (the post's CTA) opens /contact; "Get in Touch" (the closing band, a plain
+// /#contact from another page) lands on the homepage form.
+{
+  const p = await newPage();
+  await p.goto(BASE + URL_A, { waitUntil: "networkidle" });
+  await p.waitForTimeout(500);
+  const btn = p.getByRole("link", { name: "Talk to a Nexera BESS expert" }).first();
+  await btn.scrollIntoViewIfNeeded();
+  await btn.click();
+  await p.waitForURL((u) => u.pathname === "/contact", { timeout: 8000 }).catch(() => {});
+  check('"Talk to a Nexera BESS expert" → /contact', new URL(p.url()).pathname === "/contact", p.url());
+  await p.context().close();
+}
+for (const name of ["Get in Touch"]) {
   const p = await newPage();
   await p.goto(BASE + URL_A, { waitUntil: "networkidle" });
   await p.waitForTimeout(500);
@@ -117,13 +132,15 @@ for (const name of ["Talk to an expert", "Get in Touch"]) {
 {
   const p = await newPage();
   await p.goto(BASE + URL_A, { waitUntil: "networkidle" });
-  await p.getByRole("link", { name: "Browse BESS products" }).click();
+  const card = p.locator('section[aria-labelledby="related-title"] a[href="/products"]');
+  await card.scrollIntoViewIfNeeded();
+  await card.click();
   await p.waitForTimeout(800);
-  check('"Browse BESS products" → /products', new URL(p.url()).pathname === "/products", p.url());
+  check('Related "BESS products" → /products', new URL(p.url()).pathname === "/products", p.url());
   await p.context().close();
 }
 // Related and FAQ in the article answer 200.
-for (const h of ["/solutions/residential", "/solutions/commercial-industrial", "/solutions/utility-scale", "/products"]) if ((await status(h)) !== 200) check(`${h} 200`, false);
+for (const h of ["/solutions/residential", "/solutions/commercial-industrial", "/solutions/utility-scale", "/products", "/become-a-partner", "/contact"]) if ((await status(h)) !== 200) check(`${h} 200`, false);
 
 // The article's card is on /blog (since 6881c94 /resources has no blog section); Solutions hub link;
 // footer Resources column.
@@ -140,11 +157,13 @@ for (const h of ["/solutions/residential", "/solutions/commercial-industrial", "
     const bess = sec?.querySelector('a[data-slug="what-is-bess"]');
     return { h1: document.querySelector("h1")?.textContent.replace(/\s+/g, " ").trim(), cards: sec ? [...sec.querySelectorAll("a[data-slug]")].map((c) => c.getAttribute("href")) : null, bess: bess?.innerText.replace(/\s+/g, " ").trim(), href: bess?.getAttribute("href") };
   });
-  check("/blog: one card, What Is a BESS? (title, date · reading time) → the article", g.h1 === "NEXERA Blog" && g.cards?.join() === "/blog/what-is-bess" && g.bess?.includes("What Is a BESS? A Plain Guide to Battery Energy Storage") && g.bess.includes("8 October 2026") && g.bess.includes("4 min read") && g.href === URL_A, g);
+  check("/blog: ten cards, What Is a BESS? among them (title, date · reading time) → the article", g.h1 === "NEXERA Blog" && g.cards?.length === 10 && g.cards.includes("/blog/what-is-bess") && g.bess?.includes("What Is a BESS? A Complete Guide to Battery Energy Storage Systems in India") && g.bess.includes("8 October 2026") && g.bess.includes("7 min read") && g.href === URL_A, g);
   if (SHOTS) {
     await p.locator('section[aria-label="Articles"]').screenshot({ path: "blog-cards-1440.png" });
   }
-  await p.locator('section[aria-label="Articles"] a[data-slug="what-is-bess"]').click({ position: { x: 30, y: 60 } });
+  const bessCard = p.locator('section[aria-label="Articles"] a[data-slug="what-is-bess"]');
+  await bessCard.scrollIntoViewIfNeeded();
+  await bessCard.click({ position: { x: 30, y: 60 } });
   await p.waitForURL((u) => u.pathname === "/blog/what-is-bess", { timeout: 8000 }).catch(() => {});
   await p.waitForTimeout(800);
   check("/blog card (anywhere on it) opens the article", new URL(p.url()).pathname === URL_A, p.url());
@@ -183,8 +202,8 @@ if (SHOTS) {
   }));
   await p.locator('nav[aria-label="On this page"] a', { hasText: "Key terms, explained simply" }).click();
   await p.waitForTimeout(1500);
-  const top = await p.evaluate(() => Math.round(document.getElementById("key-terms").getBoundingClientRect().top));
-  check("no JS: article complete (h1, 7 h2s, 8 contents anchors, 5 FAQs); an anchor lands on its section", s.h1 === "What Is a BESS? A Plain Guide to Battery Energy Storage" && s.h2 === 7 && s.toc.length === 8 && s.faq === 5 && top >= 0 && top <= 120, { ...s, top });
+  const top = await p.evaluate(() => Math.round(document.getElementById("key-terms-explained-simply").getBoundingClientRect().top));
+  check("no JS: article complete (h1, 10 h2s, 11 contents anchors, 6 FAQs); an anchor lands on its section", s.h1 === "What Is a BESS? A Complete Guide to Battery Energy Storage Systems in India" && s.h2 === 10 && s.toc.length === 11 && s.faq === 6 && top >= 0 && top <= 120, { ...s, top });
   await p.context().close();
 }
 

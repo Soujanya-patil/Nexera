@@ -20,7 +20,8 @@ const landed = async (p) => {
   await p.waitForTimeout(600);
   return { path: new URL(p.url()).pathname, h1: await p.evaluate(() => document.querySelector("h1")?.textContent.trim()) };
 };
-const H1 = "What Is a BESS? A Plain Guide to Battery Energy Storage";
+// The live article since the Step 11 refresh (published 17 November 2026).
+const H1 = "What Is a BESS? A Complete Guide to Battery Energy Storage Systems in India";
 for (const [W, H] of [[1440, 900], [390, 844]]) {
   const tag = `@${W}`;
   // Structure: one link, the arrow inside it, the link covers the whole card, no click handlers.
