@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { formatDate } from "../../data/articles";
+import { formatDate } from "../../data/articleMeta";
 import BessLetters from "../article/scenes/BessLetters";
 import CellCompare from "../article/scenes/CellCompare";
 import { trackCard, untrackCard, useOpenGuide } from "./useOpenGuide";
@@ -99,7 +99,7 @@ export default function GuidesBento({ articles, motion }) {
           {featured.shortTitle}
         </h3>
         <ol className="mt-4 flex-1 space-y-1">
-          {featured.sections.map((s) => (
+          {featured.toc.map((s) => (
             <li key={s.id}>
               <a
                 href={`/blog/${featured.slug}#${s.id}`}

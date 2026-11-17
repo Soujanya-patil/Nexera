@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronRight } from "lucide-react";
-import { formatDate } from "../../data/articles";
+import { formatDate } from "../../data/articleMeta";
 import EnergyGrid from "./EnergyGrid";
 
 /**
@@ -70,8 +70,22 @@ export default function ArticleHeader({ a, play = "now", reveal = false }) {
             ))}
           </h1>
           <p className="article-intro mt-heading max-w-measure text-lead text-paper/90">{a.intro}</p>
+          {/* Author, then the published date (and the updated one, where it differs) — or, for a post in
+              review (data/articles.js PUBLISH), that it isn't published yet — and the reading time. */}
           <p className="article-byline mt-6 text-small text-paper/75">
-            By NEXERA Powertech · <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time> ·{" "}
+            By Nexera Powertech ·{" "}
+            {a.datePublished ? (
+              <>
+                Published <time dateTime={a.datePublished}>{formatDate(a.datePublished)}</time> ·{" "}
+                {a.dateModified && a.dateModified.slice(0, 10) !== a.datePublished.slice(0, 10) && (
+                  <>
+                    Updated <time dateTime={a.dateModified}>{formatDate(a.dateModified)}</time> ·{" "}
+                  </>
+                )}
+              </>
+            ) : (
+              <>In review, not yet published · </>
+            )}
             <span className="article-count" style={{ "--to": a.readingTime }}>
               <span className="article-count-num">{a.readingTime}</span>
             </span>{" "}

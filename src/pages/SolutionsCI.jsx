@@ -28,7 +28,7 @@ import {
 import { getProduct } from "../data/products";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import { CI_FAQ } from "../data/solutions";
-import { guideFor } from "../data/articles";
+import { guideFor } from "../data/articleMeta";
 import PeakShaving from "../components/solutions/PeakShaving";
 import { AfterIdle, AppRail, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));

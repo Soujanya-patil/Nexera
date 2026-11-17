@@ -3,7 +3,8 @@ import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import MagneticButton from "../components/ui/MagneticButton";
 import NotFound from "./NotFound";
-import { getArticle, isHiddenArticle } from "../data/articles";
+import { getArticle } from "../data/articles";
+import { isHiddenArticle } from "../data/articleMeta";
 import { scrollToId } from "../lib/scrollTo";
 import ArticleHeader from "../components/article/ArticleHeader";
 import ReadingProgress from "../components/article/ReadingProgress";
@@ -14,6 +15,7 @@ import { SceneInline, Stage, useArticleMotion } from "../components/article/Stag
 import { useReading } from "../components/article/useReading";
 import { useArticleReveal } from "../components/article/useArticleReveal";
 import { underCurtain, uncover } from "../components/article/curtain";
+import { DIAGRAMS } from "../components/article/diagrams";
 
 /**
  * /blog/:slug — one article (data/articles.js), told as a guided story:
@@ -74,15 +76,24 @@ function ArticlePage({ a }) {
   }, []);
 
   const ctx = { reading, setHover };
+  // Articles with animated scenes (`visual` on their sections) keep the sticky stage beside the text;
+  // the others (one static diagram in the text, a `figure` block) are text and contents only.
+  const staged = a.sections.some((s) => s.visual);
   return (
     <div ref={page}>
       <ReadingProgress />
       <ArticleHeader a={a} play={play} reveal={viaCard} />
 
       <div className="bg-white">
-        <div className="container-site grid gap-10 py-12 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,23rem)] lg:gap-12 lg:py-20 xl:grid-cols-[11.5rem_minmax(0,60ch)_minmax(20rem,26.25rem)]">
+        <div
+          className={`container-site grid gap-10 py-12 lg:gap-12 lg:py-20 ${
+            staged
+              ? "lg:grid-cols-[minmax(0,1fr)_minmax(20rem,23rem)] xl:grid-cols-[11.5rem_minmax(0,60ch)_minmax(20rem,26.25rem)]"
+              : "xl:grid-cols-[11.5rem_minmax(0,46rem)] xl:justify-center"
+          }`}
+        >
           {/* Contents: collapsible above the text below 1280px; a sticky list on the left from 1280px. */}
-          <aside className="lg:col-span-2 xl:col-span-1">
+          <aside className={staged ? "lg:col-span-2 xl:col-span-1" : undefined}>
             <details className="group/toc rounded-card border border-line bg-ice/60 xl:hidden">
               <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-4 px-5 py-3 text-small font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px]">
                 On this page
@@ -97,6 +108,13 @@ function ArticlePage({ a }) {
           </aside>
 
           <article ref={body} className="min-w-0 text-body text-copy">
+            {/* The answer-first paragraph (Step 11 posts): before the first heading, its bold sentence the
+                short answer search engines can quote. */}
+            {a.lead && (
+              <p data-rv="text" className="mb-12 text-lead text-ink">
+                <Rich r={a.lead} plainBold />
+              </p>
+            )}
             {a.sections.map((s, i) => (
               <section key={s.id} data-section={s.id} aria-labelledby={s.id} className={i ? "mt-16" : ""}>
                 <div data-rv="h2">
@@ -107,7 +125,7 @@ function ArticlePage({ a }) {
                     {s.h2}
                   </h2>
                 </div>
-                <SceneInline section={s} reading={reading} motion={motion} />
+                {s.visual && <SceneInline section={s} reading={reading} motion={motion} />}
                 {s.blocks.map((b, j) => (
                   <Block key={j} b={b} section={s.id} ctx={ctx} />
                 ))}
@@ -116,9 +134,11 @@ function ArticlePage({ a }) {
           </article>
 
           {/* The scene stage (desktop): a column as tall as the text, the stage sticky inside it. */}
-          <div className="hidden lg:block">
-            <Stage sections={a.sections} reading={reading} hover={reading.section === HOVER_SECTION ? hover : null} motion={motion} />
-          </div>
+          {staged && (
+            <div className="hidden lg:block">
+              <Stage sections={a.sections} reading={reading} hover={reading.section === HOVER_SECTION ? hover : null} motion={motion} />
+            </div>
+          )}
         </div>
       </div>
 
@@ -200,7 +220,15 @@ function TocList({ items, active, indicator = false, className = "" }) {
                   on ? "font-semibold text-ink" : "text-copy"
                 }`}
               >
-                {s.h2}
+                {/* An invisible semibold copy (a ::after, so it isn't part of the text) shares the label's
+                    grid cell: every item is as tall as its bold version, so marking the section being read
+                    never re-wraps a line or moves the list. */}
+                <span
+                  data-label={s.h2}
+                  className="grid after:invisible after:col-start-1 after:row-start-1 after:font-semibold after:content-[attr(data-label)]"
+                >
+                  <span className="col-start-1 row-start-1">{s.h2}</span>
+                </span>
               </a>
             </li>
           );
@@ -253,18 +281,99 @@ function GlanceTable({ t, section, reading }) {
 }
 
 /**
- * A Rich value: a string, or strings with { b } (bold) and { a, to } (link) pieces. A link to an
- * article that isn't published (a draft: data/articles.js) is its plain text.
+ * A data table (data/articles.js `data`): a real table with its header row (`cols`) and a row header
+ * per row (each row's first cell). On narrow screens it scrolls sideways inside its own box — a
+ * focusable, labelled region, so it can be scrolled from the keyboard — and never the page.
  */
-function Rich({ r }) {
+function DataTable({ t }) {
+  const label = t.caption ?? t.cols.join(", ");
+  return (
+    <div data-rv="text" className="mt-6">
+      <div role="region" aria-label={label} tabIndex={0} className="article-data overflow-x-auto rounded-card border border-line focus-visible:outline-2 focus-visible:outline-offset-2">
+        {/* Wide enough per column to stay readable; on a phone the box scrolls sideways. */}
+        <table className="w-full border-collapse text-left text-small" style={{ minWidth: `${Math.max(18, t.cols.length * 8.5)}rem` }}>
+          {t.caption && <caption className="sr-only">{t.caption}</caption>}
+          <thead className="bg-ice/70">
+            <tr>
+              {t.cols.map((c) => (
+                <th key={c} scope="col" className="px-4 py-3 align-bottom font-semibold text-ink">
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {t.rows.map(([head, ...cells], i) => (
+              <tr key={i} className="border-t border-line align-top">
+                <th scope="row" className="px-4 py-3 font-semibold text-ink">
+                  <Rich r={head} />
+                </th>
+                {cells.map((c, k) => (
+                  <td key={k} className="px-4 py-3 text-copy">
+                    <Rich r={c} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {t.note && <p className="mt-2 text-small text-muted">{t.note}</p>}
+    </div>
+  );
+}
+
+/** A formula as plain text, one equation per line (data/articles.js `formula`). */
+function Formula({ lines, label = "Formula" }) {
+  return (
+    <div data-rv="text" role="group" aria-label={label} className="mt-6 rounded-card border border-line bg-ice/60 px-5 py-4">
+      {lines.map((l, i) => (
+        <p key={i} className={`font-mono text-small text-ink ${i ? "mt-2" : ""}`}>
+          {l}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+/** The article's diagram (data/articles.js `figure`): a static SVG (components/article/diagrams). */
+function Figure({ f }) {
+  const D = DIAGRAMS[f.id];
+  if (!D) return null;
+  return (
+    <figure data-rv="text" className="mt-8">
+      {/* Below 640px the diagram keeps a readable width (its text ≈ 14px) and scrolls sideways inside
+          its own box — a focusable, labelled region — never the page. */}
+      <div role="region" aria-label="Diagram" tabIndex={0} className="overflow-x-auto rounded-card border border-line bg-paper p-3 focus-visible:outline-2 focus-visible:outline-offset-2 sm:p-6">
+        <div className="min-w-[25rem] sm:min-w-0">
+          <D />
+        </div>
+      </div>
+      {f.caption && <figcaption className="mt-3 text-small text-muted">{f.caption}</figcaption>}
+    </figure>
+  );
+}
+
+/**
+ * A Rich value: a string, or strings with { b } (bold), { a, to } (site link) and { a, href } (a link
+ * to another website: its source, in a new tab) pieces. A link to an article that isn't published (a
+ * draft, or one in review: data/articles.js) is its plain text.
+ */
+function Rich({ r, plainBold = false }) {
   if (typeof r === "string") return r;
   return r.map((x, i) =>
     typeof x === "string" ? (
       <Fragment key={i}>{x}</Fragment>
+    ) : x.a && x.href ? (
+      <a key={i} href={x.href} target="_blank" rel="noopener noreferrer" className="article-link font-semibold text-accent">
+        {x.a}
+        <span className="sr-only"> (opens in a new tab)</span>
+      </a>
     ) : x.a && isHiddenArticle(x.to) ? (
       <Fragment key={i}>{x.a}</Fragment>
     ) : x.b ? (
-      <strong key={i} className="article-lead font-semibold text-ink">
+      // `plainBold`: a long bold sentence (the answer-first paragraph) without the bold-lead highlight.
+      <strong key={i} className={plainBold ? "font-semibold text-ink" : "article-lead font-semibold text-ink"}>
         {x.b}
       </strong>
     ) : (
@@ -303,6 +412,16 @@ function Block({ b, section, ctx, inCallout = false }) {
     );
   }
   if (b.table) return <GlanceTable t={b.table} section={section} reading={reading} />;
+  if (b.data) return <DataTable t={b.data} />;
+  if (b.formula) return <Formula lines={b.formula} label={b.label} />;
+  if (b.figure) return <Figure f={b.figure} />;
+  if (b.small) {
+    return (
+      <p data-rv={inCallout ? undefined : "text"} className="mt-3 text-small text-muted">
+        <Rich r={b.small} />
+      </p>
+    );
+  }
   if (b.callout) {
     return (
       <div role="note" aria-label={b.callout.label} data-rv="term" className="article-term-card article-callout relative mt-6 rounded-card border border-line bg-ice/70 py-5 pl-6 pr-5">

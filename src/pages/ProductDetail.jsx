@@ -30,7 +30,7 @@ import { SOLUTION_PAGES } from "../data/solutions";
 import { PARTNER_LINE } from "../data/partners";
 import { introLine, productPage } from "../data/productPages";
 import { SUPPORT_POINTS } from "../data/serviceTraining";
-import { ARTICLES } from "../data/articles";
+import { ARTICLES } from "../data/articleMeta";
 import { docHref } from "../lib/contactLinks";
 import { datasheetHref } from "../data/datasheets";
 import PillLink from "../components/PillLink";

@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { useNavigationType } from "react-router-dom";
-import { ARTICLES } from "../data/articles";
+import { ARTICLES } from "../data/articleMeta";
 import { coverBack, returningTo } from "../components/article/curtain";
 import { useArticleMotion } from "../components/article/useArticleMotion";
 import { useArticleReveal } from "../components/article/useArticleReveal";

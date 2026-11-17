@@ -1,7 +1,9 @@
 /*
- * Articles (/blog/:slug, pages/Article.jsx) — listed on /blog and, the latest, on /resources. Each article is
- * data, so the page, its structured data (src/seo/routes.js → scripts/seo-pages.mjs: Article and
- * FAQPage) and the Resources cards all read the same words.
+ * Articles (/blog/:slug, pages/Article.jsx) — the text, loaded by the article page only. The metadata the
+ * other pages need (titles, slugs, dates, status, reading time) is in data/articleMeta.js, so /blog, the
+ * Resources strip, the Solutions and product pages and the route table never load the text. The page, its
+ * structured data (src/seo/routes.js → scripts/seo-pages.mjs: Article and FAQPage, the FAQ read from here at
+ * build time) and the Blog cards all read the same words.
  *
  * An article:
  *   slug, title (with " | NEXERA", < 60), description (< 155), shortTitle (breadcrumb), eyebrow, h1,
@@ -21,6 +23,9 @@
  * readingTime is computed from the word count (200 words a minute).
  */
 
+import { POST_CONTENT } from "./blogPosts";
+import { getArticleMeta } from "./articleMeta";
+
 /**
  * "LFP vs NMC at a glance" — the table, and the words its scene shows row by row (article/scenes/
  * GlanceRows), so the two always match. `cols`: the header row (the first, the row labels', is empty).
@@ -37,18 +42,6 @@ export const LFP_NMC_GLANCE = {
   ],
 };
 
-/** "AC-coupled vs DC-coupled at a glance" — the table, and the words its scene shows (GlanceRows). */
-export const AC_DC_GLANCE = {
-  cols: ["", "DC-coupled", "AC-coupled"],
-  rows: [
-    ["Where the battery connects", "DC side, sharing a hybrid inverter with solar", "AC side, with its own inverter (PCS)"],
-    ["Conversions when storing solar", "None between DC and AC", "Two (DC → AC → DC)"],
-    ["Adding to an existing solar plant", "Usually means changing the inverter", "Added alongside the existing system"],
-    ["Sizing", "Battery and solar sized together", "Battery sized independently"],
-    ["Typical fit", "New solar + storage projects", "Retrofits and larger commercial sites"],
-  ],
-};
-
 /**
  * Draft articles (`draft: true`): written and kept here, but not published. They exist only in
  * development (`npm run dev`), where each can be reviewed at its own URL; a production build leaves
@@ -58,20 +51,7 @@ export const AC_DC_GLANCE = {
  * text. To publish one: remove its `draft: true` and move it from DRAFTS into the ALL list.
  */
 const LFP_VS_NMC = {
-  slug: "lfp-vs-nmc",
-  // Waiting for the director's review: not published (see DRAFTS above ARTICLES).
-  draft: true,
-  title: "LFP vs NMC Batteries for Energy Storage | NEXERA",
-  description:
-    "LFP vs NMC: how lithium iron phosphate (LiFePO4) and NMC batteries compare on safety, cycle life, energy density and cost for home and business storage.",
-  shortTitle: "LFP vs NMC",
-  eyebrow: "Guide",
-  h1: "LFP vs NMC: Which Battery Chemistry Suits Energy Storage?",
   intro: "A plain comparison of the two most common lithium-ion battery chemistries, and why most stationary storage systems use LFP.",
-  // The Guides card's scene when this is the featured guide (components/resources/GuidesBento).
-  card: "cells",
-  datePublished: "2026-10-13T06:04:00+05:30",
-  dateModified: "2026-10-13T06:04:00+05:30",
   sections: [
     {
       id: "what-is-lfp",
@@ -232,186 +212,8 @@ const LFP_VS_NMC = {
     { label: "BESS products", to: "/products" },
   ],
 };
-const AC_VS_DC = {
-  slug: "ac-vs-dc-coupled",
-  // Waiting for the director's review: not published (see DRAFTS above ARTICLES). Dates: set at publish.
-  draft: true,
-  title: "AC-Coupled vs DC-Coupled Battery Storage | NEXERA",
-  description:
-    "AC-coupled vs DC-coupled battery storage explained: how each connects to solar, efficiency, retrofits, hybrid inverters and which suits your project.",
-  shortTitle: "AC vs DC Coupled",
-  eyebrow: "Guide",
-  h1: "AC-Coupled vs DC-Coupled Battery Storage: Which Fits Your Project?",
-  intro: "Two ways to connect a battery to a solar system, and how to choose between them for a new or existing plant.",
-  datePublished: "2026-10-13T12:00:00+05:30",
-  dateModified: "2026-10-13T12:00:00+05:30",
-  sections: [
-    {
-      id: "what-is-coupling",
-      visual: "coupling",
-      h2: 'What does "coupling" mean?',
-      blocks: [
-        {
-          p: [
-            "Solar panels produce DC (direct current) electricity. Batteries also store energy as DC. But homes, factories and the grid run on AC (alternating current). ",
-            { b: '"Coupling" describes where the battery connects to the system: on the DC side, before the inverter, or on the AC side, after it.' },
-            " That choice affects efficiency, cost and how easily storage can be added.",
-          ],
-        },
-      ],
-    },
-    {
-      id: "dc-coupled",
-      visual: "dc-coupled",
-      h2: "What is DC-coupled battery storage?",
-      blocks: [
-        {
-          p: [
-            "In a DC-coupled system, the solar panels and the battery connect on the DC side and share one inverter, usually a ",
-            { b: "hybrid inverter" },
-            ". Solar power can charge the battery directly as DC, without first being converted to AC.",
-          ],
-        },
-        {
-          ul: [
-            "Fewer conversions between DC and AC, so less energy is lost when storing solar power.",
-            "One inverter manages both solar and battery.",
-            "Best planned from the start, because the inverter must be designed for both.",
-          ],
-        },
-      ],
-    },
-    {
-      id: "ac-coupled",
-      visual: "ac-coupled",
-      h2: "What is AC-coupled battery storage?",
-      blocks: [
-        {
-          p: "In an AC-coupled system, the battery has its own inverter (a Power Conversion System, or PCS) and connects on the AC side, alongside the existing solar inverter. Solar power is converted to AC first, then converted back to DC to charge the battery.",
-        },
-        {
-          ul: [
-            "Two extra conversion steps when storing solar power: DC to AC, then back to DC.",
-            ["The battery system is independent of the solar inverter, so it can be ", { b: "added to an existing solar plant" }, " without replacing the solar inverter."],
-            "The battery can also charge from the grid, and its size can be chosen separately from the solar system.",
-          ],
-        },
-      ],
-    },
-    {
-      id: "at-a-glance",
-      visual: "glance-acdc",
-      h2: "AC-coupled vs DC-coupled at a glance",
-      blocks: [{ table: AC_DC_GLANCE }],
-    },
-    {
-      id: "existing-plant",
-      visual: "existing-plant",
-      h2: "Which is better for an existing solar plant?",
-      blocks: [
-        {
-          p: [
-            "For a plant that is already running, ",
-            { b: "AC-coupled storage is usually the simpler choice" },
-            ". The existing solar inverter stays in place, and the battery system connects on the AC side with its own PCS. This is why many commercial and industrial sites add storage this way.",
-          ],
-        },
-      ],
-    },
-    {
-      id: "new-project",
-      visual: "dc-coupled",
-      h2: "Which is better for a new solar + storage project?",
-      blocks: [
-        {
-          p: [
-            "For a new project designed from day one, ",
-            { b: "DC-coupled storage with a hybrid inverter" },
-            " can store solar energy with fewer conversions, and one inverter handles both jobs. AC-coupled designs remain a good option when the battery needs to be sized or expanded separately, or charged from the grid.",
-          ],
-        },
-      ],
-    },
-    {
-      id: "hybrid-system",
-      visual: "hybrid-system",
-      h2: "What is a hybrid energy storage system?",
-      blocks: [
-        {
-          p: [
-            "A hybrid energy storage system usually means ",
-            { b: "solar, a battery and a hybrid inverter working together" },
-            ": the inverter manages solar generation, battery charging and discharging, and the connection to the grid and your loads. Hybrid systems are a common form of DC-coupled storage, especially for homes.",
-          ],
-        },
-      ],
-    },
-    {
-      id: "nexera-fit",
-      visual: "coupling",
-      h2: "Both options in NEXERA's C&I range",
-      blocks: [
-        {
-          p: [
-            "NEXERA's C&I range includes both approaches. The ",
-            { a: "Hithium ∞Power 1022 kWh Cabinet", to: "/products/hithium-power-cabinet-1022" },
-            " connects to a 400 Vac grid and works with various PCS models. The ",
-            { a: "TCL BlueArk X5", to: "/products/tcl-blueark-x5" },
-            " is an all-in-one, DC-coupled system for small and medium C&I sites.",
-          ],
-        },
-        {
-          actions: [
-            { label: "Talk to an expert", to: "/#contact?interest=ci", primary: true },
-            { label: "C&I battery storage", to: "/solutions/commercial-industrial" },
-          ],
-        },
-      ],
-    },
-  ],
-  faqs: [
-    {
-      q: "What is the difference between AC-coupled and DC-coupled batteries?",
-      a: "It is where the battery connects. A DC-coupled battery shares a hybrid inverter with the solar panels on the DC side. An AC-coupled battery has its own inverter and connects on the AC side.",
-    },
-    {
-      q: "Can I add a battery to my existing solar plant?",
-      a: "Usually, yes. AC-coupled storage connects alongside the existing solar inverter, so the solar system can stay as it is.",
-    },
-    {
-      q: "Is DC-coupled storage more efficient?",
-      a: "When storing solar energy, DC-coupled storage involves fewer conversions between DC and AC, so less energy is lost in conversion.",
-    },
-    {
-      q: "What is a hybrid inverter?",
-      a: "A hybrid inverter manages both solar panels and a battery in one unit, converting power between DC and AC for your loads and the grid.",
-    },
-    {
-      q: "Which coupling is better for a factory or commercial site?",
-      a: "It depends on whether solar is already installed and how the battery will be used. AC-coupled storage is common for existing sites. Our engineers can help you choose.",
-    },
-  ],
-  related: [
-    { label: "What Is a BESS?", to: "/blog/what-is-bess" },
-    { label: "C&I battery storage", to: "/solutions/commercial-industrial" },
-    { label: "Home battery storage", to: "/solutions/residential" },
-    { label: "BESS products", to: "/products" },
-  ],
-};
 const SAFETY = {
-  slug: "bess-safety-standards-india",
-  // Waiting for the director's review and a final check of the official CEA notification: not
-  // published (see DRAFTS above ARTICLES). Dates: set at publish.
-  draft: true,
-  title: "BESS Safety Standards & Certification in India | NEXERA",
-  description:
-    "BESS safety in India explained: BIS registration, IEC 62619, IEC 62933, UL 9540A fire testing and the CEA safety rules for battery energy storage.",
-  shortTitle: "BESS Safety Standards",
-  eyebrow: "Guide",
-  h1: "BESS Safety Standards and Certification in India",
   intro: "A plain guide to the standards, tests and rules that make a battery energy storage system safe, and what to ask for before you buy.",
-  datePublished: "2026-10-14T12:00:00+05:30",
-  dateModified: "2026-10-14T12:00:00+05:30",
   sections: [
     {
       id: "why-safety-matters",
@@ -574,24 +376,10 @@ const SAFETY = {
     { label: "BESS products", to: "/products" },
   ],
 };
-const DRAFTS = import.meta.env.DEV ? [LFP_VS_NMC, AC_VS_DC, SAFETY] : [];
 
-const ALL = [
-  {
-    slug: "what-is-bess",
-    title: "What Is a BESS? Battery Energy Storage Explained | Nexera",
-    description:
-      "How battery energy storage systems (BESS) work and where they pay off for Indian homes, businesses and utilities.",
-    shortTitle: "What Is a BESS?",
-    eyebrow: "Guide",
-    // The Solutions pages that link to it as their guide (FaqList `guide`).
-    segments: ["residential", "ci", "utility"],
-    // Link-preview image (1200x630 JPG, scripts/share-images.py).
-    shareImage: "/og/blog-what-is-bess.jpg",
-    h1: "What Is a BESS? A Plain Guide to Battery Energy Storage",
+/** The live "What Is a BESS?" (its metadata: data/articleMeta.js). Step 11's refresh replaces it once approved. */
+const WHAT_IS_BESS_V1 = {
     intro: "A simple explanation of battery energy storage systems: what they are, how they work and where they're used in India.",
-    datePublished: "2026-10-08T17:39:00+05:30",
-    dateModified: "2026-10-08T17:39:00+05:30",
     sections: [
       {
         id: "bess-full-form",
@@ -784,17 +572,32 @@ const ALL = [
       { label: "Utility-scale BESS", to: "/solutions/utility-scale" },
       { label: "BESS products", to: "/products" },
     ],
-  },
-  ...DRAFTS,
-].map((a) => ({ ...a, readingTime: readingTime(a) }));
+};
 
-/** The published articles: the ones /blog, the Resources strip, the sitemap and the routes list. */
-export const ARTICLES = ALL.filter((a) => !a.draft);
-/** The drafts (development only; none in a production build). */
-export const DRAFT_ARTICLES = ALL.filter((a) => a.draft);
+/*
+ * The text of every article, by its metadata `key` (data/articleMeta.js). Drafts: development only — a
+ * production build leaves their text out entirely (import.meta.env.DEV is false there).
+ */
+const CONTENT = {
+  "what-is-bess-v1": WHAT_IS_BESS_V1,
+  ...POST_CONTENT,
+  ...(import.meta.env.DEV ? { "lfp-vs-nmc": LFP_VS_NMC, "bess-safety-standards-india": SAFETY } : {}),
+};
 
-/** The published article a Solutions segment page links to as its guide (`segments`), if any. */
-export const guideFor = (segment) => ARTICLES.find((a) => a.segments?.includes(segment));
+/**
+ * An article for the article page: its metadata (data/articleMeta.js — slug, status, dates, reading time)
+ * and its text. Any letter case, surrounding slashes ignored; undefined for a URL that isn't an article.
+ * A post without its own intro line (the Step 11 posts) shows its description under the h1.
+ */
+export const getArticle = (slug = "") => {
+  const m = getArticleMeta(slug);
+  if (!m) return undefined;
+  const c = CONTENT[m.key];
+  if (import.meta.env.DEV && m.key === "what-is-bess-v1" && readingTime(c) !== m.readingTime)
+    console.warn(`articleMeta.js: "What Is a BESS?" reads in ${readingTime(c)} min now, not ${m.readingTime}`);
+  // A draft's reading time is counted from its text (development only).
+  return { ...c, ...m, intro: c.intro ?? m.description, readingTime: m.readingTime ?? readingTime(c) };
+};
 
 /** Plain text of a Rich value (string, or strings and { b } / { a } pieces). */
 export function richText(r) {
@@ -820,22 +623,4 @@ function readingTime(a) {
   for (const f of a.faqs) parts.push(`${f.q} ${f.a}`);
   const words = parts.join(" ").split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
-}
-
-/**
- * The article for a URL slug — any letter case, surrounding slashes ignored (slugs are lowercase).
- * A draft is found only in development (it isn't in a production build at all).
- */
-export const getArticle = (slug = "") => {
-  const s = slug.replace(/^\/+|\/+$/g, "").toLowerCase();
-  return ALL.find((a) => a.slug === s);
-};
-/** Whether a site path is an article that can't be shown (a draft, in a production build). */
-export const isHiddenArticle = (to = "") => to.startsWith("/blog/") && !getArticle(to.slice("/blog/".length).split(/[?#]/)[0]);
-
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-/** "2026-10-08T16:45:00+05:30" → "8 October 2026" (read from the ISO text itself, so the server and the browser agree). */
-export function formatDate(iso) {
-  const [y, m, d] = iso.slice(0, 10).split("-").map(Number);
-  return `${d} ${MONTHS[m - 1]} ${y}`;
 }

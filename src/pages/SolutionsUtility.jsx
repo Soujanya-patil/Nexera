@@ -25,7 +25,7 @@ import {
 import { getProduct } from "../data/products";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import { UTILITY_FAQ } from "../data/solutions";
-import { guideFor } from "../data/articles";
+import { guideFor } from "../data/articleMeta";
 import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));
 const LoadShiftChart = lazy(() => import("../components/solutions/LoadShiftChart"));

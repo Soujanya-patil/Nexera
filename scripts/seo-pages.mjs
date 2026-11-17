@@ -35,7 +35,7 @@ await build({
   logLevel: "warn",
   build: {
     ssr: true,
-    rollupOptions: { input: { routes: "src/seo/routes.js", server: "src/entry-server.jsx" } },
+    rollupOptions: { input: { routes: "src/seo/routes.js", server: "src/entry-server.jsx", articles: "src/data/articles.js" } },
     outDir: tmp,
     emptyOutDir: true,
     copyPublicDir: false,
@@ -43,6 +43,7 @@ await build({
 });
 const entry = fs.readdirSync(tmp).find((f) => /^routes\.m?js$/.test(f));
 const serverEntry = fs.readdirSync(tmp).find((f) => /^server\.m?js$/.test(f));
+const articlesEntry = fs.readdirSync(tmp).find((f) => /^articles\.m?js$/.test(f));
 const { render } = await import(pathToFileURL(path.join(tmp, serverEntry)).href);
 const {
   ROUTES,
@@ -57,6 +58,16 @@ const {
   LOCAL_BUSINESS,
   PREVIEW_ROUTES,
 } = await import(pathToFileURL(path.join(tmp, entry)).href);
+
+// The articles' FAQs (FAQPage data) come from the articles' text (src/data/articles.js), which the
+// route table doesn't carry: it is loaded by every page, the text only by the article page.
+const { getArticle } = await import(pathToFileURL(path.join(tmp, articlesEntry)).href);
+for (const r of ROUTES) {
+  if (!r.articleKey) continue;
+  const a = getArticle(r.articleKey);
+  if (!a) throw new Error(`${r.path}: no article text for "${r.articleKey}" (src/data/articles.js)`);
+  r.faq = a.faqs;
+}
 
 // --- Checks -----------------------------------------------------------------------------------
 const problems = [];

@@ -12,7 +12,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { RESIDENTIAL_BENEFITS, RESIDENTIAL_FAQ } from "../data/solutions";
-import { guideFor } from "../data/articles";
+import { guideFor } from "../data/articleMeta";
 import { CTA_TOPICS } from "../data/solutionTopics";
 import { AfterIdle, ArrowLink, KeywordTicker, NearViewport, SectionRail } from "../components/solutions/Interactive";
 const SegmentSwitcher = lazy(() => import("../components/solutions/SegmentSwitcher"));

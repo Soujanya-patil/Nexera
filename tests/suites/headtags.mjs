@@ -11,6 +11,9 @@
 // Usage: node headtags.mjs <base> [--report]
 import { chromium } from "playwright-core";
 import { LEGAL_PATHS, LEGAL_REVIEW, REVIEW_ROBOTS } from "../../src/lib/legal.js";
+import { PUBLISH, reviewPath } from "../../src/data/publish.js";
+// The blog posts in review (src/data/publish.js): live, noindex, nofollow, not in the sitemap.
+const BLOG_REVIEW = Object.entries(PUBLISH).filter(([, d]) => d === null).map(([slug]) => reviewPath(slug));
 const BASE = process.argv[2];
 const REPORT = process.argv.includes("--report");
 const b = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" });
@@ -25,6 +28,7 @@ const ROUTES = [
   ...[...sitemap.matchAll(/<loc>https:\/\/nexerapower\.com([^<]*)<\/loc>/g)].map((m) => m[1] || "/"),
   "/products/hithium-power-5016", // noindex (kept off the catalogue)
   ...(LEGAL_REVIEW ? LEGAL_PATHS : []), // noindex, nofollow while the legal pages are in review (src/lib/legal.js)
+  ...BLOG_REVIEW, // noindex, nofollow while each post is in review (src/data/publish.js)
   "/no-such-page", // not a route: 404.html
 ];
 
@@ -186,9 +190,9 @@ if (REPORT) {
 }
 // The legal pages in review: robots "noindex, nofollow" served, after hydration and after a client-side
 // navigation (the counts above only say there is one robots tag).
-if (LEGAL_REVIEW) {
+{
   const robots = (p) => p.evaluate(() => [...document.querySelectorAll('meta[name="robots"]')].map((m) => m.content));
-  for (const path of LEGAL_PATHS) {
+  for (const path of [...(LEGAL_REVIEW ? LEGAL_PATHS : []), ...BLOG_REVIEW]) {
     const html = await (await fetch(BASE + path)).text();
     const servedRobots = [...html.matchAll(/<meta name="robots" content="([^"]*)"/g)].map((m) => m[1]);
     const p = await ctx.newPage();

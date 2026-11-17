@@ -26,7 +26,7 @@ import { PRODUCTS, partnerOf, productLabel, applicationLabel } from "../data/pro
 import { SOLUTION_PAGES, UTILITY_FAQ, CI_FAQ, RESIDENTIAL_FAQ } from "../data/solutions";
 import { SERVICE_TRAINING_FAQ } from "../data/serviceTraining";
 import { partnerFaq } from "../data/partners";
-import { ARTICLES, DRAFT_ARTICLES } from "../data/articles";
+import { ARTICLES, DRAFT_ARTICLES, REVIEW_ARTICLES } from "../data/articleMeta";
 import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
 import { productPage as productContent } from "../data/productPages";
 import { ADDRESS_PARTS, BUSINESS_NAME, EMAIL, HOURS, PHONE } from "../data/business";
@@ -230,8 +230,10 @@ const PAGES = [
       .sort((x, y) => y.datePublished.localeCompare(x.datePublished))
       .map((a) => ({ headline: a.h1, path: `/blog/${a.slug}`, datePublished: a.datePublished })),
   },
-  // Articles (pages/Article.jsx, content in data/articles.js): breadcrumb Home > Blog > article,
-  // Article structured data, and the article's FAQ as FAQPage data.
+  // Articles (pages/Article.jsx; metadata in data/articleMeta.js, text in data/articles.js): breadcrumb
+  // Home > Blog > article and Article structured data. The FAQPage data is the article's own FAQ, which
+  // scripts/seo-pages.mjs reads from data/articles.js at build time (`articleKey`), so this route table —
+  // loaded by every page — never carries the articles' text.
   ...ARTICLES.map((a) => ({
     path: `/blog/${a.slug}`,
     h1: a.h1,
@@ -240,7 +242,19 @@ const PAGES = [
     crumbs: [["Blog", "/blog"], [a.shortTitle, `/blog/${a.slug}`]],
     ogImage: a.shareImage ?? DEFAULT_OG_IMAGE,
     article: { headline: a.h1, datePublished: a.datePublished, dateModified: a.dateModified },
-    faq: a.faqs,
+    articleKey: a.slug,
+  })),
+  // Articles in review (data/articles.js PUBLISH): pre-rendered like any article so the director can read
+  // them by direct link, but hidden — robots "noindex, nofollow", no canonical or structured data, not
+  // in the sitemap (scripts/check-blog-review.mjs checks it, and that no other page links to them).
+  ...REVIEW_ARTICLES.map((a) => ({
+    path: `/blog/${a.slug}`,
+    noindex: true,
+    robots: REVIEW_ROBOTS,
+    h1: a.h1,
+    title: a.title,
+    description: a.description,
+    label: a.shortTitle,
   })),
   // The legal pages (pages/PrivacyPolicy.jsx, pages/TermsOfUse.jsx): breadcrumb Home > page. In review
   // (lib/legal LEGAL_REVIEW) they are live but hidden: robots "noindex, nofollow", not in the sitemap.

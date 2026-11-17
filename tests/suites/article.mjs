@@ -60,11 +60,11 @@ for (const [W, H] of [
       terms: document.querySelectorAll('[role="note"][aria-label="Key term"]').length,
       faq: document.querySelectorAll("#faq details").length,
       related: [...document.querySelectorAll('section[aria-labelledby="related-title"] a')].map((a) => a.getAttribute("href")),
-      byline: [...document.querySelectorAll("p")].find((x) => x.textContent.startsWith("By NEXERA"))?.textContent.trim(),
+      byline: [...document.querySelectorAll("p")].find((x) => x.textContent.startsWith("By Nexera"))?.textContent.trim(),
     };
   });
   check(`${tag} one h1; body 16–18px (token), line height 1.7; ${W > 500 ? "sticky contents beside the text" : "collapsible contents (closed) above the text"}`, s.h1 === 1 && (W > 500 ? s.font === "18px" : parseFloat(s.font) >= 16) && s.lh === "1.70" && (W > 500 ? s.navShown && !s.detailsShown : s.detailsShown && !s.navShown && !s.detailsOpen), s);
-  check(`${tag} six Key term callouts, five FAQs, four related links, byline`, s.terms === 6 && s.faq === 5 && s.related.join() === "/solutions/residential,/solutions/commercial-industrial,/solutions/utility-scale,/products" && s.byline === "By NEXERA Powertech · 8 October 2026 · 4 min read", s);
+  check(`${tag} six Key term callouts, five FAQs, four related links, byline`, s.terms === 6 && s.faq === 5 && s.related.join() === "/solutions/residential,/solutions/commercial-industrial,/solutions/utility-scale,/products" && s.byline === "By Nexera Powertech · Published 8 October 2026 · 4 min read", s);
   if (W > 500) check(`${tag} text measure about 68ch`, s.width > 500 && s.width <= 700, { width: s.width });
 
   // Contents: a link scrolls to its section (desktop list or the opened phone list).

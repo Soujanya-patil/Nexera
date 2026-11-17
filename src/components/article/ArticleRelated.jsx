@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { isHiddenArticle } from "../../data/articles";
+import { isHiddenArticle } from "../../data/articleMeta";
 
 // A line icon for each related page (drawn in as the cards arrive).
 const ICONS = {
