@@ -66,7 +66,13 @@ const FORMS = [
     id: "call-back widget",
     url: "/products",
     open: async (p) => {
-      await p.waitForSelector(".cb-dock", { state: "attached", timeout: 8000 });
+      // The widget loads on the first interaction (components/Layout): a Shift press, repeated until it
+      // is there (an early press can come before the app is listening), changes nothing else.
+      for (let i = 0; i < 16; i++) {
+        await p.keyboard.press("Shift");
+        if (await p.waitForSelector(".cb-dock", { state: "attached", timeout: 500 }).then(() => true, () => false)) break;
+      }
+      await p.waitForSelector(".cb-dock", { state: "attached", timeout: 1000 });
       await p.evaluate(() => scrollTo(0, 600));
       await p.waitForTimeout(800);
       await p.locator(".cb-dock > button[aria-haspopup]").click();
