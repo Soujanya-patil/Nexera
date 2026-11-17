@@ -23,7 +23,9 @@ export function useScrub(ref, setup, deps = []) {
     let cancelled = false;
     let mm;
     loadGsap().then(({ gsap, ScrollTrigger }) => {
-      if (cancelled) return;
+      // Also when the element is already gone: on a navigation React detaches refs a moment before it
+      // runs this effect's cleanup, and GSAP can arrive in between (it loads on the first interaction).
+      if (cancelled || !ref.current) return;
       mm = gsap.matchMedia();
       mm.add(SCRUB_QUERY, () => setup({ gsap, ScrollTrigger, el }));
     });

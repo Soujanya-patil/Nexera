@@ -56,7 +56,13 @@ const closeCard = async (p) => {
 };
 async function showPill(p, path = "/products") {
   await p.goto(BASE + path, { waitUntil: "networkidle" });
-  await p.waitForSelector(".cb-dock", { state: "attached", timeout: 8000 });
+  // The widget loads on the first interaction (components/Layout): a Shift press changes nothing else.
+  // Pressed until the widget is there (an early press can come before the app is listening).
+  for (let i = 0; i < 16; i++) {
+    await p.keyboard.press("Shift");
+    if (await p.waitForSelector(".cb-dock", { state: "attached", timeout: 500 }).then(() => true, () => false)) break;
+  }
+  await p.waitForSelector(".cb-dock", { state: "attached", timeout: 1000 });
   await p.evaluate(() => scrollTo(0, 600));
   await settle(p, 900);
 }

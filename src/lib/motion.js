@@ -62,13 +62,55 @@ export function afterFirstPaint() {
   return idle;
 }
 
+let interacted;
+/**
+ * Resolves on the visitor's first scroll of the page, wheel, tap or key press — never on its own. (A
+ * scroll inside the page, e.g. a row of tabs the page itself scrolls into view, doesn't count.)
+ */
+export function afterFirstInteraction() {
+  interacted ??= new Promise((resolve) => {
+    if (typeof window === "undefined") return;
+    const events = ["scroll", "wheel", "pointerdown", "keydown", "touchstart"];
+    const go = (e) => {
+      if (e?.type === "scroll" && e.target !== document && e.target !== window) return;
+      events.forEach((ev) => window.removeEventListener(ev, go, true));
+      resolve();
+    };
+    events.forEach((e) => window.addEventListener(e, go, { capture: true, passive: true }));
+    // Already scrolled before the app started (a scroll while the page was loading, a restored
+    // position, a #hash landing): that counts.
+    if (window.scrollY > 0) go();
+  });
+  return interacted;
+}
+// Listening starts as soon as the app's code runs (before it hydrates), so an early first scroll or
+// tap isn't missed.
+if (typeof window !== "undefined") afterFirstInteraction();
+
+// The page the visitor arrived on (a direct load). Home keeps its motion loading as before (at the
+// first paint: the hero's own timing); every other page starts it on the first interaction.
+const arrivedOnHome = typeof window !== "undefined" && window.location.pathname === "/";
+
+/**
+ * When the page's motion — GSAP, ScrollTrigger, Lenis smooth scrolling, the scroll reveals — may load.
+ * Arrived on Home: after the first paint, as before. Arrived on any other page: on the first scroll,
+ * wheel, tap or key press, so none of it runs while the page is still loading and nobody is reading it.
+ * Nothing on screen waits for it: on a direct load nothing is held hidden for a reveal (reveals and
+ * entrances start "idle"; only what is still below the screen takes its waiting state once GSAP has
+ * arrived), and native scrolling — anchor links included — works until Lenis starts. After a
+ * client-side navigation the visitor has already interacted, so it is ready at once.
+ */
+export function motionReady() {
+  return arrivedOnHome ? afterFirstPaint() : afterFirstInteraction();
+}
+
 let gsapPromise;
 /**
- * Lazy, memoised GSAP + ScrollTrigger — fetched only after the first paint (afterFirstPaint), so they
- * never compete with the first screen.
+ * Lazy, memoised GSAP + ScrollTrigger — fetched when the page's motion may load (motionReady: on Home
+ * after the first paint, elsewhere on the first interaction), so they never compete with the first screen.
  */
 export function loadGsap() {
-  gsapPromise ??= afterFirstPaint()
+  gsapPromise ??= motionReady()
     .then(() => Promise.all([import("gsap"), import("gsap/ScrollTrigger")]))
     .then(
     ([{ gsap }, { ScrollTrigger }]) => {

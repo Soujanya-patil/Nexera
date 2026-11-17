@@ -33,7 +33,16 @@ async function newPage(w, h, { reduced = false } = {}) {
   });
   return p;
 }
-const ready = (p) => p.waitForSelector(".cb-dock", { state: "attached", timeout: 8000 });
+// The widget loads on the visitor's first interaction (components/Layout): a Shift press — an
+// interaction that changes nothing on the page — then the widget is waited for as before.
+const ready = async (p) => {
+  // Pressed until the widget is there (an early press can come before the app is listening).
+  for (let i = 0; i < 16; i++) {
+    await p.keyboard.press("Shift");
+    if (await p.waitForSelector(".cb-dock", { state: "attached", timeout: 500 }).then(() => true, () => false)) return;
+  }
+  return p.waitForSelector(".cb-dock", { state: "attached", timeout: 1000 });
+};
 const pill = (p) => p.locator(".cb-dock > button[aria-haspopup]");
 const card = (p) => p.locator('[role="dialog"][aria-labelledby]').filter({ hasText: "Get a call back" });
 const pillShown = (p) => p.evaluate(() => {

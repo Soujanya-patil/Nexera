@@ -16,6 +16,7 @@ import { getLenis } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
 import { ProductDetailRoute } from "./lazy";
 import { DUR, EASE, SCROLL_DUR, STAGGER } from "../lib/tokens";
+import { motionReady } from "../lib/motion";
 
 const APP_OPTIONS = [{ id: "all", label: "All" }, ...APPLICATIONS];
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -197,7 +198,8 @@ export default function Products() {
   useEffect(() => {
     if (reducedMotion()) return;
     let live = true;
-    Promise.all([import("gsap"), import("gsap/Flip")]).then(([{ gsap }, { Flip }]) => {
+    // GSAP and Flip (the filter animations) wait for the first interaction, like the rest of the motion.
+    motionReady().then(() => Promise.all([import("gsap"), import("gsap/Flip")])).then(([{ gsap }, { Flip }]) => {
       gsap.registerPlugin(Flip);
       if (live) flip.current = { gsap, Flip };
     });

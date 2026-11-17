@@ -7,6 +7,7 @@ import { initSmoothScroll, jumpTo } from "../lib/lenis";
 import { loadRouteMeta } from "../seo/loadRouteMeta";
 import { isFirstLoad, markNavigated } from "../lib/firstLoad";
 import { pageView } from "../lib/analytics";
+import { afterFirstInteraction } from "../lib/motion";
 
 /**
  * On navigation: jump to the #hash target if there is one (e.g. /solutions#ci), otherwise to the top.
@@ -60,8 +61,9 @@ function useScrollOnNavigate() {
   }, [pathname, hash]);
 }
 
-// The floating call-back widget (every page) is its own chunk, loaded once the page has loaded and
-// the browser is idle: it only appears after some scrolling, and nothing of it is pre-rendered.
+// The floating call-back widget (every page) is its own chunk, loaded on the visitor's first scroll,
+// wheel, tap or key press (and never before the page has loaded and gone idle): it only appears after
+// some scrolling anyway, and nothing of it is pre-rendered.
 const CallbackWidget = lazy(() => import("./CallbackWidget"));
 // The cookie consent banner (lib/analytics): its own chunk too, mounted at the same idle moment.
 const ConsentBanner = lazy(() => import("./ConsentBanner"));
@@ -81,6 +83,19 @@ function useIdleAfterLoad() {
   return idle;
 }
 
+/** True once the page is idle (useIdleAfterLoad) and the visitor has first scrolled, tapped or pressed a key. */
+function useFirstInteraction(idle) {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    let live = true;
+    afterFirstInteraction().then(() => live && setOn(true));
+    return () => {
+      live = false;
+    };
+  }, []);
+  return on && idle;
+}
+
 // The path the page was loaded with (a direct load); any other path got here by client-side navigation.
 const firstPath = typeof window === "undefined" ? null : window.location.pathname;
 
@@ -90,6 +105,7 @@ export default function Layout() {
   useEffect(() => initSmoothScroll(), []);
   useScrollOnNavigate();
   const widget = useIdleAfterLoad();
+  const interacted = useFirstInteraction(widget);
   const { pathname } = useLocation();
   // Any path other than the one the page was opened with was reached by client-side navigation:
   // marked here, while rendering, so the new page's first render already knows (lib/firstLoad).
@@ -127,7 +143,7 @@ export default function Layout() {
       <Footer />
       {/* Phones only: the bottom action bar (Call · WhatsApp · Enquire), part of the pre-rendered page. */}
       <MobileBar />
-      {widget && (
+      {interacted && (
         <Suspense fallback={null}>
           <CallbackWidget />
         </Suspense>

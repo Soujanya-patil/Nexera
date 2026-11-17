@@ -112,7 +112,9 @@ export default function Nav() {
       className={`sticky top-0 z-50 isolate transition-[translate] duration-base ease-emphasized ${scrolled ? "-translate-y-2" : ""}`}
     >
       <span aria-hidden="true" className={`absolute inset-0 -z-10 bg-white transition-opacity duration-base ease-emphasized ${scrolled ? "opacity-95" : ""}`} />
-      <span aria-hidden="true" className="absolute inset-0 -z-20 backdrop-blur-md" />
+      {/* The blur behind the bar only once scrolled: at the top the bar is opaque white, so a blur there
+          shows nothing and only costs paint work on every frame. */}
+      <span aria-hidden="true" className={`absolute inset-0 -z-20 ${scrolled ? "backdrop-blur-md" : ""}`} />
       <span
         aria-hidden="true"
         className={`absolute inset-0 -z-10 border-b border-line shadow-float transition-opacity duration-base ease-emphasized ${scrolled ? "" : "opacity-0"}`}

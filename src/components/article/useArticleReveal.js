@@ -18,6 +18,10 @@ const each = (n, step) => (n > 1 ? Math.min(step, MAX_STAGGER / (n - 1)) : 0);
  * site, nothing visible is ever hidden: an item is put into its waiting state only while it is still
  * below the screen, and an item arriving in a fast scroll (or jumped past) is simply shown.
  *
+ * Cheap to set up: the items are wired in small slices while the browser is idle (never one long task),
+ * and a heading waiting below the screen is only hidden — it is split into words (SplitText) at the
+ * moment it reveals, one heading at a time, not all of them up front.
+ *
  * Also wires the Key terms' small 3D tilt (±4°, mouse / pen only) and the CTA's shine, which runs only
  * while the CTA is on screen.
  */
@@ -28,12 +32,14 @@ export function useArticleReveal(ref, motion) {
     const { gsap, SplitText } = motion;
     const offs = [];
     const splits = new Map();
+    let stopped = false;
+    let pending;
 
     const ctx = gsap.context(() => {
       const items = [...root.querySelectorAll("[data-rv]")];
+      const heading = (el) => (el.matches("h2") ? el : el.querySelector("h2"));
       const words = (el) => {
-        const h = el.matches("h2") ? el : el.querySelector("h2");
-        if (!splits.has(el)) splits.set(el, new SplitText(h, { type: "words", mask: "words" }));
+        if (!splits.has(el)) splits.set(el, new SplitText(heading(el), { type: "words", mask: "words" }));
         return splits.get(el).words;
       };
       const wait = (el) => {
@@ -41,8 +47,8 @@ export function useArticleReveal(ref, motion) {
         const kind = el.dataset.rv;
         if (kind === "h2") {
           gsap.set(el.querySelector(".article-h2-line line"), { drawSVG: "0%" });
-          gsap.set(words(el), { yPercent: 105 });
-        } else if (kind === "split") gsap.set(words(el), { yPercent: 105 });
+          gsap.set(heading(el), { opacity: 0 });
+        } else if (kind === "split") gsap.set(heading(el), { opacity: 0 });
         else {
           gsap.set(el, { opacity: 0, y: kind === "card" ? 22 : 14 });
           if (kind === "card") gsap.set(el.querySelector("[data-icon]"), { drawSVG: "0%" });
@@ -55,6 +61,7 @@ export function useArticleReveal(ref, motion) {
       };
       const show = (el) => {
         gsap.set(el, { clearProps: "opacity,transform" });
+        if (el.dataset.rv === "h2" || el.dataset.rv === "split") gsap.set(heading(el), { clearProps: "opacity" });
         gsap.set(el.querySelectorAll(".article-h2-line line, [data-icon]"), { clearProps: "all" });
         done(el);
       };
@@ -62,6 +69,10 @@ export function useArticleReveal(ref, motion) {
         const heads = batch.filter((el) => el.dataset.rv === "h2" || el.dataset.rv === "split");
         const rest = batch.filter((el) => !heads.includes(el));
         for (const el of heads) {
+          // Split now (it was only hidden while waiting): the words start below their masks and the
+          // heading shows in the same frame, so the reveal looks as before.
+          gsap.set(words(el), { yPercent: 105 });
+          gsap.set(heading(el), { clearProps: "opacity" });
           const tl = gsap.timeline({ onComplete: () => done(el) });
           const line = el.querySelector(".article-h2-line line");
           if (line) tl.to(line, { drawSVG: "100%", duration: DUR.base, ease: EASE.inOut });
@@ -86,7 +97,20 @@ export function useArticleReveal(ref, motion) {
           if (el.dataset.rv === "card") gsap.to(el.querySelector("[data-icon]"), { drawSVG: "100%", delay: at + 0.15, duration: DUR.slow, ease: EASE.inOut });
         });
       };
-      for (const el of items) offs.push(onceInView(el, { enter, show: () => show(el), below: () => wait(el) }));
+      // Wired in slices while the browser is idle (top of the article first). An item not wired yet is
+      // simply visible; once wired, the observer shows it if it is on screen or passed, and only hides
+      // it while it is still below the screen.
+      let next = 0;
+      const idle = window.requestIdleCallback ?? ((fn) => setTimeout(() => fn({ timeRemaining: () => 8 }), 1));
+      const slice = (deadline) => {
+        if (stopped) return;
+        ctx.add(() => {
+          do offs.push(onceInView(items[next], { enter, show: ((el) => () => show(el))(items[next]), below: ((el) => () => wait(el))(items[next]) }));
+          while (++next < items.length && deadline.timeRemaining() > 4);
+        });
+        if (next < items.length) pending = idle(slice, { timeout: 500 });
+      };
+      if (items.length) pending = idle(slice, { timeout: 500 });
     }, root);
 
     // Key terms: a small 3D tilt following the pointer (mouse / pen only).
@@ -116,6 +140,8 @@ export function useArticleReveal(ref, motion) {
     root.querySelectorAll("[data-shine]").forEach((el) => io.observe(el));
 
     return () => {
+      stopped = true;
+      (window.cancelIdleCallback ?? clearTimeout)(pending);
       offs.forEach((off) => off());
       io.disconnect();
       root.removeEventListener("pointermove", tilt);

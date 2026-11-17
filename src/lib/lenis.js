@@ -1,4 +1,4 @@
-import { afterFirstPaint, loadGsap } from "./motion";
+import { loadGsap, motionReady } from "./motion";
 
 /**
  * Site-wide smooth scroll (one instance, mounted once from Layout — not per-section). Lenis
@@ -42,9 +42,9 @@ export function initSmoothScroll() {
   let gsapRef;
   let onTick;
 
-  // Smooth scrolling starts once the first screen is up (loadGsap waits for that); native scroll
-  // works until then.
-  Promise.all([loadGsap(), afterFirstPaint().then(() => import("lenis"))]).then(([{ gsap, ScrollTrigger }, { default: Lenis }]) => {
+  // Smooth scrolling starts when the page's motion may load (lib/motion motionReady: on Home after the
+  // first paint, elsewhere on the first interaction); native scroll works until then.
+  Promise.all([loadGsap(), motionReady().then(() => import("lenis"))]).then(([{ gsap, ScrollTrigger }, { default: Lenis }]) => {
     // Guard against a second instance (StrictMode re-runs effects; the first run is cancelled).
     if (cancelled || active) return;
     // Wheel inside [data-lenis-prevent] (modals, horizontally scrolling rows) scrolls natively.
