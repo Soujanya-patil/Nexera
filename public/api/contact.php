@@ -23,7 +23,7 @@
  */
 
 // ↓ The one place the recipient is set.
-const NEXERA_LEADS_TO = "ankit@nexerapower.com";
+const NEXERA_LEADS_TO = "sales@nexerapower.com";
 const NEXERA_FROM = "no-reply@nexerapower.com";
 const RATE_LIMIT = 5;        // enquiries …
 const RATE_WINDOW = 3600;    // … per this many seconds, per IP
