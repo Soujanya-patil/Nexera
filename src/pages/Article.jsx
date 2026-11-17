@@ -46,6 +46,10 @@ export default function Article() {
 }
 
 const TOC_FAQ = { id: "faq", h2: "Frequently asked questions" };
+// Running text (paragraphs, lists, callouts) at most 41rem wide: about 70 characters a line at desktop
+// sizes. The column itself is wider for the Step 11 posts (46rem), so their tables and diagrams keep the
+// full width; in the scene-stage layout (60ch) the column is already narrower and this changes nothing.
+const MEASURE = "max-w-[41rem]";
 // Sections whose list items drive their scene step by step / react to hover / pulse their link.
 const HOVER_SECTION = "main-parts";
 const PULSE_SECTION = "types-by-scale";
@@ -111,7 +115,7 @@ function ArticlePage({ a }) {
             {/* The answer-first paragraph (Step 11 posts): before the first heading, its bold sentence the
                 short answer search engines can quote. */}
             {a.lead && (
-              <p data-rv="text" className="mb-12 text-lead text-ink">
+              <p data-rv="text" className={`mb-12 text-lead text-ink ${MEASURE}`}>
                 <Rich r={a.lead} plainBold />
               </p>
             )}
@@ -406,7 +410,7 @@ function Block({ b, section, ctx, inCallout = false }) {
   const { reading, setHover } = ctx;
   if (b.p) {
     return (
-      <p data-rv={inCallout ? undefined : "text"} className={inCallout ? "mt-2" : "mt-5"}>
+      <p data-rv={inCallout ? undefined : "text"} className={inCallout ? "mt-2" : `mt-5 ${MEASURE}`}>
         <Rich r={b.p} />
       </p>
     );
@@ -417,14 +421,14 @@ function Block({ b, section, ctx, inCallout = false }) {
   if (b.figure) return <Figure f={b.figure} />;
   if (b.small) {
     return (
-      <p data-rv={inCallout ? undefined : "text"} className="mt-3 text-small text-muted">
+      <p data-rv={inCallout ? undefined : "text"} className={`mt-3 text-small text-muted ${MEASURE}`}>
         <Rich r={b.small} />
       </p>
     );
   }
   if (b.callout) {
     return (
-      <div role="note" aria-label={b.callout.label} data-rv="term" className="article-term-card article-callout relative mt-6 rounded-card border border-line bg-ice/70 py-5 pl-6 pr-5">
+      <div role="note" aria-label={b.callout.label} data-rv="term" className={`article-term-card article-callout relative mt-6 rounded-card border border-line bg-ice/70 py-5 pl-6 pr-5 ${MEASURE}`}>
         <p data-label className="eyebrow text-muted">
           {b.callout.label}
         </p>
@@ -438,7 +442,7 @@ function Block({ b, section, ctx, inCallout = false }) {
     const List = b.ol ? "ol" : "ul";
     const hoverable = section === HOVER_SECTION;
     return (
-      <List className={`mt-5 space-y-3 pl-6 marker:text-accent ${b.ol ? "list-decimal marker:font-semibold" : "list-disc"}`}>
+      <List className={`mt-5 space-y-3 pl-6 marker:text-accent ${MEASURE} ${b.ol ? "list-decimal marker:font-semibold" : "list-disc"}`}>
         {(b.ul ?? b.ol).map((it, i) => (
           <li
             key={i}
@@ -458,7 +462,7 @@ function Block({ b, section, ctx, inCallout = false }) {
   }
   if (b.terms) {
     return (
-      <div className="mt-6 space-y-4">
+      <div className={`mt-6 space-y-4 ${MEASURE}`}>
         {b.terms.map((t, i) => (
           <div
             key={t.term}
