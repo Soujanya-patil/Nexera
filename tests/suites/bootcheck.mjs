@@ -1,5 +1,6 @@
 // The app's start after the first paint (scripts/seo-pages.mjs boot): it starts on every page, after the
-// first contentful paint; the site works (homepage story, menu, client-side navigation); both
+// first contentful paint; the site works (homepage story, /products cabinet film, menu, client-side
+// navigation); both
 // fallbacks start it (no paint timing → after the first frame; no paint entry → the 1.5 s timer).
 // Usage: node bootcheck.mjs http://127.0.0.1:8810
 import { chromium } from "playwright-core";
@@ -103,6 +104,99 @@ for (const [W, H] of [
     check("/ @1440: menu links navigate client-side", nav.path === "/products" && nav.sameDoc, nav);
   }
   check(`/ @${W}: no console errors (story / menu)`, p.errors.length === 0, p.errors);
+  await p.context().close();
+}
+
+const FILM = 'section[aria-labelledby="cabinet-film-title"]';
+/**
+ * Scrolls the film's stage to the middle of the screen (the scroll also counts as the first interaction)
+ * and waits until the page has stopped moving: the film sits below the product grid, far down the page,
+ * and the site scrolls smoothly, so the stage's position (where the tests tap) is only final once the
+ * scroll has settled.
+ */
+async function filmInView(p) {
+  await p.evaluate((F) => {
+    const st = document.querySelector(`${F} [tabindex="0"][aria-label]`);
+    const r = st.getBoundingClientRect();
+    window.scrollTo({ top: r.top + scrollY + r.height / 2 - innerHeight / 2, behavior: "instant" });
+  }, FILM);
+  let last = -1;
+  for (let i = 0; i < 40; i++) {
+    await p.waitForTimeout(150);
+    const top = await p.evaluate((F) => Math.round(document.querySelector(`${F} [tabindex="0"][aria-label]`).getBoundingClientRect().top), FILM);
+    if (top === last) break;
+    last = top;
+  }
+}
+
+// ---- /products cabinet film playback rules (desktop hover, phone tap) ----------------------------------
+// (The former home hero video and its rules, now a section on /products: the film loads once the visitor
+// has scrolled and plays its first cycle by itself when in view, so each test first scrolls it into view.)
+// A hover (desktop) or tap (phone) plays the cycle from the start when it is at rest; hovering, clicking
+// or tapping again while it plays never restarts it; leaving lets it play to the end; it then rests on
+// the closed frame (no loop), and the next hover / tap plays it again from the start. "At rest": both
+// clips paused, the opening rewound, the closing clip hidden.
+for (const [W, H, touch] of [
+  [1440, 900, false],
+  [390, 844, true],
+]) {
+  const p = await page(W, H);
+  await p.goto(BASE + "/products", { waitUntil: "load" });
+  await filmInView(p);
+  const st = () => p.evaluate((F) => { const [o, c] = document.querySelectorAll(`${F} video`); return { o: +o.currentTime.toFixed(2), op: o.paused, cp: c.paused, cv: c.style.opacity }; }, FILM);
+  const atRest = async (ms = 30000) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { const s = await st(); if (s.op && s.cp && s.o === 0 && s.cv !== "1") return true; await p.waitForTimeout(100); } return false; };
+  const box = await p.locator(`${FILM} [tabindex="0"][aria-label]`).boundingBox();
+  const cx = box.x + box.width / 2, cy = box.y + box.height / 2;
+  const leave = () => p.mouse.move(5, 5, { steps: 3 });
+  const enter = async () => { await leave(); await p.mouse.move(cx, cy, { steps: 3 }); };
+  const trigger = touch ? () => p.touchscreen.tap(cx, cy) : enter;
+  const how = touch ? "a tap" : "hovering";
+  const rest0 = await atRest();
+  // The very first moment of rest, with no extra wait: the trigger must not be lost.
+  await trigger();
+  await p.waitForTimeout(700);
+  const s1 = await st();
+  const b2 = (await st()).o;
+  if (touch) await trigger(); else await enter();
+  await p.waitForTimeout(500);
+  const s2 = await st();
+  const b3 = s2.o;
+  if (touch) await p.touchscreen.tap(cx, cy); else await p.mouse.click(cx, cy);
+  await p.waitForTimeout(500);
+  const s3 = await st();
+  if (!touch) await leave();
+  const rest1 = await atRest();
+  await p.waitForTimeout(1200);
+  const s4 = await st();
+  await trigger();
+  await p.waitForTimeout(700);
+  const s5 = await st();
+  check(`/products @${W}: film — at rest, ${how} plays the video from the start (also at the first moment of rest)`, rest0 && !s1.op && s1.o > 0 && s1.o < 1.5, { rest0, s1 });
+  check(`/products @${W}: film — ${how} again while it plays does not restart it`, !s2.op && s2.o > b2, { b2, s2 });
+  check(`/products @${W}: film — ${touch ? "a second tap" : "a click"} while it plays does not restart it`, !s3.op && s3.o > b3, { b3, s3 });
+  check(`/products @${W}: film — ${touch ? "left alone" : "after the mouse leaves"} it plays to the end and rests on the closed frame (no loop)`, rest1 && s4.op && s4.cp && s4.o === 0, { rest1, s4 });
+  check(`/products @${W}: film — after the end, the next ${touch ? "tap" : "hover"} plays it again from the start`, !s5.op && s5.o > 0 && s5.o < 1.5, s5);
+  check(`/products @${W}: no console errors (film playback)`, p.errors.length === 0, p.errors);
+  await p.context().close();
+}
+
+// The end of a cycle, exactly: a tap 20 ms after the closing clip ends (while the cycle is still settling
+// back to rest) is not dropped — it plays the cycle again from the start.
+{
+  const p = await page(390, 844);
+  await p.goto(BASE + "/products", { waitUntil: "load" });
+  await filmInView(p);
+  await p.waitForFunction((F) => document.querySelectorAll(`${F} video`)[1]?.getAttribute("src"), FILM, { timeout: 10000 }).catch(() => {});
+  await p.evaluate((F) => {
+    const c = document.querySelectorAll(`${F} video`)[1];
+    const stage = document.querySelector(`${F} [tabindex="0"][aria-label]`);
+    c.addEventListener("ended", () => setTimeout(() => { stage.dispatchEvent(new PointerEvent("pointerup", { pointerType: "touch", bubbles: true })); window.__tapped = 1; }, 20), { once: true });
+  }, FILM);
+  const t0 = Date.now();
+  while (Date.now() - t0 < 30000 && !(await p.evaluate(() => window.__tapped === 1))) await p.waitForTimeout(100);
+  await p.waitForTimeout(1200);
+  const s = await p.evaluate((F) => { const o = document.querySelector(`${F} video`); return { o: +o.currentTime.toFixed(2), playing: !o.paused }; }, FILM);
+  check("/products @390: film — a tap just as the video ends replays it from the start (not dropped)", s.playing && s.o > 0 && s.o < 2, s);
   await p.context().close();
 }
 

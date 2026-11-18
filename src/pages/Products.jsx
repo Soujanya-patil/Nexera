@@ -8,6 +8,7 @@ import LiveCount from "../components/catalogue/LiveCount";
 import { CompareDialog, CompareTray, MAX_COMPARE } from "../components/catalogue/Compare";
 import ChooseCta from "../components/catalogue/ChooseCta";
 import ProductsHeroStage from "../components/catalogue/ProductsHeroStage";
+import CabinetFilm from "../components/catalogue/CabinetFilm";
 import TiltSurface from "../components/ui/TiltSurface";
 import { depth, usePointerDepth } from "../lib/pointerDepth";
 import { useIntro } from "../lib/intro";
@@ -455,6 +456,10 @@ export default function Products() {
           )}
         </div>
       </section>
+
+      {/* The cabinet film (the former home hero video, trimmed): below the grid, so the catalogue sits
+          right under the hero; it loads only as it comes near and plays when in view. */}
+      <CabinetFilm />
 
       <ChooseCta />
 
