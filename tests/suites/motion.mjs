@@ -1,4 +1,6 @@
-// The article's motion: scenes, controls, reduced motion, no JS, transition, TOC, FAQ, CLS, long tasks.
+// The article's motion on /blog/what-is-bess (the Step 11 refresh, published 17 November 2026): reveals
+// while reading, TOC, FAQ, reduced motion, no JS, header, card transition, CLS, long tasks. (The refresh
+// has no scroll-scene stage; the checks for the old article's scenes went with them.)
 // Usage: node motion.mjs http://127.0.0.1:8810
 import { chromium } from "playwright-core";
 
@@ -28,16 +30,6 @@ async function newPage(w, h, opts = {}) {
   });
   return p;
 }
-const sectionIds = ["bess-full-form", "how-a-bess-works", "main-parts", "key-terms", "types-by-scale", "uses", "choosing"];
-const visuals = ["bess-letters", "energy-flow", "cabinet-parts", "key-terms", "scale-morph", "day-dial", "choose-chips"];
-const toSection = (p, id, y = 0.35) =>
-  p.evaluate(
-    ([id, y]) => {
-      const el = document.querySelector(`[data-section="${id}"]`);
-      window.scrollTo(0, el.getBoundingClientRect().top + scrollY - innerHeight * y);
-    },
-    [id, y]
-  );
 // Gentle scroll (a reading pace), so reveals animate rather than skip.
 const glide = async (p, to) => {
   const from = await p.evaluate(() => scrollY);
@@ -48,82 +40,27 @@ const glide = async (p, to) => {
   }
 };
 
-// ---- 1440: scenes switch down and back up; motion is on ---------------------------------------------
+// ---- 1440: reading down the article: no scene stage; every reveal plays and ends fully visible ----------
 {
   const p = await newPage(1440, 900);
   await p.goto(BASE + URL_A, { waitUntil: "networkidle" });
   await p.waitForTimeout(2500);
-  const motionOn = await p.evaluate(() => !!document.querySelector('[data-scene="bess-letters"]:not([data-static])'));
-  check("@1440 the scenes mount in the stage (motion loaded after idle)", motionOn);
-  const seen = [];
-  for (const id of sectionIds) {
-    await toSection(p, id);
-    await p.waitForTimeout(1200);
-    seen.push(await p.evaluate(() => document.querySelector(".article-stage-slot[data-on]")?.dataset.scene));
-  }
-  check("@1440 scrolling down: each section shows its scene", seen.join() === visuals.join(), seen);
-  const back = [];
-  for (const id of [...sectionIds].reverse()) {
-    await toSection(p, id);
-    await p.waitForTimeout(1000);
-    back.push(await p.evaluate(() => document.querySelector(".article-stage-slot[data-on]")?.dataset.scene));
-  }
-  check("@1440 scrolling back up: the scenes follow in reverse", back.join() === [...visuals].reverse().join(), back);
-
-  // Steps: the cabinet's parts follow the points as they are read.
-  await toSection(p, "main-parts", 0.1);
-  await p.waitForTimeout(800);
-  const lit = [];
-  const items = await p.evaluate(() => [...document.querySelectorAll('[data-of="main-parts"]')].map((li) => li.getBoundingClientRect().top + scrollY));
-  for (const top of items) {
-    await p.evaluate((t) => scrollTo(0, t - innerHeight * 0.45 + 6), top);
-    await p.waitForTimeout(500);
-    lit.push(await p.evaluate(() => document.querySelector('[data-scene="cabinet-parts"] text.fill-accent')?.textContent));
-  }
-  check("@1440 parts: each point lights its part as it reaches the reading line", lit.join("|") === "Battery modules|BMS|PCS|EMS|Thermal management|Fire protection", lit);
-  // Hover a point → its part.
-  await p.locator('[data-of="main-parts"]').nth(3).hover();
-  await p.waitForTimeout(300);
-  const hovered = await p.evaluate(() => document.querySelector('[data-scene="cabinet-parts"] text.fill-accent')?.textContent);
-  check("@1440 parts: hovering a point highlights its part", hovered === "EMS", hovered);
-
-  // Energy flow: toggle by mouse and keyboard.
-  await toSection(p, "how-a-bess-works");
-  await p.waitForTimeout(1200);
-  const flow = p.locator('[data-scene="energy-flow"]');
-  await flow.getByText("Discharging", { exact: true }).click();
-  await p.waitForTimeout(600);
-  const m1 = await flow.locator("[data-mode]").getAttribute("data-mode");
-  const label1 = await flow.locator('svg[role="img"]').getAttribute("aria-label");
-  await flow.locator('input[value="discharging"]').focus();
-  await p.keyboard.press("ArrowLeft");
-  await p.waitForTimeout(400);
-  const m2 = await flow.locator("[data-mode]").getAttribute("data-mode");
-  const checked = await flow.locator('input[value="charging"]').isChecked();
-  const dots = await flow.locator("[data-dot]").count();
-  check("@1440 Charging/Discharging: mouse sets discharging, ArrowLeft (keyboard) back to charging; particles on the wires", m1 === "discharging" && label1.includes("discharging") && m2 === "charging" && checked && dots > 0, { m1, m2, checked, dots });
-
-  // C-rate slider: mouse and keyboard.
-  await toSection(p, "key-terms");
-  await p.waitForTimeout(1200);
-  const kt = p.locator('[data-scene="key-terms"]');
-  const range = kt.locator('input[type="range"]');
-  const box = await range.boundingBox();
-  await p.mouse.click(box.x + box.width - 4, box.y + box.height / 2);
-  await p.waitForTimeout(300);
-  const out1 = (await kt.locator("output").textContent()).trim();
-  const vt1 = await range.getAttribute("aria-valuetext");
-  await range.focus();
-  await p.keyboard.press("ArrowLeft");
-  await p.waitForTimeout(300);
-  const out2 = (await kt.locator("output").textContent()).trim();
-  check("@1440 C-rate slider: click → 1C (about 1 hour), ArrowLeft → 0.5C (about 2 hours)", out1 === "1C: about 1 hour" && vt1 === "1C, about 1 hour" && out2 === "0.5C: about 2 hours", { out1, vt1, out2 });
-
-  // Accessible scenes: each has role=img with a label.
-  const imgs = await p.evaluate(() => [...document.querySelectorAll(".article-stage-slot")].map((s) => ({ scene: s.dataset.scene, img: !!s.querySelector('[role="img"][aria-label]') })));
-  check("@1440 every scene has role=img with an aria-label", imgs.length >= 7 && imgs.every((x) => x.img), imgs.filter((x) => !x.img));
+  const stage = await p.evaluate(() => ({ stage: !!document.querySelector(".article-stage"), scenes: document.querySelectorAll("[data-scene]").length, rv: document.querySelectorAll("[data-rv]").length }));
+  check("@1440 no scene stage (the refreshed article has none); reveal targets present", !stage.stage && stage.scenes === 0 && stage.rv > 20, stage);
+  // Read down to the end at a reading pace, then let the last reveals finish.
+  await glide(p, await p.evaluate(() => document.documentElement.scrollHeight - innerHeight));
+  await p.waitForTimeout(1500);
+  const hidden = await p.evaluate(() =>
+    [...document.querySelectorAll("[data-rv]")]
+      .filter((el) => {
+        const cs = getComputedStyle(el);
+        return parseFloat(cs.opacity) < 0.99 || cs.visibility === "hidden";
+      })
+      .map((el) => el.tagName + ":" + el.textContent.trim().slice(0, 30))
+  );
+  check("@1440 reading down: every revealed block ends fully visible", hidden.length === 0, hidden.slice(0, 5));
   const cls = await p.evaluate(() => window.__cls);
-  check("@1440 CLS < 0.1 through load and all the scene changes", cls < 0.1, +cls.toFixed(4));
+  check("@1440 CLS < 0.1 through load and reading to the end", cls < 0.1, +cls.toFixed(4));
   check("@1440 no console errors", p.errors.length === 0, p.errors);
   await p.context().close();
 }
@@ -137,14 +74,12 @@ const glide = async (p, to) => {
   const t0 = await ind();
   await p.locator('nav[aria-label="On this page"] a', { hasText: "Types of BESS by scale" }).click();
   await p.waitForTimeout(900);
-  const flash = await p.evaluate(() => document.getElementById("types-by-scale").classList.contains("article-flash"));
+  const flash = await p.evaluate(() => document.getElementById("types-of-bess-by-scale").classList.contains("article-flash"));
   await p.waitForTimeout(1200);
   const t1 = await ind();
-  const top = await p.evaluate(() => Math.round(document.getElementById("types-by-scale").getBoundingClientRect().top));
+  const top = await p.evaluate(() => Math.round(document.getElementById("types-of-bess-by-scale").getBoundingClientRect().top));
   check("@1440 TOC: the green indicator slides to the clicked item; the heading flashes; lands under the header", t0 !== t1 && flash && top >= 60 && top <= 110, { t0, t1, flash, top });
 
-  // Reveal: headings below the screen draw their line and rise (they end fully visible).
-  const revealed = await p.evaluate(() => [...document.querySelectorAll('[data-rv]')].filter((el) => el.dataset.rvState).length);
   // FAQ: open the second question, height animates.
   await p.locator("#faq").scrollIntoViewIfNeeded();
   await glide(p, await p.evaluate(() => document.getElementById("faq").getBoundingClientRect().top + scrollY - 120));
@@ -166,61 +101,49 @@ const glide = async (p, to) => {
   await p.context().close();
 }
 
-// ---- 390: inline scenes play in view; no stage; fewer particles -------------------------------------------
+// ---- 390: no stage or inline scenes; touch targets; CLS -----------------------------------------------------
 {
   const p = await newPage(390, 844);
   await p.goto(BASE + URL_A, { waitUntil: "networkidle" });
   await p.waitForTimeout(2000);
-  const s = await p.evaluate(() => ({
-    stage: getComputedStyle(document.querySelector(".article-stage")).display,
-    inline: [...document.querySelectorAll(".article-inline-scene")].map((el) => Math.round(el.getBoundingClientRect().height)),
-  }));
-  check("@390 no stage; a scene under each heading at its reserved height", s.stage === "none" && s.inline.length === 7 && s.inline.every((h) => h >= 240), s);
-  await toSection(p, "how-a-bess-works", 0.05);
-  await p.waitForTimeout(1800);
-  const pos = () =>
-    p.evaluate(() => {
-      const sc = document.querySelector('[data-section="how-a-bess-works"] .article-inline-scene');
-      return { dots: sc.querySelectorAll("[data-dot]").length, mode: sc.querySelector("[data-mode]")?.dataset.mode, at: [...sc.querySelectorAll("[data-dot]")].map((d) => d.getBoundingClientRect()).map((r) => `${Math.round(r.x)},${Math.round(r.y)}`).join(" ") };
-    });
-  const a1 = await pos();
-  await p.waitForTimeout(400);
-  const a2 = await pos();
-  const flow = { dots: a1.dots, mode: a2.mode, moving: a1.at !== a2.at };
-  check("@390 the energy flow plays inline when scrolled into view", flow.dots > 0 && flow.moving, flow);
+  const s = await p.evaluate(() => ({ stage: !!document.querySelector(".article-stage"), inline: document.querySelectorAll(".article-inline-scene").length }));
+  check("@390 no stage and no inline scenes (the refreshed article has none)", !s.stage && s.inline === 0, s);
+  await glide(p, await p.evaluate(() => document.documentElement.scrollHeight - innerHeight));
+  await p.waitForTimeout(1200);
   // Touch targets.
   const small = await p.evaluate(() =>
-    [...document.querySelectorAll(".article-inline-scene label span, .article-inline-scene input[type=range], aside details a, #faq summary")]
-      .map((el) => ({ h: Math.round(el.getBoundingClientRect().height), t: (el.textContent || el.type).trim().slice(0, 20) }))
+    [...document.querySelectorAll("aside details a, aside details summary, #faq summary")]
+      .map((el) => ({ h: Math.round(el.getBoundingClientRect().height), t: el.textContent.trim().slice(0, 20) }))
       .filter((x) => x.h > 0 && x.h < 44)
   );
-  check("@390 touch targets ≥ 44px (toggle, slider, contents links, FAQ questions)", small.length === 0, small);
+  check("@390 touch targets ≥ 44px (contents links, FAQ questions)", small.length === 0, small);
   const cls = await p.evaluate(() => window.__cls);
   check("@390 CLS < 0.1", cls < 0.1, +cls.toFixed(4));
   check("@390 no console errors", p.errors.length === 0, p.errors);
   await p.context().close();
 }
 
-// ---- Reduced motion: static scenes ------------------------------------------------------------------------
+// ---- Reduced motion: nothing moves, nothing waits for a reveal; the FAQ still works ----------------------
 {
   const p = await newPage(1440, 900, { reduced: true });
   await p.goto(BASE + URL_A, { waitUntil: "networkidle" });
   await p.waitForTimeout(2000);
-  await toSection(p, "how-a-bess-works");
+  await p.evaluate(() => window.scrollTo(0, document.getElementById("how-does-a-bess-work").getBoundingClientRect().top + scrollY - 120));
   await p.waitForTimeout(1000);
   const s = await p.evaluate(() => ({
     h1Anim: getComputedStyle(document.querySelector(".article-h1-word > span")).animationName,
-    dots: document.querySelectorAll("[data-dot]").length,
-    arrows: document.querySelectorAll('[data-scene="energy-flow"] path[marker-end]').length,
     run: document.querySelectorAll("[data-run]").length,
     waiting: document.querySelectorAll("[data-rv-state]").length,
-    slotTransition: getComputedStyle(document.querySelector(".article-stage-slot")).transitionDuration,
+    hidden: [...document.querySelectorAll("[data-rv]")].filter((el) => parseFloat(getComputedStyle(el).opacity) < 0.99).length,
   }));
-  check("reduced motion: header static, no particles (direction arrows instead), no loops, nothing held for a reveal, no cross-fade", s.h1Anim === "none" && s.dots === 0 && s.arrows > 0 && s.run === 0 && s.waiting === 0 && parseFloat(s.slotTransition) < 0.01, s);
-  // The toggle still works (static).
-  await p.locator('[data-scene="energy-flow"]').getByText("Discharging", { exact: true }).click();
+  check("reduced motion: header static, no loops, nothing held for a reveal (every block visible)", s.h1Anim === "none" && s.run === 0 && s.waiting === 0 && s.hidden === 0, s);
+  // The second question (the first is open by default).
+  const q = p.locator("#faq details").nth(1);
+  await q.scrollIntoViewIfNeeded();
+  const was = await q.evaluate((d) => d.open);
+  await q.locator("summary").click();
   await p.waitForTimeout(200);
-  check("reduced motion: the Charging/Discharging switch still works (static states)", (await p.locator('[data-scene="energy-flow"] [data-mode]').getAttribute("data-mode")) === "discharging");
+  check("reduced motion: a closed FAQ question still opens", !was && (await q.evaluate((d) => d.open)), { was });
   await p.context().close();
 }
 
@@ -239,7 +162,7 @@ const glide = async (p, to) => {
     }).length,
     text: document.querySelector("article").innerText.length,
   }));
-  check("JS disabled: the full text is there and visible (h1, every h2, the FAQ)", s.h1 === "What Is a BESS? A Plain Guide to Battery Energy Storage" && s.h2 >= 10 && s.faq === 5 && s.hidden === 0 && s.text > 3000, s);
+  check("JS disabled: the full text is there and visible (h1, every h2, the FAQ)", s.h1 === "What Is a BESS? A Complete Guide to Battery Energy Storage Systems in India" && s.h2 >= 10 && s.faq === 6 && s.hidden === 0 && s.text > 3000, s);
   await p.context().close();
 }
 
