@@ -5,14 +5,15 @@ import { loadGsap } from "../lib/motion";
 import { getLenis, jumpTo } from "../lib/lenis";
 import { scrollToId } from "../lib/scrollTo";
 import { useBottomInset } from "../lib/floatingBottom";
-import { INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, prettyMobile, sendEnquiry } from "../lib/enquiry";
+import { INTERESTS, LIMITS, MIN_FILL_MS, STATES, afterPress, fieldError, prettyMobile, sendEnquiry } from "../lib/enquiry";
 import { trackLead } from "../lib/analytics";
 import { DUR, EASE } from "../lib/tokens";
 import { useMediaQuery } from "../lib/scrollSteps";
 
-const EMPTY = { name: "", mobile: "", interest: "", website: "" };
-const FIELDS = ["name", "mobile", "interest"];
-const SHORT = { interest: "Please choose one." };
+const EMPTY = { name: "", mobile: "", state: "", interest: "", website: "" };
+// State (required) feeds Zoho CRM's territory assignment: a compact dropdown between mobile and the chips.
+const FIELDS = ["name", "mobile", "state", "interest"];
+const SHORT = { interest: "Please choose one.", state: "Please choose your state." };
 const NUDGE_KEY = "nexera-callback-nudge"; // sessionStorage: the nudge has been shown this session
 const NUDGE_AFTER_MS = 25000;
 const AUTO_CLOSE_MS = 4000;
@@ -630,6 +631,32 @@ export default function CallbackWidget() {
                     className={input}
                   />
                   {err("mobile")}
+                </div>
+                <div>
+                  <label htmlFor={`${uid}-state`} className={label}>
+                    State<span className="text-accent"> *</span>
+                  </label>
+                  {/* A dark colour scheme, so the browser's own option list is dark with light text too. */}
+                  <select
+                    id={`${uid}-state`}
+                    name="state"
+                    autoComplete="address-level1"
+                    required
+                    value={values.state}
+                    onChange={set("state")}
+                    onBlur={blur("state")}
+                    aria-invalid={!!errors.state || undefined}
+                    aria-describedby={`${uid}-state-err`}
+                    className={`${input} [color-scheme:dark]`}
+                  >
+                    <option value="">Select…</option>
+                    {STATES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                  {err("state")}
                 </div>
                 <fieldset>
                   <legend id={`${uid}-interest-legend`} className={label}>

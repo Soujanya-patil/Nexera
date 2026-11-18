@@ -3,13 +3,13 @@ import { LEGAL_REVIEW } from "../../lib/legal";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { jumpTo } from "../../lib/lenis";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../../lib/enquiry";
+import { CONTACT_EMAIL, CONTACT_PHONE, MIN_FILL_MS, STATES, afterPress, fieldError, sendEnquiry, telHref } from "../../lib/enquiry";
 import { trackLead } from "../../lib/analytics";
 import { COMPANY_TYPES, ENQUIRY_TYPES, PROJECT_APPLICATIONS } from "./content";
 
 // This form's fields and the enquiry rule each follows (lib/enquiry), in the order they appear (the
-// first error gets the focus). Phone is optional here; email, company and location are required.
-const RULE_OF = { name: "name", company: "company", email: "email", phone: "mobile", location: "city", requirement: "requirement", message: "message" };
+// first error gets the focus). Phone is optional here; email, company, location and state are required.
+const RULE_OF = { name: "name", company: "company", email: "email", phone: "mobile", location: "city", state: "state", requirement: "requirement", message: "message" };
 const FIELD_OF = Object.fromEntries(Object.entries(RULE_OF).map(([f, r]) => [r, f])); // the API's names -> this form's
 const REQUIRED = { mobile: false, email: true, company: true, city: true };
 
@@ -95,6 +95,7 @@ export default function PartnerForm() {
       email: f.email,
       company: f.company,
       city: f.location,
+      state: f.state ?? "",
       requirement: f.requirement ?? "",
       interest: f.enquiryType === ENQUIRY_TYPES[1] ? "distributor" : "epc",
       message: f.message ?? "",
@@ -168,18 +169,19 @@ export default function PartnerForm() {
                 <Field label="Phone" name="phone" type="tel" autoComplete="tel" error={errors.phone} />
               </div>
               <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Location" name="location" placeholder="City, state" required error={errors.location} />
-                <Select label="Company type" name="companyType" options={COMPANY_TYPES.map((t) => ({ value: t, label: t }))} />
+                <Field label="Location" name="location" placeholder="City" autoComplete="address-level2" required error={errors.location} />
+                <StateSelect error={errors.state} />
               </div>
               <div className="grid gap-5 sm:grid-cols-2">
+                <Select label="Company type" name="companyType" options={COMPANY_TYPES.map((t) => ({ value: t, label: t }))} />
                 <Select
                   label="Project / application"
                   name="application"
                   defaultValue={application}
                   options={[{ value: "", label: "Select…" }, ...PROJECT_APPLICATIONS.map((a) => ({ value: a.id, label: a.label }))]}
                 />
-                <Field label="Expected requirement" name="requirement" placeholder="e.g. 500 kWh, 2 MW or 3 systems" error={errors.requirement} />
               </div>
+              <Field label="Expected requirement" name="requirement" placeholder="e.g. 500 kWh, 2 MW or 3 systems" error={errors.requirement} />
               <Field label="Message" name="message" as="textarea" error={errors.message} />
               {/* Honeypot: hidden from people; bots fill it. */}
               <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
@@ -256,6 +258,37 @@ function Field({ label, name, required, type = "text", as, error, ...rest }) {
       />
       {/* The field's error (announced politely); takes no space until there is one. */}
       <p id={`${name}-err`} aria-live="polite" className={error ? "mt-1.5 text-small text-[#b3261e]" : undefined}>
+        {error || ""}
+      </p>
+    </div>
+  );
+}
+
+/** State (required): the 36 Zoho "State (HQ)" values; its error under it, like the fields'. */
+function StateSelect({ error }) {
+  return (
+    <div>
+      <label htmlFor="state" className="mb-1.5 block text-small font-medium text-ink">
+        State <span className="font-normal text-copy">(required)</span>
+      </label>
+      <select
+        id="state"
+        name="state"
+        defaultValue=""
+        required
+        autoComplete="address-level1"
+        aria-invalid={!!error || undefined}
+        aria-describedby="state-err"
+        className={`${input} h-[calc(var(--text-body)*var(--text-body--line-height)+1.25rem+2px)] min-h-11 aria-[invalid=true]:border-[#b3261e]`}
+      >
+        <option value="">Select…</option>
+        {STATES.map((s) => (
+          <option key={s} value={s}>
+            {s}
+          </option>
+        ))}
+      </select>
+      <p id="state-err" aria-live="polite" className={error ? "mt-1.5 text-small text-[#b3261e]" : undefined}>
         {error || ""}
       </p>
     </div>

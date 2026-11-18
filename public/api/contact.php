@@ -18,8 +18,15 @@
  *    the web root when the host allows it, otherwise in api/private/, which denies all web access).
  *  - One plain-text email with mail(), every header value stripped of CR/LF.
  *  - `source` (optional): "full" (the default, a full enquiry form), "quick" (the call-back widget:
- *    name, mobile and interest only) or "partner" (the Become a Partner form), each with its own
+ *    name, mobile, state and interest) or "partner" (the Become a Partner form), each with its own
  *    subject and source line.
+ *  - `state` (required on every form): one of the 36 values in api/indian-states.json (written by the
+ *    build from src/data/indianStates.json — the Zoho webform's "State (HQ)" picklist). A request
+ *    without the key at all (a page loaded before State was added) is still accepted.
+ *  - Zoho CRM (api/zoho.php): after the email has been sent — and only then — the enquiry is also
+ *    sent to the Zoho CRM webform as a Lead, once the visitor already has their answer. Off unless
+ *    switched on in the config outside the web root (config/zoho-config.example.php); while off, this
+ *    endpoint behaves exactly as before. Nothing about Zoho can change what the visitor sees.
  */
 
 // ↓ The one place the recipient is set.
@@ -46,6 +53,7 @@ const QUICK_INTERESTS = [
 ];
 // An optional field left empty, as the email shows it.
 const NOT_GIVEN = "Not given";
+const STATE_MESSAGE = "Please choose your state or union territory.";
 const SOURCES = ["full", "quick", "partner"];
 // The field rules (as in src/lib/enquiry.js): length limits, minimum lengths and letters.
 const LIMITS = ["name" => 60, "mobile" => 20, "email" => 160, "company" => 100, "city" => 80, "requirement" => 100, "message" => 1000, "page" => 200];
@@ -62,6 +70,9 @@ const MESSAGES = [
     "interest" => "Please choose what you're interested in.",
 ];
 
+// api/zoho-retry.php (the retry cron) includes this file for the constants above only.
+if (defined("NEXERA_ZOHO_CRON")) return;
+
 header("Content-Type: application/json; charset=utf-8");
 header("X-Content-Type-Options: nosniff");
 header("Cache-Control: no-store");
@@ -70,6 +81,31 @@ function respond(int $status, array $body): void {
     http_response_code($status);
     echo json_encode($body, JSON_UNESCAPED_SLASHES);
     exit;
+}
+/**
+ * Sends the visitor's answer and closes the connection, then carries on (for the Zoho CRM step). The
+ * response is complete (Content-Length) and handed over before anything else runs.
+ */
+function respond_then_continue(int $status, array $body): void {
+    $json = json_encode($body, JSON_UNESCAPED_SLASHES);
+    ignore_user_abort(true);
+    http_response_code($status);
+    header("Content-Length: " . strlen($json));
+    header("Connection: close");
+    echo $json;
+    if (function_exists("fastcgi_finish_request")) {
+        fastcgi_finish_request();
+    } elseif (function_exists("litespeed_finish_request")) {
+        litespeed_finish_request();
+    } else {
+        while (ob_get_level() > 0) @ob_end_flush();
+        flush();
+    }
+}
+/** The State options (api/indian-states.json); null if the file can't be read. */
+function state_list(): ?array {
+    $list = @json_decode((string) @file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . "indian-states.json"), true);
+    return is_array($list) && count($list) > 0 ? $list : null;
 }
 function len(string $s): int {
     return function_exists("mb_strlen") ? mb_strlen($s, "UTF-8") : strlen($s);
@@ -144,6 +180,8 @@ $mobile = preg_replace('/[\s().\-]/', "", $text("mobile")) ?? "";
 $email = tidy(header_safe($text("email")));
 $company = tidy(header_safe($text("company")));
 $city = tidy(header_safe($text("city")));
+$state = tidy(header_safe($text("state")));
+$hasState = array_key_exists("state", $in);
 $requirement = tidy(header_safe($text("requirement")));
 $interest = $text("interest");
 $message = tidy($text("message"), true);
@@ -169,6 +207,13 @@ foreach (["name", "company", "email", "mobile", "city", "requirement", "message"
     if ($v === "" ? !empty($required[$k]) : !valid_field($k, $v)) $errors[$k] = MESSAGES[$k];
 }
 if (!array_key_exists($interest, INTERESTS)) $errors["interest"] = MESSAGES["interest"];
+// State: one of the list. (If the list file were ever missing, any short plain name is accepted rather
+// than turning every enquiry away.)
+if ($hasState) {
+    $states = state_list();
+    $okState = $states !== null ? in_array($state, $states, true) : ($state !== "" && len($state) <= 60 && preg_match("/^[\\p{L} .'-]+$/u", $state));
+    if (!$okState) $errors["state"] = STATE_MESSAGE;
+}
 if (!in_array($source, SOURCES, true)) $errors["source"] = "Please reload the page and try again.";
 if (len($page) > LIMITS["page"]) $errors["page"] = "Please reload the page and try again.";
 // Extra context from a form (product, site, proposal …): short string values only.
@@ -243,6 +288,7 @@ $lines = [
     "Email:         " . ($email !== "" ? $email : NOT_GIVEN),
     "Company:       " . ($company !== "" ? $company : NOT_GIVEN),
     "City:          " . ($city !== "" ? $city : NOT_GIVEN),
+    ...($hasState ? ["State:         $state"] : []),
     "Interested in: $label",
     ...($quick ? [] : [($partner ? "Requirement:   " : "Project size:  ") . ($requirement !== "" ? $requirement : NOT_GIVEN)]),
     $message !== "" ? "Message:" : "Message:       " . NOT_GIVEN,
@@ -266,4 +312,40 @@ if ($email !== "") $headers[] = "Reply-To: " . header_safe($email);
 $to = header_safe(NEXERA_LEADS_TO);
 $sent = $to !== "CHANGE_ME@example.com" && @mail($to, $subject, $body, implode("\r\n", $headers), "-f" . NEXERA_FROM);
 if (!$sent) respond(502, ["ok" => false, "error" => "send_failed"]);
-respond(200, ["ok" => true]);
+
+// Zoho CRM — only now that the email has gone. Switched off (the default), or if anything about it
+// fails to load: the answer is exactly as before. Switched on: the visitor gets their answer first,
+// then the Lead is sent (and queued for a retry if Zoho doesn't clearly accept it).
+$zoho = null;
+try {
+    define("NEXERA_API", true);
+    require_once __DIR__ . DIRECTORY_SEPARATOR . "zoho.php";
+    $zoho = nexera_zoho_config();
+} catch (Throwable $e) {
+    $zoho = null;
+}
+if (!$zoho || empty($zoho["enabled"])) respond(200, ["ok" => true]);
+
+respond_then_continue(200, ["ok" => true]);
+try {
+    @set_time_limit(60);
+    nexera_zoho_after_enquiry($zoho, [
+        "source" => $source,
+        "name" => $name,
+        "mobile" => $mobile,
+        "email" => $email,
+        "company" => $company,
+        "city" => $city,
+        "state" => $state,
+        "interest" => $label,
+        "requirement" => $requirement,
+        "message" => $message,
+        "details" => $details,
+        "page" => $page,
+        "host" => header_safe($_SERVER["HTTP_HOST"] ?? ""),
+        "received" => $when,
+    ]);
+} catch (Throwable $e) {
+    // Never reaches the visitor (they already have their answer); the email has been delivered.
+}
+exit;

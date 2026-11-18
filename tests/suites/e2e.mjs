@@ -100,7 +100,8 @@ for (const url of ["/#contact?interest=ci", "/?interest=utility#contact", "/?int
       }),
     };
   });
-  ok("validation on submit: errors under each field, announced (aria-live), focus on the first", subErr.msgs.length === 4 && subErr.focus === "name" && subErr.described, JSON.stringify(subErr));
+  // name, mobile, email (the junk typed above), State (required, unchosen) and the interest.
+  ok("validation on submit: errors under each field, announced (aria-live), focus on the first", subErr.msgs.length === 5 && subErr.msgs.includes("Please choose your state or union territory.") && subErr.focus === "name" && subErr.described, JSON.stringify(subErr));
   // counter
   await p.fill(`${F} [name="message"]`, "x".repeat(1200));
   const count = await ev(p, () => [document.querySelector('#contact [name="message"]').value.length, document.querySelector('#contact [id$="-count"]').textContent]);
@@ -109,6 +110,7 @@ for (const url of ["/#contact?interest=ci", "/?interest=utility#contact", "/?int
   // error state: endpoint down (route aborted) — values kept
   await p.route("**/api/contact.php", (r) => r.abort());
   await fill(p, F, { name: "Asha Rao", mobile: "+91 98450 12345", email: "asha@example.com", city: "Pune", message: "Sizing a 15 kWh home system." });
+  await p.selectOption(`${F} [name="state"]`, "Maharashtra");
   await p.locator(`${F} .contact-chip`).filter({ hasText: "Residential storage" }).click();
   const n0 = mails();
   await p.getByRole("button", { name: /Send enquiry/ }).click();
@@ -139,6 +141,7 @@ for (const url of ["/#contact?interest=ci", "/?interest=utility#contact", "/?int
   ok("'Send another enquiry' brings back an empty form, focus on Name", await ev(p, () => document.activeElement?.name === "name" && document.querySelector('#contact [name="name"]').value === ""));
   // server-side rejections through the real page: honeypot, too fast
   await fill(p, F, { name: "Bot", mobile: "9845012345" });
+  await p.selectOption(`${F} [name="state"]`, "Gujarat");
   await p.locator(`${F} .contact-chip`).filter({ hasText: "Utility-scale" }).click();
   await ev(p, () => {
     const hp = document.querySelector('#contact [name="website"]');
@@ -193,12 +196,13 @@ if (shots) {
   const p = await page(1440);
   await p.goto(BASE + "/contact?intent=ci", { waitUntil: "networkidle" });
   await p.waitForTimeout(1000);
-  // ?intent=ci pre-selects Commercial & Industrial; empty name and mobile are the errors (email is optional).
+  // ?intent=ci pre-selects Commercial & Industrial; empty name, mobile and State are the errors (email is optional).
   await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
   await p.waitForTimeout(300);
   const v = await ev(p, () => [...document.querySelectorAll('form [aria-invalid="true"]')].map((e) => e.name));
-  ok("/contact: validation (name, mobile; email optional; interest pre-selected)", ["name", "mobile"].every((n) => v.includes(n)) && !v.includes("email") && !v.includes("interest"), v.join(","));
+  ok("/contact: validation (name, mobile, state; email optional; interest pre-selected)", ["name", "mobile", "state"].every((n) => v.includes(n)) && !v.includes("email") && !v.includes("interest"), v.join(","));
   await fill(p, "form", { name: "Ravi Kumar", email: "ravi@example.com", mobile: "9876543210", requirement: "500 kWh", message: "Need a C&I system." });
+  await p.selectOption('form [name="state"]', "Karnataka");
   const n0 = mails();
   const resp = p.waitForResponse("**/api/contact.php");
   await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
@@ -210,6 +214,7 @@ if (shots) {
   await p.goto(BASE + "/contact", { waitUntil: "networkidle" });
   await p.route("**/api/contact.php", (rt) => rt.fulfill({ status: 502, contentType: "application/json", body: '{"ok":false,"error":"send_failed"}' }));
   await fill(p, "form", { name: "Ravi Kumar", email: "ravi@example.com", mobile: "9876543210" });
+  await p.selectOption('form [name="state"]', "Karnataka");
   await p.selectOption("#interest", "home");
   await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
   await p.waitForTimeout(3800);

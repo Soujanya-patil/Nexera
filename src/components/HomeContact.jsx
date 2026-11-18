@@ -6,7 +6,7 @@ import { useScrollReveal } from "../lib/scrollReveal";
 import { onceInView } from "../lib/inview";
 import { jumpTo } from "../lib/lenis";
 import { isFirstLoad } from "../lib/firstLoad";
-import { CONTACT_EMAIL, CONTACT_PHONE, FORM_INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
+import { CONTACT_EMAIL, CONTACT_PHONE, FORM_INTERESTS, LIMITS, MIN_FILL_MS, STATES, afterPress, fieldError, sendEnquiry, telHref, validateEnquiry } from "../lib/enquiry";
 import { trackLead } from "../lib/analytics";
 import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
 import { STAGGER } from "../lib/tokens";
@@ -16,9 +16,10 @@ const TRUST = [
   { icon: Ruler, text: "Design, sizing and commissioning support." },
   { icon: GraduationCap, text: "Installer training. Our Kalaburagi training centre opens in 2027." },
 ];
-const EMPTY = { name: "", mobile: "", email: "", company: "", city: "", interest: "", requirement: "", message: "", website: "" };
-// The fields, in the form's order (the director's Final Copy; /contact has the same set).
-const FIELDS = ["name", "mobile", "email", "company", "city", "interest", "requirement", "message"];
+const EMPTY = { name: "", mobile: "", email: "", company: "", city: "", state: "", interest: "", requirement: "", message: "", website: "" };
+// The fields, in the form's order (the director's Final Copy; /contact has the same set). State (required)
+// feeds Zoho CRM's territory assignment.
+const FIELDS = ["name", "mobile", "email", "company", "city", "state", "interest", "requirement", "message"];
 
 /** A parameter from #contact?… (first) or ?… */
 function param(search, hash, key) {
@@ -279,7 +280,38 @@ export default function HomeContact() {
                   {field("email", "Email", { type: "email", autoComplete: "email" })}
                   {field("company", "Company / organisation", { autoComplete: "organization" })}
                 </div>
-                {field("city", "City", { autoComplete: "address-level2" })}
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {field("city", "City", { autoComplete: "address-level2" })}
+                  <div>
+                    <label htmlFor={`${uid}-state`} className={label}>
+                      State<span className="text-accent"> *</span>
+                    </label>
+                    {/* A dark colour scheme, so the browser's own option list is dark with light text too. */}
+                    <select
+                      id={`${uid}-state`}
+                      name="state"
+                      autoComplete="address-level1"
+                      required
+                      value={values.state}
+                      onChange={(e) => {
+                        set("state")(e);
+                        setErrors((er) => ({ ...er, state: fieldError("state", e.target.value) || undefined }));
+                      }}
+                      onBlur={blur("state")}
+                      aria-invalid={!!errors.state || undefined}
+                      aria-describedby={`${uid}-state-err`}
+                      className={`${input} h-[calc(var(--text-body)*var(--text-body--line-height)+1.5rem+2px)] [color-scheme:dark]`}
+                    >
+                      <option value="">Select…</option>
+                      {STATES.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                    {err("state")}
+                  </div>
+                </div>
 
                 <fieldset>
                   <legend id={`${uid}-interest-legend`} className={label}>

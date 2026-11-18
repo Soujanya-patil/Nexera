@@ -4,6 +4,7 @@
 // Each form: a junk value shows its error on blur; the brief's junk set shows the right message under
 // every field (aria-invalid, aria-describedby), focuses the first, keeps what was typed and sends
 // nothing; a fixed field clears live; a realistic set sends, shows success, and one email arrives.
+// State (a select, required on every form): its error shows in the junk step, and the email carries it.
 import { chromium } from "playwright-core";
 import fs from "node:fs";
 
@@ -24,6 +25,7 @@ const MSG = {
   city: "Please enter your city or location.",
   requirement: "Please add a unit, e.g. 500 kWh, 2 MW or 3 systems.",
   message: "Please write a few words about your requirement.",
+  state: "Please choose your state or union territory.",
 };
 const MESSAGE = "We are planning a 500 kWh C&I system for our plant and would like a quote.";
 
@@ -44,6 +46,7 @@ const FORMS = [
       message: ["1111", MESSAGE, MSG.message],
     },
     pick: async (p, s) => p.selectOption(`${s} [name="interest"]`, "ci"),
+    state: ["Karnataka", MSG.state],
     success: (p) => p.getByText("Message received.").waitFor({ timeout: 10000 }),
   },
   {
@@ -60,6 +63,7 @@ const FORMS = [
       message: ["1111", MESSAGE, MSG.message],
     },
     pick: async (p) => p.locator("#contact label.contact-chip", { hasText: "Commercial & Industrial" }).click(),
+    state: ["Maharashtra", MSG.state],
     success: (p) => p.locator('#contact [role="status"]', { hasText: "Thank you" }).waitFor({ timeout: 10000 }),
   },
   {
@@ -86,6 +90,7 @@ const FORMS = [
       mobile: ["11", "+44 20 7946 0958", MSG.mobile],
     },
     pick: async (p, s) => p.locator(`${s} label.contact-chip`, { hasText: "Home storage" }).click(),
+    state: ["Tamil Nadu", "Please choose your state."],
     success: (p) => p.locator('[role="dialog"] [role="status"]').first().waitFor({ timeout: 10000 }),
   },
   {
@@ -102,6 +107,7 @@ const FORMS = [
       message: ["1111", "We are an EPC in Karnataka planning C&I storage projects this year.", MSG.message],
     },
     pick: async (p, s) => p.selectOption(`${s} [name="application"]`, "ci"),
+    state: ["Delhi", MSG.state],
     success: (p) => p.getByText("Enquiry received.").waitFor({ timeout: 10000 }),
   },
 ];
@@ -164,6 +170,9 @@ for (const W of [1440, 768, 390]) {
     ok(`${tag} junk set -> the right message under every field (aria-invalid + aria-describedby), values kept`, wrong.length === 0, wrong.map((n) => `${n}: ${JSON.stringify(st[n])}`).join(" | "));
     ok(`${tag} junk set -> focus on the first invalid field ("${first}")`, focus === first, String(focus));
     ok(`${tag} junk set -> nothing sent (no request, no email)`, posted === 0 && mails() === n0, `requests ${posted}, mails ${n0} -> ${mails()}`);
+    // State, left unchosen: required, with its message (aria-invalid + aria-describedby).
+    const stS = (await stateOf(p, S, ["state"])).state;
+    ok(`${tag} State left unchosen -> required, "${F.state[1]}"`, stS.invalid && stS.msg === F.state[1] && stS.value === "", JSON.stringify(stS));
 
     // Live: fixing a field clears its error as it is typed (no submit).
     const last = names.at(-1);
@@ -174,6 +183,7 @@ for (const W of [1440, 768, 390]) {
 
     // Realistic values: sent, success shown, one email in the local inbox.
     for (const [n, [, real]] of Object.entries(F.fields)) await p.fill(`${S} [name="${n}"]`, real);
+    await p.selectOption(`${S} [name="state"]`, F.state[0]);
     const n1 = mails();
     const resP = p.waitForResponse((r) => r.url().includes("/api/contact.php"), { timeout: 12000 }).catch(() => null);
     await submit();
@@ -182,6 +192,9 @@ for (const W of [1440, 768, 390]) {
     await F.success(p).catch(() => (shown = false));
     for (let i = 0; i < 20 && mails() === n1; i++) await p.waitForTimeout(150);
     ok(`${tag} realistic values -> sent (200), success shown, the email arrived`, res?.status() === 200 && shown && mails() === n1 + 1, `${res?.status()} shown=${shown} mails ${n1} -> ${mails()}`);
+    const sentState = JSON.parse(res?.request().postData() || "{}").state;
+    const lastMail = (MAILS && fs.existsSync(MAILS) ? fs.readFileSync(MAILS, "utf8") : "").split("----- MESSAGE -----").at(-1) ?? "";
+    ok(`${tag} the chosen State is sent ("${F.state[0]}") and is in the email`, sentState === F.state[0] && lastMail.includes(`State:         ${F.state[0]}`), `sent ${sentState}`);
     ok(`${tag} no page errors`, !errs.length, errs.join(" | "));
     if (RATE_DIR) fs.rmSync(RATE_DIR, { recursive: true, force: true }); // the API's 5-per-hour limit is per IP
     await ctx.close();

@@ -5,7 +5,7 @@ import PageHeader from "../components/PageHeader";
 import { useScrollReveal } from "../lib/scrollReveal";
 import { getProduct, productLabel } from "../data/products";
 import { topicLabels } from "../data/solutionTopics";
-import { CONTACT_EMAIL, CONTACT_PHONE, FORM_INTERESTS, LIMITS, MIN_FILL_MS, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
+import { CONTACT_EMAIL, CONTACT_PHONE, FORM_INTERESTS, LIMITS, MIN_FILL_MS, STATES, afterPress, fieldError, sendEnquiry, telHref } from "../lib/enquiry";
 import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
 import { track, trackLead } from "../lib/analytics";
 import { datasheetFor } from "../data/datasheets";
@@ -13,8 +13,9 @@ import { datasheetFor } from "../data/datasheets";
 // A segment (a Solutions page's ?intent=, a datasheet's or a product's application) as the form's option.
 const INTEREST_OF = { residential: "home", ci: "ci", utility: "utility" };
 
-// The fields, in the form's order (the director's Final Copy; the homepage form has the same set).
-const FIELDS = ["name", "mobile", "email", "company", "city", "interest", "requirement", "message"];
+// The fields, in the form's order (the director's Final Copy; the homepage form has the same set). State
+// (required) feeds Zoho CRM's territory assignment.
+const FIELDS = ["name", "mobile", "email", "company", "city", "state", "interest", "requirement", "message"];
 
 /** Starts a file download (same origin; the browser keeps the visitor on the page). */
 function download(file) {
@@ -105,6 +106,7 @@ export default function Contact() {
       email: f.email ?? "",
       company: f.company ?? "",
       city: f.city ?? "",
+      state: f.state ?? "",
       requirement: f.requirement ?? "",
       interest: f.interest,
       message: f.message ?? "",
@@ -232,7 +234,32 @@ export default function Contact() {
                 <Field label="Email" name="email" type="email" autoComplete="email" error={errors.email} />
                 <Field label="Company / organisation" name="company" autoComplete="organization" error={errors.company} />
               </div>
-              <Field label="City" name="city" autoComplete="address-level2" error={errors.city} />
+              <div className="grid sm:grid-cols-2 gap-5">
+                <Field label="City" name="city" autoComplete="address-level2" error={errors.city} />
+                <div>
+                  <label htmlFor="state" className="block text-small font-medium text-ink mb-1.5">
+                    State<Required />
+                  </label>
+                  <select
+                    id="state"
+                    name="state"
+                    defaultValue=""
+                    required
+                    autoComplete="address-level1"
+                    aria-invalid={!!errors.state || undefined}
+                    aria-describedby="state-err"
+                    className="h-[calc(var(--text-body)*var(--text-body--line-height)+1.25rem+2px)] min-h-11 w-full rounded-control border border-line bg-white px-3 py-2.5 text-body text-ink focus:outline-none focus:ring-2 focus:ring-link/40 aria-[invalid=true]:border-[#b3261e]"
+                  >
+                    <option value="">Select…</option>
+                    {STATES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                  <FieldError name="state" error={errors.state} />
+                </div>
+              </div>
               <div>
                 <label htmlFor="interest" className="block text-small font-medium text-ink mb-1.5">
                   I am interested in<Required />

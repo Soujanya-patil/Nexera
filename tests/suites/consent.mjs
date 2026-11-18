@@ -175,6 +175,7 @@ const clientNav = (p, to) => p.evaluate((to) => { history.pushState({}, "", to);
   await p.fill("#email", who.email);
   await p.fill("#mobile", who.mobile);
   await p.selectOption("#interest", "ci");
+  await p.selectOption("#state", "Karnataka");
   await p.fill("#message", "Analytics consent test enquiry, please ignore.");
   await p.waitForTimeout(3200);
   await p.click('form button[type="submit"]');

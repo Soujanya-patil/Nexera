@@ -43,6 +43,7 @@ async function fillAndSend(p, who) {
   await p.fill("#name", who);
   await p.fill("#email", "gate.test@example.com");
   await p.fill("#mobile", "9845012345");
+  await p.selectOption("#state", "Karnataka"); // required (Zoho CRM territory)
   await p.waitForTimeout(3200); // the form's minimum fill time
   await p.getByRole("button", { name: "Send enquiry", exact: true }).click();
 }

@@ -7,6 +7,9 @@
  * none is shown. The email is the site's public address (data/business: sales@nexerapower.com).
  */
 import { EMAIL } from "../data/business.js";
+// The 28 states and 8 union territories, alphabetical — exactly the values of the Zoho CRM webform's
+// "State (HQ)" picklist (the one list; the build also gives it to /api/contact.php).
+import STATE_LIST from "../data/indianStates.json" with { type: "json" };
 
 export const ENDPOINT = "/api/contact.php";
 // (`?? {}`: outside Vite — the rules' unit tests in Node — there is no import.meta.env.)
@@ -35,6 +38,8 @@ export const INTERESTS = [
 ];
 // `epc`: the Become a Partner form's "EPC / Project Partnership" (its "Distributor application" is `distributor`).
 export const INTEREST_IDS = [...FORM_INTERESTS.map((i) => i.id), "oem"];
+/** The State options (every form), in order. */
+export const STATES = STATE_LIST;
 
 /** At least this long between opening a form and sending it (bots are faster); the API checks it too. */
 export const MIN_FILL_MS = 3000;
@@ -54,6 +59,7 @@ export const MIN_FILL_MS = 3000;
  *   city         2–80 characters; at least 3 letters (a pincode alongside is fine)
  *   requirement  2–100 characters; at least 2 letters (a unit or a word, not just a number)
  *   message      10–1,000 characters; at least 5 letters
+ *   state        one of STATES (required on every form)
  * "Letters" are any script's (\p{L}), so names in Indian scripts pass too.
  */
 export const LIMITS = { name: 60, mobile: 20, email: 160, company: 100, city: 80, requirement: 100, message: 1000 };
@@ -68,9 +74,10 @@ export const MESSAGES = {
   requirement: "Please add a unit, e.g. 500 kWh, 2 MW or 3 systems.",
   message: "Please write a few words about your requirement.",
   interest: "Please choose what you're interested in.",
+  state: "Please choose your state or union territory.",
 };
 /** Required on every form unless it says otherwise (the Become a Partner form's phone is optional). */
-const REQUIRED = { name: true, mobile: true, interest: true };
+const REQUIRED = { name: true, mobile: true, interest: true, state: true };
 
 /** Trimmed, with runs of spaces collapsed (the message keeps its line breaks). */
 export const tidy = (v = "", { multiline = false } = {}) =>
@@ -129,6 +136,8 @@ function passes(name, v) {
       return v.length >= MIN[name] && v.length <= LIMITS[name] && letters(v) >= MIN_LETTERS[name];
     case "interest":
       return INTEREST_IDS.includes(v);
+    case "state":
+      return STATES.includes(v);
     default:
       return true;
   }
@@ -170,7 +179,7 @@ export function afterPress(fn) {
 }
 
 /** All errors for a set of values: { field: message }. */
-export function validateEnquiry(values, opts, fields = ["name", "mobile", "email", "company", "city", "interest", "message"]) {
+export function validateEnquiry(values, opts, fields = ["name", "mobile", "email", "company", "city", "state", "interest", "message"]) {
   const errors = {};
   for (const k of fields) {
     const e = fieldError(k, values[k] ?? "", opts);
@@ -186,13 +195,14 @@ export function validateEnquiry(values, opts, fields = ["name", "mobile", "email
  * Partner form). Resolves to { ok: true } or { ok: false, error, fields? } — `fields`, when the API
  * found a field invalid: { field: message }, shown under that field — never throws.
  */
-export async function sendEnquiry({ name, mobile = "", email = "", company = "", city = "", requirement = "", interest, message = "", website = "", startedAt, details = {}, source = "full" }) {
+export async function sendEnquiry({ name, mobile = "", email = "", company = "", city = "", state = "", requirement = "", interest, message = "", website = "", startedAt, details = {}, source = "full" }) {
   const body = {
     name: tidy(name),
     mobile: cleanMobile(mobile),
     email: tidy(email),
     company: tidy(company),
     city: tidy(city),
+    state,
     requirement: tidy(requirement),
     interest,
     message: tidy(message, { multiline: true }),

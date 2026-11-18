@@ -7,7 +7,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const root = process.env.NEXERA_ROOT || process.cwd();
-const { fieldError, validateEnquiry, validMobile, tidy, MESSAGES } = await import(pathToFileURL(path.join(root, "src/lib/enquiry.js")).href);
+const { fieldError, validateEnquiry, validMobile, tidy, MESSAGES, STATES } = await import(pathToFileURL(path.join(root, "src/lib/enquiry.js")).href);
 
 // Every field filled-in case is checked as if the field were required (so empty values fail too).
 const REQ = { required: { email: true, company: true, city: true, requirement: true, message: true } };
@@ -74,8 +74,17 @@ test("tidy: trims and collapses repeated spaces (the message keeps its line brea
 
 test("a realistic full enquiry has no errors", () => {
   const er = validateEnquiry(
-    { name: "Ankit Sharma", mobile: "98765 43210", email: "ankit.sharma@gmail.com", company: "Suntrop Solar Pvt. Ltd.", city: "Bengaluru 560001", interest: "ci", message: "We are planning a 500 kWh C&I system and would like a quote." },
+    { name: "Ankit Sharma", mobile: "98765 43210", email: "ankit.sharma@gmail.com", company: "Suntrop Solar Pvt. Ltd.", city: "Bengaluru 560001", state: "Karnataka", interest: "ci", message: "We are planning a 500 kWh C&I system and would like a quote." },
     { required: { email: true } }
   );
   assert.deepEqual(er, {});
+});
+
+test("state: required; one of the 36 Zoho State (HQ) values (28 states, 8 union territories), alphabetical", () => {
+  assert.equal(STATES.length, 36);
+  assert.equal(new Set(STATES).size, 36);
+  assert.deepEqual([...STATES].sort((a, b) => a.localeCompare(b, "en", { sensitivity: "base" })), STATES);
+  for (const v of STATES) assert.equal(fieldError("state", v), "", `${v} should pass`);
+  // Exact values only (they come from a select and must match Zoho's picklist).
+  for (const v of ["", "Karnatka", "karnataka", "-None-", "Bangalore"]) assert.equal(fieldError("state", v), MESSAGES.state, `${JSON.stringify(v)} should be rejected`);
 });

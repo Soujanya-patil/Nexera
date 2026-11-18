@@ -253,9 +253,10 @@ for (const [W, H] of [
       return [...c.querySelectorAll('p[aria-live="polite"]')].map((n) => n.textContent.trim());
     });
     const focus = await p.evaluate(() => document.activeElement.name);
-    check(`${tag} empty submit: three errors (aria-live), focus on Name, nothing sent`, errs.filter(Boolean).length === 3 && focus === "name" && posted === 0, { errs, focus });
+    check(`${tag} empty submit: four errors (name, mobile, state, interest; aria-live), focus on Name, nothing sent`, errs.filter(Boolean).length === 4 && errs.includes("Please choose your state.") && focus === "name" && posted === 0, { errs, focus });
     await card(p).locator('[name="name"]').fill("Asha Rao");
     await card(p).locator('[name="mobile"]').fill("+91 98450 12345");
+    await card(p).locator('[name="state"]').selectOption("Maharashtra");
     await card(p).locator("label.contact-chip", { hasText: "Business / C&I" }).click();
     await settle(p, 100);
     const cleared = await p.evaluate(() => [...document.querySelectorAll('[role="dialog"] p[aria-live="polite"]')].every((n) => !n.textContent.trim()));
@@ -434,6 +435,7 @@ if (TIMER) {
   const c = p.locator("#contact form");
   await c.locator('[name="name"]').fill("Ravi Kumar");
   await c.locator('[name="mobile"]').fill("9876543210");
+  await c.locator('[name="state"]').selectOption("Karnataka");
   await c.locator("label.contact-chip", { hasText: "Residential storage" }).click();
   await c.getByRole("button", { name: "Send enquiry" }).click();
   await p.locator("#contact").getByText("Thank you, Ravi.").waitFor({ timeout: 8000 });

@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
         <LegalList>
           <li>
             <strong className="font-semibold text-ink">Details you send us:</strong> depending on the form, your name, mobile number, email,
-            company, city or location, area of interest, company type, project details, project size and message, when you use our enquiry,
+            company, city or location, state, area of interest, company type, project details, project size and message, when you use our enquiry,
             call-back, datasheet or partner forms.
           </li>
           <li>
@@ -45,8 +45,9 @@ export default function PrivacyPolicy() {
       <LegalSection title="Sharing your information">
         <p>
           We may share your details with our technology partners (TCL and Hithium) only where needed to answer your request, for example for a
-          technical question or a warranty matter. We also use service providers that help us run the website, such as our hosting provider
-          and Google Analytics. We may disclose information where the law requires it.
+          technical question or a warranty matter. We also use service providers that help us run the website and manage enquiries, such as
+          our hosting provider, Zoho (our customer relationship management system) and Google Analytics. We may disclose information where
+          the law requires it.
         </p>
       </LegalSection>
 
