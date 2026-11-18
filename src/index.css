@@ -2282,3 +2282,497 @@ html[data-app-error] form :disabled {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* ---- Home story: "One Day on Site" (src/components/day/DayStory.jsx) ----
+   A sticky stage (stills or the live 3D scene) under the header, the chapter text scrolling over it, and
+   a HUD pinned to the top right of the stage (top centre on phones) while the story is on screen.
+   Colours: deep-grid panels, signal green, amber for discharging; all text is AA on its panel. */
+.day {
+  --stage-h: calc(100svh - 4rem);
+  --day-amber: #f5a524;
+  --day-pad: 1.5rem; /* the page gutter, as container-site's --site-pad */
+}
+@media (min-width: 768px) {
+  .day {
+    --day-pad: 2.5rem;
+  }
+}
+@media (min-width: 1280px) {
+  .day {
+    --day-pad: 4rem;
+  }
+}
+.day-hudwrap {
+  position: sticky;
+  top: 5rem;
+  z-index: 30;
+  height: 0;
+  pointer-events: none;
+}
+.day-hudbar {
+  position: absolute;
+  top: 0;
+  right: calc(max(0px, (100% - 90rem) / 2) + var(--day-pad));
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.375rem 0.375rem 1rem;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 999px;
+  background: rgb(6 18 14 / 0.88);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.25);
+  white-space: nowrap;
+  pointer-events: auto;
+}
+.day-hud {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  font-size: var(--text-small);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.day-hud-t {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.day-hud-m {
+  min-width: 6.5rem;
+  font-weight: 600;
+  color: var(--color-signal);
+}
+.day-hud[data-m="0"] .day-hud-m,
+.day-hud[data-m="4"] .day-hud-m {
+  color: rgb(255 255 255 / 0.82);
+}
+.day-hud[data-m="2"] .day-hud-m,
+.day-hud[data-m="3"] .day-hud-m {
+  color: var(--day-amber);
+}
+.day-hud-soc {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.day-hud-soc > i {
+  font-style: normal;
+  color: rgb(255 255 255 / 0.75);
+}
+.day-hud-bar {
+  position: relative;
+  width: 74px;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+}
+.day-hud-bar i {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background: var(--color-signal);
+}
+.day-hud[data-m="2"] .day-hud-bar i,
+.day-hud[data-m="3"] .day-hud-bar i {
+  background: var(--day-amber);
+}
+.day-hud-soc em {
+  min-width: 2.25rem;
+  font-style: normal;
+  font-weight: 600;
+}
+.day-hud small {
+  padding-left: 0.875rem;
+  border-left: 1px solid rgb(255 255 255 / 0.15);
+  font-size: var(--text-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.72);
+}
+.day-pause {
+  min-height: 2.25rem;
+  padding: 0 1rem;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  border-radius: 999px;
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 150ms, border-color 150ms;
+}
+.day-pause:hover {
+  border-color: var(--color-signal);
+  background: rgb(134 224 138 / 0.12);
+}
+.day-stage {
+  position: sticky;
+  top: 4rem;
+  z-index: 0;
+  height: var(--stage-h);
+  overflow: hidden;
+  background: var(--color-deep-grid);
+}
+.day-still,
+.day-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.day-canvas {
+  transition-duration: 800ms;
+}
+.day-still.is-on,
+.day-canvas.is-on {
+  opacity: 1;
+}
+/* The text side of the stage is darkened so every line on it stays AA over the brightest sky. */
+.day-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(9 28 22 / 0.9) 0%, rgb(9 28 22 / 0.84) 30%, rgb(9 28 22 / 0.7) 42%, rgb(9 28 22 / 0.3) 54%, rgb(9 28 22 / 0) 64%);
+}
+.day-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.day-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: -0.8rem 0 0 -0.75rem;
+  padding: 0.3rem 0.65rem 0.3rem 0.5rem;
+  border: 1px solid rgb(134 224 138 / 0.55);
+  border-radius: 999px;
+  background: rgb(9 28 22 / 0.85);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  transition: opacity 200ms;
+}
+.day-label[data-side="l"] {
+  flex-direction: row-reverse;
+  margin-left: 0.75rem;
+  padding: 0.3rem 0.5rem 0.3rem 0.65rem;
+}
+.day-label i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-signal);
+  box-shadow: 0 0 0 4px rgb(134 224 138 / 0.25);
+}
+.day-chapters {
+  position: relative;
+  z-index: 10;
+  margin-top: calc(-1 * var(--stage-h));
+  pointer-events: none;
+}
+.day-hero,
+.day-panel {
+  pointer-events: auto;
+}
+.day-ch {
+  position: relative;
+  min-height: 210svh;
+}
+.day-ch-hero {
+  min-height: 150svh;
+}
+.day-ch-signed {
+  min-height: 160svh;
+}
+.day-hero {
+  max-width: 41rem;
+  padding-top: clamp(1.5rem, 6vh, 4rem);
+}
+.day-display {
+  margin-top: 0.875rem;
+  font-size: clamp(2.25rem, 1.35rem + 3.1vw, 4rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.day-sub {
+  margin-top: 1.25rem;
+  max-width: 34rem;
+  font-size: var(--text-lead);
+  line-height: var(--text-lead--line-height);
+  color: rgb(255 255 255 / 0.86);
+}
+.day-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin-top: 1.75rem;
+}
+.day-partner {
+  margin-top: 1.5rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--color-signal);
+  font-size: var(--text-small);
+  color: rgb(255 255 255 / 0.86);
+}
+.day-hint {
+  position: absolute;
+  top: calc(var(--stage-h) - 4.75rem);
+  left: 50%;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgb(255 255 255 / 0.85);
+  pointer-events: none;
+}
+.day-hint i {
+  order: 2;
+  width: 1px;
+  height: 1.75rem;
+  background: linear-gradient(var(--color-signal), transparent);
+  transform-origin: top;
+  animation: day-drop 1.6s cubic-bezier(0.22, 1, 0.36, 1) 3;
+}
+@keyframes day-drop {
+  0% {
+    transform: scaleY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+.day[data-paused] .day-hint i {
+  animation: none;
+}
+.day-panel {
+  max-width: 31.25rem;
+  padding: 1.875rem 2rem;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: var(--radius-card);
+  background: rgb(9 28 22 / 0.9);
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.25);
+}
+.day-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+}
+.day-time {
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--color-signal);
+  color: var(--color-ink);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.day-h2 {
+  margin-top: 0.875rem;
+  font-size: clamp(1.5rem, 1.2rem + 0.9vw, 2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.day-p {
+  margin-top: 0.875rem;
+  color: #c3d1c7;
+}
+.day-ticks {
+  margin-top: 1.25rem;
+}
+.day-ticks li {
+  position: relative;
+  padding: 0.55rem 0 0.55rem 1.5rem;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  font-size: var(--text-small);
+}
+.day-ticks li::before {
+  content: "";
+  position: absolute;
+  top: 1.15em;
+  left: 0;
+  width: 0.75rem;
+  height: 2px;
+  background: var(--color-signal);
+}
+.day-signoff {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1.25rem;
+}
+.day-signoff li {
+  position: relative;
+  padding-left: 2.1rem;
+  font-size: var(--text-small);
+  line-height: 1.5rem;
+}
+.day-signoff li::before {
+  content: "\2713";
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--color-signal);
+  color: var(--color-ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+/* Desktop: each chapter's text holds on screen while its chapter scrolls by (the sticky box is the
+   chapter's full-height wrapper, so it has the whole chapter to travel). */
+@media (min-width: 1024px) and (min-height: 600px) {
+  .day-sticky {
+    position: sticky;
+    top: clamp(6.5rem, 18vh, 10.5rem);
+  }
+  .day-ch-hero > .day-sticky {
+    top: clamp(4.5rem, 9vh, 7rem);
+  }
+}
+/* Phones and portrait tablets: the subject sits in the top of the frame, the hero text at the bottom
+   of the first screen, and each chapter is a clear stretch of picture followed by its panel. */
+@media (max-width: 1023px) {
+  .day-hudwrap {
+    top: 4.5rem;
+  }
+  .day-hudbar {
+    right: auto;
+    left: 50%;
+    translate: -50% 0;
+    gap: 0.375rem;
+    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+  }
+  .day-hud {
+    gap: 0.6rem;
+    font-size: var(--text-micro);
+  }
+  .day-hud-t {
+    font-size: 0.9375rem;
+  }
+  .day-hud-m {
+    min-width: 5.25rem;
+  }
+  .day-hud-soc > i,
+  .day-hud small {
+    display: none;
+  }
+  .day-hud-bar {
+    width: 44px;
+  }
+  .day-pause {
+    min-height: 2rem;
+    padding: 0 0.75rem;
+    font-size: var(--text-micro);
+  }
+  .day-scrim {
+    background: linear-gradient(to top, rgb(9 28 22 / 0.96) 0%, rgb(9 28 22 / 0.9) 50%, rgb(9 28 22 / 0.78) 60%, rgb(9 28 22 / 0.3) 70%, rgb(9 28 22 / 0) 78%);
+  }
+  .day-ch {
+    min-height: 0;
+    padding: 72svh 0 8svh;
+  }
+  .day-ch-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: var(--stage-h);
+    padding: 0 0 4.25rem;
+  }
+  .day-hero {
+    padding-top: 0;
+  }
+  .day-hero h1 {
+    letter-spacing: 0.12em;
+    color: var(--color-paper); /* full strength here: it can sit over the foot of the cabinet */
+  }
+  .day-display {
+    margin-top: 0.625rem;
+  }
+  .day-sub {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .day-row {
+    margin-top: 1.125rem;
+  }
+  .day-partner {
+    margin-top: 1rem;
+  }
+  .day-hint {
+    top: auto;
+    bottom: 1.25rem;
+  }
+  .day-hint i {
+    display: none;
+  }
+  .day-panel {
+    padding: 1.5rem 1.25rem;
+  }
+  .day-label {
+    gap: 0.4rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+  }
+}
+/* Short phones (e.g. 360 × 640): the hero text fills most of the frame, so it is set a little tighter
+   to stay below the HUD, and the scrim reaches the top. */
+@media (max-width: 1023px) and (max-height: 700px) {
+  .day-ch-hero {
+    padding-bottom: 3.25rem;
+  }
+  .day-display {
+    font-size: 2rem;
+  }
+  .day-sub {
+    line-height: 1.45;
+  }
+  .day-row {
+    margin-top: 0.875rem;
+  }
+  .day-scrim {
+    background: linear-gradient(to top, rgb(9 28 22 / 0.96) 0%, rgb(9 28 22 / 0.9) 55%, rgb(9 28 22 / 0.8) 80%, rgb(9 28 22 / 0.6) 100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .day-still,
+  .day-canvas,
+  .day-label {
+    transition: none;
+  }
+  .day-hint i {
+    animation: none;
+  }
+}
