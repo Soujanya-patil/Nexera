@@ -16,7 +16,9 @@
  *  - Spam: the honeypot (`website`) must be empty; at least 3 s between opening the form and sending
  *    it (the client sends both times); at most 5 enquiries per IP per hour (file-based, stored outside
  *    the web root when the host allows it, otherwise in api/private/, which denies all web access).
- *  - One plain-text email with mail(), every header value stripped of CR/LF.
+ *  - One plain-text email with mail(), every header value stripped of CR/LF, to the address the
+ *    routing below picks (NEXERA_ROUTES: distributorship enquiries from any form → Ankit; everything
+ *    else → sales@).
  *  - `source` (optional): "full" (the default, a full enquiry form), "quick" (the call-back widget:
  *    name, mobile, state and interest) or "partner" (the Become a Partner form), each with its own
  *    subject and source line.
@@ -29,8 +31,21 @@
  *    endpoint behaves exactly as before. Nothing about Zoho can change what the visitor sees.
  */
 
-// ↓ The one place the recipient is set.
+// ↓ The one place the recipients are set. Each enquiry is emailed to the first route below that matches
+//   it, otherwise to NEXERA_LEADS_TO. A route names:
+//     sources         the forms: "full" = the /contact and home page forms, "partner" = Become a Partner,
+//                     "quick" = the call-back widget;
+//     interests       the "I am interested in" values (the keys of INTERESTS below; the partner form's
+//                     "Distributor application" is "distributor", its "EPC / Project Partnership" "epc");
+//     except_enquiry  (optional) /contact enquiry kinds it never takes, e.g. "Datasheet request".
+//   Zoho CRM is not affected by the routing: every enquiry still goes there.
 const NEXERA_LEADS_TO = "sales@nexerapower.com";
+const NEXERA_ROUTES = [
+    // Distributorship enquiries → Ankit (not sales@): the contact / home forms' "Distributorship", the
+    // partner form's "Distributor application" and the call-back widget's "Becoming a distributor".
+    // Datasheet requests stay with sales@, as do EPC / installer partnerships.
+    ["to" => "ankit@nexerapower.com", "sources" => ["full", "partner", "quick"], "interests" => ["distributor"], "except_enquiry" => ["Datasheet request"]],
+];
 const NEXERA_FROM = "no-reply@nexerapower.com";
 const RATE_LIMIT = 5;        // enquiries …
 const RATE_WINDOW = 3600;    // … per this many seconds, per IP
@@ -69,6 +84,16 @@ const MESSAGES = [
     "message" => "Please write a few words about your requirement.",
     "interest" => "Please choose what you're interested in.",
 ];
+
+/** The address an enquiry is emailed to (NEXERA_ROUTES, else NEXERA_LEADS_TO). */
+function nexera_recipient(string $source, string $interest, array $details): string {
+    foreach (NEXERA_ROUTES as $r) {
+        if (!in_array($source, $r["sources"] ?? [], true) || !in_array($interest, $r["interests"] ?? [], true)) continue;
+        if (in_array((string) ($details["enquiry"] ?? ""), $r["except_enquiry"] ?? [], true)) continue;
+        return (string) $r["to"];
+    }
+    return NEXERA_LEADS_TO;
+}
 
 // api/zoho-retry.php (the retry cron) includes this file for the constants above only.
 if (defined("NEXERA_ZOHO_CRON")) return;
@@ -309,7 +334,7 @@ $headers = [
 ];
 if ($email !== "") $headers[] = "Reply-To: " . header_safe($email);
 
-$to = header_safe(NEXERA_LEADS_TO);
+$to = header_safe(nexera_recipient($source, $interest, $details));
 $sent = $to !== "CHANGE_ME@example.com" && @mail($to, $subject, $body, implode("\r\n", $headers), "-f" . NEXERA_FROM);
 if (!$sent) respond(502, ["ok" => false, "error" => "send_failed"]);
 
@@ -344,6 +369,7 @@ try {
         "page" => $page,
         "host" => header_safe($_SERVER["HTTP_HOST"] ?? ""),
         "received" => $when,
+        "to" => $to,
     ]);
 } catch (Throwable $e) {
     // Never reaches the visitor (they already have their answer); the email has been delivered.

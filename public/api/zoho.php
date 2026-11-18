@@ -59,36 +59,66 @@ function nexera_private_dir(): ?string {
     return $root === "" ? null : dirname($root) . DIRECTORY_SEPARATOR . "nexera-private";
 }
 
-/** The config: defaults < the file outside the web root < environment variables. */
-function nexera_zoho_config(): array {
+/**
+ * The config: defaults < the file outside the web root < environment variables. Also notes, for the
+ * status check, where the file was looked for (`_file`), whether it was read (`_found`), which
+ * environment variables were set (`_env`) and why a switched-on config is treated as off (`_problem`).
+ * `$log`: note an incomplete config in the log (not from the status check).
+ */
+function nexera_zoho_config(bool $log = true): array {
     $cfg = ZOHO_DEFAULTS;
     $dir = nexera_private_dir();
     $file = $dir !== null ? $dir . DIRECTORY_SEPARATOR . "zoho-config.php" : null;
+    $found = false;
     if ($file !== null && is_file($file)) {
         // Read it fresh every time (OPcache would otherwise keep an old copy for a while after an edit,
         // e.g. when test mode is switched on).
         if (function_exists("opcache_invalidate")) @opcache_invalidate($file, true);
         $c = include $file;
-        if (is_array($c)) $cfg = array_replace($cfg, $c);
+        if (is_array($c)) {
+            $cfg = array_replace($cfg, $c);
+            $found = true;
+        }
     }
-    foreach (["ZOHO_ENABLED" => "enabled", "ZOHO_TEST" => "test"] as $env => $k) {
-        $v = getenv($env);
-        if ($v !== false && $v !== "") $cfg[$k] = filter_var($v, FILTER_VALIDATE_BOOLEAN);
+    $env = [];
+    foreach (["ZOHO_ENABLED" => "enabled", "ZOHO_TEST" => "test"] as $name => $k) {
+        $v = getenv($name);
+        if ($v !== false && $v !== "") {
+            $cfg[$k] = filter_var($v, FILTER_VALIDATE_BOOLEAN);
+            $env[] = $name;
+        }
     }
-    foreach (["ZOHO_ACTION_URL" => "action_url", "ZOHO_CRON_SECRET" => "cron_secret"] as $env => $k) {
-        $v = getenv($env);
-        if ($v !== false && $v !== "") $cfg[$k] = $v;
+    foreach (["ZOHO_ACTION_URL" => "action_url", "ZOHO_CRON_SECRET" => "cron_secret"] as $name => $k) {
+        $v = getenv($name);
+        if ($v !== false && $v !== "") {
+            $cfg[$k] = $v;
+            $env[] = $name;
+        }
     }
     $cfg["enabled"] = (bool) $cfg["enabled"];
     $cfg["test"] = (bool) $cfg["test"];
     if (!is_array($cfg["hidden"])) $cfg["hidden"] = [];
+    $cfg["_file"] = $file;
+    $cfg["_found"] = $found;
+    $cfg["_env"] = $env;
+    $cfg["_problem"] = null;
     // Switched on but incomplete (no action URL or no form ids): treated as off, and noted in the log.
     $ids = array_filter($cfg["hidden"], fn($v) => is_string($v) && strlen($v) >= 32);
     if ($cfg["enabled"] && (!preg_match('#^https?://#', (string) $cfg["action_url"]) || count($ids) < 2)) {
         $cfg["enabled"] = false;
-        nexera_zoho_log("-", "config_incomplete", "enabled, but the action URL or the form ids are missing");
+        $cfg["_problem"] = "enabled, but the action URL or the form ids are missing";
+        if ($log) nexera_zoho_log("-", "config_incomplete", $cfg["_problem"]);
     }
     return $cfg;
+}
+
+/** How this server reaches Zoho: "streams" (PHP's own client), "curl", or null (it can't). */
+function nexera_zoho_transport(string $url): ?string {
+    $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+    // PHP's own client needs allow_url_fopen and, for https, the https stream wrapper (OpenSSL).
+    if (filter_var(ini_get("allow_url_fopen"), FILTER_VALIDATE_BOOLEAN) && in_array($scheme === "" ? "https" : $scheme, stream_get_wrappers(), true)) return "streams";
+    if (function_exists("curl_init")) return "curl";
+    return null;
 }
 
 /** Which form an enquiry came from, as Zoho sees it (first line of the Description). */
@@ -178,8 +208,9 @@ function nexera_zoho_post(array $cfg, array $fields): array {
     $timeout = max(2, (int) $cfg["timeout"]);
     $url = (string) $cfg["action_url"];
 
-    // PHP's own HTTP client first (allow_url_fopen); curl where that is off.
-    if (filter_var(ini_get("allow_url_fopen"), FILTER_VALIDATE_BOOLEAN)) {
+    // PHP's own HTTP client first (allow_url_fopen, and OpenSSL for https); curl where that can't be used.
+    $via = nexera_zoho_transport($url);
+    if ($via === "streams") {
         $b = "----nexera" . bin2hex(random_bytes(12));
         $body = "";
         foreach ($all as $k => $v) {
@@ -201,7 +232,7 @@ function nexera_zoho_post(array $cfg, array $fields): array {
         foreach ($hdrs as $h) if (preg_match('#^HTTP/\S+\s+(\d{3})#', $h, $m)) $status = (int) $m[1];
         return [$resp === false ? 0 : $status, $resp === false ? "" : (string) $resp];
     }
-    if (function_exists("curl_init")) {
+    if ($via === "curl") {
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
@@ -268,16 +299,20 @@ function nexera_zoho_queue_dir(): ?string {
     return is_dir($q) && is_writable($q) ? $q : null;
 }
 
-/** sales@ is told a Lead didn't reach Zoho (after ZOHO_ALERT_AFTER tries, or at once without a queue). */
+/**
+ * The inbox the enquiry was emailed to (sales@, or Ankit for a distributorship enquiry) is told a Lead
+ * didn't reach Zoho (after ZOHO_ALERT_AFTER tries, or at once without a queue).
+ */
 function nexera_zoho_alert(array $entry, string $why): void {
-    $to = defined("NEXERA_LEADS_TO") ? NEXERA_LEADS_TO : "sales@nexerapower.com";
+    $to = (string) ($entry["to"] ?? "");
+    if (!preg_match('/^[^\s@<>,;"]+@[^\s@<>,;"]+$/', $to)) $to = defined("NEXERA_LEADS_TO") ? NEXERA_LEADS_TO : "sales@nexerapower.com";
     $from = defined("NEXERA_FROM") ? NEXERA_FROM : "no-reply@nexerapower.com";
     $f = $entry["fields"] ?? [];
     $name = trim(($f["First Name"] ?? "") . " " . ($f["Last Name"] ?? ""));
     $body = implode("\n", [
         "A website enquiry could not be added to Zoho CRM.",
         "",
-        "The enquiry email reached sales@ when it was sent, so nothing is lost: please add the Lead in Zoho by hand.",
+        "The enquiry email was sent to $to when the enquiry came in, so nothing is lost: please add the Lead in Zoho by hand.",
         "",
         "Form:          " . ($entry["form"] ?? ""),
         "Name:          " . $name,
@@ -310,6 +345,8 @@ function nexera_zoho_after_enquiry(array $cfg, array $e): void {
         "v" => 1,
         "form" => nexera_zoho_form($e),
         "received" => $e["received"],
+        // Where the enquiry email went (for the alert); our own address, not the visitor's.
+        "to" => (string) ($e["to"] ?? ""),
         "created" => time(),
         "tries" => 0,
         "alerted" => false,
@@ -381,4 +418,126 @@ function nexera_zoho_retry(array $cfg, int $max, bool $gap): array {
         fclose($lock);
     }
     return $done;
+}
+
+/**
+ * Whether this server can reach the webform's host: one GET of the action URL (no form data, so no
+ * Lead), with a short timeout. Any HTTP answer means outbound HTTP works.
+ */
+function nexera_zoho_probe(string $url): array {
+    $via = nexera_zoho_transport($url);
+    if ($via === null) return ["reached" => false, "via" => null, "http" => 0, "ms" => 0, "error" => "no way to make outbound HTTP requests (allow_url_fopen off or no OpenSSL, and no curl)"];
+    $t0 = microtime(true);
+    $status = 0;
+    $error = "";
+    if ($via === "streams") {
+        $ctx = stream_context_create(["http" => ["method" => "GET", "timeout" => 6, "ignore_errors" => true, "follow_location" => 0, "header" => "User-Agent: NexeraWebsite/1.0 (status check)\r\n"]]);
+        $resp = @file_get_contents($url, false, $ctx, 0, 2048);
+        $hdrs = function_exists("http_get_last_response_headers") ? (http_get_last_response_headers() ?? []) : ($http_response_header ?? []);
+        foreach ($hdrs as $h) if (preg_match('#^HTTP/\S+\s+(\d{3})#', $h, $m)) $status = (int) $m[1];
+        if ($resp === false && $status === 0) $error = nexera_zoho_mask((string) (error_get_last()["message"] ?? "no answer"));
+    } else {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [CURLOPT_NOBODY => false, CURLOPT_RETURNTRANSFER => true, CURLOPT_CONNECTTIMEOUT => 5, CURLOPT_TIMEOUT => 6, CURLOPT_FOLLOWLOCATION => false, CURLOPT_USERAGENT => "NexeraWebsite/1.0 (status check)"]);
+        $resp = curl_exec($ch);
+        $status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        if ($resp === false) $error = nexera_zoho_mask(curl_error($ch));
+    }
+    return ["reached" => $status > 0, "via" => $via, "http" => $status, "ms" => (int) round((microtime(true) - $t0) * 1000), "error" => $error !== "" ? $error : null];
+}
+
+/**
+ * The status check (api/zoho-retry.php?key=…&status=1): the config, outbound HTTP, the private folder, the
+ * queue and the last log lines, plus a plain-English reading of them. No personal data: the queue is
+ * counted, never listed, and the log holds none.
+ */
+function nexera_zoho_status(array $cfg, int $lines = 20): array {
+    $dir = nexera_private_dir();
+    $url = (string) $cfg["action_url"];
+    $ids = array_filter($cfg["hidden"], fn($v) => is_string($v) && strlen($v) >= 32);
+
+    // Queue: counts only.
+    $qdir = $dir !== null ? $dir . DIRECTORY_SEPARATOR . "zoho-queue" : null;
+    $entries = $qdir !== null && is_dir($qdir) ? (glob($qdir . DIRECTORY_SEPARATOR . "*.json") ?: []) : [];
+    $oldest = null;
+    $maxTries = 0;
+    $alerted = 0;
+    $lastNote = null;
+    $lastTried = 0;
+    foreach ($entries as $f) {
+        $e = json_decode((string) @file_get_contents($f), true);
+        if (!is_array($e)) continue;
+        $c = (int) ($e["created"] ?? 0);
+        if ($c > 0 && ($oldest === null || $c < $oldest)) $oldest = $c;
+        $maxTries = max($maxTries, (int) ($e["tries"] ?? 0));
+        if (!empty($e["alerted"])) $alerted++;
+        if ((int) ($e["last"] ?? 0) >= $lastTried) {
+            $lastTried = (int) ($e["last"] ?? 0);
+            $lastNote = (string) ($e["note"] ?? "");
+        }
+    }
+
+    // The log's last lines (date, form, outcome, Zoho's masked answer).
+    $logFile = $dir !== null ? $dir . DIRECTORY_SEPARATOR . "zoho-log.txt" : null;
+    $log = [];
+    if ($logFile !== null && is_file($logFile)) {
+        $text = (string) @file_get_contents($logFile, false, null, max(0, (int) @filesize($logFile) - 65536));
+        $log = array_slice(array_values(array_filter(explode("\n", $text), fn($l) => trim($l) !== "")), -$lines);
+        if (count($log) === $lines && !preg_match('/^\d{4}-\d{2}-\d{2}T/', $log[0])) array_shift($log); // a cut first line
+    }
+    $last = $log ? explode("\t", (string) end($log)) : [];
+    $lastOutcome = $last[2] ?? null;
+
+    $probe = preg_match('#^https?://#', $url) ? nexera_zoho_probe($url) : null;
+    $privateOk = $dir !== null && is_dir($dir) && is_writable($dir);
+
+    // A plain-English reading, most important first.
+    $say = [];
+    if (!$cfg["_found"]) $say[] = "No config file was read at " . ($cfg["_file"] ?? "(unknown: the web root is not known)") . ". Upload zoho-config.php there (the folder above public_html), not into public_html.";
+    if ($cfg["_problem"] !== null) $say[] = "Switched on, but the action URL or the two form ids (the webform's hidden fields) are missing, so it is treated as off.";
+    elseif (!$cfg["enabled"]) $say[] = "Zoho is switched off (enabled = false): no enquiry is sent to Zoho. Set \"enabled\" => true in the config.";
+    if ($probe !== null && !$probe["reached"]) $say[] = "This server could not reach " . (parse_url($url, PHP_URL_HOST) ?: "Zoho") . ": " . ($probe["error"] ?? "no answer") . ". Ask Hostinger whether outbound HTTPS is allowed.";
+    if (!$privateOk) $say[] = "The private folder is not writable, so there is no log and no retry queue: failed Leads are alerted at once.";
+    if (count($entries) > 0) $say[] = count($entries) . " Lead(s) waiting in the retry queue. Latest answer from Zoho: " . ($lastNote ?: "none") . ".";
+    if ($cfg["enabled"] && !$log) $say[] = "Switched on, but the log is empty: no enquiry has been sent to Zoho yet. Send a test enquiry and reload. If a line still doesn't appear, the step after the visitor's answer didn't run.";
+    if ($lastOutcome !== null && str_starts_with($lastOutcome, "failed")) $say[] = "The last try failed: " . ($last[3] ?? "") . ".";
+    if ($lastOutcome !== null && str_starts_with($lastOutcome, "duplicate")) $say[] = "The last Lead was refused as a duplicate (an existing Email or Mobile): " . ($last[3] ?? "") . ".";
+    if ($lastOutcome !== null && str_starts_with($lastOutcome, "delivered")) $say[] = "The last Lead was accepted by Zoho. If it isn't in Leads, look in Unapproved Leads, check who owns it (the territory rule) and search the Description for \"TEST –\".";
+    if (!$say) $say[] = "Nothing wrong found.";
+
+    return [
+        "ok" => true,
+        "checked" => gmdate("Y-m-d\TH:i:s\Z"),
+        "reading" => $say,
+        "config" => [
+            "file" => $cfg["_file"],
+            "found" => $cfg["_found"],
+            "enabled" => $cfg["enabled"],
+            "test" => $cfg["test"],
+            "problem" => $cfg["_problem"],
+            "action_url" => $url !== "" ? $url : null,
+            "form_ids" => count($ids) . " of 2",
+            "lead_source" => (string) $cfg["lead_source"],
+            "timeout_s" => (int) $cfg["timeout"],
+            "from_environment" => $cfg["_env"],
+        ],
+        "outbound" => [
+            "allow_url_fopen" => filter_var(ini_get("allow_url_fopen"), FILTER_VALIDATE_BOOLEAN),
+            "openssl" => extension_loaded("openssl"),
+            "curl" => function_exists("curl_init"),
+            "uses" => $url !== "" ? nexera_zoho_transport($url) : null,
+            "probe" => $probe,
+        ],
+        "private_folder" => ["path" => $dir, "writable" => $privateOk],
+        "queue" => [
+            "waiting" => count($entries),
+            "oldest" => $oldest !== null ? gmdate("Y-m-d\TH:i:s\Z", $oldest) : null,
+            "most_tries" => $maxTries,
+            "alerted" => $alerted,
+            "latest_answer" => $lastNote,
+        ],
+        // date | form | outcome | Zoho's answer (masked)
+        "log" => array_map(fn($l) => str_replace("\t", " | ", $l), $log),
+        "php" => PHP_VERSION,
+    ];
 }

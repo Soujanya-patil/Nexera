@@ -32,6 +32,7 @@ const log = () => (fs.existsSync(LOG) ? fs.readFileSync(LOG, "utf8") : "");
 // ---- The stand-in for the webform endpoint -------------------------------------------------------------
 let mode = "ok"; // ok | 503 | dup | html | slow
 const got = []; // each request's fields
+const probes = []; // the status check's GETs
 function parseMultipart(body, type) {
   const b = (type.match(/boundary=(.+)$/) || [])[1];
   const out = {};
@@ -46,6 +47,12 @@ const server = http.createServer((req, res) => {
   const chunks = [];
   req.on("data", (c) => chunks.push(c));
   req.on("end", async () => {
+    // The status check's reachability probe is a bare GET (no form data): kept apart from the Leads.
+    if (req.method === "GET") {
+      probes.push(req.url);
+      res.statusCode = 405;
+      return res.end("Method Not Allowed");
+    }
     got.push({ path: req.url, fields: parseMultipart(Buffer.concat(chunks).toString("utf8"), req.headers["content-type"] || "") });
     const json = (o) => {
       res.setHeader("Content-Type", "application/json;charset=UTF-8");
@@ -152,6 +159,9 @@ mode = "ok";
     [{ name: "Rao", mobile: "+91-9876543210", state: "Tamil Nadu", interest: "home", source: "quick", page: "/products" }, (f) => f.Description.startsWith("Form: Website – Call-back") && f["Last Name"] === "Rao" && !("First Name" in f) && f.Company === "Not given" && !("Email" in f) && f.Mobile === "+919876543210" && !f.Description.includes("Project size") && f.Description.includes("Interested in: Home storage"), "call-back: one-word name in Last Name, Company \"Not given\", no Email, no project size"],
     [{ name: "K. S. Rao", mobile: "", email: "info@company.co.in", company: "3M India", city: "Kalaburagi", state: "Karnataka", requirement: "2 MW", interest: "epc", source: "partner", message: "We are an EPC in Karnataka planning C&I storage projects.", page: "/become-a-partner", details: { enquiry: "EPC / Project Partnership", company_type: "EPC", application: "Commercial & Industrial" } }, (f) => f.Description.startsWith("Form: Website – Partner form") && f.LEADCF16 === "EPC Company" && f["First Name"] === "K. S." && f["Last Name"] === "Rao" && !("Mobile" in f) && /Expected requirement: 2 MW\nLocation: Kalaburagi\nEnquiry: EPC \/ Project Partnership\nCompany type: EPC\nApplication: Commercial & Industrial/.test(f.Description), "partner: \"Website – Partner form\", Customer Type \"EPC Company\", extras in Description, no Mobile when none given"],
     [{ ...CONTACT, page: "/", details: {} }, (f) => f.Description.startsWith("Form: Website – Home form"), "home form: \"Website – Home form\""],
+    // Email routing sends distributorship enquiries to Ankit; Zoho still gets every one of them.
+    [{ name: "K. S. Rao", email: "info@company.co.in", company: "3M India", city: "Kalaburagi", state: "Karnataka", requirement: "2 MW", interest: "distributor", source: "partner", page: "/become-a-partner", details: { enquiry: "Distributor application", company_type: "Other", application: "Residential" } }, (f) => f.Description.startsWith("Form: Website – Partner form") && f.Description.includes("Interested in: Distributorship") && f.Description.includes("Enquiry: Distributor application"), "partner \"Distributor application\" (emailed to Ankit): still sent to Zoho"],
+    [{ ...CONTACT, interest: "distributor", page: "/", details: {} }, (f) => f.Description.startsWith("Form: Website – Home form") && f.Description.includes("Interested in: Distributorship"), "home form Distributorship (emailed to Ankit): still sent to Zoho"],
   ];
   for (const [body, check, label] of cases) {
     const n = got.length;
@@ -185,7 +195,7 @@ config({ url: "http://127.0.0.1:8839/crm/WebToLeadForm" }); // nothing listens t
   await until(() => queue().length === 1, 8000);
   const q = readQueue()[0];
   ok("Zoho down: 200 for the visitor, the email sent", r.status === 200 && r.json?.ok && mails() === m0 + 1, `${r.status} ${r.ms} ms`);
-  ok("Zoho down: the Lead is queued — outside the web root, the webform fields only", queue().length === 1 && !QUEUE.startsWith(WEBROOT) && q?.tries === 1 && q.fields?.["Last Name"] === "Sharma" && !("xnQsjsdp" in (q.fields ?? {})) && Object.keys(q).sort().join() === "alerted,created,fields,form,last,note,queued,received,tries,v", JSON.stringify(q));
+  ok("Zoho down: the Lead is queued — outside the web root, the webform fields only", queue().length === 1 && !QUEUE.startsWith(WEBROOT) && q?.tries === 1 && q.fields?.["Last Name"] === "Sharma" && !("xnQsjsdp" in (q.fields ?? {})) && Object.keys(q).sort().join() === "alerted,created,fields,form,last,note,queued,received,to,tries,v" && q.to === "leads-test@example.com", JSON.stringify(q));
   ok("Zoho down: no files in the web root's api folder", !fs.existsSync(path.join(WEBROOT, "api", "private", "zoho-queue")));
 }
 
@@ -267,13 +277,84 @@ mode = "503";
   await cron(); // try 3 -> alert
   await until(() => alerts() === a0 + 1, 4000);
   const body = mailText().split("----- MESSAGE -----").at(-1) ?? "";
-  ok("after the 3rd failed try: one alert email to the enquiry address", alerts() === a0 + 1 && /Form: +Website – Contact form/.test(body) && /Tries: +3/.test(body) && /Last answer: +HTTP 503/.test(body) && /please add the Lead in Zoho by hand/.test(body), body.slice(0, 600));
+  ok("after the 3rd failed try: one alert email to the enquiry address (sales@)", alerts() === a0 + 1 && /^To: leads-test@example\.com\r?$/m.test(body) && /Form: +Website – Contact form/.test(body) && /Tries: +3/.test(body) && /Last answer: +HTTP 503/.test(body) && /was sent to leads-test@example\.com when the enquiry came in/.test(body) && /please add the Lead in Zoho by hand/.test(body), body.slice(0, 600));
   await cron(); // try 4: no second alert
   await sleep(500);
   ok("a 4th failed try: no second alert", alerts() === a0 + 1 && readQueue()[0]?.tries === 4 && readQueue()[0]?.alerted === true);
   mode = "ok";
   const c = await cron();
   ok("Zoho back: the cron delivers it; the queue is empty", c.json?.delivered === 1 && queue().length === 0, JSON.stringify(c.json));
+}
+
+// 11b. A distributorship enquiry (emailed to Ankit): its alert goes to the same inbox, not sales@.
+reset();
+config();
+mode = "503";
+{
+  const alerts = () => subjects().filter((s) => s.startsWith("Zoho CRM: a website enquiry could not be added")).length;
+  const a0 = alerts();
+  await post({ ...CONTACT, interest: "distributor", page: "/", details: {} });
+  await until(() => queue().length === 1, 8000);
+  ok("distributorship: the queued Lead remembers where its email went (the routed address)", readQueue()[0]?.to === "routed-test@example.com", readQueue()[0]?.to);
+  await cron();
+  await cron();
+  await until(() => alerts() === a0 + 1, 4000);
+  const body = mailText().split("----- MESSAGE -----").at(-1) ?? "";
+  ok("distributorship: the alert goes to the routed address (Ankit), not sales@", alerts() === a0 + 1 && /^To: routed-test@example\.com\r?$/m.test(body) && /was sent to routed-test@example\.com/.test(body), body.slice(0, 400));
+  mode = "ok";
+  await cron();
+}
+
+// 11c. The status check (?key=…&status=1): protected, retries nothing, no personal data.
+{
+  const status = async (key = SECRET) => {
+    const r = await fetch(`${BASE}/api/zoho-retry.php?key=${encodeURIComponent(key)}&status=1`);
+    const text = await r.text();
+    let json = null;
+    try {
+      json = JSON.parse(text);
+    } catch {}
+    return { status: r.status, text, json };
+  };
+  // A Lead waiting in the queue, and a few log lines (one delivered, one failed).
+  reset();
+  config({ url: "http://127.0.0.1:8839/crm/WebToLeadForm" });
+  await post(CONTACT);
+  await until(() => queue().length === 1, 8000);
+  config();
+  const bad = await status("wrong");
+  ok("status: a wrong key -> 404, nothing shown", bad.status === 404 && bad.text === '{"ok":false}', `${bad.status} ${bad.text.slice(0, 80)}`);
+
+  got.length = 0;
+  probes.length = 0;
+  const s = await status();
+  const j = s.json ?? {};
+  ok("status: 200 JSON, readable in a browser (pretty-printed)", s.status === 200 && j.ok === true && /\n +"found": true,/.test(s.text), s.text.slice(0, 200));
+  ok("status: config file found, enabled / test, action URL, both form ids", j.config?.found === true && /nexera-private[\\/]zoho-config\.php$/.test(j.config?.file ?? "") && j.config.enabled === true && j.config.test === false && j.config.problem === null && j.config.action_url === `http://127.0.0.1:${PORT}/crm/WebToLeadForm` && j.config.form_ids === "2 of 2", JSON.stringify(j.config));
+  ok("status: outbound HTTP — allow_url_fopen / curl / transport, and a reachability probe (a bare GET, no Lead)", typeof j.outbound?.allow_url_fopen === "boolean" && typeof j.outbound?.curl === "boolean" && j.outbound.uses === "streams" && j.outbound.probe?.reached === true && j.outbound.probe.http === 405 && probes.length === 1 && got.length === 0, JSON.stringify(j.outbound));
+  ok("status: the queue counted (1 waiting, Zoho's latest answer), nothing retried", j.queue?.waiting === 1 && j.queue.most_tries === 1 && /no answer/.test(j.queue.latest_answer ?? "") && queue().length === 1 && readQueue()[0]?.tries === 1, JSON.stringify(j.queue));
+  ok("status: the last log lines with Zoho's answers; the reading names the queued Lead", Array.isArray(j.log) && j.log.length >= 1 && j.log.length <= 20 && j.log.every((l) => /^\d{4}-\d{2}-\d{2}T[\d:]+Z \| Website – [^|]+ \| \w+/.test(l)) && j.reading.some((r) => /Lead\(s\) waiting in the retry queue/.test(r)) && j.reading.some((r) => /The last try failed/.test(r)), JSON.stringify({ log: j.log, reading: j.reading }));
+  ok("status: no personal data anywhere in the answer", !/Ankit|Sharma|ankit\.sharma|98765|9876543210|Suntrop|Bengaluru/.test(s.text), s.text.slice(0, 300));
+  ok("status: private folder path and writable", j.private_folder?.writable === true && /nexera-private$/.test(j.private_folder.path ?? ""), JSON.stringify(j.private_folder));
+
+  // More than 20 log lines: only the last 20.
+  fs.appendFileSync(LOG, Array.from({ length: 30 }, (_, i) => `2026-11-18T00:00:${String(i).padStart(2, "0")}Z\tWebsite – Contact form\tdelivered\tSplash Message`).join("\n") + "\n");
+  const many = await status();
+  ok("status: at most the last 20 log lines; a delivered last line is read as accepted (with where to look)", many.json?.log?.length === 20 && many.json.log.at(-1).endsWith(" | delivered | Splash Message") && many.json.reading.some((r) => /accepted by Zoho.*Unapproved Leads/.test(r)), JSON.stringify(many.json?.reading));
+
+  // Switched off; Zoho unreachable; switched on but incomplete (the status call logs nothing itself).
+  config({ enabled: false });
+  const off = await status();
+  ok("status: switched off -> enabled false, the reading says so", off.json?.config?.enabled === false && off.json.reading[0].startsWith("Zoho is switched off"), JSON.stringify(off.json?.reading));
+  config({ url: "http://127.0.0.1:8839/crm/WebToLeadForm" });
+  const down = await status();
+  ok("status: Zoho unreachable -> probe not reached, the reading says so", down.json?.outbound?.probe?.reached === false && down.json.reading.some((r) => r.startsWith("This server could not reach 127.0.0.1")), JSON.stringify(down.json?.outbound));
+  fs.writeFileSync(path.join(PRIVATE, "zoho-config.php"), `<?php return ["enabled" => true, "action_url" => "", "hidden" => [], "cron_secret" => '${SECRET}'];\n`);
+  const lines0 = log().split("\n").length;
+  const inc = await status();
+  ok("status: switched on but incomplete -> problem shown, treated as off; the status call adds no log line", inc.json?.config?.problem && inc.json.config.enabled === false && inc.json.config.form_ids === "0 of 2" && inc.json.reading[0].startsWith("Switched on, but the action URL") && log().split("\n").length === lines0, JSON.stringify(inc.json?.config));
+  config();
+  await cron(); // empty the queue
 }
 
 // 12. 30 days at most in the queue.

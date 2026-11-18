@@ -130,11 +130,51 @@ for (const [label, body, subject] of REAL) {
   const last = mailText().split("----- MESSAGE -----").at(-1) ?? "";
   const subj = (last.match(/^Subject: =\?UTF-8\?B\?([^?]+)\?=/m) || [])[1];
   const decoded = subj ? Buffer.from(subj, "base64").toString("utf8") : "";
-  ok(`${label}: realistic values -> 200, one email, subject "${subject}"`, r.status === 200 && r.json?.ok && mails() === n0 + 1 && decoded === subject, `${r.status} ${decoded}`);
+  ok(`${label}: realistic values -> 200, one email to sales@, subject "${subject}"`, r.status === 200 && r.json?.ok && mails() === n0 + 1 && decoded === subject && /^To: leads-test@example\.com\r?$/m.test(last), `${r.status} ${decoded}`);
   if (body.source === "partner") ok("partner email carries the requirement, location and company", /Requirement: +500 kWh/.test(last) && /City: +Bengaluru 560001/.test(last) && /Company: +3M India/.test(last) && /Source: Become a Partner form/.test(last));
   if ("state" in body) ok(`${label}: the email has the State line, after City`, new RegExp(`City: [^\\n]*\\nState: +${body.state.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\r?\\n`).test(last));
   else ok(`${label}: no State line`, !/^State:/m.test(last));
 }
+
+// 3. Email routing (NEXERA_ROUTES in api/contact.php). The test build has leads-test@ for sales@ and
+//    routed-test@ for every routed address (tests/prepare.sh); the source file must name the real ones.
+{
+  const src = fs.readFileSync(new URL("../../public/api/contact.php", import.meta.url), "utf8");
+  const route = src.match(/const NEXERA_ROUTES = \[([\s\S]*?)\n\];/)?.[1] ?? "";
+  ok(
+    "routing table: sales@ by default; distributorship (contact / home, partner and call-back forms, not datasheets) -> ankit@nexerapower.com",
+    /const NEXERA_LEADS_TO = "sales@nexerapower\.com";/.test(src) &&
+      /\["to" => "ankit@nexerapower\.com", "sources" => \["full", "partner", "quick"\], "interests" => \["distributor"\], "except_enquiry" => \["Datasheet request"\]\]/.test(route) &&
+      (route.match(/"to" =>/g) ?? []).length === 1,
+    route.trim()
+  );
+}
+const lastTo = () => ((mailText().split("----- MESSAGE -----").at(-1) ?? "").match(/^To: *(.+?)\r?$/m) || [])[1] ?? "";
+const clearRate = () => PRIVATE && fs.rmSync(path.join(PRIVATE, "ratelimit"), { recursive: true, force: true });
+const SALES = "leads-test@example.com";
+const ROUTED = "routed-test@example.com";
+const ASK = { name: "Ankit Sharma", mobile: "98765 43210", email: "ankit.sharma@gmail.com", state: "Karnataka", message: "We would like to become a distributor in Karnataka." };
+const PARTNER = { name: "K. S. Rao", email: "info@company.co.in", company: "3M India", city: "Bengaluru", state: "Karnataka", requirement: "500 kWh", source: "partner" };
+for (const [label, body, want] of [
+  ["home form, Distributorship", { ...ASK, interest: "distributor", source: "full", page: "/" }, ROUTED],
+  ["/contact, Distributorship", { ...ASK, interest: "distributor", source: "full", page: "/contact", details: { enquiry: "General enquiry" } }, ROUTED],
+  ["Become a Partner, Distributor application", { ...PARTNER, interest: "distributor", details: { enquiry: "Distributor application", company_type: "Other", application: "Residential" } }, ROUTED],
+  ["Become a Partner, EPC / Project Partnership", { ...PARTNER, interest: "epc", details: { enquiry: "EPC / Project Partnership", company_type: "EPC", application: "Commercial & Industrial" } }, SALES],
+  ["/contact, EPC / installer partnership", { ...ASK, interest: "epc", source: "full", page: "/contact" }, SALES],
+  ["datasheet request (even with Distributorship chosen)", { ...ASK, interest: "distributor", source: "full", page: "/contact?datasheet=tcl-blueark-x5", details: { enquiry: "Datasheet request", product: "TCL BlueArk X5" } }, SALES],
+  ["call-back widget, Becoming a distributor", { name: "K. S. Rao", mobile: "9876543210", state: "Karnataka", interest: "distributor", source: "quick" }, ROUTED],
+  ["call-back widget, Home storage", { name: "K. S. Rao", mobile: "9876543210", state: "Karnataka", interest: "home", source: "quick" }, SALES],
+  ["/contact, Commercial & Industrial", { ...ASK, interest: "ci", source: "full", page: "/contact" }, SALES],
+]) {
+  clearRate();
+  const n0 = mails();
+  const r = await post(body);
+  for (let i = 0; i < 20 && mails() === n0; i++) await new Promise((res) => setTimeout(res, 150));
+  const to = lastTo();
+  ok(`routing: ${label} -> ${want === ROUTED ? "the routed address (Ankit)" : "sales@"}, one email`, r.status === 200 && mails() === n0 + 1 && to === want, `${r.status} to ${to}`);
+}
+clearRate();
+
 ok("Zoho switched off: no request reached the (local) Zoho endpoint", zohoCalls === 0, `${zohoCalls} request(s)`);
 zoho.close();
 if (PRIVATE) fs.rmSync(path.join(PRIVATE, "zoho-config.php"), { force: true });
