@@ -66,3 +66,11 @@ src/assets/NEXERA_*
 
 # Local MCP server config for editor/agent tools (e.g. the shadcn MCP server): per-machine, never committed.
 .mcp.json
+
+# Claude Code: personal local settings
+.claude/settings.local.json
+
+# The C&I expo landing page: a separate Vite app with its own package.json, kept inside this folder for
+# convenience only. Never committed, pushed or deployed; the main site's build, Tailwind, lint and tests
+# ignore it (vite.config.js, src/index.css, .oxlintrc.json).
+expo-landing/

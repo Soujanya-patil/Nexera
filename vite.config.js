@@ -39,4 +39,9 @@ export default defineConfig({
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
+  // expo-landing/ is a separate, git-ignored Vite app: the dev server neither scans its HTML for
+  // dependencies (the default scans every .html in the project) nor watches its files. The build's only
+  // entry is index.html, so it never reaches dist/.
+  optimizeDeps: { entries: ['index.html'] },
+  server: { watch: { ignored: ['**/expo-landing/**'] } },
 })

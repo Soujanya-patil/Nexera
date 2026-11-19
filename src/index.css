@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* expo-landing/ is a separate app (its own Tailwind): its class names never reach the site's CSS. */
+@source not "../expo-landing";
 
 /* "stage": wide AND tall enough, with motion allowed — where scroll-driven sections (For EPCs journey
    and project story) stick to the viewport. Everywhere else they read in normal flow. */
