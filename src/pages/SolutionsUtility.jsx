@@ -95,7 +95,7 @@ export default function SolutionsUtility() {
         subheading="Grid-Scale Battery Energy Storage Systems Built for Renewable Integration"
         body={[
           "NEXERA brings utility-scale energy storage solutions from Hithium for large renewable energy projects, grid support, energy shifting and round-the-clock power management.",
-          "From 5 MWh-class systems to multi-hundred-MWh projects, our solutions are designed for high energy throughput, intelligent thermal management, advanced safety and long-term operation.",
+          "From single multi-MWh blocks to multi-hundred-MWh projects, our solutions are designed for high energy throughput, intelligent thermal management, advanced safety and long-term operation.",
         ]}
         cta={{ label: "Explore Utility Solutions", target: "utility-solutions" }}
         image={{
