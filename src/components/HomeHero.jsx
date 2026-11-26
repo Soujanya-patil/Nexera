@@ -1,24 +1,25 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Pause, Play } from "lucide-react";
 import HomeHeroCopy from "./HomeHeroCopy";
 import Callouts, { OUT } from "./cabinet/Callouts";
 import { createSeekGate, useBlobUrl } from "../lib/footage";
-// The footage, trimmed so the door's old, unofficial NEXERA mark never appears: frames 52-164 of the
-// original 164 (the door is past edge-on from frame 49; 52 leaves a margin), every frame checked. The
-// closing clips are the same frames in reverse, so both hand-offs are on identical frames; poster and
-// ground plate are made from frame 52, so the hero rests with the door open. The untrimmed
-// nexera-hero-cabinet* clips and their source (nexera-battery-cabinet-scroll.mp4) were deleted
-// (2026-11-26; in git history) and must never ship. The notes below describe how they were cut.
-import videoSrc from "../assets/products/cabinet-film.mp4";
-import closeSrc from "../assets/products/cabinet-film-close.mp4";
-// Phone versions of the two cycle clips (720 px wide, H.264, no audio, faststart; ~310 KB each).
-import videoMobileSrc from "../assets/products/cabinet-film-mobile.mp4";
-import closeMobileSrc from "../assets/products/cabinet-film-close-mobile.mp4";
-import posterSrc from "../assets/products/cabinet-film-poster.webp";
-// The scroll story (ENABLE_STORY, below) is off. Its scrub clip was the untrimmed footage, so it points at
-// the trimmed opening clip instead (the same file: nothing extra ships). Re-encode a trimmed scrub clip
-// (keyframe every 6 frames) before ever turning the story back on.
-import scrubSrc from "../assets/products/cabinet-film.mp4";
-import groundSrc from "../assets/products/cabinet-film-ground.webp";
+// The full cycle, all 164 frames (closed -> open), with the door's old, unofficial NEXERA mark removed:
+// on frames 1-48, where it shows, the door is painted plain (its own surface, fitted from the clean door
+// around the mark; no logo of any kind added), every frame checked. Made from the source film
+// (nexera-battery-cabinet-scroll.mp4, kept outside the site in nexera-reference/videos/) with the original
+// cut: 1.5-8.3 s, x 320-1620, scaled to 1040 x 864 (phones 720 x 598). The closing clips are the same
+// frames in reverse, so both hand-offs are on identical frames and the loop has no jump. Poster and
+// ground plate are made from frame 1 (the closed door). The original clips with the mark must never ship.
+import videoSrc from "../assets/products/nexera-cabinet-cycle.mp4";
+import closeSrc from "../assets/products/nexera-cabinet-cycle-close.mp4";
+// Phone versions of the two cycle clips (720 px wide, H.264, no audio, faststart; ~355 KB each).
+import videoMobileSrc from "../assets/products/nexera-cabinet-cycle-mobile.mp4";
+import closeMobileSrc from "../assets/products/nexera-cabinet-cycle-close-mobile.mp4";
+import posterSrc from "../assets/products/nexera-cabinet-cycle-poster.webp";
+// The scroll story (ENABLE_STORY, below) is off. Its scrub clip points at the opening clip (the same file:
+// nothing extra ships). Re-encode a scrub clip (keyframe every 6 frames) before ever turning it back on.
+import scrubSrc from "../assets/products/nexera-cabinet-cycle.mp4";
+import groundSrc from "../assets/products/nexera-cabinet-cycle-ground.webp";
 import { useMediaQuery } from "../lib/scrollSteps";
 import { loadGsap } from "../lib/motion";
 import { getLenis } from "../lib/lenis";
@@ -31,6 +32,9 @@ const HOLD_MAX_MS = HOLD_MS + 4000; // hovering a hotspot can extend the hold by
 const SCAN_LEAD_MS = 450; // the sweep starts; the labels begin drawing this much later
 const LABEL_FADE_MS = OUT + 50; // labels are gone before the cabinet starts to close
 const CLOSE_RATE = 2; // the close runs in ~3.4s rather than the opening's 6.8s
+// The cycle loops while the hero is on screen (motion allowed): this long on the closed door between cycles.
+// "Pause video" stops it (WCAG 2.2.2); under reduced motion it never loops.
+const REST_MS = 1200;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const once = (el, type) => new Promise((resolve) => el.addEventListener(type, resolve, { once: true }));
@@ -238,6 +242,12 @@ export default function HomeHero() {
   const replay = useRef(false);
   const alive = useRef(true);
   const reading = useRef(false); // a hotspot is hovered
+  // The loop: paused by the visitor (Pause video), and whether the stage is on screen.
+  const [paused, setPaused] = useState(false);
+  const pausedRef = useRef(false);
+  const onScreen = useRef(false);
+  const loopTimer = useRef(0);
+  const started = useRef(false); // a cycle has run (the loop only resumes after the first, autoplayed one)
   // Read synchronously on first render (useMediaQuery initialises from matchMedia), so the video
   // never starts on the wrong source and switches.
   const storyScreen = useMediaQuery(STORY_Q); // always called (hook order), gated by ENABLE_STORY
@@ -270,12 +280,42 @@ export default function HomeHero() {
     const start = performance.now();
     let last = start;
     let left = HOLD_MS;
-    while (left > 0 && performance.now() - start < HOLD_MAX_MS && alive.current) {
+    while (left > 0 && (performance.now() - start < HOLD_MAX_MS || pausedRef.current) && alive.current) {
       await sleep(100);
       const now = performance.now();
-      if (!reading.current) left -= now - last;
+      if (!reading.current && !pausedRef.current) left -= now - last;
       last = now;
     }
+  };
+
+  /** Plays the cycle again after a short rest on the closed door, while on screen, motion allowed, not paused. */
+  const scheduleLoop = () => {
+    clearTimeout(loopTimer.current);
+    if (reduced || story || pausedRef.current || !alive.current) return;
+    loopTimer.current = setTimeout(() => {
+      if (onScreen.current && !pausedRef.current && alive.current) runCycle();
+    }, REST_MS);
+  };
+
+  /** Pause video / Play video: stops (or resumes) whichever clip is playing, and the loop. */
+  const togglePause = () => {
+    const next = !pausedRef.current;
+    pausedRef.current = next;
+    setPaused(next);
+    for (const v of [opening.current, closing.current]) {
+      if (!v) continue;
+      if (next) {
+        if (!v.paused) {
+          v.dataset.wasPlaying = "1";
+          v.pause();
+        }
+      } else if (v.dataset.wasPlaying) {
+        delete v.dataset.wasPlaying;
+        v.play().catch(() => {});
+      }
+    }
+    if (next) clearTimeout(loopTimer.current);
+    else if (!busy.current) scheduleLoop();
   };
 
   const runCycle = async () => {
@@ -287,6 +327,8 @@ export default function HomeHero() {
       return;
     }
     busy.current = true;
+    started.current = true;
+    let completed = true; // only a cycle that ran through schedules the next one (never retry a refused autoplay)
     try {
       if (reduced) {
         if (o.readyState < 1) await once(o, "loadedmetadata"); // autoplay can fire before the duration is known
@@ -347,6 +389,7 @@ export default function HomeHero() {
       }
     } catch {
       // Playback refused (e.g. autoplay blocked) or failed part-way: return to the closed rest state.
+      completed = false;
       o.pause();
       c.pause();
       c.style.opacity = "0";
@@ -359,9 +402,30 @@ export default function HomeHero() {
       if (replay.current && alive.current) {
         replay.current = false;
         runCycle();
-      }
+      } else if (completed) scheduleLoop();
     }
   };
+
+  // The loop runs only while the stage is on screen; coming back into view starts it again.
+  useEffect(() => {
+    const o = opening.current;
+    if (!o || story || !videoReady) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        const was = onScreen.current;
+        onScreen.current = entry.isIntersecting;
+        if (entry.isIntersecting && !was && !busy.current && started.current) scheduleLoop();
+      },
+      { threshold: 0.5 }
+    );
+    io.observe(o);
+    return () => {
+      io.disconnect();
+      clearTimeout(loopTimer.current);
+    };
+    // scheduleLoop reads the latest state through its closure on each call.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [story, videoReady]);
 
   // Autoplay: the first cycle runs once by itself when the stage is half in view (not in the scroll
   // story, where scrolling opens the cabinet).
@@ -647,7 +711,7 @@ export default function HomeHero() {
                   "radial-gradient(34% 36% at 50% 52%, color-mix(in srgb, var(--accent) 7%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 40%, color-mix(in srgb, var(--accent) 1%, transparent) 65%, transparent 85%)",
               }}
             />
-            {/* Ground plate (cabinet-film-ground.webp): the trimmed footage's first frame (52), heavily blurred,
+            {/* Ground plate (nexera-cabinet-cycle-ground.webp): the footage's first frame (the closed door), heavily blurred,
                 with every edge continued outward — 3x the stage wide, 1.8x tall, the frame exactly in
                 its centre third. So wherever the footage's soft edges fade out, what shows through is
                 the same tone the footage has there, carried on to the viewport edge: no visible video
@@ -724,6 +788,21 @@ export default function HomeHero() {
               {/* Soft edges: the ground plate laid over the footage's borders (see EDGE_X / EDGE_Y). */}
               <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={EDGE_OVERLAY_X} />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={EDGE_OVERLAY_Y} />
+              {/* Pause / play the looping film (WCAG 2.2.2). Not under reduced motion (nothing loops there). Its
+                  presses never reach the stage's own "play the cycle" handlers. */}
+              {!story && !reduced && videoReady && (
+                <button
+                  type="button"
+                  onClick={togglePause}
+                  onPointerUp={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
+                  aria-pressed={paused}
+                  className="absolute bottom-2 right-2 z-20 inline-flex min-h-11 items-center gap-1.5 rounded-full border border-white/25 bg-deep-grid/70 px-3.5 text-micro font-semibold text-paper/90 backdrop-blur-sm transition-colors duration-fast hover:border-white/60 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  {paused ? <Play aria-hidden="true" className="h-3.5 w-3.5" /> : <Pause aria-hidden="true" className="h-3.5 w-3.5" />}
+                  {paused ? "Play video" : "Pause video"}
+                </button>
+              )}
               {/* Inspection (story, mouse): a soft light follows the cursor over the cabinet. */}
               {story && (
                 <div

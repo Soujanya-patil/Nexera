@@ -91,8 +91,9 @@ for (const [W, H] of [
 // ---- Homepage hero playback rules (desktop hover, phone tap) -------------------------------------------
 // A hover (desktop) or tap (phone) plays the cycle from the start when it is at rest; hovering, clicking
 // or tapping again while it plays never restarts it; leaving lets it play to the end; it then rests on
-// the closed frame (no loop), and the next hover / tap plays it again from the start. "At rest": both
-// clips paused, the opening rewound, the closing clip hidden.
+// the closed frame and, while on screen, loops (plays again from the start after a short rest); Pause
+// video stops it and Play video carries on. "At rest": both clips paused, the opening rewound, the closing
+// clip hidden.
 for (const [W, H, touch] of [
   [1440, 900, false],
   [390, 844, true],
@@ -122,16 +123,25 @@ for (const [W, H, touch] of [
   const s3 = await st();
   if (!touch) await leave();
   const rest1 = await atRest();
-  await p.waitForTimeout(1200);
+  // The loop (2026-11-26): after a short rest on the closed door (REST_MS 1.2 s) it plays again by itself.
+  await p.waitForTimeout(2200);
   const s4 = await st();
-  await trigger();
+  // Pause video stops it where it is; Play video carries on.
+  await p.getByRole("button", { name: "Pause video" }).click();
+  await p.waitForTimeout(300);
+  const pa = await st();
+  await p.waitForTimeout(700);
+  const pb = await st();
+  const playLabel = await p.getByRole("button", { name: "Play video" }).count();
+  await p.getByRole("button", { name: "Play video" }).click();
   await p.waitForTimeout(700);
   const s5 = await st();
   check(`/ @${W}: hero — at rest, ${how} plays the video from the start (also at the first moment of rest)`, rest0 && !s1.op && s1.o > 0 && s1.o < 1.5, { rest0, s1 });
   check(`/ @${W}: hero — ${how} again while it plays does not restart it`, !s2.op && s2.o > b2, { b2, s2 });
   check(`/ @${W}: hero — ${touch ? "a second tap" : "a click"} while it plays does not restart it`, !s3.op && s3.o > b3, { b3, s3 });
-  check(`/ @${W}: hero — ${touch ? "left alone" : "after the mouse leaves"} it plays to the end and rests on the closed frame (no loop)`, rest1 && s4.op && s4.cp && s4.o === 0, { rest1, s4 });
-  check(`/ @${W}: hero — after the end, the next ${touch ? "tap" : "hover"} plays it again from the start`, !s5.op && s5.o > 0 && s5.o < 1.5, s5);
+  check(`/ @${W}: hero — ${touch ? "left alone" : "after the mouse leaves"} it plays to the end, rests on the closed frame, then loops from the start`, rest1 && !s4.op && s4.o > 0 && s4.o < 1.5, { rest1, s4 });
+  check(`/ @${W}: hero — Pause video stops it where it is (the button then reads Play video)`, pa.op && pa.cp && pb.o === pa.o && playLabel === 1, { pa, pb, playLabel });
+  check(`/ @${W}: hero — Play video carries on from there`, !s5.op && s5.o > pb.o, { pb, s5 });
   check(`/ @${W}: no console errors (hero playback)`, p.errors.length === 0, p.errors);
   await p.context().close();
 }
