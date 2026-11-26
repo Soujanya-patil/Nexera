@@ -18,7 +18,7 @@ const journey = [
   { step: "02", title: "Brand & Segment Onboarding", copy: "Trained only on the product lines matching your market." },
   { step: "03", title: "Territory Mapping & Agreement", copy: "Your region formally protected." },
   { step: "04", title: "Design & Commissioning Support", copy: "Our engineers work your first sizing and commissioning with you." },
-  { step: "05", title: "Ongoing Service & Growth", copy: "After-sales, warranty handling, and portal access." },
+  { step: "05", title: "Ongoing Service & Growth", copy: "After-sales, warranty handling, and portal access (in development)." },
 ];
 
 /**
@@ -126,6 +126,16 @@ export default function HowItWorks() {
 
       <section className="bg-white">
         <div data-sr className="container-site py-14 text-center">
+          <p className="mx-auto mb-6 max-w-measure text-body text-copy">
+            See what NEXERA provides when you{" "}
+            <Link
+              to="/become-a-partner"
+              className="font-semibold text-accent underline underline-offset-4 hover:text-link focus-visible:text-link focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              become a BESS distributor
+            </Link>
+            , then apply.
+          </p>
           <Link
             to="/become-a-partner"
             className="btn-motion inline-flex min-h-11 items-center rounded-full bg-accent px-6 py-3 text-button font-semibold text-on-accent hover:bg-accent-hover focus-visible:bg-accent-hover"

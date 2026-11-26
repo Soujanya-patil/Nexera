@@ -32,6 +32,7 @@ import { productPage as productContent } from "../data/productPages";
 import { ADDRESS_PARTS, BUSINESS_NAME, EMAIL, HOURS, PHONE } from "../data/business";
 import { HOME_FAQ } from "../data/home";
 import { RESOURCES_FAQ } from "../data/resources";
+import { BECOME_PARTNER_FAQ } from "../data/becomePartner";
 import { LEGAL_REVIEW, REVIEW_ROBOTS } from "../lib/legal";
 
 export const SITE_URL = "https://nexerapower.com";
@@ -159,11 +160,12 @@ const PAGES = [
   })),
   {
     path: "/become-a-partner",
-    h1: "Become a BESS Distributor Build More. Store Smarter.",
+    h1: "Become a BESS Distributor in India",
     label: "Become a Partner",
-    title: "Become a BESS Distributor or EPC Partner in India | Nexera",
+    title: "Become a BESS Distributor in India | TCL & Hithium | Nexera",
     description:
-      "Join Nexera Powertech as an EPC or distributor. Get TCL and Hithium storage, project sizing, installer training and warranty-claim support.",
+      "Become a BESS distributor in India. Sell TCL and Hithium storage with sizing, commissioning, warranty support, installer training and protected territory.",
+    faq: BECOME_PARTNER_FAQ,
   },
   {
     path: "/about",
@@ -177,7 +179,7 @@ const PAGES = [
     path: "/how-it-works",
     label: "How It Works",
     h1: "From First Call to Fully Operational Distributor",
-    title: "How to Become a BESS Distributor in India | NEXERA",
+    title: "Distributor Onboarding: 5 Stages to Go Live | NEXERA",
     description:
       "How NEXERA's BESS distributor partnership works, step by step: from application and onboarding to technician training, commissioning and support.",
   },

@@ -135,6 +135,10 @@ export default function PartnerForm() {
             Tell us about your company and the projects you&rsquo;re planning. Our team will review your details and get
             back to you.
           </p>
+          {/* Who handles distributor enquiries: name and role only (About lists him), no photo. */}
+          <p className="mt-4 text-small text-copy">
+            <span className="font-semibold text-ink">Distributor enquiries:</span> Ankit Jain, Co-founder
+          </p>
           <ol className="mt-10 space-y-6">
             {NEXT.map((s) => (
               <li key={s.n} className="flex gap-4">

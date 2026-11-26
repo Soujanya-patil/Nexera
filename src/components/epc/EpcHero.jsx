@@ -57,29 +57,28 @@ export default function EpcHero() {
         </div>
 
         <div className="relative flex min-h-[min(46rem,calc(100svh-4rem))] container-site flex-col justify-center py-20 lg:py-24">
-          {/* The eyebrow is the heading's first line (it names what the page offers, the headline
-              doesn't); it looks as before. The h1 itself has no classes: leading/tracking set inherited
-              variables that would reach the eyebrow, so the headline's styles sit on its own span. */}
-          <h1>
-            <span data-a="eyebrow" className="flex items-center gap-3 eyebrow text-label">
-              <span aria-hidden="true" className="h-px w-8 bg-accent/70" />
-              Become a BESS Distributor
-            </span>{" "}
-            <span className="mt-5 block text-display font-semibold">
-              <span data-a="line1" className="block">
-                Build More.
-              </span>
-              {/* Keeps the lines' words apart in the heading's text; between block lines it renders nothing. */}
-              {" "}
-              <span data-a="line2" className="block text-accent">
-                Store Smarter.
-              </span>
-            </span>
+          {/* The h1 is the eyebrow line ("Become a BESS Distributor in India": what the page offers, its
+              search focus); it looks as the eyebrow always has. The tagline below is a separate line, not
+              part of the heading, in the same display type as before. */}
+          <h1 data-a="eyebrow" className="flex items-center gap-3 eyebrow text-label">
+            <span aria-hidden="true" className="h-px w-8 bg-accent/70" />
+            Become a BESS Distributor in India
           </h1>
+          <p className="mt-5 text-display font-semibold">
+            <span data-a="line1" className="block">
+              Build More.
+            </span>
+            {/* Keeps the lines' words apart in the text; between block lines it renders nothing. */}
+            {" "}
+            <span data-a="line2" className="block text-accent">
+              Store Smarter.
+            </span>
+          </p>
           <p data-a="desc" className="mt-6 max-w-lg text-body text-paper/80">
-            NEXERA gives EPCs authorised access to TCL and Hithium battery storage — with design, commissioning,
-            training and after-sales support — so you can add BESS to your projects without building a supply chain from
-            scratch.
+            Become a BESS distributor with NEXERA, an authorised partner for TCL and Hithium battery storage. We work with
+            EPCs, solar distributors and electrical contractors, and we appoint distributors all over India. You get
+            design, commissioning, training and after-sales support, so you can add BESS to your projects without building
+            a supply chain from scratch.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <span data-a="cta" className="inline-block">

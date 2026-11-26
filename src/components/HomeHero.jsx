@@ -647,7 +647,7 @@ export default function HomeHero() {
                   "radial-gradient(34% 36% at 50% 52%, color-mix(in srgb, var(--accent) 7%, transparent), color-mix(in srgb, var(--accent) 4%, transparent) 40%, color-mix(in srgb, var(--accent) 1%, transparent) 65%, transparent 85%)",
               }}
             />
-            {/* Ground plate (nexera-hero-ground.webp): the footage's own first frame, heavily blurred,
+            {/* Ground plate (cabinet-film-ground.webp): the trimmed footage's first frame (52), heavily blurred,
                 with every edge continued outward — 3x the stage wide, 1.8x tall, the frame exactly in
                 its centre third. So wherever the footage's soft edges fade out, what shows through is
                 the same tone the footage has there, carried on to the viewport edge: no visible video
