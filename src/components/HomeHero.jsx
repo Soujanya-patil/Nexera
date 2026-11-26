@@ -2,14 +2,23 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import HomeHeroCopy from "./HomeHeroCopy";
 import Callouts, { OUT } from "./cabinet/Callouts";
 import { createSeekGate, useBlobUrl } from "../lib/footage";
-import videoSrc from "../assets/products/nexera-hero-cabinet.mp4";
-import closeSrc from "../assets/products/nexera-hero-cabinet-close.mp4";
-// Phone versions of the two cycle clips (720 px wide, H.264, no audio, faststart; ~345 KB each).
-import videoMobileSrc from "../assets/products/nexera-hero-cabinet-mobile.mp4";
-import closeMobileSrc from "../assets/products/nexera-hero-cabinet-close-mobile.mp4";
-import posterSrc from "../assets/products/nexera-hero-cabinet-poster.webp";
-import scrubSrc from "../assets/products/nexera-hero-cabinet-scrub.mp4";
-import groundSrc from "../assets/products/nexera-hero-ground.webp";
+// The footage, trimmed so the door's old, unofficial NEXERA mark never appears: frames 52-164 of the
+// original 164 (the door is past edge-on from frame 49; 52 leaves a margin), every frame checked. The
+// closing clips are the same frames in reverse, so both hand-offs are on identical frames; poster and
+// ground plate are made from frame 52, so the hero rests with the door open. The untrimmed
+// nexera-hero-cabinet* clips and their source (nexera-battery-cabinet-scroll.mp4) were deleted
+// (2026-11-26; in git history) and must never ship. The notes below describe how they were cut.
+import videoSrc from "../assets/products/cabinet-film.mp4";
+import closeSrc from "../assets/products/cabinet-film-close.mp4";
+// Phone versions of the two cycle clips (720 px wide, H.264, no audio, faststart; ~310 KB each).
+import videoMobileSrc from "../assets/products/cabinet-film-mobile.mp4";
+import closeMobileSrc from "../assets/products/cabinet-film-close-mobile.mp4";
+import posterSrc from "../assets/products/cabinet-film-poster.webp";
+// The scroll story (ENABLE_STORY, below) is off. Its scrub clip was the untrimmed footage, so it points at
+// the trimmed opening clip instead (the same file: nothing extra ships). Re-encode a trimmed scrub clip
+// (keyframe every 6 frames) before ever turning the story back on.
+import scrubSrc from "../assets/products/cabinet-film.mp4";
+import groundSrc from "../assets/products/cabinet-film-ground.webp";
 import { useMediaQuery } from "../lib/scrollSteps";
 import { loadGsap } from "../lib/motion";
 import { getLenis } from "../lib/lenis";
