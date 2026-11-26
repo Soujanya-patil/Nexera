@@ -2,7 +2,8 @@
  * Post-build: fails if a name that must not appear on the site is anywhere in dist/ — any file, any
  * case. Midea is not a NEXERA partner: its page was removed, and nothing may name it. CLOU is no
  * longer presented either: its partner and product pages were removed (whole word only: "cloud" is fine).
- * Nor is Hithium's ∞BLOCK 261 kWh C&I all-in-one: its name nowhere, its slug only in the redirects.
+ * Nor is Hithium's ∞BLOCK 261 kWh C&I all-in-one: its name nowhere, its slug only in the redirects;
+ * the same for Hithium's ∞Power 5.016 MWh (removed 2026-11-26).
  * And the structured data's address is the head office (WeWork Galaxy): the old address, now the
  * branch office (shown on the pages, data/business), must never be in a JSON-LD PostalAddress.
  *
@@ -28,6 +29,11 @@ const TERMS = [
   // (`pages: false`), where the JSON-LD also lives. "261 kWh" alone is fine (the TCL BlueArk W10 uses it).
   { name: "∞BLOCK", term: /(?:â\u0088\u009e|\\u221e|&#8734;|&#x221e;|&infin;)\s*block/gi, allowed: /(?!)/g, find: /(?:â\u0088\u009e|\\u221e|&#8734;|&#x221e;|&infin;)\s*block/i },
   { name: "hithium-block-261", term: /hithium-block-261/gi, allowed: /products\/hithium-block-261/gi, find: /hithium-block-261/i, paths: "/products/hithium-block-261", pages: false },
+  // Hithium's ∞Power 5.016 MWh was removed from the site (2026-11-26): neither its name ("5.016", any
+  // spacing) nor its slug may appear. The slug is allowed only in the redirects (.htaccess and the app's
+  // route table in a script), never in a page or the sitemap (`pages: false`).
+  { name: "5.016 MWh", term: /5\.016/g, allowed: /(?!)/g, find: /5\.016/ },
+  { name: "hithium-power-5016", term: /hithium-power-5016/gi, allowed: /products\/hithium-power-5016/gi, find: /hithium-power-5016/i, paths: "/products/hithium-power-5016", pages: false },
 ];
 /** A built page or the sitemap: where an otherwise allowed old path still counts for `pages: false` terms. */
 const isPage = (file) => /\.(?:html|xml)$/i.test(file);

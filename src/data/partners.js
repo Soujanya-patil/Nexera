@@ -25,7 +25,7 @@ export const PARTNER_PAGES = [
         // C&I page, Hithium card
         "Founded in 2019, Hithium focuses specifically on energy-storage batteries and systems, supplying customers in 40+ countries and regions.",
         // Utility-Scale page, Hithium card
-        "Its utility portfolio includes 5 MWh-class and 6.25 MWh-class liquid-cooled systems, designed for high-density, long-duration applications.",
+        "Its utility portfolio includes the ∞Power 6.25 MWh liquid-cooled system, designed for high-density, long-duration applications.",
       ],
       // Utility-Scale page, Hithium card
       stats: [

@@ -9,13 +9,9 @@
  * Images are transparent cutouts of the partners' own product renders (src/assets/catalogue/), made
  * from Downloads/TCL_photos.zip and Hithium_photos.zip.
  *
- * Listed without a product photo (`imageFallback: true` — `image` is the partner's logo, shown
- * small on the usual plinth, and never used as a product image in search or share data):
- *   - Hithium ∞Power 5.016 MWh: no image in the repo or the Hithium brochure is labelled as this system
- *     (the brochure's ∞Power container renders carry no capacity), so it is also left out of the
- *     /products listing (`listed: false`). Its product page, and the Utility page's link to it, remain.
- * Their data comes from the director-approved Solutions content (checked against the Hithium
- * brochure), and is limited to what that content states.
+ * Optional flags (no product uses them today): `imageFallback: true` — no product photo, `image` is the
+ * partner's logo, shown small on the usual plinth and never used as a product image in search or share
+ * data; `listed: false` — kept off the /products listing (its page is noindex and out of the sitemap).
  *
  * `imageSize` is the image file's own width and height (set on every <img> so nothing moves while it loads).
  * `datasheet` is the product's datasheet PDF in public/datasheets/ (a download), or null (sent on request).
@@ -465,36 +461,6 @@ export const PRODUCTS = [
     },
     datasheet: null,
     sources: ["Hithium DC Block 1022kWh EU product material: 1022 Liquid-Cooled Cabinet System and Convenient High Usability pages"],
-  },
-  {
-    id: "hithium-power-5016",
-    partner: "hithium",
-    name: "∞Power 5.016 MWh",
-    type: "Liquid-cooled energy storage platform",
-    applications: ["utility"],
-    image: hithiumLogo,
-    imageSize: [355, 89],
-    imageFallback: true,
-    listed: false,
-    imageAlt: "Hithium logo (product photo not available)",
-    summary: "A high-density, liquid-cooled energy storage platform for utility-scale applications.",
-    cardSpecs: ["5.016 MWh", "Liquid-cooled"],
-    keySpecs: [
-      { label: "Rated energy", value: "5.016 MWh" },
-      { label: "Cooling", value: "Liquid-cooled" },
-    ],
-    specsNote: "Detailed specifications for this system are available from NEXERA on request.",
-    specs: {
-      system: [{ label: "Rated energy", value: "5.016 MWh" }],
-      battery: [{ label: "Cooling", value: "Liquid-cooled" }],
-    },
-    highlights: [],
-    compare: {
-      capacity: "5.016 MWh",
-      cooling: "Liquid",
-    },
-    datasheet: null,
-    sources: [`${HITHIUM_BROCHURE}: Liquid-Cooled Energy Storage System`, HITHIUM_CONTENT],
   },
   {
     id: "hithium-power-625",

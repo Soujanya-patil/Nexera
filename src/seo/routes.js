@@ -31,6 +31,7 @@ import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
 import { productPage as productContent } from "../data/productPages";
 import { ADDRESS_PARTS, BUSINESS_NAME, EMAIL, HOURS, PHONE } from "../data/business";
 import { HOME_FAQ } from "../data/home";
+import { RESOURCES_FAQ } from "../data/resources";
 import { LEGAL_REVIEW, REVIEW_ROBOTS } from "../lib/legal";
 
 export const SITE_URL = "https://nexerapower.com";
@@ -217,6 +218,7 @@ const PAGES = [
     title: "BESS Guides, Datasheets & FAQs | NEXERA",
     description:
       "Battery energy storage datasheets and brochures, answers to common BESS questions, and news and insights from NEXERA for projects in India.",
+    faq: RESOURCES_FAQ,
   },
   // The Blog (pages/Blog.jsx): every article, newest first — written as a Blog with its BlogPostings.
   {

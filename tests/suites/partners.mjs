@@ -34,20 +34,20 @@ const status = async (path) => (await fetch(BASE + path, { redirect: "manual" })
   const codes = {};
   for (const id of ["hithium", "tcl", "nope"]) codes[id] = await status(`/partners/${id}`);
   check("partner pages 200; an unknown partner 404", codes.hithium === 200 && codes.tcl === 200 && codes.nope === 404, codes);
-  // Removed pages: the old Midea partner page, and CLOU's partner page and product pages (no longer
-  // presented) — each old URL, .html and trailing slash → 301 /products.
+  // Removed pages: the old Midea partner page, CLOU's partner page and product pages (no longer
+  // presented), and Hithium's ∞Power 5.016 MWh page (removed) — each old URL, .html and trailing slash → 301 /products.
   const gone = [];
-  const removed = ["/partners/midea", "/partners/clou", "/products/clou-aqua-e261", "/products/clou-aqua-c25s"];
+  const removed = ["/partners/midea", "/partners/clou", "/products/clou-aqua-e261", "/products/clou-aqua-c25s", "/products/hithium-power-5016"];
   for (const u of removed.flatMap((x) => [x, `${x}.html`, `${x}/`])) {
     const g = await fetch(BASE + u, { redirect: "manual" });
     gone.push([u, g.status, g.headers.get("location")]);
   }
-  check("removed partner / product pages (Midea, CLOU; also .html, trailing slash) → one 301 to /products", gone.every(([, st, loc]) => st === 301 && /^(https?:\/\/[^/]+)?\/products$/.test(loc || "")), gone);
+  check("removed partner / product pages (Midea, CLOU, Hithium 5016; also .html, trailing slash) → one 301 to /products", gone.every(([, st, loc]) => st === 301 && /^(https?:\/\/[^/]+)?\/products$/.test(loc || "")), gone);
 }
 
 // ---- each page: sections, links, hero buttons -----------------------------------------------------------
 for (const [id, interest, nProducts] of [
-  ["hithium", "ci", 2], // the ∞Power 1022 kWh Cabinet and 6.25 MWh; the 5.016 MWh is `listed: false`: no card (its page and FAQ mention remain)
+  ["hithium", "ci", 2], // the ∞Power 1022 kWh Cabinet and 6.25 MWh
   ["tcl", "ci", 4], // X1, X5, W10 and X10
 ]) {
   const p = await newPage();
@@ -143,8 +143,9 @@ async function linksOn(path, selector, setup) {
   await p.context().close();
 }
 {
-  const l = await linksOn("/products/hithium-power-5016", "main a[href^='/partners/']");
-  check("product page: partner name (breadcrumb + eyebrow) → /partners/hithium", l.length === 2 && l.every(([t, h]) => t === "Hithium" && h === "/partners/hithium"), l);
+  const l = await linksOn("/products/hithium-power-625", "main a[href^='/partners/']");
+  // A listed product page: the partner name twice (breadcrumb + eyebrow), plus its "… in India" link; all to the partner page.
+  check("product page: partner name (breadcrumb + eyebrow) → /partners/hithium", l.filter(([t]) => t === "Hithium").length === 2 && l.every(([, h]) => h === "/partners/hithium"), l);
 }
 {
   const l = await linksOn("/solutions", "main a[href^='/partners/']");

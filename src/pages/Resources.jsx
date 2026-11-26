@@ -9,6 +9,7 @@ import DatasheetCards from "../components/resources/DatasheetCards";
 import InsightCards from "../components/resources/InsightCards";
 import { useWanted } from "../components/resources/useWanted";
 import { isFirstLoad } from "../lib/firstLoad";
+import { RESOURCES_FAQ } from "../data/resources";
 
 // The documents on offer, in order: a product (data/products.js, or data/datasheets.js for the X10, which
 // has no catalogue entry) and which document it is. A product with a `datasheet` file downloads it.
@@ -20,11 +21,8 @@ const datasheets = [
   { product: "hithium-power-625", kind: "Brochure" },
 ];
 
-const faqs = [
-  { q: "What's the difference between C&I and utility-scale BESS?", a: "C&I systems are sized for factories, warehouses, and commercial sites — typically cabinet or small containerised units. Utility-scale systems are multi-megawatt-hour DC blocks built for grid-connected projects." },
-  { q: "Do I need existing BESS experience to become a distributor?", a: "No. Most of our partners come from a solar EPC background with strong PV experience but limited battery storage exposure — that's exactly the gap our training and design support exist to close." },
-  { q: "How long does commissioning support take?", a: "It varies by project scale and segment, but our engineers work your first sizing and commissioning alongside you as part of onboarding, not as a one-off session." },
-];
+// The FAQs (data/resources.js): the same list is this page's FAQPage structured data (seo/routes.js).
+const faqs = RESOURCES_FAQ;
 
 const articles = [
   "What Is C&I Battery Storage and Why Bangalore Businesses Are Adopting It",

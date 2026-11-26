@@ -40,7 +40,7 @@ export const UTILITY_FAQ = [
   },
   {
     q: "Which utility-scale platforms does NEXERA offer?",
-    a: "NEXERA offers utility-scale systems from Hithium: ∞Power 5.016 MWh and 6.25 MWh.",
+    a: "NEXERA offers utility-scale systems from Hithium: the ∞Power 6.25 MWh.",
   },
   {
     q: "Can utility BESS work with an existing solar or wind plant?",

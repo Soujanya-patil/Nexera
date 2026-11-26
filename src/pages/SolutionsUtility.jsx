@@ -32,7 +32,6 @@ const LoadShiftChart = lazy(() => import("../components/solutions/LoadShiftChart
 import {
   BenefitStrip,
   CardGrid,
-  CompareProvider,
   CtaBand,
   FaqList,
   FeatureGrid,
@@ -55,7 +54,7 @@ const PARTNERS = [
   {
     id: "hithium",
     title: "Hithium — Energy Storage. Built for Scale.",
-    copy: "Hithium is a specialist energy-storage company focused on battery cells, battery systems and large-scale energy storage. Its utility portfolio includes 5 MWh-class and 6.25 MWh-class liquid-cooled systems, designed for high-density, long-duration applications.",
+    copy: "Hithium is a specialist energy-storage company focused on battery cells, battery systems and large-scale energy storage. Its utility portfolio includes the ∞Power 6.25 MWh liquid-cooled system, designed for high-density, long-duration applications.",
     stats: [
       ["56.6 GWh", "energy-storage battery sales (2025)"],
       ["10.1 GWh", "energy-storage system sales (2025)"],
@@ -72,12 +71,6 @@ const PARTNERS = [
       ["Global deployment", "Operations across more than 40 countries and regions."],
     ],
     systems: [
-      {
-        product: "hithium-power-5016",
-        name: "Hithium ∞Power 5.016 MWh",
-        copy: "High-density liquid-cooled energy storage platform for utility-scale applications.",
-        cta: "Explore ∞Power 5.016 MWh",
-      },
       {
         product: "hithium-power-625",
         name: "Hithium ∞Power 6.25 MWh | 4-Hour",
@@ -166,42 +159,40 @@ export default function SolutionsUtility() {
         title="Utility-Scale Storage from Hithium. Delivered and Supported by NEXERA."
         intro="NEXERA brings Hithium's dedicated platform for containerised battery storage to project developers, IPPs, EPCs and utilities, so they can select the BESS container architecture that best fits their project."
       >
-        {/* One compare selection across the featured systems. */}
-        <CompareProvider>
-          <div className="mt-12 space-y-16">
-            {PARTNERS.map((p) => (
-              <div key={p.id} className="group/card rounded-card border border-line bg-white p-6 md:p-10">
-                <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-                  <div>
-                    <PartnerMark partner={p.id} decorative />
-                    <h3 className="mt-5 text-h3 font-semibold text-ink">{p.title}</h3>
-                    <p className="mt-3 text-body text-copy">{p.copy}</p>
-                    <Stats items={p.stats} />
-                    <ArrowLink to={`/partners/${p.id}`} className="mt-6">
-                      All Hithium systems
-                    </ArrowLink>
-                  </div>
-                  <div>
-                    <p className="eyebrow text-muted">{p.whyTitle}</p>
-                    <ul className="mt-4 divide-y divide-line">
-                      {p.why.map(([t, d]) => (
-                        <li key={t} className="py-3 text-small text-copy">
-                          <strong className="font-semibold text-ink">{t}:</strong> {d}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+        {/* One featured system, so no compare selection (the C&I page's portfolio keeps one). */}
+        <div className="mt-12 space-y-16">
+          {PARTNERS.map((p) => (
+            <div key={p.id} className="group/card rounded-card border border-line bg-white p-6 md:p-10">
+              <div className="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+                <div>
+                  <PartnerMark partner={p.id} decorative />
+                  <h3 className="mt-5 text-h3 font-semibold text-ink">{p.title}</h3>
+                  <p className="mt-3 text-body text-copy">{p.copy}</p>
+                  <Stats items={p.stats} />
+                  <ArrowLink to={`/partners/${p.id}`} className="mt-6">
+                    All Hithium systems
+                  </ArrowLink>
                 </div>
-                <p className="mt-10 eyebrow text-muted">Featured systems</p>
-                <CardGrid columns={2} className="mt-4">
-                  {p.systems.map((s) => (
-                    <SolutionProductCard key={s.name} {...s} level={4} product={getProduct(s.product)} />
-                  ))}
-                </CardGrid>
+                <div>
+                  <p className="eyebrow text-muted">{p.whyTitle}</p>
+                  <ul className="mt-4 divide-y divide-line">
+                    {p.why.map(([t, d]) => (
+                      <li key={t} className="py-3 text-small text-copy">
+                        <strong className="font-semibold text-ink">{t}:</strong> {d}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            ))}
-          </div>
-        </CompareProvider>
+              <p className="mt-10 eyebrow text-muted">Featured system</p>
+              <CardGrid columns={2} className="mt-4">
+                {p.systems.map((s) => (
+                  <SolutionProductCard key={s.name} {...s} level={4} product={getProduct(s.product)} />
+                ))}
+              </CardGrid>
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section

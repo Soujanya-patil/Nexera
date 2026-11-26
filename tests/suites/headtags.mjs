@@ -26,7 +26,6 @@ const check = (n, c, x = "") => {
 const sitemap = await (await fetch(`${BASE}/sitemap.xml`)).text();
 const ROUTES = [
   ...[...sitemap.matchAll(/<loc>https:\/\/nexerapower\.com([^<]*)<\/loc>/g)].map((m) => m[1] || "/"),
-  "/products/hithium-power-5016", // noindex (kept off the catalogue)
   ...(LEGAL_REVIEW ? LEGAL_PATHS : []), // noindex, nofollow while the legal pages are in review (src/lib/legal.js)
   ...BLOG_REVIEW, // noindex, nofollow while each post is in review (src/data/publish.js)
   "/no-such-page", // not a route: 404.html
