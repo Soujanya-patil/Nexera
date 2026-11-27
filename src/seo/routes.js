@@ -29,7 +29,7 @@ import { partnerFaq } from "../data/partners";
 import { ARTICLES, DRAFT_ARTICLES, REVIEW_ARTICLES } from "../data/articleMeta";
 import { BENGALURU_FAQ, BENGALURU_PATH } from "../data/locations";
 import { productPage as productContent } from "../data/productPages";
-import { ADDRESS_PARTS, BUSINESS_NAME, EMAIL, HOURS, PHONE } from "../data/business";
+import { ADDRESS_PARTS, BRANCH_ADDRESS_PARTS, BUSINESS_NAME, EMAIL, GBP_URL, HOURS, PHONE } from "../data/business";
 import { HOME_FAQ } from "../data/home";
 import { RESOURCES_FAQ } from "../data/resources";
 import { BECOME_PARTNER_FAQ } from "../data/becomePartner";
@@ -58,7 +58,10 @@ export const NOT_FOUND_TITLE = "Page not found | NEXERA";
  * +91-97423-53341. The logo is the NEXERA wordmark (the header's own file, src/assets/brand/
  * nexera-logo.svg) at a stable address, public/nexera-logo.svg.
  */
-export const LOCAL_BUSINESS = { hours: HOURS };
+// The branch office (Vijayanagar / Hampi Nagar): its own LocalBusiness node, a department of the Organization,
+// on the pages that carry the LocalBusiness (home, /contact, /locations/bengaluru). `hasMap`: the Google
+// Business Profile.
+export const LOCAL_BUSINESS = { hours: HOURS, branch: { id: "branch-vijayanagar", name: "NexEra PowerTech Pvt Ltd", address: BRANCH_ADDRESS_PARTS, hasMap: GBP_URL } };
 /** The site's own name (the homepage's WebSite node): the visible brand, not the business name. */
 export const SITE_NAME = "NEXERA Powertech";
 export const ORGANIZATION = {
@@ -72,9 +75,8 @@ export const ORGANIZATION = {
   telephone: PHONE.replace(/\s+/g, "-"),
   email: EMAIL,
   logo: "/nexera-logo.svg",
-  // The business's own profiles (schema sameAs): LinkedIn and the Google Business Profile, added once
-  // NEXERA gives the URLs. Empty: no sameAs is written.
-  sameAs: [],
+  // The business's own profiles (schema sameAs): the Google Business Profile; LinkedIn to follow.
+  sameAs: [GBP_URL],
 };
 
 /** 1200x630 share image (public/og-default.jpg): the NEXERA wordmark and cabinet on the dark green. */

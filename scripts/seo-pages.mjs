@@ -182,6 +182,31 @@ const localBusiness = {
     closes: LOCAL_BUSINESS.hours.closes,
   },
 };
+// The branch office (Vijayanagar): its own LocalBusiness, a department of the Organization, with the same
+// phone, email and hours; hasMap is the Google Business Profile. Only on the LocalBusiness pages, next to it.
+const B = LOCAL_BUSINESS.branch;
+const BRANCH_ID = `${SITE_URL}/#${B.id}`;
+const branch = {
+  "@type": "LocalBusiness",
+  "@id": BRANCH_ID,
+  name: B.name,
+  parentOrganization: { "@id": ORG_ID },
+  url: `${SITE_URL}/`,
+  image: SITE_URL + DEFAULT_OG_IMAGE,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: B.address.street,
+    addressLocality: B.address.locality,
+    addressRegion: B.address.region,
+    postalCode: B.address.postalCode,
+    addressCountry: B.address.country,
+  },
+  ...(ORGANIZATION.telephone ? { telephone: ORGANIZATION.telephone } : {}),
+  ...(ORGANIZATION.email ? { email: ORGANIZATION.email } : {}),
+  openingHoursSpecification: localBusiness.openingHoursSpecification,
+  hasMap: B.hasMap,
+};
+localBusiness.department = { "@id": BRANCH_ID };
 if (!fs.existsSync(distFile(ORGANIZATION.logo))) problems.push(`Organization logo missing: dist${ORGANIZATION.logo}`);
 // A route's short name for breadcrumbs: its `label` (routes.js) where it has one, else its title up to
 // the first " | ".
@@ -200,6 +225,7 @@ const breadcrumbs = (trail) => ({
 const home = ROUTES.find((r) => r.path === "/");
 function graphFor(r) {
   const nodes = [r?.localBusiness ? localBusiness : organization];
+  if (r?.localBusiness) nodes.push(branch);
   if (!r) return nodes; // 404.html
   if (r.path === "/") {
     nodes.push({ "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: SITE_NAME, url: `${SITE_URL}/`, publisher: { "@id": ORG_ID } });

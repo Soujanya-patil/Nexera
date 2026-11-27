@@ -11,8 +11,18 @@ const ENV = import.meta.env ?? {};
 export const BUSINESS_NAME = "NEXERA Power Tech";
 /** The head office (the address in the structured data). */
 export const ADDRESS = "WeWork Galaxy, 43, Residency Rd, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka 560025";
-/** The branch office (shown on the site, not in the structured data). */
+/** The branch office (shown on the site; in the structured data only as its own branch node, since 2026-11-27). */
 export const BRANCH_ADDRESS = "2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Vijayanagar 2nd Stage, Bengaluru, Karnataka 560104";
+/** The branch office in schema.org PostalAddress parts (the same words as BRANCH_ADDRESS). */
+export const BRANCH_ADDRESS_PARTS = {
+  street: "2nd Floor, 31, 9th Main Road, Chowdappa Layout, Hampi Nagar, Vijayanagar 2nd Stage",
+  locality: "Bengaluru",
+  region: "Karnataka",
+  postalCode: "560104",
+  country: "IN",
+};
+/** The Google Business Profile (its maps link): the Organization's sameAs and the branch's hasMap. */
+export const GBP_URL = "https://maps.google.com/?cid=17758465240992691224";
 /** The head office in schema.org PostalAddress parts. */
 export const ADDRESS_PARTS = {
   street: "WeWork Galaxy, 43, Residency Rd, Shanthala Nagar, Ashok Nagar",

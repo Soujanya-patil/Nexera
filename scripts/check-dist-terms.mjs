@@ -63,21 +63,30 @@ for (const file of files) {
   }
 }
 
-// JSON-LD: every PostalAddress (the Organization / LocalBusiness head office) on every page.
+// JSON-LD: every PostalAddress on every page. The Organization's (and any other node's) is the head office;
+// the branch office's words (Vijayanagar, Hampi Nagar…) are allowed only inside the branch node (its @id ends
+// "#branch-vijayanagar", since 2026-11-27), and that node's address must be the branch, never the head office.
 const OLD_ADDRESS = /vijayanagar|chowdappa|hampi\s*nagar|(?<!\d)560104(?!\d)/i;
+const BRANCH_ID = /#branch-vijayanagar$/;
 let addresses = 0;
+let branches = 0;
 for (const file of files.filter((f) => f.endsWith(".html"))) {
   const html = fs.readFileSync(file, "utf8");
+  const rel = path.relative(dist, file).replaceAll("\\", "/");
   for (const [, json] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
-    (function walk(node) {
+    (function walk(node, inBranch) {
       if (!node || typeof node !== "object") return;
+      const here = inBranch || (typeof node["@id"] === "string" && BRANCH_ID.test(node["@id"]));
       if (node["@type"] === "PostalAddress") {
         addresses++;
-        const old = Object.values(node).find((v) => typeof v === "string" && OLD_ADDRESS.test(v));
-        if (old) hits.push(`old address in JSON-LD PostalAddress — ${path.relative(dist, file).replaceAll("\\", "/")}: "${old}"`);
+        const text = Object.values(node).filter((v) => typeof v === "string").join(" ");
+        if (here) {
+          branches++;
+          if (!/(?<!\d)560104(?!\d)/.test(text)) hits.push(`branch node's address is not the branch office — ${rel}: "${text}"`);
+        } else if (OLD_ADDRESS.test(text)) hits.push(`branch office address outside the branch node — ${rel}: "${text}"`);
       }
-      Object.values(node).forEach(walk);
-    })(JSON.parse(json));
+      Object.values(node).forEach((v) => walk(v, here));
+    })(JSON.parse(json), false);
   }
 }
 
@@ -87,5 +96,5 @@ if (hits.length) {
   process.exit(1);
 }
 console.log(
-  `check-dist-terms: ${files.length} files in dist/, no removed names (only the old redirect paths: ${TERMS.filter((t) => t.paths).map((t) => `${t.paths} ${allowed[t.name]}×`).join(", ")}); ${addresses} JSON-LD addresses, all the head office`
+  `check-dist-terms: ${files.length} files in dist/, no removed names (only the old redirect paths: ${TERMS.filter((t) => t.paths).map((t) => `${t.paths} ${allowed[t.name]}×`).join(", ")}); ${addresses} JSON-LD addresses: ${addresses - branches} the head office, ${branches} the branch office (in its own node)`
 );
