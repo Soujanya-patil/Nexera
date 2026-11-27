@@ -25,7 +25,7 @@ export default function HomeBelow() {
       >
         <div className="mt-8">
           <ArrowLink to="/become-a-partner" className="min-h-11">
-            Become a BESS partner
+            Become a Partner
           </ArrowLink>
         </div>
       </Section>

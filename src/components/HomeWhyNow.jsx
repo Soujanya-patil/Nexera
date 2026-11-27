@@ -11,7 +11,7 @@ import { DUR, EASE, STAGGER } from "../lib/tokens";
 
 const benefits = [
   { icon: Database, label: "Lower energy bills", text: "Charge when power is cheap and discharge in the peak." },
-  { icon: Leaf, label: "Less diesel", text: "Replace generator runtime with clean backup.", filled: true },
+  { icon: Leaf, label: "Fewer generator hours", text: "Replace generator runtime with clean backup.", filled: true },
   { icon: Sun, label: "Full solar use", text: "Store surplus instead of curtailing it." },
   { icon: ShieldCheck, label: "Stronger grid", text: "Smooth supply and support renewable growth." },
 ];
@@ -77,7 +77,7 @@ export default function HomeWhyNow() {
             {/* The space keeps the two lines apart in the heading's text; before a <br> it renders nothing. */}
             Why Battery Energy Storage?{" "}
             <br />
-            Lower Bills, Less Diesel, a Stronger Grid
+            Lower Bills, Fewer Generator Hours, a Stronger Grid
           </h2>
           <p data-e="copy" className="mt-heading max-w-measure text-body text-paper/90">
             Solar only produces by day, but electricity costs most in the evening peak and outages do not wait for
@@ -88,8 +88,8 @@ export default function HomeWhyNow() {
             </Link>
           </p>
           <div data-e="copy" className="mt-8">
-            <PillLink to="/resources" arrow spotlight>
-              Learn About the Opportunity
+            <PillLink to="/contact" arrow spotlight>
+              Get a Sizing Check
             </PillLink>
           </div>
         </div>

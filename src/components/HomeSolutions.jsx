@@ -179,13 +179,9 @@ export default function HomeSolutions() {
               From a single home to a utility-scale plant, Nexera supplies and supports the right battery storage system for the job.
             </p>
           </div>
-          <Link
-            to="/solutions"
-            className="group/all inline-flex min-h-11 shrink-0 items-center gap-2 text-button font-semibold text-accent transition-colors hover:text-link focus-visible:text-link"
-          >
-            View All Solutions
-            <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-fast group-hover/all:translate-x-1 group-focus-visible/all:translate-x-1 group-focus-within/all:translate-x-1" />
-          </Link>
+          {/* (A "View All Solutions" link sat here; removed 2026-11-26 so the page's actions centre on a sizing
+              check and the partner programme. Each card below links to its solution page; the header and
+              footer link /solutions.) */}
         </div>
 
         <div ref={grid} data-enter={enter} className="mt-10 grid gap-6 md:grid-cols-3">

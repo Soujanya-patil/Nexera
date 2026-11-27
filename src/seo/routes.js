@@ -85,9 +85,9 @@ const PAGES = [
     localBusiness: true,
     h1: "Battery Energy Storage Systems (BESS) for India’s Homes, Businesses and Grids",
     faq: HOME_FAQ,
-    title: "BESS in India: TCL & Hithium Energy Storage | Nexera",
+    title: "Battery Energy Storage Systems in India | TCL & Hithium",
     description:
-      "Authorised TCL and Hithium distributor in India. Battery energy storage for homes, businesses and utilities, with design, commissioning and service.",
+      "Authorised TCL and Hithium distributor in India: home, C&I and utility battery storage with sizing, commissioning, training and local service.",
   },
   {
     path: "/solutions",

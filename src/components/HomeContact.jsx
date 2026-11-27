@@ -11,6 +11,9 @@ import { trackLead } from "../lib/analytics";
 import { ADDRESS, BRANCH_ADDRESS } from "../data/business";
 import { STAGGER } from "../lib/tokens";
 
+// The phone bar's WhatsApp chat (MobileBar), from the same number.
+const WHATSAPP = `https://wa.me/${(CONTACT_PHONE || "").replace(/\D/g, "")}?text=Hi%20NEXERA%2C%20I%27m%20interested%20in%20battery%20storage`;
+
 const TRUST = [
   { icon: BadgeCheck, text: "Authorised partner for TCL and Hithium." },
   { icon: Ruler, text: "Design, sizing and commissioning support." },
@@ -223,6 +226,11 @@ export default function HomeContact() {
                   <a href={telHref(CONTACT_PHONE)} className="font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
                     {CONTACT_PHONE}
                   </a>
+                  {/* WhatsApp, the same chat as the phone bar's (lib/analytics tracks wa.me clicks, with consent). */}
+                  {", "}
+                  <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
+                    WhatsApp us<span className="sr-only"> (opens in a new tab)</span>
+                  </a>
                   {CONTACT_EMAIL ? " " : ""}
                 </>
               )}
@@ -243,13 +251,8 @@ export default function HomeContact() {
             <span className="mt-2 block font-semibold text-paper/90">Branch office</span>
             {BRANCH_ADDRESS}
           </address>
-          <p data-sr className="mt-8 text-small text-paper/75">
-            Want to become a distributor?{" "}
-            <Link to="/become-a-partner" className="group inline-flex items-center gap-1 font-semibold text-accent underline-offset-4 hover:underline focus-visible:underline">
-              Explore our partner programme
-              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-fast group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 group-focus-within:translate-x-0.5" />
-            </Link>
-          </p>
+          {/* (A "Want to become a distributor? Explore our partner programme" line sat here; removed 2026-11-26:
+              the partner programme section, with its Become a Partner link, is directly above.) */}
         </div>
 
         {/* Right: the form card */}
