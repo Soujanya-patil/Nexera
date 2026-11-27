@@ -825,6 +825,16 @@ export function CardGrid({ children, columns = 3, className = "mt-12" }) {
  * guideFor), a line under the questions links to it. An item's `links` ([{ text, to | href }]) make
  * words of its answer links, so the text stays word for word the FAQPage data.
  */
+/** Words to an id: lower case, letters and digits joined by hyphens ("What is a BESS?" -> "what-is-a-bess"). */
+const slugify = (s) =>
+  s
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60)
+    .replace(/-+$/, "");
+
 export function FaqList({ id, title, items, tone = "ice", guide }) {
   const onKey = (e) => {
     const d = e.currentTarget.parentElement;
@@ -850,7 +860,8 @@ export function FaqList({ id, title, items, tone = "ice", guide }) {
                 onKeyDown={onKey}
                 className="flex cursor-pointer items-center justify-between gap-4 px-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-[-2px] sm:px-6"
               >
-                <h3 className="font-semibold text-ink">{q}</h3>
+                {/* An id on every question (the FAQ's id + the question's words), so each can be linked to. */}
+                <h3 id={`${id}-${slugify(q)}`} className="font-semibold text-ink">{q}</h3>
                 <span
                   aria-hidden="true"
                   className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line text-accent transition-[transform,background-color] duration-base ease-emphasized group-open/faq:rotate-180 group-open/faq:bg-accent/25"

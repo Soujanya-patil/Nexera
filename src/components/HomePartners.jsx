@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import AnimatedText from "./ui/AnimatedText";
 import { useEntrance } from "../lib/entrance";
 import { APPLICATIONS, LISTED_PRODUCTS, applicationLabel } from "../data/products";
-import tclLogo from "../assets/partners/tcl-logo.png";
-import hithiumLogo from "../assets/partners/hithium-logo.png";
+// Lossless WebP copies of the partner PNGs (same pixels; the About page and the catalogue still use the PNGs).
+import tclLogo from "../assets/partners/tcl-logo.webp?no-inline"; // ?no-inline: a file, not base64 in the page (it is under Vite's 4 KB inline limit)
+import hithiumLogo from "../assets/partners/hithium-logo.webp?no-inline";
 import { DUR, EASE } from "../lib/tokens";
 
 // Equal treatment for both partners.
@@ -82,7 +83,7 @@ export default function HomePartners() {
           <p data-e="eyebrow" className="eyebrow text-muted">
             Our Technology Partners
           </p>
-          <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">Authorised TCL and Hithium Distributor in India</AnimatedText>
+          <AnimatedText id="partners-title" className="mt-eyebrow text-h2 font-semibold text-ink">Authorised TCL and Hithium Distributor in India</AnimatedText>
           <p data-e="desc" className="mt-heading max-w-measure text-copy">
             Nexera Powertech is an authorised partner of TCL and Hithium, two established battery and energy-storage
             manufacturers. We hold spares stock in India and provide design, commissioning, warranty-claim support and

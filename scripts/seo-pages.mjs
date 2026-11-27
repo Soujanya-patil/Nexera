@@ -155,6 +155,19 @@ const organization = {
   },
   ...(ORGANIZATION.telephone ? { telephone: ORGANIZATION.telephone } : {}),
   ...(ORGANIZATION.email ? { email: ORGANIZATION.email } : {}),
+  // How to reach sales: the same phone and email as on the page, serving India.
+  ...(ORGANIZATION.telephone || ORGANIZATION.email
+    ? {
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "sales",
+          ...(ORGANIZATION.telephone ? { telephone: ORGANIZATION.telephone } : {}),
+          ...(ORGANIZATION.email ? { email: ORGANIZATION.email } : {}),
+          areaServed: "IN",
+        },
+      }
+    : {}),
+  ...(ORGANIZATION.sameAs?.length ? { sameAs: ORGANIZATION.sameAs } : {}),
 };
 // The homepage, the contact page and the Bengaluru page: the same node is also the LocalBusiness (same names, address and
 // phone as on every page, plus the opening hours).
@@ -193,6 +206,18 @@ function graphFor(r) {
   } else {
     nodes.push(breadcrumbs(r.crumbs ? [home, ...r.crumbs] : r.product ? [home, productsRoute, r] : [home, r]));
   }
+  // A route with a `modified` date (routes.js): a WebPage node carrying dateModified.
+  if (r.modified) {
+    nodes.push({
+      "@type": "WebPage",
+      "@id": `${r.canonical}#webpage`,
+      url: r.canonical,
+      name: r.title,
+      dateModified: r.modified,
+      isPartOf: { "@id": `${SITE_URL}/#website` },
+      about: { "@id": ORG_ID },
+    });
+  }
   if (r.product) {
     nodes.push({
       "@type": "Product",
@@ -204,6 +229,8 @@ function graphFor(r) {
       ...(r.product.model ? { sku: r.product.model, model: r.product.model } : {}),
       category: r.product.category,
       brand: { "@type": "Brand", name: r.product.brand },
+      // The partner designs and manufactures every system (NEXERA is the authorised distributor).
+      manufacturer: { "@type": "Organization", name: r.product.brand },
     });
   }
   // An article (data/articles.js): written and published by the Organization.

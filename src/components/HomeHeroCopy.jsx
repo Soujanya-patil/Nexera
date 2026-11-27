@@ -196,12 +196,20 @@ export default function HomeHeroCopy({ parallax, subdued, story = false }) {
             })}
           </span>
         </h1>
-        {/* The tagline (not a heading) and the sub-line arrive together, as the paragraph did. */}
+        {/* The tagline (not a heading) and the sub-line arrive together, as the paragraph did. The tagline is a
+            block span, not a <p>, so the first paragraph under the H1 is the page summary (SEO audit, 2026-11-27):
+            ~45 words, the hero's own sentence plus the site's partner-programme and solutions wording. */}
         <div data-a="para" className="mt-6 max-w-md text-body max-md:mt-4 max-md:leading-[1.5]">
-          <p className="font-semibold text-white">Store today. Power tomorrow.</p>
+          <span className="block font-semibold text-white">Store today. Power tomorrow.</span>
           <p className="mt-2 text-paper/80 max-md:mt-1">
             Nexera Powertech is the authorised distributor of TCL and Hithium battery energy storage in India, with
-            local stock, system design, commissioning and service.
+            local stock, system design, commissioning and service.{" "}
+            {/* Phones (< 768 px) don't show this sentence: the longer copy pushed the hero video below the half-in-view
+                point at 390 x 844, so it no longer started by itself. It stays in the HTML for search and answer engines. */}
+            <span className="max-md:hidden">
+              We supply home, commercial and industrial, and utility-scale systems, and support EPC partners with sizing,
+              commissioning, installer training and warranty-claim filing.
+            </span>
           </p>
         </div>
         <div className="mt-8 flex flex-wrap items-center gap-4 max-md:mt-5 max-md:gap-3">

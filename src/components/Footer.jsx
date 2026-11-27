@@ -55,7 +55,7 @@ export default function Footer() {
           columns on phones, four from 768 px, beside the brand column from 1024 px. */}
       <div className="container-site grid gap-x-10 gap-y-12 py-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)] lg:py-16">
         <div className="max-w-sm">
-          <Logo className="h-10" />
+          <Logo className="h-10" lazy />
           <p className="mt-3 text-small font-semibold text-navy">Store today. Power tomorrow.</p>
           <address className="mt-5 text-small not-italic leading-relaxed">
             <span className="block font-semibold">Head office</span>

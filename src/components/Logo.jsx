@@ -5,9 +5,10 @@ import logo from "../assets/brand/nexera-logo.svg";
  * light grounds only (there is no reversed version). An <img> with the artwork's own aspect (viewBox
  * 1984 × 596) as width/height, so its box is reserved before it loads (no layout shift); the caller
  * sets the height (e.g. h-9) and the width follows. `alt` describes it (in the header, it names the
- * home link); `alt=""` (and hidden from assistive tech) only where it is purely decorative.
+ * home link); `alt=""` (and hidden from assistive tech) only where it is purely decorative. `lazy`: load it
+ * only as it nears the screen (the footer's copy; the header's stays eager).
  */
-export default function Logo({ alt = "NEXERA Powertech", className = "" }) {
+export default function Logo({ alt = "NEXERA Powertech", className = "", lazy = false }) {
   return (
     <img
       src={logo}
@@ -15,6 +16,7 @@ export default function Logo({ alt = "NEXERA Powertech", className = "" }) {
       aria-hidden={alt === "" || undefined}
       width={1984}
       height={596}
+      loading={lazy ? "lazy" : undefined}
       decoding="async"
       className={`block w-auto ${className}`}
     />

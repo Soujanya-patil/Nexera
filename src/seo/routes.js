@@ -72,6 +72,9 @@ export const ORGANIZATION = {
   telephone: PHONE.replace(/\s+/g, "-"),
   email: EMAIL,
   logo: "/nexera-logo.svg",
+  // The business's own profiles (schema sameAs): LinkedIn and the Google Business Profile, added once
+  // NEXERA gives the URLs. Empty: no sameAs is written.
+  sameAs: [],
 };
 
 /** 1200x630 share image (public/og-default.jpg): the NEXERA wordmark and cabinet on the dark green. */
@@ -83,6 +86,8 @@ const PAGES = [
   {
     path: "/",
     localBusiness: true,
+    // The page's last content change (WebPage dateModified in the structured data).
+    modified: "2026-11-27",
     h1: "Battery Energy Storage Systems (BESS) for India’s Homes, Businesses and Grids",
     faq: HOME_FAQ,
     title: "Battery Energy Storage Systems in India | TCL & Hithium",

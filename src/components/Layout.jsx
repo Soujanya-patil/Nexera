@@ -130,9 +130,17 @@ export default function Layout() {
 
   return (
     <div>
+      {/* Skip to content: the first thing a keyboard user reaches; hidden until focused, then shown top left. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-link focus:px-5 focus:py-3 focus:text-button focus:font-semibold focus:text-white focus:outline-2 focus:outline-offset-2 focus:outline-accent"
+      >
+        Skip to content
+      </a>
       <Nav />
-      {/* The page's main content: the one <main> landmark on every route (pages render none). */}
-      <main id="main">
+      {/* The page's main content: the one <main> landmark on every route (pages render none). tabIndex -1 lets
+          the skip link move keyboard focus here (it never adds a Tab stop). */}
+      <main id="main" tabIndex={-1} className="focus:outline-none">
         {/* Route change: the new page fades in (opacity only — no transform, so sticky/fixed children
             and scroll measurements are unaffected). Keyed by path, so filter/query and #hash changes
             don't re-trigger it; skipped for a page opened by a View Transition and under reduced motion. */}

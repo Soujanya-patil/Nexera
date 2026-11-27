@@ -73,7 +73,7 @@ export default function HomeWhyNow() {
           <p data-e="copy" className="eyebrow text-paper/80">
             Why Energy Storage, Why Now
           </p>
-          <h2 data-e="copy" className="mt-eyebrow text-h2 font-semibold">
+          <h2 id="why-storage-title" data-e="copy" className="mt-eyebrow text-h2 font-semibold">
             {/* The space keeps the two lines apart in the heading's text; before a <br> it renders nothing. */}
             Why Battery Energy Storage?{" "}
             <br />

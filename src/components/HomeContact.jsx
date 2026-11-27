@@ -341,7 +341,8 @@ export default function HomeContact() {
                   {err("interest")}
                 </fieldset>
 
-                {field("requirement", "Project size (kWh or MWh)")}
+                {/* Free text the browser can't fill from a profile: autocomplete off (every field states one). */}
+                {field("requirement", "Project size (kWh or MWh)", { autoComplete: "off" })}
 
                 <div>
                   <div className="flex items-baseline justify-between gap-3">
@@ -355,6 +356,7 @@ export default function HomeContact() {
                   <textarea
                     id={`${uid}-message`}
                     name="message"
+                    autoComplete="off"
                     rows={4}
                     maxLength={LIMITS.message}
                     value={values.message}

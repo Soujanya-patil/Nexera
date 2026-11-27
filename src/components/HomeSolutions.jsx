@@ -174,7 +174,7 @@ export default function HomeSolutions() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="eyebrow text-muted">Our Solutions</p>
-            <AnimatedText className="mt-eyebrow text-h2 font-semibold text-ink">BESS Solutions for Residential, C&amp;I and Utility-Scale Projects</AnimatedText>
+            <AnimatedText id="solutions-title" className="mt-eyebrow text-h2 font-semibold text-ink">BESS Solutions for Residential, C&amp;I and Utility-Scale Projects</AnimatedText>
             <p className="mt-heading max-w-measure text-copy">
               From a single home to a utility-scale plant, Nexera supplies and supports the right battery storage system for the job.
             </p>
@@ -228,7 +228,7 @@ export default function HomeSolutions() {
                 </p>
               </div>
               <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-h4 font-semibold text-ink">{c.heading}</h3>
+                <h3 id={`solution-${c.id}`} className="text-h4 font-semibold text-ink">{c.heading}</h3>
                 <p className="mt-2 text-small text-copy">{c.text}</p>
                 {/* Product preview (space always reserved, so hovering never shifts the layout) */}
                 <p className="mt-auto flex translate-y-1 items-center gap-2 pt-5 text-micro text-copy transition-[translate] duration-base ease-standard group-hover:translate-y-0 group-focus-visible:translate-y-0 group-focus-within:translate-y-0 ">
