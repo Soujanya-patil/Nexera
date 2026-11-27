@@ -33,7 +33,8 @@ export const HOME_FAQ = [
   },
   {
     q: "What warranty does the TCL BlueArk X5 carry in India?",
-    a: "TCL's Limited Warranty V1.3 lists India as an applicable country. It covers battery packs for 10 years and the hybrid inverter (PCS) for 5 years, subject to the warranty conditions. Ask us for the full terms.",
+    // Wording set by NEXERA (2026-11-27).
+    a: "The TCL BlueArk X5 carries a 5-year warranty in India, subject to TCL's warranty terms. Full terms are available on request.",
   },
   {
     // Added 2026-11-26 (SEO audit); no warranty years. About: "We register every system and handle claims
